@@ -102,30 +102,6 @@ void SDLMain::run() {
             case SDL_MOUSEBUTTONUP:
                 LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " released");
                 break;
-            case SDL_JOYAXISMOTION:
-#if 0
-                if(std::abs(double(event.jaxis.value)) > 100) {
-                    double normalized = (double(event.jaxis.value) - SHRT_MIN)
-                        / (SHRT_MAX - SHRT_MIN);
-                    normalized = (normalized - 0.5) * 2;
-                    /*LOG2(SDL, INPUT, "Joystick axis " << int(event.jaxis.axis)
-                        << " moved to " << event.jaxis.value
-                        << " (normalized " << normalized << ")");*/
-                    
-                    trackball->setMouseStartAt(Math::Point(0.0, 0.0));
-                    
-                    switch(event.jaxis.axis) {
-                    case 0:
-                        trackball->setMouseCurrentAt(Math::Point(normalized * 0.1, 0.0));
-                        break;
-                    case 1:
-                        trackball->setMouseCurrentAt(
-                            -1.0 * Math::Point(0.0, normalized * 0.1));
-                        break;
-                    }
-                }
-#endif
-                break;
             }
         }
         
@@ -147,7 +123,7 @@ void SDLMain::handleJoystick() {
     double y = joystick->getNormalizedAxisValue(1);
     
     if(std::fabs(x) > 1e-3 || std::fabs(y) > 1e-3) {
-        LOG(SDL, "Move joystick by " << x << "," << y);
+        //LOG(SDL, "Move joystick by " << x << "," << y);
         trackball->setMouseStartAt(Math::Point(0.0, 0.0));
         
         Math::Point translation;
