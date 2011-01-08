@@ -64,6 +64,12 @@ void MainDisplay::initializeGL() {
     LOG2(OPENGL, INIT, "OpenGL initialization successful");
     
     setViewMatrix();
+
+	//Instantiate quadrics
+	test_cylinder = gluNewQuadric();
+	gluQuadricDrawStyle(test_cylinder, GLU_FILL);
+	test_ring = gluNewQuadric();
+	gluQuadricDrawStyle(test_ring, GLU_LINE);
 }
 
 void MainDisplay::resizeGL(int width, int height) {
@@ -78,7 +84,7 @@ void MainDisplay::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     
-    glTranslated(0.0, 0.0, -1.0);
+    glTranslated(0.0, 0.0, -2.0);
     
     trackball->applyTransform();
     
@@ -96,6 +102,25 @@ void MainDisplay::paintGL() {
         
         glLightfv(GL_LIGHT0, GL_POSITION, pos);
     }
+
+	//Draw a white-edged cylinder, because why not?
+	glEnable(GL_LIGHTING);
+	glRotatef(35.0f, 0.3f, 0.4f, 0.25f);
+	
+	glColor3f(1.0f, 0.0f, 0.0f); //Red
+
+	gluCylinder(test_cylinder, 0.25f, 0.35f, 1.0f, 60, 4);
+
+	glLineWidth(3.0f); //Thicker lines
+
+	glDisable(GL_LIGHTING); //No lighting
+	glColor3f(1.0f, 1.0f, 1.0f); //White
+
+	gluDisk(test_ring, 0.25f, 0.25f, 60, 1);
+	glTranslatef(0.0f, 0.0f, 1.0f);
+	gluDisk(test_ring, 0.35f, 0.35f, 60, 1);
+
+	glLineWidth(1.0f); //Reset line width
     
     repaintManager.scheduleNextRepaint(this);
     glFlush();

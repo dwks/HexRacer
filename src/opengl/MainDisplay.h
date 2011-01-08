@@ -22,6 +22,10 @@ private:
     Math::Point translation;
     double scale, angle;
     bool mouseIsDown;
+
+	GLUquadric* test_cylinder;
+	GLUquadric* test_ring;
+
 public:
     MainDisplay();
     ~MainDisplay();
