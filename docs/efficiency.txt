@@ -1,0 +1,2 @@
+Possible speed improvements:
+- TypedObserver can use a static_cast instead of a dynamic_cast

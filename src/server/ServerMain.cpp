@@ -23,12 +23,11 @@ void ServerMain::run() {
             Connection::Socket *socket = server.checkForConnections();
             if(!socket) break;
             
-            //clients.addSocket(socket);
-            
             Network::PacketSerializer serializer;
             Network::Packet *packet = new Network::HandshakePacket(-1);
             socket->send(serializer.packetToString(packet));
             
+            //clients.addSocket(socket);
             delete socket;  // disconnect
         }
         

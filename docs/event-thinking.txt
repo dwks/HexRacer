@@ -1,0 +1,25 @@
+enum type_t {
+    EVENT_QUIT
+};
+
+std::map<type_t, ObserverList>
+
+ObserverList {
+    std::vector<Observer *> list;
+
+    void register(TypedObserver<Type> type);
+}
+
+Event {
+    virtual type_t getType() = 0;
+}
+
+Observer {
+    virtual void observe(Event *event) = 0;
+}
+
+TypedObserver<Type> : public Observer {
+    virtual void observe(Event *event) { observe(static_cast<T>(event)); }
+    virtual void observe(T *event) = 0;
+}
+
