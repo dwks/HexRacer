@@ -9,6 +9,11 @@
 Makefile
 /objects
 
+# cmake stuff
+/CMakeCache.txt
+cmake_install.cmake
+CMakeFiles
+
 # Executables
 project
 
