@@ -41,6 +41,7 @@ TypeRegistry::TypeRegistry() {
     {
         int counter = 1;
         registerType(Subsystem::NETWORK, "ERROR", counter ++);
+        registerType(Subsystem::NETWORK, "CONNECT", counter ++);
     }
 }
 

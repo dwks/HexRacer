@@ -14,8 +14,10 @@ private:
     tcp::socket &socket;
 public:
     ReferencingTCPSocket(tcp::socket &socket);
+    ~ReferencingTCPSocket() { close(); }
     
     virtual bool open();
+    virtual void close();
 protected:
     virtual tcp::socket &getSocket() { return socket; }
 };

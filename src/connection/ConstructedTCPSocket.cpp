@@ -39,5 +39,9 @@ bool ConstructedTCPSocket::open() {
     return !error;
 }
 
+void ConstructedTCPSocket::close() {
+    socket.close();
+}
+
 }  // namespace Connection
 }  // namespace Project

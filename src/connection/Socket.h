@@ -8,15 +8,23 @@ namespace Project {
 namespace Connection {
 
 /** Abstract base class representing a socket connection.
+    
+    This class is non-copyable.
 */
 class Socket {
+private:
+    Socket(const Socket &other) {}
+    void operator = (const Socket &other) {}
 public:
+    Socket() {}
     virtual ~Socket() {}
     
     /**
         @return True upon success.
     */
     virtual bool open() = 0;
+    
+    virtual void close() = 0;
     
     /**
         @return True upon success.

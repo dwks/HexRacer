@@ -17,8 +17,10 @@ private:
     unsigned short port;
 public:
     ConstructedTCPSocket(const char *hostname, unsigned short port);
+    ~ConstructedTCPSocket() { close(); }
     
     virtual bool open();
+    virtual void close();
 protected:
     virtual tcp::socket &getSocket() { return socket; }
 };

@@ -18,6 +18,11 @@ public:
     /** Subclasses must implement this function.
     */
     virtual bool open() = 0;
+    
+    /** Subclasses must implement this function.
+    */
+    virtual void close() = 0;
+    
     virtual bool send(const std::string &message);
     virtual bool tryReceive(std::string &message, std::size_t size);
 protected:

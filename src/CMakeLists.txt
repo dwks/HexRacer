@@ -12,6 +12,7 @@ aux_source_directory(math MATH_SOURCES)
 aux_source_directory(misc MISC_SOURCES)
 aux_source_directory(opengl OPENGL_SOURCES)
 aux_source_directory(qtgui QTGUI_SOURCES)
+aux_source_directory(server SERVER_DIR_SOURCES)
 aux_source_directory(sdl SDL_DIR_SOURCES)
 
 set(SOURCES
@@ -26,6 +27,10 @@ set(QT_SOURCES
 set(SDL_SOURCES
     ${CONNECTION_SOURCES}
     ${SDL_DIR_SOURCES})
+
+set(SERVER_SOURCES
+    ${CONNECTION_SOURCES}
+    ${SERVER_DIR_SOURCES})
 
 # Boost stuff
 set(Boost_USE_MULTITHREADED ON)
@@ -46,15 +51,23 @@ find_package(Qt4 COMPONENTS
 include(${QT_USE_FILE})
 QT4_AUTOMOC(${SOURCES} ${QT_SOURCES})
 
+# The main project-core library
+set(CORE_LIBRARY project-core)
+add_library(${CORE_LIBRARY} ${SOURCES})
+
 # Executables
 add_executable(project
-    ${SOURCES} ${QT_SOURCES})
+    ${QT_SOURCES})
 set(OPENGL_HACK ${OPENGL_SOURCES})
 list(REMOVE_ITEM OPENGL_HACK opengl/MainDisplay.cpp)
 add_executable(sdl
-    ${SOURCES} ${SDL_SOURCES} ${OPENGL_HACK})
+    ${SDL_SOURCES} ${OPENGL_HACK})
+add_executable(server
+    ${SERVER_SOURCES})
 
 target_link_libraries(project
-    ${Boost_LIBRARIES} ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
+    ${CORE_LIBRARY} ${Boost_LIBRARIES} ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
 target_link_libraries(sdl
-    ${Boost_LIBRARIES} ${SDL_LIBRARY} ${OPENGL_LIBRARIES})
+    ${CORE_LIBRARY} ${Boost_LIBRARIES} ${SDL_LIBRARY} ${OPENGL_LIBRARIES})
+target_link_libraries(server
+    ${CORE_LIBRARY} ${Boost_LIBRARIES} ${OPENGL_LIBRARIES})

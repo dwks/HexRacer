@@ -12,5 +12,9 @@ bool ReferencingTCPSocket::open() {
     return true;  // nothing to do, always succeed
 }
 
+void ReferencingTCPSocket::close() {
+    socket.close();
+}
+
 }  // namespace Connection
 }  // namespace Project

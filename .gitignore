@@ -15,10 +15,6 @@ Makefile
 /CMakeFiles
 /build
 
-# Executables
-/src/qtgui/project
-/src/sdl/sdl
-
 # Logs etc.
 /logs
 
