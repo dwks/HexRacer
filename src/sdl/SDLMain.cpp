@@ -1,4 +1,6 @@
 #include <cctype>
+#include <cmath>
+
 #include "SDL.h"
 #include "opengl/OpenGL.h"
 #include "GL/glu.h"
@@ -15,7 +17,7 @@ namespace Project {
 namespace SDL {
 
 SDLMain::SDLMain() {
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO) < 0) {
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0) {
         LOG2(SDL, ERROR, "Can't init SDL: " << SDL_GetError());
     }
 }
@@ -58,12 +60,17 @@ void SDLMain::run() {
     
     trackball = new OpenGL::Trackball();
     
-    for(;;) {
+    joystick = new JoystickManager();
+    joystick->open();
+    
+    bool quit = false;
+    while(!quit) {
         SDL_Event event;
         while(SDL_PollEvent(&event)) {
             switch(event.type) {
             case SDL_QUIT:
-                return;
+                quit = true;
+                break;
             case SDL_VIDEORESIZE:
                 SDL_SetVideoMode(event.resize.w, event.resize.h,
                     0, SDL_INIT_FLAGS);
@@ -95,8 +102,34 @@ void SDLMain::run() {
             case SDL_MOUSEBUTTONUP:
                 LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " released");
                 break;
+            case SDL_JOYAXISMOTION:
+#if 0
+                if(std::abs(double(event.jaxis.value)) > 100) {
+                    double normalized = (double(event.jaxis.value) - SHRT_MIN)
+                        / (SHRT_MAX - SHRT_MIN);
+                    normalized = (normalized - 0.5) * 2;
+                    /*LOG2(SDL, INPUT, "Joystick axis " << int(event.jaxis.axis)
+                        << " moved to " << event.jaxis.value
+                        << " (normalized " << normalized << ")");*/
+                    
+                    trackball->setMouseStartAt(Math::Point(0.0, 0.0));
+                    
+                    switch(event.jaxis.axis) {
+                    case 0:
+                        trackball->setMouseCurrentAt(Math::Point(normalized * 0.1, 0.0));
+                        break;
+                    case 1:
+                        trackball->setMouseCurrentAt(
+                            -1.0 * Math::Point(0.0, normalized * 0.1));
+                        break;
+                    }
+                }
+#endif
+                break;
             }
         }
+        
+        handleJoystick();
         
         render();
         
@@ -106,6 +139,23 @@ void SDLMain::run() {
     }
     
     delete trackball;
+    delete joystick;
+}
+
+void SDLMain::handleJoystick() {
+    double x = joystick->getNormalizedAxisValue(0);
+    double y = joystick->getNormalizedAxisValue(1);
+    
+    if(std::fabs(x) > 1e-3 || std::fabs(y) > 1e-3) {
+        LOG(SDL, "Move joystick by " << x << "," << y);
+        trackball->setMouseStartAt(Math::Point(0.0, 0.0));
+        
+        Math::Point translation;
+        translation.setX(x * 0.1);
+        translation.setY(-y * 0.1);
+        
+        trackball->setMouseCurrentAt(translation);
+    }
 }
 
 void SDLMain::render() {

@@ -3,6 +3,7 @@
 
 #include "opengl/Trackball.h"
 #include "Projector.h"
+#include "JoystickManager.h"
 
 #define FIELD_OF_VIEW 60
 #define SDL_INIT_FLAGS (SDL_HWSURFACE | SDL_OPENGL | SDL_RESIZABLE)
@@ -14,6 +15,7 @@ class SDLMain {
 private:
     OpenGL::Trackball *trackball;
     Projector projector;
+    JoystickManager *joystick;
 public:
     SDLMain();
     ~SDLMain();
@@ -21,6 +23,7 @@ public:
     void run();
 private:
     void resizeGL(int width, int height);
+    void handleJoystick();
     void render();
 };
 
