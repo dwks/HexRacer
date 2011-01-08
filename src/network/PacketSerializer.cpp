@@ -11,7 +11,7 @@
 
 namespace Project {
 namespace Network {
-    
+
 std::string PacketSerializer::packetToString(Packet *packet) {
     std::ostringstream stream;
     boost::archive::text_oarchive out(stream);
@@ -30,6 +30,8 @@ std::string PacketSerializer::packetToString(Packet *packet) {
 }
 
 Packet *PacketSerializer::stringToPacket(const std::string &string) {
+    LOG(NETWORK, "Parsing packet from \"" << string << "\"");
+    
     std::istringstream stream(string);
     boost::archive::text_iarchive in(stream);
     

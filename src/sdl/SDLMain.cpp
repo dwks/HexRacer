@@ -63,6 +63,9 @@ void SDLMain::run() {
     joystick = new JoystickManager();
     joystick->open();
     
+    network = new NetworkPortal();
+    network->connectTo("localhost", 1820);
+    
     bool quit = false;
     while(!quit) {
         SDL_Event event;
@@ -105,6 +108,8 @@ void SDLMain::run() {
             }
         }
         
+        network->checkNetwork();
+        
         handleJoystick();
         
         render();
@@ -116,6 +121,7 @@ void SDLMain::run() {
     
     delete trackball;
     delete joystick;
+    delete network;
 }
 
 void SDLMain::handleJoystick() {

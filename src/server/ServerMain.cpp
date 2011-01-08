@@ -6,6 +6,7 @@
 #include "connection/ServerManager.h"
 #include "connection/ClientManager.h"
 
+#include "network/StringSerializer.h"
 #include "network/PacketSerializer.h"
 #include "network/HandshakePacket.h"
 
@@ -23,9 +24,13 @@ void ServerMain::run() {
             Connection::Socket *socket = server.checkForConnections();
             if(!socket) break;
             
-            Network::PacketSerializer serializer;
-            Network::Packet *packet = new Network::HandshakePacket(-1);
-            socket->send(serializer.packetToString(packet));
+            Network::PacketSerializer packetSerializer;
+            Network::Packet *packet = new Network::HandshakePacket(clientCount);
+            clientCount ++;
+            
+            Network::StringSerializer stringSerializer(socket);
+            stringSerializer.sendString(
+                packetSerializer.packetToString(packet));
             
             //clients.addSocket(socket);
             delete socket;  // disconnect

@@ -15,8 +15,14 @@ namespace Event {
 
 /** Maintains a list of observers and notifies the appropriate ones given any
     event.
+    
+    This is a singleton class.
 */
-class ObserverList {
+class ObserverList /*: public Singleton...*/ {
+private:
+    static ObserverList instance;
+public:
+    static ObserverList &getInstance() { return instance; }
 private:
     typedef std::vector<Observer *> observer_list_t;
     typedef std::vector<observer_list_t> type_list_t;

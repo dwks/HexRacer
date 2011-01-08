@@ -5,7 +5,11 @@ namespace Project {
 namespace Server {
 
 class ServerMain {
+private:
+    int clientCount;
 public:
+    ServerMain() : clientCount(0) {}
+    
     void run();
 };
 

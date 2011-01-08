@@ -27,7 +27,7 @@ bool AbstractTCPSocket::tryReceive(std::string &message, std::size_t size) {
         boost::asio::buffer(tempBuffer, size),
         boost::asio::transfer_all(), error);
     
-    message.clear();
+    message.resize(size);
     std::copy(tempBuffer.begin(), tempBuffer.end(), message.begin());
     
     if(error) {

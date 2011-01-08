@@ -3,6 +3,8 @@
 namespace Project {
 namespace Event {
 
+ObserverList ObserverList::instance;
+
 ObserverList::ObserverList() : type_list(int(EventType::TYPES)) {
     
 }
