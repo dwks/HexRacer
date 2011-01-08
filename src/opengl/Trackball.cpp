@@ -39,7 +39,7 @@ void Trackball::updateMatrix() {
     if(length < -1.0) length = -1.0;
     if(length > 1.0) length = 1.0;
     
-    double angle = std::asin(axis.length());
+    double angle = std::asin(length);
     angle *= 180.0 / PI;
     
     glPushMatrix();
