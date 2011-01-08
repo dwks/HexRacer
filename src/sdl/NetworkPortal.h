@@ -4,6 +4,9 @@
 #include "connection/Socket.h"
 #include "network/StringSerializer.h"
 
+#include "event/SendPacket.h"
+#include "event/TypedObserver.h"
+
 namespace Project {
 namespace SDL {
 
@@ -11,6 +14,15 @@ class NetworkPortal {
 private:
     Connection::Socket *socket;
     Network::StringSerializer *stringSerializer;
+private:
+    class PacketSender : public Event::TypedObserver<Event::SendPacket> {
+    private:
+        NetworkPortal *portal;
+    public:
+        PacketSender(NetworkPortal *portal) : portal(portal) {}
+        
+        virtual void observe(Event::SendPacket *packet);
+    };
 public:
     NetworkPortal();
     ~NetworkPortal();
@@ -30,6 +42,8 @@ public:
         called, or if connectTo() failed.
     */
     void checkNetwork();
+protected:
+    Connection::Socket *getSocket() { return socket; }
 };
 
 }  // namespace SDL

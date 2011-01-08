@@ -1,0 +1,1 @@
+- Make server exit gracefully when it receives CTRL-C

@@ -1,5 +1,6 @@
 #include <QApplication>
 #include "MainWindow.h"
+#include "event/ObserverList.h"
 #include "log/LogOpener.h"
 
 int main(int argc, char *argv[]) {
@@ -12,5 +13,6 @@ int main(int argc, char *argv[]) {
     
     int returnValue = app.exec();
     Project::Log::LogOpener::closeLogs();
+    Project::Event::ObserverList::getInstance().destroyObject();
     return returnValue;
 }

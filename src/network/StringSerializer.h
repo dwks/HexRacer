@@ -12,6 +12,8 @@ namespace Network {
     read and then the string is reconstructed. In case the size makes it across
     the socket but not the packet, this class still recovers the string in a
     non-blocking way by remembering the size.
+    
+    The socket passed to this class must be valid and non-NULL.
 */
 class StringSerializer {
 private:

@@ -15,9 +15,21 @@
 namespace Project {
 namespace SDL {
 
+void NetworkPortal::PacketSender::observe(Event::SendPacket *packet) {
+    if(portal->getSocket() == NULL) return;
+    
+    Network::PacketSerializer packetSerializer;
+    Network::StringSerializer stringSerializer(portal->getSocket());
+    
+    std::string data = packetSerializer.packetToString(packet->getPacket());
+    stringSerializer.sendString(data);
+}
+
 NetworkPortal::NetworkPortal() {
     socket = NULL;
     stringSerializer = NULL;
+    
+    Event::ObserverList::getInstance().addObserver(new PacketSender(this));
 }
 
 NetworkPortal::~NetworkPortal() {

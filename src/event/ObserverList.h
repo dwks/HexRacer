@@ -14,7 +14,8 @@ namespace Project {
 namespace Event {
 
 /** Maintains a list of observers and notifies the appropriate ones given any
-    event.
+    event. The observers are owned by this class and automatically freed by
+    destroyObject().
     
     This is a singleton class.
 */
@@ -29,6 +30,7 @@ private:
     type_list_t type_list;
 public:
     ObserverList();
+    void destroyObject();
     
     /** Adds a TypedObserver to this observer list. A TypedObserver is only
         interested in events of type @c Type.

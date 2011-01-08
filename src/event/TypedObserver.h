@@ -27,7 +27,7 @@ public:
 
 template<typename Type>
 void TypedObserver<Type>::observe(EventBase *event) {
-    Type *casted = dynamic_cast<Type>(event);
+    Type *casted = dynamic_cast<Type *>(event);
     if(casted) {
         observe(casted);
     }
