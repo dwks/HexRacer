@@ -13,6 +13,7 @@ public:
         GUI,
         OPENGL,
         SDL,
+        NETWORK,
         SUBSYSTEMS
     };
 private:

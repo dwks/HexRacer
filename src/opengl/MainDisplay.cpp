@@ -1,5 +1,5 @@
 #ifdef CMAKE_BUILD
-    #include "../../build/MainDisplay.moc"
+    #include "MainDisplay.moc"
 #endif
 
 #include <QTimer>

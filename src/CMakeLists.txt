@@ -4,6 +4,9 @@ add_definitions(-DCMAKE_BUILD)
 
 include_directories(.)
 
+include_directories(../build)  # for the moc
+
+aux_source_directory(connection CONNECTION_SOURCES)
 aux_source_directory(log LOG_SOURCES)
 aux_source_directory(math MATH_SOURCES)
 aux_source_directory(misc MISC_SOURCES)
@@ -21,6 +24,7 @@ set(QT_SOURCES
     ${QTGUI_SOURCES})
 
 set(SDL_SOURCES
+    ${CONNECTION_SOURCES}
     ${SDL_DIR_SOURCES})
 
 # Boost stuff

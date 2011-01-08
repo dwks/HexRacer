@@ -36,6 +36,12 @@ TypeRegistry::TypeRegistry() {
         registerType(Subsystem::SDL, "ERROR", counter ++);
         registerType(Subsystem::SDL, "INPUT", counter ++);
     }
+    
+    // NETWORK log message types
+    {
+        int counter = 1;
+        registerType(Subsystem::NETWORK, "ERROR", counter ++);
+    }
 }
 
 void TypeRegistry::registerType(Subsystem subsystem,
