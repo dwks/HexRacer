@@ -29,6 +29,13 @@ TypeRegistry::TypeRegistry() {
         registerType(Subsystem::OPENGL, "INIT", counter ++);
         registerType(Subsystem::OPENGL, "OPENGL", counter ++);
     }
+    
+    // SDL log message types
+    {
+        int counter = 1;
+        registerType(Subsystem::SDL, "ERROR", counter ++);
+        registerType(Subsystem::SDL, "INPUT", counter ++);
+    }
 }
 
 void TypeRegistry::registerType(Subsystem subsystem,

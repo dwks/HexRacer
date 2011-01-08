@@ -12,6 +12,7 @@ public:
         GLOBAL,
         GUI,
         OPENGL,
+        SDL,
         SUBSYSTEMS
     };
 private:

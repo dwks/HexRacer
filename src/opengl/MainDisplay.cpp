@@ -1,3 +1,7 @@
+#ifdef CMAKE_BUILD
+    #include "MainDisplay.moc"
+#endif
+
 #include <QTimer>
 
 #include <QKeyEvent>
@@ -96,6 +100,12 @@ void MainDisplay::paintGL() {
         
         glLightfv(GL_LIGHT0, GL_POSITION, pos);
     }
+    
+    glBegin(GL_TRIANGLES);
+    MathWrapper::glVertex(Math::Point(0.0, 0.1, 0.0));
+    MathWrapper::glVertex(Math::Point(-0.1, 0.0, 0.0));
+    MathWrapper::glVertex(Math::Point(+0.1, 0.0, 0.0));
+    glEnd();
     
     repaintManager.scheduleNextRepaint(this);
     glFlush();

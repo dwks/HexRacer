@@ -1,5 +1,5 @@
 #include <iostream>  // for debugging
-#include "OpenGL.h"
+#include "opengl/OpenGL.h"
 
 #include "OpenGLPortal.h"
 

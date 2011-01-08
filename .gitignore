@@ -15,7 +15,8 @@ cmake_install.cmake
 CMakeFiles
 
 # Executables
-project
+/src/qtgui/project
+/src/sdl/sdl
 
 # Logs etc.
 /logs

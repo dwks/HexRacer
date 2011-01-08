@@ -1,3 +1,7 @@
+#ifdef CMAKE_BUILD
+    #include "MainWindow.moc"
+#endif
+
 #include <QSplitter>
 #include <QVBoxLayout>
 #include <QFormLayout>

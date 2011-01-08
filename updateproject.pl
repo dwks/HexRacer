@@ -19,7 +19,7 @@ print FILE <<EOF;
 INCLUDEPATH += src
 
 # Qt configuration
-QT += opengl
+QT += opengl network
 OBJECTS_DIR = objects
 MOC_DIR = objects
 
