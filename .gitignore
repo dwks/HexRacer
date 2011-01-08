@@ -1,0 +1,25 @@
+# Generic ignore patterns
+*~
+*.o
+*.a
+*.moc
+
+# qmake stuff
+*.pro
+Makefile
+/objects
+
+# Executables
+project
+
+# Logs etc.
+/logs
+
+# KDevelop
+*.kdev4
+.kdev_include_paths
+
+# Windows stuff
+/Debug
+/GeneratedFiles
+*.ncb
