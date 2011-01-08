@@ -10,6 +10,7 @@ aux_source_directory(connection CONNECTION_SOURCES)
 aux_source_directory(log LOG_SOURCES)
 aux_source_directory(math MATH_SOURCES)
 aux_source_directory(misc MISC_SOURCES)
+aux_source_directory(network NETWORK_SOURCES)
 aux_source_directory(opengl OPENGL_SOURCES)
 aux_source_directory(qtgui QTGUI_SOURCES)
 aux_source_directory(server SERVER_DIR_SOURCES)
@@ -26,10 +27,12 @@ set(QT_SOURCES
 
 set(SDL_SOURCES
     ${CONNECTION_SOURCES}
+    ${NETWORK_SOURCES}
     ${SDL_DIR_SOURCES})
 
 set(SERVER_SOURCES
     ${CONNECTION_SOURCES}
+    ${NETWORK_SOURCES}
     ${SERVER_DIR_SOURCES})
 
 # Boost stuff
