@@ -9,6 +9,9 @@
 #include "network/Packet.h"
 #include "network/PacketSerializer.h"
 
+#include "event/ObserverList.h"
+#include "event/PacketReceived.h"
+
 namespace Project {
 namespace SDL {
 
@@ -51,7 +54,13 @@ void NetworkPortal::checkNetwork() {
         Network::PacketSerializer packetSerializer;
         Network::Packet *packet = packetSerializer.stringToPacket(data);
         
-        LOG(NETWORK, "Received packet " << typeid(*packet).name());
+        LOG2(NETWORK, PACKET, "Received packet " << typeid(*packet).name());
+        
+        Event::EventBase *event = new Event::PacketReceived(packet);
+        Event::ObserverList::getInstance().notifyObservers(event);
+        
+        delete event;
+        delete packet;
     }
 }
 

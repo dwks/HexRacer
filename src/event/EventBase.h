@@ -7,6 +7,8 @@ namespace Project {
 namespace Event {
 
 /** A generic event class.
+    
+    Every event must have a default constructor.
 */
 class EventBase {
 public:

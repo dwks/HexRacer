@@ -14,6 +14,8 @@ private:
 public:
     enum type_t {
         QUIT,
+        PACKET_RECEIVED,
+        SEND_PACKET,
         TYPES
     };
 };
