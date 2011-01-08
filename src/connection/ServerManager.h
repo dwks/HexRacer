@@ -8,6 +8,10 @@
 namespace Project {
 namespace Connection {
 
+/** Maintains a list of server sockets that the program is listening on. Users
+    of this class can call checkForConnections() to find sockets that connect
+    to any of the ports being listened on.
+*/
 class ServerManager {
 private:
     boost::asio::io_service io_service;
@@ -16,8 +20,14 @@ private:
 public:
     ServerManager() : atLeastOneRegistered(false) {}
     
-    void addServer(short port);
+    /** Start listening on the given port (of localhost).
+    */
+    void addServer(unsigned short port);
     
+    /** Returns the next pending Socket connection if there is one, or NULL if
+        there are no other new connections as yet. This function may be called
+        repeatedly until NULL is returned to get all pending connections.
+    */
     Socket *checkForConnections();
 private:
     void registerHandler(boost::asio::ip::tcp::acceptor *acceptor);

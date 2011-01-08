@@ -24,6 +24,9 @@ public:
     */
     virtual bool open() = 0;
     
+    /** Closes this socket, if it was ever opened. This will automatically be
+        called by the destructor.
+    */
     virtual void close() = 0;
     
     /**

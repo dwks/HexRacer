@@ -7,6 +7,8 @@
 namespace Project {
 namespace SDL {
 
+/** Performs projection and unprojection between screen and OpenGL coordinates.
+*/
 class Projector {
 private:
     Point2D currentDimensions;

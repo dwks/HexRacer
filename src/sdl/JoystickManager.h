@@ -6,6 +6,8 @@
 namespace Project {
 namespace SDL {
 
+/** Opens and reads from a joystick, if the user has one.
+*/
 class JoystickManager {
 private:
     SDL_Joystick *joystick;

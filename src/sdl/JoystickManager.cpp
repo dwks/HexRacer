@@ -18,7 +18,7 @@ JoystickManager::~JoystickManager() {
 
 void JoystickManager::open() {
     if(SDL_NumJoysticks() > 0) {
-        //SDL_JoystickEventState(SDL_ENABLE);
+        //SDL_JoystickEventState(SDL_ENABLE);  // for generating events
         joystick = SDL_JoystickOpen(0);
     }
 }

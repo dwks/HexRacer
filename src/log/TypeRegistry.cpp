@@ -19,8 +19,6 @@ TypeRegistry::TypeRegistry() {
     {
         int counter = 1;
         registerType(Subsystem::GUI, "PROGRESS", counter ++);
-        registerType(Subsystem::GUI, "CURVE", counter ++);
-        registerType(Subsystem::GUI, "POINT", counter ++);
     }
     
     // OPENGL log message types

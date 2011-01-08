@@ -11,7 +11,9 @@ namespace Connection {
 
 using boost::asio::ip::tcp;
 
-void ServerManager::addServer(short port) {
+void ServerManager::addServer(unsigned short port) {
+    LOG2(NETWORK, CONNECT, "Hosting on port " << port);
+    
     tcp::endpoint address(tcp::v4(), port);
     boost::asio::ip::tcp::acceptor *acceptor
         = new boost::asio::ip::tcp::acceptor(io_service, address);
