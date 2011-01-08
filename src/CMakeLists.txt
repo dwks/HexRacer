@@ -43,14 +43,14 @@ include(${QT_USE_FILE})
 QT4_AUTOMOC(${SOURCES} ${QT_SOURCES})
 
 # Executables
-add_executable(qtgui/project
+add_executable(project
     ${SOURCES} ${QT_SOURCES})
 set(OPENGL_HACK ${OPENGL_SOURCES})
 list(REMOVE_ITEM OPENGL_HACK opengl/MainDisplay.cpp)
-add_executable(sdl/sdl
+add_executable(sdl
     ${SOURCES} ${SDL_SOURCES} ${OPENGL_HACK})
 
-target_link_libraries(qtgui/project
+target_link_libraries(project
     ${Boost_LIBRARIES} ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
-target_link_libraries(sdl/sdl
+target_link_libraries(sdl
     ${Boost_LIBRARIES} ${SDL_LIBRARY} ${OPENGL_LIBRARIES})

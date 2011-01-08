@@ -4,6 +4,8 @@
 namespace Project {
 namespace SDL {
 
+/** Represents a point in SDL screen space.
+*/
 class Point2D {
 private:
     int x, y;

@@ -1,5 +1,5 @@
 #ifdef CMAKE_BUILD
-    #include "MainWindow.moc"
+    #include "../../build/MainWindow.moc"
 #endif
 
 #include <QSplitter>

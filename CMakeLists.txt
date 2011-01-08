@@ -10,4 +10,4 @@ enable_language(CXX)
 
 project(project)
 
-add_subdirectory(src)
+add_subdirectory(src build)
