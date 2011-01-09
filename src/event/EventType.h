@@ -16,6 +16,7 @@ public:
         QUIT,
         PACKET_RECEIVED,
         SEND_PACKET,
+        PLAYER_MOVEMENT,
         TYPES
     };
 };

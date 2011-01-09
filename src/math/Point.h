@@ -98,6 +98,7 @@ public:
 };
 
 std::ostream &operator << (std::ostream &stream, const Point &point);
+std::istream &operator >> (std::istream &stream, Point &point);
 
 Point operator * (double factor, const Point &point);
 

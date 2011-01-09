@@ -12,6 +12,7 @@ TypeRegistry::TypeRegistry() {
     {
         int counter = 1;
         registerType(Subsystem::GLOBAL, "ERROR", counter ++);
+        registerType(Subsystem::GLOBAL, "WARNING", counter ++);
         registerType(Subsystem::GLOBAL, "PROGRESS", counter ++);
     }
     

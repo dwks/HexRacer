@@ -1,4 +1,5 @@
 #include <ostream>
+#include <istream>
 #include <cmath>
 
 #include "Point.h"
@@ -189,6 +190,16 @@ std::ostream &operator << (std::ostream &stream, const Point &point) {
         << point.getY() << ','
         << point.getZ() << ','
         << point.getW() << ')';
+    
+    return stream;
+}
+
+std::istream &operator >> (std::istream &stream, Point &point) {
+    double x, y, z, w;
+    char c;
+    stream >> c >> x >> c >> y >> z >> c >> w >> c;
+    
+    point = Math::Point(x, y, z, w);
     
     return stream;
 }

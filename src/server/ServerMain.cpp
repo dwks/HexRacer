@@ -1,21 +1,23 @@
 #include <unistd.h>
 
 #include "ServerMain.h"
+#include "ClientManager.h"
 
 #include "connection/Socket.h"
 #include "connection/ServerManager.h"
-#include "connection/ClientManager.h"
 
 #include "network/StringSerializer.h"
 #include "network/PacketSerializer.h"
 #include "network/HandshakePacket.h"
+
+#include "log/Logger.h"
 
 namespace Project {
 namespace Server {
 
 void ServerMain::run() {
     Connection::ServerManager server;
-    Connection::ClientManager clients;
+    ClientManager clients;
     
     server.addServer(1820);
     
@@ -32,8 +34,17 @@ void ServerMain::run() {
             stringSerializer.sendString(
                 packetSerializer.packetToString(packet));
             
-            //clients.addSocket(socket);
-            delete socket;  // disconnect
+            clients.addClient(socket);
+            //delete socket;  // disconnect
+        }
+        
+        {
+            int whichSocket;
+            Network::Packet *packet;
+            while((packet = clients.nextPacket(&whichSocket))) {
+                LOG(NETWORK, "Packet received from "
+                    << whichSocket << ": \"" << packet << "\"");
+            }
         }
         
         usleep(10000);

@@ -1,4 +1,7 @@
+#include <typeinfo>
 #include "ObserverList.h"
+
+#include "log/Logger.h"
 
 namespace Project {
 namespace Event {
@@ -10,7 +13,7 @@ ObserverList::ObserverList() : type_list(int(EventType::TYPES)) {
 }
 
 void ObserverList::destroyObject() {
-    for(int type = 0; type < int(EventType::TYPES); type ++) {
+    /*for(int type = 0; type < int(EventType::TYPES); type ++) {
         observer_list_t &list = type_list[type];
         
         for(observer_list_t::iterator i = list.begin(); i != list.end(); ++ i) {
@@ -18,7 +21,7 @@ void ObserverList::destroyObject() {
         }
         
         list.clear();
-    }
+    }*/
 }
 
 void ObserverList::addObserver(MultiObserver *observer) {
@@ -29,12 +32,19 @@ void ObserverList::addObserver(MultiObserver *observer) {
     }
 }
 
-void ObserverList::notifyObservers(EventBase *event) {
+void ObserverList::notifyObservers(EventBase *event, bool freeEvent) {
     observer_list_t &list = type_list[event->getType()];
+    
+    if(list.size() == 0) {
+        LOG2(GLOBAL, WARNING, "Event type has no observers: "
+            << typeid(*event).name());
+    }
     
     for(observer_list_t::iterator i = list.begin(); i != list.end(); ++ i) {
         (*i)->observe(event);
     }
+    
+    if(freeEvent) delete event;
 }
 
 }  // namespace Event
