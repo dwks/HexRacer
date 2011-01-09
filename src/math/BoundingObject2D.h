@@ -14,8 +14,7 @@ public:
 		: Object2D(projectAxis) {}
 	virtual ~BoundingObject2D(void) {}
 
-	BoundingObject2D* projectTo2D(Axis project_axis) { return this; }
-	bool pointInside(Point* p);
+	bool pointInside(Point& p);
 
 	virtual bool pointInside2D(Point2D p) = 0;
 };

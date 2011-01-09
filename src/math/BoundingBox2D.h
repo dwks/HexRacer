@@ -14,8 +14,9 @@ private:
 	void setCorners(Point2D corner1, Point2D corner2);
 public:
 	BoundingBox2D(Axis project_axis = Z_AXIS)
-		: minCorner(), maxCorner() , BoundingObject2D(project_axis) {}
+		: minCorner(project_axis), maxCorner(project_axis) , BoundingObject2D(project_axis) {}
 	BoundingBox2D(Point2D corner1, Point2D corner2, Axis project_axis = Z_AXIS);
+	BoundingBox2D(double width, double height, Axis project_axis = Z_AXIS, Point2D centroid = Point2D());
 	~BoundingBox2D(void);
 
 	//Abstract method implementations
@@ -24,13 +25,14 @@ public:
 	double maxX() { return maxCorner.getX(); }
 	double maxY() { return maxCorner.getY(); }
 	Point centroid();
-	bool isInside(BoundingObject* bounding_obj);
+	bool isInside(BoundingObject& bounding_obj);
 	bool pointInside2D(Point2D p);
-	bool intersects2D(BoundingObject2D* bound_obj);
+	bool intersects2D(BoundingObject2D& bound_obj);
+	void translate2D(Point2D& translation);
 
 	//Class specific
 	Point2D getCorner(int index);
-	Point2D getCorner(bool max_x, bool max_y);
+	Point2D getCorner(bool max_u, bool max_v);
 };
 
 }  // namespace Math

@@ -12,6 +12,7 @@
 #include "log/Logger.h"
 
 #include "MathWrapper.h"
+#include "GeometryDrawing.h"
 
 namespace Project {
 namespace OpenGL {
@@ -126,11 +127,26 @@ void MainDisplay::paintGL() {
 
 	glLineWidth(1.0f); //Reset line width
     
+	/*
     glBegin(GL_TRIANGLES);
     MathWrapper::glVertex(Math::Point(0.0, 0.1, 0.0));
     MathWrapper::glVertex(Math::Point(-0.1, 0.0, 0.0));
     MathWrapper::glVertex(Math::Point(+0.1, 0.0, 0.0));
     glEnd();
+	*/
+
+	Math::BoundingBox3D& box3D = Math::BoundingBox3D(0.4f, 0.2f, 0.2f);
+	GeometryDrawing::drawObject(box3D, true);
+	//delete(&box3D);
+
+	Math::BoundingBox2D& box2D = Math::BoundingBox2D(0.15f, 0.2f, Math::X_AXIS);
+	GeometryDrawing::drawObject(box2D, true);
+	//delete(&box2D);
+
+	box2D = Math::BoundingBox2D(0.05f, 0.125f, Math::Z_AXIS);
+	box2D.translate2D(Math::Point2D(0.025f, 0.4f, Math::Z_AXIS));
+	GeometryDrawing::drawObject(box2D, true);
+	//delete(&box2D);
     
     repaintManager.scheduleNextRepaint(this);
     glFlush();

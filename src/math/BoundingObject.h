@@ -12,10 +12,9 @@ public:
 	BoundingObject(void) {}
 	virtual ~BoundingObject(void) {}
 
-	virtual bool pointInside(Point* p) = 0;
-	//virtual bool intersects(BoundingObject* bound_obj) = 0;
+	virtual bool pointInside(Point& p) = 0;
 
-	bool pointInside(Point p) { return pointInside(&p); }
+	//bool pointInside(Point p) { return pointInside(&p); }
 };
 
 }  // namespace Math

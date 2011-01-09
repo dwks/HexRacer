@@ -165,7 +165,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\math\ObjectSpatial.cpp"
+				RelativePath=".\src\event\ObserverList.cpp"
 				>
 			</File>
 			<Filter
@@ -256,6 +256,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\math\ObjectSpatial.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\math\Point.cpp"
 					>
 				</File>
@@ -283,6 +287,10 @@
 			<Filter
 				Name="opengl"
 				>
+				<File
+					RelativePath=".\src\opengl\GeometryDrawing.cpp"
+					>
+				</File>
 				<File
 					RelativePath=".\src\opengl\MainDisplay.cpp"
 					>
@@ -323,7 +331,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\math\ObjectSpatial.h"
+				RelativePath=".\src\event\ObserverList.h"
 				>
 			</File>
 			<Filter
@@ -414,6 +422,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\math\ObjectSpatial.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\math\Point.h"
 					>
 				</File>
@@ -441,6 +453,10 @@
 			<Filter
 				Name="opengl"
 				>
+				<File
+					RelativePath=".\src\opengl\GeometryDrawing.h"
+					>
+				</File>
 				<File
 					RelativePath=".\src\opengl\MainDisplay.h"
 					>

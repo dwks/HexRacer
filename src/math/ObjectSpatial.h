@@ -19,8 +19,11 @@ public:
 	virtual double maxZ() = 0;
 
 	virtual Point centroid() = 0;
-	virtual bool isInside(BoundingObject* bounding_obj) = 0;
-	virtual bool intersects(BoundingObject* bound_obj) = 0;
+	virtual void translate(Point& translation) = 0;
+	virtual void moveCentroid(Point& position) = 0;
+	virtual bool isInside(BoundingObject& bounding_obj) = 0;
+	virtual bool intersects(BoundingObject& bound_obj) = 0;
+
 };
 
 }  // namespace Math

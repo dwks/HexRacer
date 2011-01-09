@@ -8,6 +8,11 @@ BoundingBox3D::BoundingBox3D(Point corner1, Point corner2) {
 	setCorners(corner1, corner2);
 }
 
+BoundingBox3D::BoundingBox3D(double width, double height, double depth, Point centroid) {
+	Point diag = Point(width, height, depth)*0.5f;
+	setCorners(centroid-diag, centroid+diag);
+}
+
 BoundingBox3D::~BoundingBox3D(void)
 {
 }
@@ -24,10 +29,10 @@ void BoundingBox3D::setCorners(Point corner1, Point corner2) {
 Point BoundingBox3D::centroid() {
 	return (minCorner + maxCorner)*0.5f;
 }
-bool BoundingBox3D::isInside(BoundingObject* bounding_obj) {
+bool BoundingBox3D::isInside(BoundingObject& bounding_obj) {
 
 	for (int i = 0; i < 8; i++) {
-		if (!bounding_obj->pointInside( getCorner(i) )) {
+		if (!bounding_obj.pointInside( getCorner(i) )) {
 			return false;
 		}
 	}
@@ -35,8 +40,8 @@ bool BoundingBox3D::isInside(BoundingObject* bounding_obj) {
 	return false;
 }
 
-BoundingObject2D* BoundingBox3D::projectTo2D(Axis project_axis) {
-	return new BoundingBox2D(Point2D(minCorner, project_axis), Point2D(maxCorner, project_axis), project_axis);
+BoundingObject2D& BoundingBox3D::projectTo2D(Axis project_axis) {
+	return *(new BoundingBox2D(Point2D(minCorner, project_axis), Point2D(maxCorner, project_axis), project_axis));
 }
 
 bool BoundingBox3D::pointInside3D(Point p) {
@@ -47,8 +52,13 @@ bool BoundingBox3D::pointInside3D(Point p) {
 		);
 }
 
-bool BoundingBox3D::intersects3D(BoundingObject3D* bound_obj) {
+bool BoundingBox3D::intersects3D(BoundingObject3D& bound_obj) {
 	return false; //Implement me!
+}
+
+void BoundingBox3D::translate(Point& translation) {
+	minCorner += translation;
+	maxCorner += translation;
 }
 
 Point BoundingBox3D::getCorner(int index) {
@@ -58,9 +68,9 @@ Point BoundingBox3D::getCorner(int index) {
 		case 2: return getCorner(true, true, false);
 		case 3: return getCorner(false, true, false);
 		case 4: return getCorner(false, false, true);
-		case 6: return getCorner(true, false, true);
-		case 7: return getCorner(true, true, true);
-		case 8: return getCorner(false, true, true);
+		case 5: return getCorner(true, false, true);
+		case 6: return getCorner(true, true, true);
+		case 7: return getCorner(false, true, true);
 	}
 
 	return Point();
