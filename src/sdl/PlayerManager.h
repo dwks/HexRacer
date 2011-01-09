@@ -6,6 +6,7 @@
 
 #include "event/TypedObserver.h"
 #include "event/PlayerMovement.h"
+#include "event/UpdatePlayerList.h"
 
 namespace Project {
 namespace SDL {
@@ -18,17 +19,30 @@ private:
     class PlayerMovementHandler
         : public Event::TypedObserver<Event::PlayerMovement> {
     private:
-        Object::Player *player;
+        PlayerManager *manager;
     public:
-        PlayerMovementHandler(Object::Player *player) : player(player) {}
+        PlayerMovementHandler(PlayerManager *manager) : manager(manager) {}
         
         virtual void observe(Event::PlayerMovement *movement);
+    };
+    
+    class UpdatePlayerListHandler
+        : public Event::TypedObserver<Event::UpdatePlayerList> {
+    private:
+        PlayerManager *manager;
+    public:
+        UpdatePlayerListHandler(PlayerManager *manager) : manager(manager) {}
+        
+        virtual void observe(Event::UpdatePlayerList *update);
     };
 public:
     PlayerManager(int id);
     ~PlayerManager();
     
     void render();
+protected:
+    void usePlayerList(Object::PlayerList *playerList);
+    Object::Player *getPlayer();
 };
 
 }  // namespace SDL

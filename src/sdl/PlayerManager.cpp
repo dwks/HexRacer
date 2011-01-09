@@ -5,13 +5,23 @@
 
 #include "event/ObserverList.h"
 
+#include "log/Logger.h"
+
 namespace Project {
 namespace SDL {
 
 void PlayerManager::PlayerMovementHandler::observe(
     Event::PlayerMovement *movement) {
     
-    player->addPosition(movement->getMovement());
+    manager->getPlayer()->addPosition(movement->getMovement());
+}
+
+void PlayerManager::UpdatePlayerListHandler::observe(
+    Event::UpdatePlayerList *update) {
+    
+    LOG(GLOBAL, "Replacing with PlayerList of "
+        << update->getPlayerList()->getPlayerCount() << " players");
+    manager->usePlayerList(update->getPlayerList());
 }
 
 PlayerManager::PlayerManager(int id) : id(id) {
@@ -20,7 +30,9 @@ PlayerManager::PlayerManager(int id) : id(id) {
     playerList = new Object::PlayerList();
     playerList->addPlayer(player);
     
-    ADD_OBSERVER(new PlayerMovementHandler(player));
+    // commented out until the ID is assigned correctly
+    //ADD_OBSERVER(new PlayerMovementHandler(this));
+    ADD_OBSERVER(new UpdatePlayerListHandler(this));
 }
 
 PlayerManager::~PlayerManager() {
@@ -43,6 +55,8 @@ void PlayerManager::render() {
         int c = player->getID() % (sizeof(colours) / sizeof(*colours));
         glColor3f(colours[c].r, colours[c].g, colours[c].b);
         
+        LOG(GLOBAL, "Player " << c << " at " << player->getPosition());
+        
         glPointSize(10.0f);
         glBegin(GL_POINTS);
         OpenGL::MathWrapper::glVertex(player->getPosition());
@@ -51,6 +65,15 @@ void PlayerManager::render() {
     }
     
     glColor3f(1.0f, 1.0f, 1.0f);
+}
+
+void PlayerManager::usePlayerList(Object::PlayerList *playerList) {
+    delete this->playerList;
+    this->playerList = playerList;
+}
+
+Object::Player *PlayerManager::getPlayer() {
+    return playerList->getPlayer(id);
 }
 
 }  // namespace SDL

@@ -8,6 +8,7 @@
 #include "EventPacket.h"
 
 #include "event/PlayerMovement.h"
+#include "event/UpdatePlayerList.h"
 
 #include "PacketSerializer.h"
 #include "PointSerializer.h"
@@ -24,6 +25,7 @@ std::string PacketSerializer::packetToString(Packet *packet) {
     out.register_type<EventPacket>();
     
     out.register_type<Event::PlayerMovement>();
+    out.register_type<Event::UpdatePlayerList>();
     
     try {
         out << packet;
@@ -37,7 +39,7 @@ std::string PacketSerializer::packetToString(Packet *packet) {
 }
 
 Packet *PacketSerializer::stringToPacket(const std::string &string) {
-    LOG(NETWORK, "Parsing packet from \"" << string << "\"");
+    //LOG(NETWORK, "Parsing packet from \"" << string << "\"");
     
     std::istringstream stream(string);
     boost::archive::text_iarchive in(stream);
@@ -46,6 +48,7 @@ Packet *PacketSerializer::stringToPacket(const std::string &string) {
     in.register_type<EventPacket>();
     
     in.register_type<Event::PlayerMovement>();
+    in.register_type<Event::UpdatePlayerList>();
     
     Packet *packet;
     try {

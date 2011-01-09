@@ -27,14 +27,14 @@ void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
     case Event::EventType::PLAYER_MOVEMENT: {
         if(portal->getPortal() == NULL) break;
         
-        LOG2(NETWORK, PACKET, "Sending PLAYER_MOVEMENT");
-        
         Network::Packet *packet = new Network::EventPacket(event);
         portal->getPortal()->sendPacket(packet);
         delete packet;
         
         break;
     }
+    case Event::EventType::PACKET_RECEIVED:
+        break;
     default:
         LOG2(NETWORK, PACKET, "EventPropagator: Not propagating "
             << typeid(*event).name());
@@ -87,7 +87,12 @@ void NetworkPortal::checkNetwork() {
     
     Network::Packet *packet = portal->nextPacket();
     if(packet) {
-        LOG2(NETWORK, PACKET, "Received packet " << typeid(*packet).name());
+        //LOG2(NETWORK, PACKET, "Received packet " << typeid(*packet).name());
+        
+        if(dynamic_cast<Network::EventPacket *>(packet)) {
+            EMIT_EVENT(dynamic_cast<Network::EventPacket *>(packet)
+                ->getEvent());
+        }
         
         EMIT_EVENT(new Event::PacketReceived(packet));
         delete packet;

@@ -17,6 +17,7 @@ public:
         PACKET_RECEIVED,
         SEND_PACKET,
         PLAYER_MOVEMENT,
+        UPDATE_PLAYER_LIST,
         TYPES
     };
 };
