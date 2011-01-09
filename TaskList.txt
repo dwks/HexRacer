@@ -1,0 +1,19 @@
+Week 1: to Friday 14
+
+	David
+		-event system
+		-client/server
+		
+	Alfred
+		-geometry framework
+		-basic renderer
+		
+	Andy
+		-camera
+		-physics engine (dropping object onto plane)
+		
+	Misc
+		-Boost unit tests
+		-Boost serialization
+		-Boost smartpointers
+		-AgroUML

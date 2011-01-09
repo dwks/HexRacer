@@ -26,3 +26,5 @@ Makefile
 /Debug
 /GeneratedFiles
 *.ncb
+*.suo
+*.vcproj*.user
