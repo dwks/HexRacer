@@ -6,25 +6,32 @@
 namespace Project {
 namespace Math {
 
+class Point2D;
+
+enum Axis {X_AXIS, Y_AXIS, Z_AXIS};
+
 /** Represents a four-dimensional affine point.
 */
 class Point {
-private:
+protected:
     double xp, yp, zp, wp;
 public:
     Point() : xp(0.0), yp(0.0), zp(0.0), wp(0.0) {}
     Point(double x, double y, double z = 0.0, double w = 1.0)
         : xp(x), yp(y), zp(z), wp(w) {}
+	Point(Point2D p_2D);
     
     double getX() const { return xp; }
     double getY() const { return yp; }
-    double getZ() const { return zp; }
+	virtual double getZ() const { return zp; }
     double getW() const { return wp; }
+	double getCoord(Axis axis);
     
     void setX(double x) { xp = x; }
     void setY(double y) { yp = y; }
-    void setZ(double z) { zp = z; }
+	virtual void setZ(double z) { zp = z; }
     void setW(double w) { wp = w; }
+	void setCoord(double coord, Axis axis);
     
     /** Returns the length of this Point (as if it were a vector).
     */

@@ -164,6 +164,10 @@
 				RelativePath=".\src\qtgui\main.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\src\math\ObjectSpatial.cpp"
+				>
+			</File>
 			<Filter
 				Name="log"
 				>
@@ -216,6 +220,26 @@
 				Name="math"
 				>
 				<File
+					RelativePath=".\src\math\BoundingBox2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingBox3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingObject.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingObject2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingObject3D.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\math\Geometry.cpp"
 					>
 				</File>
@@ -224,7 +248,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\math\Object2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\Object3D.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\math\Point.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\Point2D.cpp"
 					>
 				</File>
 				<File
@@ -286,6 +322,10 @@
 				RelativePath=".\src\config.h"
 				>
 			</File>
+			<File
+				RelativePath=".\src\math\ObjectSpatial.h"
+				>
+			</File>
 			<Filter
 				Name="log"
 				>
@@ -338,6 +378,26 @@
 				Name="math"
 				>
 				<File
+					RelativePath=".\src\math\BoundingBox2D.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingBox3D.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingObject.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingObject2D.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingObject3D.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\math\Geometry.h"
 					>
 				</File>
@@ -346,7 +406,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\math\Object2D.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\Object3D.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\math\Point.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\Point2D.h"
 					>
 				</File>
 				<File

@@ -3,9 +3,53 @@
 
 #include "Point.h"
 #include "Values.h"
+#include "Point2D.h"
 
 namespace Project {
 namespace Math {
+
+Point::Point(Point2D p_2D) {
+	switch (p_2D.getProjectAxis()) {
+		case X_AXIS:
+			setY(p_2D.getX());
+			setZ(p_2D.getY());
+			;break;
+		case Y_AXIS:
+			setX(p_2D.getX());
+			setZ(p_2D.getY());
+			;break;
+		case Z_AXIS:
+			setX(p_2D.getX());
+			setY(p_2D.getY());
+			;break;
+	}
+
+	setCoord(0.0f, p_2D.getProjectAxis());
+}
+
+double Point::getCoord(Axis axis) {
+	switch (axis) {
+		case X_AXIS:
+			return getX();
+		case Y_AXIS:
+			return getY();
+		case Z_AXIS:
+			return getZ();
+	}
+	return 0.0f;
+}
+
+void Point::setCoord(double coord, Axis axis) {
+	switch (axis) {
+		case X_AXIS:
+			setX(coord);
+		case Y_AXIS:
+			setY(coord);
+		case Z_AXIS:
+			setZ(coord);
+	}
+}
+
 
 double Point::length() const {
     return std::sqrt(
