@@ -18,15 +18,15 @@ public:
     Point(double x, double y, double z = 0.0, double w = 1.0)
         : xp(x), yp(y), zp(z), wp(w) {}
     
-    virtual double getX() const { return xp; }
-    virtual double getY() const { return yp; }
-	virtual double getZ() const { return zp; }
+    double getX() const { return xp; }
+    double getY() const { return yp; }
+	double getZ() const { return zp; }
     double getW() const { return wp; }
 	double getCoord(Axis axis);
     
-    virtual void setX(double x) { xp = x; }
-    virtual void setY(double y) { yp = y; }
-	virtual void setZ(double z) { zp = z; }
+    void setX(double x) { xp = x; }
+	void setY(double y) { yp = y; }
+	void setZ(double z) { zp = z; }
     void setW(double w) { wp = w; }
 	void setCoord(double coord, Axis axis);
     
@@ -105,7 +105,7 @@ public:
     double operator [] (int index) const;
     double &operator [] (int index);
 
-	virtual void operator = (Point &other);
+	void operator = (Point &other);
 };
 
 std::ostream &operator << (std::ostream &stream, const Point &point);

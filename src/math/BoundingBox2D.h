@@ -36,7 +36,6 @@ public:
 	bool pointInside2D(Point2D p);
 	bool intersects2D(BoundingObject2D& bound_obj);
 	void translate(Point& translation);
-	//void translate2D(Point2D& translation);
 
 	//Class specific
 	Point2D getCorner(int index);

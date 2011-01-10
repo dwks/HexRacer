@@ -49,13 +49,13 @@ Type bound(const Type &value, const Type &min, const Type &max) {
 	return value;
 }
 
-/** Computes the positive difference between @f and the greatest multiple of @d
-	which is smaller than @f
+/** Computes the positive difference between f and the greatest multiple of d
+	which is smaller than f
 */
 double smartModf(double f, double d);
 
-/** Computes the positive difference between @i and the greatest multiple of @d
-	which is smaller than @i
+/** Computes the positive difference between i and the greatest multiple of d
+	which is smaller than i
 */
 long smartModI(long i, long d);
 double round(double f);

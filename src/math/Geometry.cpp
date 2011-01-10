@@ -72,5 +72,25 @@ double Geometry::distance(Point one, Point two) {
     return (two - one).length();
 }
 
+/*
+bool Geometry::lineSegementIntersection2D(Point2D line1a, Point2D line1b,
+										  Point2D line2a, Point2D line2b, Point2D *intersection)
+{
+	
+
+	
+}
+*/
+
+bool Geometry::lineHLineIntersects2D(Point2D line_a, Point2D line_b, float hline_y, float hline_xmin, float hline_xmax) {
+	
+	//if (line1.getY() == line2.getY())
+	return false;
+}
+
+bool Geometry::lineVLineIntersects2D(Point2D line_a, Point2D line_b, float hline_x, float vline_ymin, float vline_ymax) {
+	return false;
+}
+
 }  // namespace Math
 }  // namespace Project

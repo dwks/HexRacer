@@ -56,8 +56,8 @@ bool BoundingBox2D::pointInside2D(Point2D p) {
 		return false;
 
 	return (
-		p.getU() >= minCorner.getU() && p.getU() <= maxCorner.getU() &&
-		p.getV() >= minCorner.getV() && p.getV() <= maxCorner.getV()
+		p.getU() >= minU() && p.getU() <= maxU() &&
+		p.getV() >= minV() && p.getV() <= maxV()
 		);
 }
 
@@ -76,13 +76,6 @@ bool BoundingBox2D::intersects2D(BoundingObject2D& bound_obj) {
 
 	return false;
 }
-
-/*
-void BoundingBox2D::translate2D(Point2D& translation) {
-	minCorner += translation;
-	maxCorner += translation;
-}
-*/
 
 void BoundingBox2D::translate(Point& translation) {
 	minCorner += translation;
@@ -123,14 +116,14 @@ Point2D BoundingBox2D::getCorner(bool max_u, bool max_v) {
 	}
 
 	if (max_u)
-		u = maxCorner.getCoord(u_axis);
+		u = maxU();
 	else
-		u = minCorner.getCoord(u_axis);
+		u = minU();
 
 	if (max_v)
-		v = maxCorner.getCoord(v_axis);
+		v = maxV();
 	else
-		v = minCorner.getCoord(v_axis);
+		v = minV();
 
 	return Point2D(u, v, projectAxis);
 }

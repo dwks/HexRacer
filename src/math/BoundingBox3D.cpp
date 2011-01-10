@@ -53,9 +53,9 @@ BoundingObject2D& BoundingBox3D::projectTo2D(Axis project_axis) {
 
 bool BoundingBox3D::pointInside3D(Point p) {
 	return (
-		p.getX() >= minCorner.getX() && p.getX() <= maxCorner.getX() &&
-		p.getY() >= minCorner.getY() && p.getY() <= maxCorner.getY() &&
-		p.getZ() >= minCorner.getZ() && p.getZ() <= maxCorner.getZ()
+		p.getX() >= minX() && p.getX() <= maxX() &&
+		p.getY() >= minY() && p.getY() <= maxY() &&
+		p.getZ() >= minZ() && p.getZ() <= maxZ()
 		);
 }
 
@@ -99,19 +99,19 @@ Point BoundingBox3D::getCorner(bool max_x, bool max_y, bool max_z) {
 	double z;
 
 	if (max_x)
-		x = maxCorner.getX();
+		x = maxX();
 	else
-		x = minCorner.getX();
+		x = minX();
 
 	if (max_y)
-		y = maxCorner.getY();
+		y = maxY();
 	else
-		y = minCorner.getY();
+		y = minY();
 
 	if (max_z)
-		z = maxCorner.getZ();
+		z = maxZ();
 	else
-		z = minCorner.getZ();
+		z = minZ();
 
 	return Point(x, y, z);
 }

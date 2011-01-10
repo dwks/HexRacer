@@ -1,3 +1,5 @@
+/*
+
 #include "Point2D.h"
 using namespace Project;
 using namespace Math;
@@ -47,6 +49,7 @@ double Point2D::getU() const {
 		case Y_AXIS: case Z_AXIS:
 			return getX();
 	}
+	return 0.0f;
 }
 
 double Point2D::getV() const {
@@ -56,6 +59,7 @@ double Point2D::getV() const {
 		case Z_AXIS:
 			return getY();
 	}
+	return 0.0f;
 }
 
 void Point2D::setX(double x) {
@@ -101,3 +105,5 @@ void Point2D::operator = (Point &other) {
 	setZ(other.getZ());
 	setW(other.getW());
 }
+
+*/
