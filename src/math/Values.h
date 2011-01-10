@@ -49,17 +49,34 @@ Type bound(const Type &value, const Type &min, const Type &max) {
 	return value;
 }
 
-/** Computes the positive difference between @f and the greatest multiple of @d
-	which is smaller than @f
+/** Computes the positive difference between @a f and the greatest multiple of
+    @a d which is smaller than @a f
 */
-double smartModf(double f, double d);
+template <typename Type>
+Type smartMod(Type f, Type d) {
+    if (i < 0)
+        i += ((int) std::ceil((double)std::abs(i)/(double)d))*d;
+    
+    return i % d;
+}
 
-/** Computes the positive difference between @i and the greatest multiple of @d
-	which is smaller than @i
-*/
-long smartModI(long i, long d);
-double round(double f);
-long roundToInt(double f);
+template <>
+float smartMod<float>(float f, float d) {
+    if (f < 0.0f)
+        f += std::ceil(std::fabs(f)/d) * d;
+    
+    return std::fmod(f, d);
+}
+
+template <>
+float smartMod<double>(double f, double d) {
+    if (f < 0.0f)
+        f += std::ceil(std::fabs(f)/d) * d;
+    
+    return std::fmod(f, d);
+}
+
+int roundToInt(double f);
 
 }  // namespace Math
 }  // namespace Project

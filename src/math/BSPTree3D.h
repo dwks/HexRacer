@@ -1,5 +1,5 @@
 #pragma once
-#include "bsptree.h"
+#include "BSPTree.h"
 #include "BoundingBox3D.h"
 
 namespace Project {

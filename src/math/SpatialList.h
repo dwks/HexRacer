@@ -1,5 +1,5 @@
 #pragma once
-#include "spatialcontainer.h"
+#include "SpatialContainer.h"
 
 namespace Project {
 namespace Math {

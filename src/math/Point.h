@@ -104,8 +104,8 @@ public:
     
     double operator [] (int index) const;
     double &operator [] (int index);
-
-	virtual void operator = (Point &other);
+    
+	virtual void operator = (const Point &other);
 };
 
 std::ostream &operator << (std::ostream &stream, const Point &point);
