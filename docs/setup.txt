@@ -1,0 +1,7 @@
+To setup kdiff3 as a diff tool:
+- Install http://sourceforge.net/projects/kdiff3/files/kdiff3/0.9.95/KDiff3Setup_0.9.95-2.exe/download
+- Run
+    git config --global mergetool.kdiff3.path "C:/Program Files/KDiff3/kdiff3.exe"
+- Run
+    git config --global merge.tool kdiff3
+
