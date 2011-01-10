@@ -5,8 +5,13 @@
 #include "boost/archive/text_oarchive.hpp"
 
 #include "HandshakePacket.h"
+#include "EventPacket.h"
+
+#include "event/PlayerMovement.h"
+#include "event/UpdatePlayerList.h"
 
 #include "PacketSerializer.h"
+#include "PointSerializer.h"
 #include "log/Logger.h"
 
 namespace Project {
@@ -17,6 +22,10 @@ std::string PacketSerializer::packetToString(Packet *packet) {
     boost::archive::text_oarchive out(stream);
     
     out.register_type<HandshakePacket>();
+    out.register_type<EventPacket>();
+    
+    out.register_type<Event::PlayerMovement>();
+    out.register_type<Event::UpdatePlayerList>();
     
     try {
         out << packet;
@@ -30,12 +39,16 @@ std::string PacketSerializer::packetToString(Packet *packet) {
 }
 
 Packet *PacketSerializer::stringToPacket(const std::string &string) {
-    LOG(NETWORK, "Parsing packet from \"" << string << "\"");
+    //LOG(NETWORK, "Parsing packet from \"" << string << "\"");
     
     std::istringstream stream(string);
     boost::archive::text_iarchive in(stream);
     
     in.register_type<HandshakePacket>();
+    in.register_type<EventPacket>();
+    
+    in.register_type<Event::PlayerMovement>();
+    in.register_type<Event::UpdatePlayerList>();
     
     Packet *packet;
     try {

@@ -3,9 +3,9 @@
 using namespace Project;
 using namespace Math;
 
-bool Object3D::intersects(BoundingObject& bound_obj) {
+bool Object3D::intersects(const BoundingObject& bound_obj) const {
 	//Check if the bounding object is a 2D object
-	BoundingObject2D* bound_2D = dynamic_cast<BoundingObject2D*>(&bound_obj);
+	const BoundingObject2D* bound_2D = dynamic_cast<const BoundingObject2D*>(&bound_obj);
 	
 	if (bound_2D) {
 		//Intersection test on 2D object
@@ -18,7 +18,7 @@ bool Object3D::intersects(BoundingObject& bound_obj) {
 		return intersects3D((BoundingObject3D&) bound_obj);
 }
 
-void Object3D::moveCentroid(Point& position) {
+void Object3D::moveCentroid(const Point& position) {
 	Point translation = position-centroid();
 	translate(translation);
 }

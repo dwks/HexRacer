@@ -6,6 +6,7 @@ namespace Network {
 
 // forward declarations
 class HandshakePacket;
+class EventPacket;
 
 /** Implementation of the Visitor design pattern for Packets.
 */
@@ -14,6 +15,7 @@ public:
     virtual ~PacketVisitor() {}
     
     virtual void visit(HandshakePacket &packet) = 0;
+    virtual void visit(EventPacket &packet) = 0;
 };
 
 }  // namespace Network

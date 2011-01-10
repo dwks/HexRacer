@@ -30,6 +30,11 @@ private:
     type_list_t type_list;
 public:
     ObserverList();
+    
+    /**
+        !!! This function is currently broken because it doesn't detect
+            MultiObservers and tries to free them several times
+    */
     void destroyObject();
     
     /** Adds a TypedObserver to this observer list. A TypedObserver is only
@@ -47,10 +52,15 @@ public:
     
     /** Notifies all interested observers of @a event.
     */
-    void notifyObservers(EventBase *event);
+    void notifyObservers(EventBase *event, bool freeEvent = false);
 };
 
 }  // namespace Event
 }  // namespace Project
+
+#define ADD_OBSERVER(observer) \
+    ::Project::Event::ObserverList::getInstance().addObserver(observer)
+#define EMIT_EVENT(event) \
+    ::Project::Event::ObserverList::getInstance().notifyObservers(event, true)
 
 #endif

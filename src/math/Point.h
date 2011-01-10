@@ -22,13 +22,20 @@ public:
     double getY() const { return yp; }
 	double getZ() const { return zp; }
     double getW() const { return wp; }
-	double getCoord(Axis axis);
+	double getU(Axis project_axis = Z_AXIS) const;
+	double getV(Axis project_axis = Z_AXIS) const;
+	double getCoord(Axis axis) const;
     
     void setX(double x) { xp = x; }
 	void setY(double y) { yp = y; }
 	void setZ(double z) { zp = z; }
     void setW(double w) { wp = w; }
+	void setU(double u, Axis project_axis = Z_AXIS);
+	void setV(double v, Axis project_axis = Z_AXIS);
 	void setCoord(double coord, Axis axis);
+
+	static Point point2D(double u, double v, Axis project_axis = Z_AXIS);
+	static Point point2D(Point point, Axis project_axis = Z_AXIS);
     
     /** Returns the length of this Point (as if it were a vector).
     */
@@ -104,11 +111,12 @@ public:
     
     double operator [] (int index) const;
     double &operator [] (int index);
-
-	void operator = (Point &other);
+    
+	void operator = (const Point &other);
 };
 
 std::ostream &operator << (std::ostream &stream, const Point &point);
+std::istream &operator >> (std::istream &stream, Point &point);
 
 Point operator * (double factor, const Point &point);
 

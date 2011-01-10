@@ -11,9 +11,7 @@ class BoundingObject {
 public:
 	BoundingObject(void) {}
 	virtual ~BoundingObject(void) {}
-	virtual bool pointInside(Point& p) = 0;
-
-	//bool pointInside(Point p) { return pointInside(&p); }
+	virtual bool pointInside(const Point& p) const = 0;
 };
 
 }  // namespace Math

@@ -8,6 +8,7 @@
 
 #include "network/Packet.h"
 #include "network/PacketSerializer.h"
+#include "network/EventPacket.h"
 
 #include "event/ObserverList.h"
 #include "event/PacketReceived.h"
@@ -16,20 +17,42 @@ namespace Project {
 namespace SDL {
 
 void NetworkPortal::PacketSender::observe(Event::SendPacket *packet) {
-    if(portal->getSocket() == NULL) return;
+    if(portal->getPortal() == NULL) return;
     
-    Network::PacketSerializer packetSerializer;
-    Network::StringSerializer stringSerializer(portal->getSocket());
+    portal->getPortal()->sendPacket(packet->getPacket());
+}
+
+void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
+    switch(event->getType()) {
+    case Event::EventType::PLAYER_MOVEMENT: {
+        if(portal->getPortal() == NULL) break;
+        
+        Network::Packet *packet = new Network::EventPacket(event);
+        portal->getPortal()->sendPacket(packet);
+        delete packet;
+        
+        break;
+    }
+    case Event::EventType::PACKET_RECEIVED:
+        break;
+    default:
+        LOG2(NETWORK, PACKET, "EventPropagator: Not propagating "
+            << typeid(*event).name());
+        break;
+    }
+}
+
+bool NetworkPortal::EventPropagator::interestedIn(
+    Event::EventType::type_t type) {
     
-    std::string data = packetSerializer.packetToString(packet->getPacket());
-    stringSerializer.sendString(data);
+    return true;  // !!! doesn't hurt to be over-notified right now
 }
 
 NetworkPortal::NetworkPortal() {
-    socket = NULL;
-    stringSerializer = NULL;
+    portal = NULL;
     
-    Event::ObserverList::getInstance().addObserver(new PacketSender(this));
+    ADD_OBSERVER(new PacketSender(this));
+    ADD_OBSERVER(new EventPropagator(this));
 }
 
 NetworkPortal::~NetworkPortal() {
@@ -37,41 +60,41 @@ NetworkPortal::~NetworkPortal() {
 }
 
 void NetworkPortal::connectTo(const char *hostname, unsigned short port) {
-    socket = new Connection::ConstructedTCPSocket(hostname, port);
+    Connection::Socket *socket
+        = new Connection::ConstructedTCPSocket(hostname, port);
     if(socket->open()) {
         LOG2(NETWORK, CONNECT, "Successfully connected to server "
             << hostname << ":" << port);
         
-        stringSerializer = new Network::StringSerializer(socket);
+        portal = new Network::SinglePortal(socket);
     }
     else {
         LOG2(NETWORK, CONNECT, "Failed to connect to server "
             << hostname << ":" << port);
         delete socket;
-        socket = NULL;
-        stringSerializer = NULL;
+        
+        portal = NULL;
     }
 }
 
 void NetworkPortal::disconnectFrom() {
-    delete socket;  // works even if socket is NULL
-    delete stringSerializer;
+    delete portal;  // works even if portal is NULL
+    portal = NULL;
 }
 
 void NetworkPortal::checkNetwork() {
-    if(!socket) return;
+    if(!portal) return;
     
-    std::string data;
-    if(stringSerializer->readNextString(data)) {
-        Network::PacketSerializer packetSerializer;
-        Network::Packet *packet = packetSerializer.stringToPacket(data);
+    Network::Packet *packet = portal->nextPacket();
+    if(packet) {
+        //LOG2(NETWORK, PACKET, "Received packet " << typeid(*packet).name());
         
-        LOG2(NETWORK, PACKET, "Received packet " << typeid(*packet).name());
+        if(dynamic_cast<Network::EventPacket *>(packet)) {
+            EMIT_EVENT(dynamic_cast<Network::EventPacket *>(packet)
+                ->getEvent());
+        }
         
-        Event::EventBase *event = new Event::PacketReceived(packet);
-        Event::ObserverList::getInstance().notifyObservers(event);
-        
-        delete event;
+        EMIT_EVENT(new Event::PacketReceived(packet));
         delete packet;
     }
 }

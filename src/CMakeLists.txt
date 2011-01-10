@@ -12,6 +12,7 @@ aux_source_directory(log LOG_SOURCES)
 aux_source_directory(math MATH_SOURCES)
 aux_source_directory(misc MISC_SOURCES)
 aux_source_directory(network NETWORK_SOURCES)
+aux_source_directory(object OBJECT_SOURCES)
 aux_source_directory(opengl OPENGL_SOURCES)
 aux_source_directory(qtgui QTGUI_SOURCES)
 aux_source_directory(server SERVER_DIR_SOURCES)
@@ -21,7 +22,8 @@ set(SOURCES
     ${LOG_SOURCES}
     ${MATH_SOURCES}
     ${MISC_SOURCES}
-    ${EVENT_SOURCES})
+    ${EVENT_SOURCES}
+    ${OBJECT_SOURCES})
 
 set(QT_SOURCES
     ${OPENGL_SOURCES}

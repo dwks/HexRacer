@@ -2,7 +2,7 @@
 using namespace Project;
 using namespace Math;
 
-double ObjectSpatial::minCoord(Axis axis) {
+double ObjectSpatial::minCoord(Axis axis) const {
 	switch (axis) {
 		case X_AXIS:
 			return minX();
@@ -14,7 +14,7 @@ double ObjectSpatial::minCoord(Axis axis) {
 	return 0.0f;
 }
 
-double ObjectSpatial::maxCoord(Axis axis) {
+double ObjectSpatial::maxCoord(Axis axis) const {
 	switch (axis) {
 		case X_AXIS:
 			return maxX();
@@ -26,7 +26,7 @@ double ObjectSpatial::maxCoord(Axis axis) {
 	return 0.0f;
 }
 
-double ObjectSpatial::widthCoord(Axis axis) {
+double ObjectSpatial::widthCoord(Axis axis) const {
 	switch (axis) {
 		case X_AXIS:
 			return widthX();

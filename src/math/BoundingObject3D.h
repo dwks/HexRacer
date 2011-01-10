@@ -12,10 +12,6 @@ class BoundingObject3D
 public:
 	BoundingObject3D(void) {}
 	virtual ~BoundingObject3D(void) {}
-
-	bool pointInside(Point& p);
-
-	virtual bool pointInside3D(Point p) = 0;
 };
 
 }  // namespace Math

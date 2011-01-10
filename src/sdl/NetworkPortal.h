@@ -2,18 +2,18 @@
 #define PROJECT_SDL__NETWORK_PORTAL_H
 
 #include "connection/Socket.h"
-#include "network/StringSerializer.h"
+#include "network/SinglePortal.h"
 
 #include "event/SendPacket.h"
 #include "event/TypedObserver.h"
+#include "event/MultiObserver.h"
 
 namespace Project {
 namespace SDL {
 
 class NetworkPortal {
 private:
-    Connection::Socket *socket;
-    Network::StringSerializer *stringSerializer;
+    Network::SinglePortal *portal;
 private:
     class PacketSender : public Event::TypedObserver<Event::SendPacket> {
     private:
@@ -22,6 +22,16 @@ private:
         PacketSender(NetworkPortal *portal) : portal(portal) {}
         
         virtual void observe(Event::SendPacket *packet);
+    };
+    
+    class EventPropagator : public Event::MultiObserver {
+    private:
+        NetworkPortal *portal;
+    public:
+        EventPropagator(NetworkPortal *portal) : portal(portal) {}
+        
+        virtual void observe(Event::EventBase *event);
+        virtual bool interestedIn(Event::EventType::type_t type);
     };
 public:
     NetworkPortal();
@@ -43,7 +53,7 @@ public:
     */
     void checkNetwork();
 protected:
-    Connection::Socket *getSocket() { return socket; }
+    Network::SinglePortal *getPortal() { return portal; }
 };
 
 }  // namespace SDL

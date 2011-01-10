@@ -1,14 +1,72 @@
 #include <ostream>
+#include <istream>
 #include <cmath>
 
 #include "Point.h"
 #include "Values.h"
-#include "Point2D.h"
+//#include "Point2D.h"
 
 namespace Project {
 namespace Math {
 
-double Point::getCoord(Axis axis) {
+Point Point::point2D(double u, double v, Axis project_axis) {
+
+	switch (project_axis) {
+		case X_AXIS:
+			return Point(0.0f, u, v);
+		case Y_AXIS:
+			return Point(u, 0.0f, v);
+		case Z_AXIS:
+			return Point(u, v, 0.0f);
+	}
+
+	return Point(u, v, 0.0f);
+}
+
+Point Point::point2D(Point point, Axis project_axis) {
+	point.setCoord(0.0f, project_axis);
+	return point;
+}
+
+double Point::getU(Axis project_axis) const {
+	switch (project_axis) {
+		case X_AXIS:
+			return getY();
+		case Y_AXIS: case Z_AXIS:
+			return getX();
+	}
+	return 0.0f;
+}
+
+double Point::getV(Axis project_axis) const {
+	switch (project_axis) {
+		case X_AXIS: case Y_AXIS:
+			return getZ();
+		 case Z_AXIS:
+			return getY();
+	}
+	return 0.0f;
+}
+
+void Point::setU(double u, Axis project_axis) {
+	switch (project_axis) {
+		case X_AXIS:
+			setY(u);
+		case Y_AXIS: case Z_AXIS:
+			setX(u);
+	}
+}
+
+void Point::setV(double v, Axis project_axis) {
+	switch (project_axis) {
+		case X_AXIS: case Y_AXIS:
+			setZ(v);
+		 case Z_AXIS:
+			setY(v);
+	}
+}
+
+double Point::getCoord(Axis axis) const {
 	switch (axis) {
 		case X_AXIS:
 			return getX();
@@ -23,11 +81,11 @@ double Point::getCoord(Axis axis) {
 void Point::setCoord(double coord, Axis axis) {
 	switch (axis) {
 		case X_AXIS:
-			setX(coord);
+			setX(coord); break;
 		case Y_AXIS:
-			setY(coord);
+			setY(coord); break;
 		case Z_AXIS:
-			setZ(coord);
+			setZ(coord); break;
 	}
 }
 
@@ -244,7 +302,7 @@ double &Point::operator [] (int index) {
     }
 }
 
-void Point::operator = (Point &other) {
+void Point::operator = (const Point &other) {
 	setX(other.getX());
 	setY(other.getY());
 	setZ(other.getZ());
@@ -257,6 +315,16 @@ std::ostream &operator << (std::ostream &stream, const Point &point) {
         << point.getY() << ','
         << point.getZ() << ','
         << point.getW() << ')';
+    
+    return stream;
+}
+
+std::istream &operator >> (std::istream &stream, Point &point) {
+    double x, y, z, w;
+    char c;
+    stream >> c >> x >> c >> y >> z >> c >> w >> c;
+    
+    point = Math::Point(x, y, z, w);
     
     return stream;
 }

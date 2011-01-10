@@ -11,6 +11,9 @@
 #include "math/Point.h"
 #include "opengl/MathWrapper.h"
 
+#include "event/ObserverList.h"
+#include "event/PlayerMovement.h"
+
 #include "config.h"
 
 namespace Project {
@@ -66,6 +69,8 @@ void SDLMain::run() {
     network = new NetworkPortal();
     network->connectTo("localhost", 1820);
     
+    playerManager = new PlayerManager(0);
+    
     bool quit = false;
     while(!quit) {
         SDL_Event event;
@@ -86,12 +91,15 @@ void SDLMain::run() {
                     LOG2(SDL, INPUT, "Key pressed: '" << char(event.key.keysym.sym) << "'");
                 }
                 else {
-                    LOG2(SDL, INPUT, "Extended key pressed");
+                    //LOG2(SDL, INPUT, "Extended key pressed");
                 }
+                
+                handleKeyDown(&event);
+                
                 break;
             case SDL_MOUSEBUTTONDOWN:
-                LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " pressed "
-                    << "at " << event.button.x << "," << event.button.y);
+                /*LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " pressed "
+                    << "at " << event.button.x << "," << event.button.y);*/
                 trackball->setMouseStartAt(projector.screenToGL(
                     Point2D(event.button.x, event.button.y)));
                 break;
@@ -103,7 +111,7 @@ void SDLMain::run() {
                 }
                 break;
             case SDL_MOUSEBUTTONUP:
-                LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " released");
+                //LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " released");
                 break;
             }
         }
@@ -113,6 +121,7 @@ void SDLMain::run() {
         handleJoystick();
         
         render();
+        playerManager->render();
         
         SDL_GL_SwapBuffers();
         
@@ -137,6 +146,25 @@ void SDLMain::handleJoystick() {
         translation.setY(-y * 0.1);
         
         trackball->setMouseCurrentAt(translation);
+    }
+}
+
+void SDLMain::handleKeyDown(SDL_Event *event) {
+    switch(event->key.keysym.sym) {
+    case SDLK_LEFT:
+        EMIT_EVENT(new Event::PlayerMovement(Math::Point(-0.1, 0.0)));
+        break;
+    case SDLK_RIGHT:
+        EMIT_EVENT(new Event::PlayerMovement(Math::Point(+0.1, 0.0)));
+        break;
+    case SDLK_UP:
+        EMIT_EVENT(new Event::PlayerMovement(Math::Point(0.0, +0.1)));
+        break;
+    case SDLK_DOWN:
+        EMIT_EVENT(new Event::PlayerMovement(Math::Point(0.0, -0.1)));
+        break;
+    default:
+        break;
     }
 }
 

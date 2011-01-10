@@ -5,9 +5,12 @@
 #include "Projector.h"
 #include "JoystickManager.h"
 #include "NetworkPortal.h"
+#include "PlayerManager.h"
 
 #define FIELD_OF_VIEW 60
 #define SDL_INIT_FLAGS (SDL_HWSURFACE | SDL_OPENGL | SDL_RESIZABLE)
+
+union SDL_Event;
 
 namespace Project {
 namespace SDL {
@@ -18,6 +21,7 @@ private:
     Projector projector;
     JoystickManager *joystick;
     NetworkPortal *network;
+    PlayerManager *playerManager;
 public:
     SDLMain();
     ~SDLMain();
@@ -26,6 +30,7 @@ public:
 private:
     void resizeGL(int width, int height);
     void handleJoystick();
+    void handleKeyDown(SDL_Event *event);
     void render();
 };
 

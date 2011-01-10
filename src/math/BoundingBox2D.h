@@ -9,40 +9,41 @@ class BoundingBox2D
 	: public BoundingObject2D
 {
 private:
-	Point2D minCorner;
-	Point2D maxCorner;
-	void setCorners(Point corner1, Point corner2);
+	Point minCorner;
+	Point maxCorner;
+
 public:
 	BoundingBox2D(Axis project_axis = Z_AXIS)
-		: minCorner(project_axis), maxCorner(project_axis) , BoundingObject2D(project_axis) {}
+		: BoundingObject2D(project_axis) {}
 	BoundingBox2D(Point corner1, Point corner2, Axis project_axis = Z_AXIS);
 	BoundingBox2D(double width, double height, Axis project_axis = Z_AXIS, Point centroid = Point());
-	BoundingBox2D(ObjectSpatial& object, Axis project_axis = Z_AXIS);
+	BoundingBox2D(const ObjectSpatial& object, Axis project_axis = Z_AXIS);
 	~BoundingBox2D(void);
 
 	//Abstract method implementations
-	double minX() { return minCorner.getX(); }
-	double minY() { return minCorner.getY(); }
-	double minZ() { return minCorner.getZ(); }
-	double maxX() { return maxCorner.getX(); }
-	double maxY() { return maxCorner.getY(); }
-	double maxZ() { return maxCorner.getZ(); }
-	double minU() { return minCorner.getU(); }
-	double minV() { return minCorner.getV(); }
-	double maxU() { return maxCorner.getU(); }
-	double maxV() { return maxCorner.getV(); }
-	Point centroid();
-	bool isInside(BoundingObject& bounding_obj);
-	bool pointInside2D(Point2D p);
-	bool intersects2D(BoundingObject2D& bound_obj);
-	void translate(Point& translation);
+	double minX() const { return minCorner.getX(); }
+	double minY() const { return minCorner.getY(); }
+	double minZ() const { return minCorner.getZ(); }
+	double maxX() const { return maxCorner.getX(); }
+	double maxY() const { return maxCorner.getY(); }
+	double maxZ() const { return maxCorner.getZ(); }
+	double minU() const { return minCorner.getU(projectAxis); }
+	double minV() const { return minCorner.getV(projectAxis); }
+	double maxU() const { return maxCorner.getU(projectAxis); }
+	double maxV() const { return maxCorner.getV(projectAxis); }
+	Point centroid() const;
+	bool isInside2D(const BoundingObject2D& bounding_obj) const;
+	bool pointInside(const Point& p) const;
+	bool intersects2D(const BoundingObject2D& bound_obj) const;
+	void translate(const Point& translation);
 
 	//Class specific
-	Point2D getCorner(int index);
-	Point2D getCorner(bool max_u, bool max_v);
+	void setCorners(Point corner1, Point corner2);
+	Point getCorner(int index) const;
+	Point getCorner(bool max_u, bool max_v) const;
 
-	void expandToInclude(Point& point);
-	void expandToInclude(ObjectSpatial& object);
+	void expandToInclude(const Point& point);
+	void expandToInclude(const ObjectSpatial& object);
 
 };
 

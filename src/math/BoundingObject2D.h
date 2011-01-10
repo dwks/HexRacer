@@ -13,10 +13,6 @@ public:
 	BoundingObject2D(Axis projectAxis)
 		: Object2D(projectAxis) {}
 	virtual ~BoundingObject2D(void) {}
-
-	bool pointInside(Point& p);
-
-	virtual bool pointInside2D(Point2D p) = 0;
 };
 
 

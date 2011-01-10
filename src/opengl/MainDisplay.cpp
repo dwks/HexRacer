@@ -149,11 +149,11 @@ void MainDisplay::paintGL() {
 	GeometryDrawing::drawObject(box2Da, true);
 
 	Math::BoundingBox2D& box2Db = Math::BoundingBox2D(0.05f, 0.125f, Math::Z_AXIS);
-	box2Db.translate(Math::Point2D(0.025f, 0.4f, Math::Z_AXIS));
+	box2Db.translate(Math::Point::point2D(0.025f, 0.4f, Math::Z_AXIS));
 	GeometryDrawing::drawObject(box2Db, true);
 
 	Math::BoundingBox2D& box2Dc = Math::BoundingBox2D(0.05f, 0.125f, Math::Y_AXIS);
-	box2Dc.translate(Math::Point2D(0.025f, 0.4f, Math::Y_AXIS));
+	box2Dc.translate(Math::Point::point2D(0.025f, 0.4f, Math::Y_AXIS));
 	GeometryDrawing::drawObject(box2Dc, true);
     
     repaintManager.scheduleNextRepaint(this);

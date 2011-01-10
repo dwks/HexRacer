@@ -82,6 +82,7 @@ bool Geometry::lineSegementIntersection2D(Point2D line1a, Point2D line1b,
 }
 */
 
+/*
 bool Geometry::lineHLineIntersects2D(Point2D line_a, Point2D line_b, float hline_y, float hline_xmin, float hline_xmax) {
 	
 	//if (line1.getY() == line2.getY())
@@ -91,6 +92,7 @@ bool Geometry::lineHLineIntersects2D(Point2D line_a, Point2D line_b, float hline
 bool Geometry::lineVLineIntersects2D(Point2D line_a, Point2D line_b, float hline_x, float vline_ymin, float vline_ymax) {
 	return false;
 }
+*/
 
 }  // namespace Math
 }  // namespace Project

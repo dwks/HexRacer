@@ -15,11 +15,11 @@ public:
 	Object3D(void) {}
 	virtual ~Object3D(void) {}
 
-	bool intersects(BoundingObject& bound_obj);
-	void moveCentroid(Point& position);
+	bool intersects(const BoundingObject& bound_obj) const;
+	void moveCentroid(const Point& position);
 
-	virtual bool intersects3D(BoundingObject3D& bound_obj) = 0;
-	virtual BoundingObject2D& projectTo2D(Axis project_axis) = 0;
+	virtual bool intersects3D(const BoundingObject3D& bound_obj) const = 0;
+	virtual BoundingObject2D& projectTo2D(Axis project_axis) const = 0;
 	
 
 };
