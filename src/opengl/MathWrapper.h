@@ -1,8 +1,9 @@
 #ifndef PROJECT_OPENGL__MATH_WRAPPER_H
 #define PROJECT_OPENGL__MATH_WRAPPER_H
 
-#include "math/Point.h"
-#include "math/Matrix.h"
+#include "../math/Point.h"
+#include "../math/Point2D.h"
+#include "../math/Matrix.h"
 
 namespace Project {
 namespace OpenGL {
@@ -12,7 +13,7 @@ public:
     /** Calls some glVertex*() variant with the data in @a point.
     */
     static void glVertex(const Math::Point &point);
-    
+
     /** Calls some glNormal*() variant with the data in this vector.
         
         Note: the vector should be normalized before calling this function.

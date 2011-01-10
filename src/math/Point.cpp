@@ -4,9 +4,34 @@
 
 #include "Point.h"
 #include "Values.h"
+#include "Point2D.h"
 
 namespace Project {
 namespace Math {
+
+double Point::getCoord(Axis axis) {
+	switch (axis) {
+		case X_AXIS:
+			return getX();
+		case Y_AXIS:
+			return getY();
+		case Z_AXIS:
+			return getZ();
+	}
+	return 0.0f;
+}
+
+void Point::setCoord(double coord, Axis axis) {
+	switch (axis) {
+		case X_AXIS:
+			setX(coord);
+		case Y_AXIS:
+			setY(coord);
+		case Z_AXIS:
+			setZ(coord);
+	}
+}
+
 
 double Point::length() const {
     return std::sqrt(
@@ -92,6 +117,19 @@ Point Point::rotateZ(double angle) const {
         getW());
 }
 
+Point Point::rotateAxis(Axis axis, double angle) const {
+
+	switch (axis) {
+		case X_AXIS:
+			return rotateX(angle);
+		case Y_AXIS:
+			return rotateY(angle);
+		case Z_AXIS:
+			return rotateZ(angle);
+	}
+
+	return *this;
+}
 double Point::dotProduct(const Point &other) const {
     return (getX() * other.getX())
         + (getY() * other.getY())
@@ -149,6 +187,29 @@ void Point::operator += (const Point &other) {
     setW(getW() + other.getW());
 }
 
+void Point::operator -= (const Point &other) {
+    setX(getX() - other.getX());
+    setY(getY() - other.getY());
+    setZ(getZ() - other.getZ());
+    setW(getW() - other.getW());
+}
+
+void Point::operator *= (double factor) {
+
+    setX(getX()*factor);
+    setY(getY()*factor);
+    setZ(getZ()*factor);
+    setW(getW()*factor);
+
+}
+void Point::operator /= (double factor) {
+
+    setX(getX()/factor);
+    setY(getY()/factor);
+    setZ(getZ()/factor);
+    setW(getW()/factor);
+}
+
 bool Point::operator == (const Point &other) {
     return getX() == other.getX()
         && getY() == other.getY()
@@ -182,6 +243,13 @@ double &Point::operator [] (int index) {
     default:
         return wp;
     }
+}
+
+void Point::operator = (Point &other) {
+	setX(other.getX());
+	setY(other.getY());
+	setZ(other.getZ());
+	setW(other.getW());
 }
 
 std::ostream &operator << (std::ostream &stream, const Point &point) {

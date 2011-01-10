@@ -161,7 +161,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\src\math\BSPTree.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\BSPTree3D.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\qtgui\main.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\ObserverList.cpp"
 				>
 			</File>
 			<Filter
@@ -216,6 +228,26 @@
 				Name="math"
 				>
 				<File
+					RelativePath=".\src\math\BoundingBox2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingBox3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingObject.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingObject2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingObject3D.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\math\Geometry.cpp"
 					>
 				</File>
@@ -224,7 +256,31 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\math\Object2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\Object3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\ObjectSpatial.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\math\Point.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\Point2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\SpatialContainer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\SpatialList.cpp"
 					>
 				</File>
 				<File
@@ -247,6 +303,14 @@
 			<Filter
 				Name="opengl"
 				>
+				<File
+					RelativePath=".\src\opengl\Color.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\opengl\GeometryDrawing.cpp"
+					>
+				</File>
 				<File
 					RelativePath=".\src\opengl\MainDisplay.cpp"
 					>
@@ -283,7 +347,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\src\math\BSPTree.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\BSPTree3D.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\config.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\ObserverList.h"
 				>
 			</File>
 			<Filter
@@ -338,6 +414,26 @@
 				Name="math"
 				>
 				<File
+					RelativePath=".\src\math\BoundingBox2D.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingBox3D.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingObject.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingObject2D.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BoundingObject3D.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\math\Geometry.h"
 					>
 				</File>
@@ -346,7 +442,31 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\math\Object2D.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\Object3D.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\ObjectSpatial.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\math\Point.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\Point2D.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\SpatialContainer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\SpatialList.h"
 					>
 				</File>
 				<File
@@ -369,6 +489,14 @@
 			<Filter
 				Name="opengl"
 				>
+				<File
+					RelativePath=".\src\opengl\Color.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\opengl\GeometryDrawing.h"
+					>
+				</File>
 				<File
 					RelativePath=".\src\opengl\MainDisplay.h"
 					>
