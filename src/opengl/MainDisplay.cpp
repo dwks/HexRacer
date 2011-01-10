@@ -14,6 +14,10 @@
 #include "MathWrapper.h"
 #include "GeometryDrawing.h"
 
+#include "Color.h"
+
+#define TRACKBALL_POS_MULTIPLIER 0.707107f
+
 namespace Project {
 namespace OpenGL {
 
@@ -88,6 +92,14 @@ void MainDisplay::resizeGL(int width, int height) {
 void MainDisplay::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+
+	// add a light
+    {
+        static GLfloat pos[] = {0.0, 0.0, 2.0, 1.0};
+        
+        glLightfv(GL_LIGHT0, GL_POSITION, pos);
+    }
+
     
     glTranslated(0.0, 0.0, -2.0);
     
@@ -101,25 +113,20 @@ void MainDisplay::paintGL() {
     //glRotated(angle, 0.0, 1.0, 0.0);
     //glScaled(scale, scale, scale);
     
-    // add a light
-    {
-        static GLfloat pos[] = {0.0, 0.0, 2.0, 1.0};
-        
-        glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    }
-
 	//Draw a white-edged cylinder, because why not?
 	glEnable(GL_LIGHTING);
 	glRotatef(35.0f, 0.3f, 0.4f, 0.25f);
 	
-	glColor3f(1.0f, 0.0f, 0.0f); //Red
+	Color::glColor(Color::TEAL);
+	//glColor3f(1.0f, 0.0f, 0.0f); //Red
 
 	gluCylinder(test_cylinder, 0.25f, 0.35f, 1.0f, 60, 4);
 
 	glLineWidth(3.0f); //Thicker lines
 
 	glDisable(GL_LIGHTING); //No lighting
-	glColor3f(1.0f, 1.0f, 1.0f); //White
+	//glColor3f(1.0f, 1.0f, 1.0f); //White
+	Color::glColor(Color(Color::WHITE));
 
 	gluDisk(test_ring, 0.25f, 0.25f, 60, 1);
 	glTranslatef(0.0f, 0.0f, 1.0f);
@@ -137,16 +144,17 @@ void MainDisplay::paintGL() {
 
 	Math::BoundingBox3D& box3D = Math::BoundingBox3D(0.4f, 0.2f, 0.2f);
 	GeometryDrawing::drawObject(box3D, true);
-	//delete(&box3D);
 
-	Math::BoundingBox2D& box2D = Math::BoundingBox2D(0.15f, 0.2f, Math::X_AXIS);
-	GeometryDrawing::drawObject(box2D, true);
-	//delete(&box2D);
+	Math::BoundingBox2D& box2Da = Math::BoundingBox2D(0.15f, 0.2f, Math::X_AXIS);
+	GeometryDrawing::drawObject(box2Da, true);
 
-	box2D = Math::BoundingBox2D(0.05f, 0.125f, Math::Z_AXIS);
-	box2D.translate2D(Math::Point2D(0.025f, 0.4f, Math::Z_AXIS));
-	GeometryDrawing::drawObject(box2D, true);
-	//delete(&box2D);
+	Math::BoundingBox2D& box2Db = Math::BoundingBox2D(0.05f, 0.125f, Math::Z_AXIS);
+	box2Db.translate(Math::Point2D(0.025f, 0.4f, Math::Z_AXIS));
+	GeometryDrawing::drawObject(box2Db, true);
+
+	Math::BoundingBox2D& box2Dc = Math::BoundingBox2D(0.05f, 0.125f, Math::Y_AXIS);
+	box2Dc.translate(Math::Point2D(0.025f, 0.4f, Math::Y_AXIS));
+	GeometryDrawing::drawObject(box2Dc, true);
     
     repaintManager.scheduleNextRepaint(this);
     glFlush();
@@ -169,6 +177,7 @@ void MainDisplay::mousePressEvent(QMouseEvent *event) {
         mouseIsDown = true;
         
         Math::Point position = screenToGL(event->pos());
+		position *= TRACKBALL_POS_MULTIPLIER;
         trackball->setMouseStartAt(position);
     }
 }
@@ -182,6 +191,7 @@ void MainDisplay::mouseReleaseEvent(QMouseEvent *event) {
 void MainDisplay::mouseMoveEvent(QMouseEvent *event) {
     if(mouseIsDown) {
         Math::Point position = screenToGL(event->pos());
+		position *= TRACKBALL_POS_MULTIPLIER;
         trackball->setMouseCurrentAt(position);
         
         //updateGL();  // not necessary, continuous update

@@ -1,8 +1,8 @@
 #ifndef PROJECT_OPENGL__TRACKBALL_H
 #define PROJECT_OPENGL__TRACKBALL_H
 
-#include "math/Matrix.h"
-#include "math/Point.h"
+#include "../math/Matrix.h"
+#include "../math/Point.h"
 
 namespace Project {
 namespace OpenGL {
@@ -15,8 +15,10 @@ class Trackball {
 private:
     Math::Matrix matrix, inverse;
     Math::Point mouseStart, mouseCurrent;
+	float xScale;
+	float yScale;
 public:
-    Trackball();
+    Trackball(float x_scale = 1.0f, float y_scale = 1.0f);
     
     void reset();
     

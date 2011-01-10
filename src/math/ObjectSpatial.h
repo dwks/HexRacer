@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Point.h"
-#include "BoundingObject.h"
 
 namespace Project {
 namespace Math {
+
+class BoundingObject;
 
 class ObjectSpatial
 {
@@ -17,6 +18,14 @@ public:
 	virtual double maxX() = 0;
 	virtual double maxY() = 0;
 	virtual double maxZ() = 0;
+
+	double widthX() { return maxX() - minX(); }
+	double widthY() { return maxY() - minY(); }
+	double widthZ() { return maxZ() - minZ(); }
+
+	double minCoord(Axis axis);
+	double maxCoord(Axis axis);
+	double widthCoord(Axis axis);
 
 	virtual Point centroid() = 0;
 	virtual void translate(Point& translation) = 0;

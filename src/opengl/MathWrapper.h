@@ -1,9 +1,9 @@
 #ifndef PROJECT_OPENGL__MATH_WRAPPER_H
 #define PROJECT_OPENGL__MATH_WRAPPER_H
 
-#include "math/Point.h"
-#include "math/Point2D.h"
-#include "math/Matrix.h"
+#include "../math/Point.h"
+#include "../math/Point2D.h"
+#include "../math/Matrix.h"
 
 namespace Project {
 namespace OpenGL {

@@ -6,8 +6,6 @@
 namespace Project {
 namespace Math {
 
-class Point2D;
-
 enum Axis {X_AXIS, Y_AXIS, Z_AXIS};
 
 /** Represents a four-dimensional affine point.
@@ -43,7 +41,7 @@ public:
     /** Returns a normalized vector (a vector of length 1) with the same
         direction as this one.
     */
-	virtual Point normalized() const;
+	Point normalized() const;
     
     /** Normalizes this vector, setting it to a vector of length 1 with the
         same direction as this had originally.
@@ -59,19 +57,21 @@ public:
         
         @param angle The angle to rotate through, specified in radians.
     */
-    virtual Point rotateX(double angle) const;
+	Point rotateX(double angle) const;
     
     /** Rotates this Point about the Y axis.
         
         @param angle The angle to rotate through, specified in radians.
     */
-    virtual Point rotateY(double angle) const;
+	Point rotateY(double angle) const;
     
     /** Rotates this Point about the Z axis.
         
         @param angle The angle to rotate through, specified in radians.
     */
-    virtual Point rotateZ(double angle) const;
+	Point rotateZ(double angle) const;
+
+	Point rotateAxis(Axis axis, double angle) const;
     
     /** Returns the dot product of this vector with @a other.
     */
@@ -79,21 +79,24 @@ public:
     
     /** Returns the cross product of this vector with @a other.
     */
-    virtual Point crossProduct(const Point &other) const;
+	Point crossProduct(const Point &other) const;
     
-    virtual Point operator + (const Point &other) const;
-    virtual Point operator - (const Point &other) const;
+	Point operator + (const Point &other) const;
+	Point operator - (const Point &other) const;
     
-    virtual Point operator * (double factor) const;
+	Point operator * (double factor) const;
     
     /**
         Note: no divide-by-zero checking is performed here.
     */
-    virtual Point operator / (double factor) const;
+	Point operator / (double factor) const;
     
-    virtual Point projectOnto(const Point &onto) const;
+	Point projectOnto(const Point &onto) const;
     
     void operator += (const Point &other);
+	void operator -= (const Point &other);
+	void operator *= (double factor);
+	void operator /= (double factor);
     
     /** Compares two Points with exact floating-point comparisons.
     */
@@ -101,6 +104,8 @@ public:
     
     double operator [] (int index) const;
     double &operator [] (int index);
+
+	virtual void operator = (Point &other);
 };
 
 std::ostream &operator << (std::ostream &stream, const Point &point);

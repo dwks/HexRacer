@@ -13,6 +13,13 @@ BoundingBox3D::BoundingBox3D(double width, double height, double depth, Point ce
 	setCorners(centroid-diag, centroid+diag);
 }
 
+BoundingBox3D::BoundingBox3D(ObjectSpatial& object) {
+	setCorners(
+		Point(object.minX(), object.minY(), object.minZ()),
+		Point(object.maxX(), object.maxY(), object.maxZ())
+		);
+}
+
 BoundingBox3D::~BoundingBox3D(void)
 {
 }
@@ -37,11 +44,11 @@ bool BoundingBox3D::isInside(BoundingObject& bounding_obj) {
 		}
 	}
 
-	return false;
+	return true;
 }
 
 BoundingObject2D& BoundingBox3D::projectTo2D(Axis project_axis) {
-	return *(new BoundingBox2D(Point2D(minCorner, project_axis), Point2D(maxCorner, project_axis), project_axis));
+	return *(new BoundingBox2D(*this, project_axis));
 }
 
 bool BoundingBox3D::pointInside3D(Point p) {
@@ -53,6 +60,16 @@ bool BoundingBox3D::pointInside3D(Point p) {
 }
 
 bool BoundingBox3D::intersects3D(BoundingObject3D& bound_obj) {
+	BoundingBox3D* box_3D = dynamic_cast<BoundingBox3D*>(&bound_obj);
+	if (box_3D) {
+		return (
+			box_3D->minX() <= maxX() && box_3D->maxX() >= minX() &&
+			box_3D->minY() <= maxY() && box_3D->maxY() >= minY() &&
+			box_3D->minZ() <= maxZ() && box_3D->maxZ() >= minZ()
+			);
+	}
+
+
 	return false; //Implement me!
 }
 
@@ -97,4 +114,17 @@ Point BoundingBox3D::getCorner(bool max_x, bool max_y, bool max_z) {
 		z = minCorner.getZ();
 
 	return Point(x, y, z);
+}
+
+void BoundingBox3D::expandToInclude(Point& point) {
+	for (int i = 0; i < 3; i++) {
+		Axis axis = (Axis) i;
+		minCorner.setCoord(minimum(minCorner.getCoord(axis), point.getCoord(axis)), axis);
+		maxCorner.setCoord(maximum(maxCorner.getCoord(axis), point.getCoord(axis)), axis);
+	}
+}
+
+void BoundingBox3D::expandToInclude(ObjectSpatial& object) {
+	expandToInclude(Point(object.minX(), object.minY(), object.minZ()));
+	expandToInclude(Point(object.maxX(), object.maxY(), object.maxZ()));
 }

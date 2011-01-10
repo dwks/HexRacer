@@ -19,11 +19,14 @@ bool Object2D::intersects(BoundingObject& bound_obj) {
 		return intersects2D((BoundingObject2D&) bound_obj);
 }
 
+/*
 void Object2D::translate(Point& translation) {
 	translate2D(Point2D(translation, projectAxis));
 }
+*/
 
 void Object2D::moveCentroid(Point& position) {
 	Point2D translation = Point2D(translation, projectAxis)-centroid();
-	translate2D(translation);
+	translate(translation);
+	//translate2D(translation);
 }

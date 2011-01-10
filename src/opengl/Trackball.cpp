@@ -3,13 +3,15 @@
 #include "OpenGL.h"
 
 #include "Trackball.h"
-#include "math/Values.h"
+#include "../math/Values.h"
 #include "MathWrapper.h"
 
 namespace Project {
 namespace OpenGL {
 
-Trackball::Trackball() {
+Trackball::Trackball(float x_scale, float y_scale) {
+	xScale = x_scale;
+	yScale = y_scale;
     reset();
 }
 
@@ -19,12 +21,12 @@ void Trackball::reset() {
 }
 
 void Trackball::setMouseStartAt(Math::Point point) {
-    mouseStart = point;
+    mouseStart = Math::Point(point.getX()*xScale, point.getY()*yScale, point.getZ());
     calculateZOfPoint(mouseStart);
 }
 
 void Trackball::setMouseCurrentAt(Math::Point point) {
-    mouseCurrent = point;
+    mouseCurrent = Math::Point(point.getX()*xScale, point.getY()*yScale, point.getZ());
     calculateZOfPoint(mouseCurrent);
     
     updateMatrix();

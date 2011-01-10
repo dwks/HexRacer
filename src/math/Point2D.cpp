@@ -13,27 +13,9 @@ Point2D::Point2D(Point& p, Axis project_axis) {
 
 Point2D::Point2D(double u, double v, Axis project_axis, double w) {
 	projectAxis = project_axis;
-	wp = w;
-
-	switch (projectAxis) {
-		case X_AXIS:
-			xp = 0.0f;
-			yp = u;
-			zp = v;
-			;break;
-
-		case Y_AXIS:
-			xp = u;
-			yp = 0.0f;
-			zp = v;
-			;break;
-
-		case Z_AXIS:
-			xp = u;
-			yp = v;
-			zp = 0.0f;
-			;break;	
-	}
+	setW(w);
+	setU(u);
+	setV(v);
 }
 
 double Point2D::getX() const {
@@ -58,6 +40,24 @@ double Point2D::getZ() const {
 }
 
 
+double Point2D::getU() const {
+	switch (projectAxis) {
+		case X_AXIS:
+			return getY();
+		case Y_AXIS: case Z_AXIS:
+			return getX();
+	}
+}
+
+double Point2D::getV() const {
+	switch (projectAxis) {
+		case X_AXIS: case Y_AXIS:
+			return getZ();
+		case Z_AXIS:
+			return getY();
+	}
+}
+
 void Point2D::setX(double x) {
 	if (projectAxis != X_AXIS)
 		xp = x;
@@ -70,4 +70,34 @@ void Point2D::setY(double y) {
 void Point2D::setZ(double z) {
 	if (projectAxis != Z_AXIS)
 		zp = z;
+}
+
+
+void Point2D::setU(double u) {
+	switch (projectAxis) {
+		case X_AXIS:
+			setY(u); break;
+		case Y_AXIS: case Z_AXIS:
+			setX(u); break;
+	}
+}
+
+void Point2D::setV(double v) {
+	switch (projectAxis) {
+		case X_AXIS: case Y_AXIS:
+			setZ(v); break;
+		case Z_AXIS:
+			setY(v); break;
+	}
+}
+
+void Point2D::operator = (Point &other) {
+	Point2D* p_2D = dynamic_cast<Point2D*>(&other);
+	if (p_2D)
+		projectAxis = p_2D->getProjectAxis();
+
+	setX(other.getX());
+	setY(other.getY());
+	setZ(other.getZ());
+	setW(other.getW());
 }

@@ -16,6 +16,7 @@ public:
 	BoundingBox3D(void) {}
 	BoundingBox3D(Point corner1, Point corner2);
 	BoundingBox3D(double width, double height, double depth, Point centroid = Point());
+	BoundingBox3D(ObjectSpatial& object);
 	~BoundingBox3D(void);
 
 	//Abstract method implementations
@@ -35,6 +36,8 @@ public:
 	//Class specific
 	Point getCorner(int index);
 	Point getCorner(bool max_x, bool max_y, bool max_z);
+	void expandToInclude(Point& point);
+	void expandToInclude(ObjectSpatial& object);
 };
 
 }  // namespace Math

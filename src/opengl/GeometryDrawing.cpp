@@ -1,5 +1,6 @@
 #include "GeometryDrawing.h"
 #include "MathWrapper.h"
+#include "OpenGL.h"
 using namespace Project;
 using namespace OpenGL;
 using namespace Math;
@@ -26,6 +27,21 @@ void GeometryDrawing::drawObject(ObjectSpatial& object, bool wireframe) {
 	}
 
 }
+
+void GeometryDrawing::drawBoundingObject(Math::BoundingObject& object, bool wireframe) {
+
+	BoundingObject3D* obj_3D = dynamic_cast<BoundingObject3D*>(&object);
+	if (obj_3D) {
+		drawObject(*obj_3D);
+		return;
+	}
+	BoundingObject2D* obj_2D = dynamic_cast<BoundingObject2D*>(&object);
+	if (obj_2D) {
+		drawObject(*obj_2D);
+		return;
+	}
+}
+
 void GeometryDrawing::drawBoundingBox3D(BoundingBox3D& object, bool wireframe) {
 
 	glBegin(GL_LINE_STRIP);

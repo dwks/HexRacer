@@ -18,17 +18,19 @@ public:
 		: projectAxis(projectAxis) {}
 	virtual ~Object2D(void) {}
 
-	double minZ() { return 0.0f; }
-	double maxZ() { return 0.0f; }
 	Axis getProjectAxis() { return projectAxis; }
 
 	bool intersects(BoundingObject& bound_obj);
-	void translate(Point& translation);
 	void moveCentroid(Point& position);
 
-	virtual void translate2D(Point2D& translation) = 0;
 	virtual bool intersects2D(BoundingObject2D& bound_obj) = 0;
+	virtual double minU() = 0;
+	virtual double minV() = 0;
+	virtual double maxU() = 0;
+	virtual double maxV() = 0;
 
+	double widthU() { return maxU()-minU(); }
+	double widthV() { return maxV()-minV(); }
 
 };
 

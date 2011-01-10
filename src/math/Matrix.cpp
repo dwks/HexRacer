@@ -1,6 +1,6 @@
 #include <iostream>
 #include <iomanip>
-#include "opengl/OpenGL.h"
+#include "../opengl/OpenGL.h"
 
 #include "Matrix.h"
 

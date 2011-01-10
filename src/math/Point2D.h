@@ -20,11 +20,19 @@ public:
 	double getY() const;
 	double getZ() const;
 
+	double getU() const;
+	double getV() const;
+
 	Axis getProjectAxis() {return projectAxis; }
 
 	void setX(double x);
     void setY(double y);
 	void setZ(double z);
+
+	void setU(double u);
+	void setV(double v);
+
+	virtual void operator = (Point &other);
 
 	/*
 	Point2D normalized() const {return Point2D(Point::normalized(), projectAxis);}

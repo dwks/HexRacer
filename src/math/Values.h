@@ -37,6 +37,18 @@ Type sign(const Type &value) {
     return value < 0 ? -1 : 1;
 }
 
+template <typename Type>
+Type bound(const Type &value, const Type &min, const Type &max) {
+
+    if (value < min)
+        return min;
+
+    if (value > max)
+        return max;
+
+	return value;
+}
+
 /** Computes the positive difference between @f and the greatest multiple of @d
 	which is smaller than @f
 */

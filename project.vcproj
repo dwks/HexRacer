@@ -161,6 +161,14 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\src\math\BSPTree.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\BSPTree3D.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\qtgui\main.cpp"
 				>
 			</File>
@@ -268,6 +276,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\math\SpatialContainer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\SpatialList.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\math\Values.cpp"
 					>
 				</File>
@@ -287,6 +303,10 @@
 			<Filter
 				Name="opengl"
 				>
+				<File
+					RelativePath=".\src\opengl\Color.cpp"
+					>
+				</File>
 				<File
 					RelativePath=".\src\opengl\GeometryDrawing.cpp"
 					>
@@ -326,6 +346,14 @@
 			Filter="h"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\src\math\BSPTree.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\BSPTree3D.h"
+				>
+			</File>
 			<File
 				RelativePath=".\src\config.h"
 				>
@@ -434,6 +462,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\math\SpatialContainer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\SpatialList.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\math\Values.h"
 					>
 				</File>
@@ -453,6 +489,10 @@
 			<Filter
 				Name="opengl"
 				>
+				<File
+					RelativePath=".\src\opengl\Color.h"
+					>
+				</File>
 				<File
 					RelativePath=".\src\opengl\GeometryDrawing.h"
 					>
