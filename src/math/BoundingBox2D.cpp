@@ -29,7 +29,7 @@ BoundingBox2D::~BoundingBox2D(void)
 
 void BoundingBox2D::setCorners(Point corner1, Point corner2) {
 
-	for (int i = 0; i < 3; i++) {
+	for (unsigned int i = 0; i < 3; i++) {
 		Axis axis = (Axis) i;
 		minCorner.setCoord(minimum(corner1.getCoord(axis), corner2.getCoord(axis)), axis);
 		maxCorner.setCoord(maximum(corner1.getCoord(axis), corner2.getCoord(axis)), axis);
@@ -45,7 +45,7 @@ Point BoundingBox2D::centroid() const {
 
 bool BoundingBox2D::isInside2D(const BoundingObject2D& bounding_obj) const {
 
-	for (int i = 0; i < 4; i++) {
+	for (unsigned int i = 0; i < 4; i++) {
 		if (!bounding_obj.pointInside( getCorner(i) )) {
 			return false;
 		}
@@ -112,7 +112,7 @@ Point BoundingBox2D::getCorner(bool max_u, bool max_v) const {
 }
 
 void BoundingBox2D::expandToInclude(const Point& point) {
-	for (int i = 0; i < 3; i++) {
+	for (unsigned int i = 0; i < 3; i++) {
 		Axis axis = (Axis) i;
 		minCorner.setCoord(minimum(minCorner.getCoord(axis), point.getCoord(axis)), axis);
 		maxCorner.setCoord(maximum(maxCorner.getCoord(axis), point.getCoord(axis)), axis);

@@ -110,6 +110,7 @@
 				PreprocessorDefinitions=",UNICODE,WIN32,QT_LARGEFILE_SUPPORT;QT_CORE_LIB;QT_GUI_LIB;QT_OPENGL_LIB;QT_NETWORK_LIB"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="false"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -161,11 +162,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\src\math\BSPTree.cpp"
+				RelativePath=".\src\event\EventBase.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\math\BSPTree3D.cpp"
+				RelativePath=".\src\event\EventSerializer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\EventType.cpp"
 				>
 			</File>
 			<File
@@ -173,7 +178,39 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\MultiObserver.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\Observer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\ObserverList.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\PacketReceived.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\PlayerMovement.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\QuitEvent.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SendPacket.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\TypedObserver.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\UpdatePlayerList.cpp"
 				>
 			</File>
 			<Filter
@@ -245,6 +282,14 @@
 				</File>
 				<File
 					RelativePath=".\src\math\BoundingObject3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BSPTree.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BSPTree3D.cpp"
 					>
 				</File>
 				<File
@@ -347,19 +392,55 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\src\math\BSPTree.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\math\BSPTree3D.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\config.h"
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\EventBase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\EventSerializer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\EventType.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\MultiObserver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\Observer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\ObserverList.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\PacketReceived.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\PlayerMovement.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\QuitEvent.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SendPacket.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\TypedObserver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\UpdatePlayerList.h"
 				>
 			</File>
 			<Filter
@@ -431,6 +512,14 @@
 				</File>
 				<File
 					RelativePath=".\src\math\BoundingObject3D.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BSPTree.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\BSPTree3D.h"
 					>
 				</File>
 				<File

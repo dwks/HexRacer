@@ -27,7 +27,7 @@ public:
 	double maxZ() const { return maxCorner.getZ(); }
 	Point centroid() const;
 	bool isInside(const BoundingObject& bounding_obj) const;
-	BoundingObject2D& projectTo2D(Axis project_axis) const;
+	BoundingObject2D* projectTo2D(Axis project_axis) const;
 	bool pointInside(const Point& p) const;
 	bool intersects3D(const BoundingObject3D& bound_obj) const;
 	void translate(const Point& translation);

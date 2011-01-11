@@ -53,7 +53,7 @@ void BSPTree3D::split() {
 		case LARGEST_AXIS:
 
 			largest_axis = X_AXIS;
-			for (int i = 1; i < 3; i++) {
+			for (unsigned int i = 1; i < 3; i++) {
 				double width = boundingBox.widthCoord((Axis) i);
 				if (width > largest_axis_width) {
 					largest_axis = (Axis) i;

@@ -25,7 +25,7 @@ BoundingBox3D::~BoundingBox3D(void)
 }
 
 void BoundingBox3D::setCorners(Point corner1, Point corner2) {
-	for (int i = 0; i < 3; i++) {
+	for (unsigned int i = 0; i < 3; i++) {
 		Axis axis = (Axis) i;
 		minCorner.setCoord(minimum(corner1.getCoord(axis), corner2.getCoord(axis)), axis);
 		maxCorner.setCoord(maximum(corner1.getCoord(axis), corner2.getCoord(axis)), axis);
@@ -38,7 +38,7 @@ Point BoundingBox3D::centroid() const {
 }
 bool BoundingBox3D::isInside(const BoundingObject& bounding_obj) const {
 
-	for (int i = 0; i < 8; i++) {
+	for (unsigned int i = 0; i < 8; i++) {
 		if (!bounding_obj.pointInside( getCorner(i) )) {
 			return false;
 		}
@@ -47,8 +47,8 @@ bool BoundingBox3D::isInside(const BoundingObject& bounding_obj) const {
 	return true;
 }
 
-BoundingObject2D& BoundingBox3D::projectTo2D(Axis project_axis) const {
-	return *(new BoundingBox2D(*this, project_axis));
+BoundingObject2D* BoundingBox3D::projectTo2D(Axis project_axis) const {
+	return new BoundingBox2D(*this, project_axis);
 }
 
 bool BoundingBox3D::pointInside(const Point& p) const {
@@ -117,7 +117,7 @@ Point BoundingBox3D::getCorner(bool max_x, bool max_y, bool max_z) const {
 }
 
 void BoundingBox3D::expandToInclude(const Point& point) {
-	for (int i = 0; i < 3; i++) {
+	for (unsigned int i = 0; i < 3; i++) {
 		Axis axis = (Axis) i;
 		minCorner.setCoord(minimum(minCorner.getCoord(axis), point.getCoord(axis)), axis);
 		maxCorner.setCoord(maximum(maxCorner.getCoord(axis), point.getCoord(axis)), axis);
