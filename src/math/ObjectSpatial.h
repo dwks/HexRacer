@@ -12,26 +12,26 @@ class ObjectSpatial
 public:
 	virtual ~ObjectSpatial(void) {}
 
-	virtual double minX() = 0;
-	virtual double minY() = 0;
-	virtual double minZ() = 0;
-	virtual double maxX() = 0;
-	virtual double maxY() = 0;
-	virtual double maxZ() = 0;
+	virtual double minX() const = 0;
+	virtual double minY() const = 0;
+	virtual double minZ() const = 0;
+	virtual double maxX() const = 0;
+	virtual double maxY() const = 0;
+	virtual double maxZ() const = 0;
 
-	double widthX() { return maxX() - minX(); }
-	double widthY() { return maxY() - minY(); }
-	double widthZ() { return maxZ() - minZ(); }
+	double widthX() const { return maxX() - minX(); }
+	double widthY() const { return maxY() - minY(); }
+	double widthZ() const { return maxZ() - minZ(); }
 
-	double minCoord(Axis axis);
-	double maxCoord(Axis axis);
-	double widthCoord(Axis axis);
+	double minCoord(Axis axis) const;
+	double maxCoord(Axis axis) const;
+	double widthCoord(Axis axis) const;
 
-	virtual Point centroid() = 0;
-	virtual void translate(Point& translation) = 0;
-	virtual void moveCentroid(Point& position) = 0;
-	virtual bool isInside(BoundingObject& bounding_obj) = 0;
-	virtual bool intersects(BoundingObject& bound_obj) = 0;
+	virtual Point centroid() const = 0;
+	virtual void translate(const Point& translation) = 0;
+	virtual void moveCentroid(const Point& position) = 0;
+	virtual bool isInside(const BoundingObject& bounding_obj) const = 0;
+	virtual bool intersects(const BoundingObject& bound_obj) const = 0;
 
 };
 

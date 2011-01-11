@@ -1,3 +1,5 @@
+/*
+
 #pragma once
 
 #include "Point.h"
@@ -33,28 +35,9 @@ public:
 	void setV(double v);
 
 	virtual void operator = (Point &other);
-
-	/*
-	Point2D normalized() const {return Point2D(Point::normalized(), projectAxis);}
-
-	Point2D rotateX(double angle) const {return Point2D(Point::rotateX(angle), projectAxis);}
-	
-	Point2D rotateY(double angle) const {return Point2D(Point::rotateY(angle), projectAxis);}
-    
-	Point2D rotateZ(double angle) const {return Point2D(Point::rotateZ(angle), projectAxis);}
-    
-	Point2D crossProduct(const Point &other) const {return Point2D(Point::crossProduct(other), projectAxis);}
-    
-	Point operator + (const Point &other) const;
-	Point operator - (const Point &other) const;
-    
-	Point operator * (double factor) const;
-
-	Point operator / (double factor) const;
-    
-	Point projectOnto(const Point &onto) const;
-	*/
 };
 
 }  // namespace Math
 }  // namespace Project
+
+*/

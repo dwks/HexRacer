@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Point2D.h"
+//#include "Point2D.h"
 #include "ObjectSpatial.h"
 
 namespace Project {
@@ -18,19 +18,21 @@ public:
 		: projectAxis(projectAxis) {}
 	virtual ~Object2D(void) {}
 
-	Axis getProjectAxis() { return projectAxis; }
+	Axis getProjectAxis() const { return projectAxis; }
 
-	bool intersects(BoundingObject& bound_obj);
-	void moveCentroid(Point& position);
+	bool intersects(const BoundingObject& bound_obj) const;
+	void moveCentroid(const Point& position);
+	bool isInside(const BoundingObject& bounding_obj) const;
 
-	virtual bool intersects2D(BoundingObject2D& bound_obj) = 0;
-	virtual double minU() = 0;
-	virtual double minV() = 0;
-	virtual double maxU() = 0;
-	virtual double maxV() = 0;
+	virtual bool intersects2D(const BoundingObject2D& bound_obj) const = 0;
+	virtual bool isInside2D(const BoundingObject2D& bounding_obj) const = 0;
+	virtual double minU() const = 0;
+	virtual double minV() const = 0;
+	virtual double maxU() const = 0;
+	virtual double maxV() const = 0;
 
-	double widthU() { return maxU()-minU(); }
-	double widthV() { return maxV()-minV(); }
+	double widthU() const { return maxU()-minU(); }
+	double widthV() const { return maxV()-minV(); }
 
 };
 

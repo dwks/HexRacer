@@ -13,7 +13,7 @@ BoundingBox3D::BoundingBox3D(double width, double height, double depth, Point ce
 	setCorners(centroid-diag, centroid+diag);
 }
 
-BoundingBox3D::BoundingBox3D(ObjectSpatial& object) {
+BoundingBox3D::BoundingBox3D(const ObjectSpatial& object) {
 	setCorners(
 		Point(object.minX(), object.minY(), object.minZ()),
 		Point(object.maxX(), object.maxY(), object.maxZ())
@@ -33,10 +33,10 @@ void BoundingBox3D::setCorners(Point corner1, Point corner2) {
 }
 
 
-Point BoundingBox3D::centroid() {
+Point BoundingBox3D::centroid() const {
 	return (minCorner + maxCorner)*0.5f;
 }
-bool BoundingBox3D::isInside(BoundingObject& bounding_obj) {
+bool BoundingBox3D::isInside(const BoundingObject& bounding_obj) const {
 
 	for (int i = 0; i < 8; i++) {
 		if (!bounding_obj.pointInside( getCorner(i) )) {
@@ -47,20 +47,20 @@ bool BoundingBox3D::isInside(BoundingObject& bounding_obj) {
 	return true;
 }
 
-BoundingObject2D& BoundingBox3D::projectTo2D(Axis project_axis) {
+BoundingObject2D& BoundingBox3D::projectTo2D(Axis project_axis) const {
 	return *(new BoundingBox2D(*this, project_axis));
 }
 
-bool BoundingBox3D::pointInside3D(Point p) {
+bool BoundingBox3D::pointInside(const Point& p) const {
 	return (
-		p.getX() >= minCorner.getX() && p.getX() <= maxCorner.getX() &&
-		p.getY() >= minCorner.getY() && p.getY() <= maxCorner.getY() &&
-		p.getZ() >= minCorner.getZ() && p.getZ() <= maxCorner.getZ()
+		p.getX() >= minX() && p.getX() <= maxX() &&
+		p.getY() >= minY() && p.getY() <= maxY() &&
+		p.getZ() >= minZ() && p.getZ() <= maxZ()
 		);
 }
 
-bool BoundingBox3D::intersects3D(BoundingObject3D& bound_obj) {
-	BoundingBox3D* box_3D = dynamic_cast<BoundingBox3D*>(&bound_obj);
+bool BoundingBox3D::intersects3D(const BoundingObject3D& bound_obj) const {
+	const BoundingBox3D* box_3D = dynamic_cast<const BoundingBox3D*>(&bound_obj);
 	if (box_3D) {
 		return (
 			box_3D->minX() <= maxX() && box_3D->maxX() >= minX() &&
@@ -73,12 +73,12 @@ bool BoundingBox3D::intersects3D(BoundingObject3D& bound_obj) {
 	return false; //Implement me!
 }
 
-void BoundingBox3D::translate(Point& translation) {
+void BoundingBox3D::translate(const Point& translation) {
 	minCorner += translation;
 	maxCorner += translation;
 }
 
-Point BoundingBox3D::getCorner(int index) {
+Point BoundingBox3D::getCorner(int index) const {
 	switch (index) {
 		case 0: return getCorner(false, false, false);
 		case 1: return getCorner(true, false, false);
@@ -93,30 +93,30 @@ Point BoundingBox3D::getCorner(int index) {
 	return Point();
 }
 
-Point BoundingBox3D::getCorner(bool max_x, bool max_y, bool max_z) {
+Point BoundingBox3D::getCorner(bool max_x, bool max_y, bool max_z) const {
 	double x;
 	double y;
 	double z;
 
 	if (max_x)
-		x = maxCorner.getX();
+		x = maxX();
 	else
-		x = minCorner.getX();
+		x = minX();
 
 	if (max_y)
-		y = maxCorner.getY();
+		y = maxY();
 	else
-		y = minCorner.getY();
+		y = minY();
 
 	if (max_z)
-		z = maxCorner.getZ();
+		z = maxZ();
 	else
-		z = minCorner.getZ();
+		z = minZ();
 
 	return Point(x, y, z);
 }
 
-void BoundingBox3D::expandToInclude(Point& point) {
+void BoundingBox3D::expandToInclude(const Point& point) {
 	for (int i = 0; i < 3; i++) {
 		Axis axis = (Axis) i;
 		minCorner.setCoord(minimum(minCorner.getCoord(axis), point.getCoord(axis)), axis);
@@ -124,7 +124,7 @@ void BoundingBox3D::expandToInclude(Point& point) {
 	}
 }
 
-void BoundingBox3D::expandToInclude(ObjectSpatial& object) {
+void BoundingBox3D::expandToInclude(const ObjectSpatial& object) {
 	expandToInclude(Point(object.minX(), object.minY(), object.minZ()));
 	expandToInclude(Point(object.maxX(), object.maxY(), object.maxZ()));
 }

@@ -2,7 +2,7 @@
 #define PROJECT_OPENGL__MATH_WRAPPER_H
 
 #include "../math/Point.h"
-#include "../math/Point2D.h"
+//#include "../math/Point2D.h"
 #include "../math/Matrix.h"
 
 namespace Project {
