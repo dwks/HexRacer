@@ -70,7 +70,7 @@ void ServerMain::run() {
             }
         }
         
-        if(++loops == 10) {
+        if(++loops == 200) {
             loops = 0;
             
             Event::UpdatePlayerList *update
@@ -83,7 +83,8 @@ void ServerMain::run() {
 #ifdef WIN32
 		Sleep(1);
 #else
-        usleep(10000);
+        usleep(10 * 1000);
+        //sleep(3);
 #endif
     }
 }

@@ -1,6 +1,7 @@
 #include <typeinfo>
 
 #include "NetworkPortal.h"
+#include "SDL.h"  // for SDL_Delay
 
 #include "log/Logger.h"
 
@@ -9,6 +10,7 @@
 #include "network/Packet.h"
 #include "network/PacketSerializer.h"
 #include "network/EventPacket.h"
+#include "network/HandshakePacket.h"
 
 #include "event/ObserverList.h"
 #include "event/PacketReceived.h"
@@ -50,6 +52,7 @@ bool NetworkPortal::EventPropagator::interestedIn(
 
 NetworkPortal::NetworkPortal() {
     portal = NULL;
+    id = -1;
     
     ADD_OBSERVER(new PacketSender(this));
     ADD_OBSERVER(new EventPropagator(this));
@@ -59,7 +62,7 @@ NetworkPortal::~NetworkPortal() {
     disconnectFrom();
 }
 
-void NetworkPortal::connectTo(const char *hostname, unsigned short port) {
+bool NetworkPortal::connectTo(const char *hostname, unsigned short port) {
     Connection::Socket *socket
         = new Connection::ConstructedTCPSocket(hostname, port);
     if(socket->open()) {
@@ -67,6 +70,8 @@ void NetworkPortal::connectTo(const char *hostname, unsigned short port) {
             << hostname << ":" << port);
         
         portal = new Network::SinglePortal(socket);
+        
+        return true;
     }
     else {
         LOG2(NETWORK, CONNECT, "Failed to connect to server "
@@ -74,12 +79,32 @@ void NetworkPortal::connectTo(const char *hostname, unsigned short port) {
         delete socket;
         
         portal = NULL;
+        
+        return false;
     }
 }
 
 void NetworkPortal::disconnectFrom() {
     delete portal;  // works even if portal is NULL
     portal = NULL;
+}
+
+void NetworkPortal::waitForWorld() {
+    LOG2(NETWORK, CONNECT, "Waiting for HandshakePacket . . .");
+    
+    for(;;) {
+        Network::Packet *packet = portal->nextPacket();
+        if(packet) {
+            Network::HandshakePacket *handshake
+                = dynamic_cast<Network::HandshakePacket *>(packet);
+            id = handshake->getClientID();
+            break;
+        }
+        
+        SDL_Delay(10);
+    }
+    
+    LOG2(NETWORK, CONNECT, "Got HandshakePacket with ID " << id);
 }
 
 void NetworkPortal::checkNetwork() {

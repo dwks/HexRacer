@@ -14,6 +14,7 @@ namespace SDL {
 class NetworkPortal {
 private:
     Network::SinglePortal *portal;
+    int id;
 private:
     class PacketSender : public Event::TypedObserver<Event::SendPacket> {
     private:
@@ -37,9 +38,13 @@ public:
     NetworkPortal();
     ~NetworkPortal();
     
+    int getID() const { return id; }
+    
     /** Connects to the server hosted on @a hostname and listening on @a port.
+        
+        @return True upon success.
     */
-    void connectTo(const char *hostname, unsigned short port);
+    bool connectTo(const char *hostname, unsigned short port);
     
     /** Disconnects from the server.
         
@@ -47,6 +52,11 @@ public:
         called, or if connectTo() failed.
     */
     void disconnectFrom();
+    
+    /** Called immediately after a successful connect. Waits for any necessary
+        packets from the server.
+    */
+    void waitForWorld();
     
     /** It is safe to call this function even if connectTo() has not been
         called, or if connectTo() failed.

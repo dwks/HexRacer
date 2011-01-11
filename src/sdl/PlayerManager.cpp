@@ -31,7 +31,7 @@ PlayerManager::PlayerManager(int id) : id(id) {
     playerList->addPlayer(player);
     
     // commented out until the ID is assigned correctly
-    //ADD_OBSERVER(new PlayerMovementHandler(this));
+    ADD_OBSERVER(new PlayerMovementHandler(this));
     ADD_OBSERVER(new UpdatePlayerListHandler(this));
 }
 

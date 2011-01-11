@@ -67,9 +67,13 @@ void SDLMain::run() {
     joystick->open();
     
     network = new NetworkPortal();
-    network->connectTo("localhost", 1820);
-    
-    playerManager = new PlayerManager(0);
+    if(network->connectTo("localhost", 1820)) {
+        network->waitForWorld();
+        playerManager = new PlayerManager(network->getID());
+    }
+    else {
+        playerManager = new PlayerManager(0);
+    }
     
     bool quit = false;
     while(!quit) {

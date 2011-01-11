@@ -1,4 +1,18 @@
-To setup kdiff3 as a diff tool:
+To setup a Visual Studio project:
+- Add boost and SDL include/lib paths to global Visual Studio options
+- Somehow create a server.vcproj
+- Create project2.vcproj and import server.vcproj
+- Link with SDL.lib SDLmain.lib opengl.lib glu.lib
+- Define _WIN32_WINDOWS for both projects
+- Re-arrange files into directories
+
+To setup origin to point at the correct place
+(in case you locally clone a repo): [only works with git >= 1.7.0.0]
+- git remote rm origin
+- git remote add origin yourusername@csc.cpsc.ucalgary.ca:~dcwillia/git/585/project2
+- git branch --set-upstream master remotes/origin/master
+
+To setup kdiff3 as a diff tool on Windows:
 - Install http://sourceforge.net/projects/kdiff3/files/kdiff3/0.9.95/KDiff3Setup_0.9.95-2.exe/download
 - Run
     git config --global mergetool.kdiff3.path "C:/Program Files/KDiff3/kdiff3.exe"
