@@ -16,12 +16,7 @@
 #include "object/PlayerList.h"
 
 #include "log/Logger.h"
-
-#ifdef WIN32
-	#include <windows.h>
-#else
-	#include <unistd.h>
-#endif
+#include "misc/Sleeper.h"
 
 namespace Project {
 namespace Server {
@@ -104,12 +99,7 @@ void ServerMain::run() {
             delete packet;
         }
         
-#ifdef WIN32
-		Sleep(1);
-#else
-        usleep(10 * 1000);
-        //sleep(3);
-#endif
+        Misc::Sleeper::sleep(10 * 1000);
     }
 }
 
