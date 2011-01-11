@@ -4,7 +4,10 @@
 #ifndef PROJECT_OPENGL__OPENGL_H
 #define PROJECT_OPENGL__OPENGL_H
 
-#include <QtOpenGL>
+//#include <QtOpenGL>
+#include <windows.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 #ifndef WIN32
     #include <GL/gl.h>

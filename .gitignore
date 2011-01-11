@@ -28,3 +28,6 @@ Makefile
 *.ncb
 *.suo
 *.vcproj*.user
+
+#DLLs
+*.dll
