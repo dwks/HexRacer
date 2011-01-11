@@ -3,6 +3,53 @@
 using namespace Project;
 using namespace Math;
 
+double Object2D::minU() const {
+
+	switch (projectAxis) {
+		case X_AXIS:
+			return minY();
+		case Y_AXIS: case Z_AXIS:
+			return minX();
+	}
+
+	return 0.0f;
+}
+
+double Object2D::minV() const {
+
+	switch (projectAxis) {
+		case Z_AXIS:
+			return minY();
+		case X_AXIS: case Y_AXIS: 
+			return minZ();
+	}
+
+	return 0.0f;
+}
+
+double Object2D::maxU() const {
+
+	switch (projectAxis) {
+		case X_AXIS:
+			return maxY();
+		case Y_AXIS: case Z_AXIS:
+			return maxX();
+	}
+
+	return 0.0f;
+}
+double Object2D::maxV() const {
+
+	switch (projectAxis) {
+		case Z_AXIS:
+			return maxY();
+		case X_AXIS: case Y_AXIS: 
+			return maxZ();
+	}
+
+	return 0.0f;
+}
+
 bool Object2D::intersects(const BoundingObject& bound_obj) const {
 	//Check if the bounding object is 3D
 	const BoundingObject3D* bound_3D = dynamic_cast<const BoundingObject3D*>(&bound_obj);

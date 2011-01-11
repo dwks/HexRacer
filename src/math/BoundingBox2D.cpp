@@ -69,13 +69,15 @@ bool BoundingBox2D::intersects2D(const BoundingObject2D& bound_obj) const {
 
 	const BoundingBox2D* box_2D = dynamic_cast<const BoundingBox2D*>(&bound_obj);
 	if (box_2D) {
+		//2D Box-Box Intersection
 		return (
 			box_2D->minU() <= maxU() && box_2D->maxU() >= minU() &&
 			box_2D->minV() <= maxV() && box_2D->maxV() >= minV()
 			);
 	}
 
-	return false;
+	//Defer to the other object's interesection tests
+	return bound_obj.intersects2D(*this);
 }
 
 void BoundingBox2D::translate(const Point& translation) {

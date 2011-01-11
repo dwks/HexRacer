@@ -72,27 +72,90 @@ double Geometry::distance(Point one, Point two) {
     return (two - one).length();
 }
 
-/*
-bool Geometry::lineSegementIntersection2D(Point2D line1a, Point2D line1b,
-										  Point2D line2a, Point2D line2b, Point2D *intersection)
+
+bool Geometry::lineHLineIntersects2D(Point line_a, Point line_b, 
+									 double hline_v, double hline_umin,
+									 double hline_umax, Axis project_axis)
 {
-	
 
+	//Swap the min and max values if they are not ordered correctly
+	if (hline_umin > hline_umax) {
+		double temp = hline_umin;
+		hline_umin = hline_umax;
+		hline_umax = temp;
+	}
+
+	//Get the u and v values of the input line points
+	double line_a_u = line_a.getU(project_axis);
+	double line_a_v = line_a.getV(project_axis);
+	double line_b_u = line_b.getU(project_axis);
+	double line_b_v = line_b.getV(project_axis);
+
+	//Get the min and max u values of the input line
+	double l_min_u = minimum(line_a_u, line_b_u);
+	double l_max_u = maximum(line_a_u, line_b_u);
+
+	//Check for a horizontal input line (parallel lines)
+	if (line_a_v == line_b_v) {
+		//Check for overlap between the range and match of v value
+		return (line_a_v == hline_v && l_min_u <= hline_umax && l_max_u >= hline_umin);
+	}
+
+	//Get the u value of the intersection point
+	double intersect_u = line_a_u+((hline_v-line_a_v)/(line_b_v-line_a_v))*(line_b_u-line_a_u);
+	//Check if the u value is within the accepted ranges
+	return (intersect_u >= hline_umin && intersect_u <= hline_umax
+		&& intersect_u >= l_min_u && intersect_u <= l_max_u);
 	
 }
-*/
 
-/*
-bool Geometry::lineHLineIntersects2D(Point2D line_a, Point2D line_b, float hline_y, float hline_xmin, float hline_xmax) {
+bool Geometry::lineVLineIntersects2D(Point line_a, Point line_b, 
+									 double vline_u, double vline_vmin,
+									 double vline_vmax, Axis project_axis)
+{
+	//Swap the min and max values if they are not ordered correctly
+	if (vline_vmin > vline_vmax) {
+		double temp = vline_vmin;
+		vline_vmin = vline_vmax;
+		vline_vmax = temp;
+	}
+
+	//Get the u and v values of the input line points
+	double line_a_u = line_a.getU(project_axis);
+	double line_a_v = line_a.getV(project_axis);
+	double line_b_u = line_b.getU(project_axis);
+	double line_b_v = line_b.getV(project_axis);
+
+	//Get the min and max v values of the input line
+	double l_min_v = minimum(line_a_v, line_b_v);
+	double l_max_v = maximum(line_a_v, line_b_v);
+
+	//Check for a vertical input line (parallel lines)
+	if (line_a_u == line_b_u) {
+		//Check for overlap between the range and match of v value
+		return (line_a_u == vline_u && l_min_v <= vline_vmax && l_max_v >= vline_vmin);
+	}
+
+	//Get the v value of the intersection point
+	double intersect_v = line_a_v+((vline_u-line_a_u)/(line_b_u-line_a_u))*(line_b_v-line_a_v);
+	//Check if the v value is within the accepted ranges
+	return (intersect_v >= vline_vmin && intersect_v <= vline_vmax
+		&& intersect_v >= l_min_v && intersect_v <= l_max_v);
 	
-	//if (line1.getY() == line2.getY())
-	return false;
 }
 
-bool Geometry::lineVLineIntersects2D(Point2D line_a, Point2D line_b, float hline_x, float vline_ymin, float vline_ymax) {
-	return false;
+bool Geometry::sameSideOfLine2D(Point line_a, Point line_b, Point point_1, Point point_2, Axis project_axis) {
+
+	line_a = Point::point2D(line_a, project_axis);
+	line_b = Point::point2D(line_b, project_axis);
+	point_1 = Point::point2D(point_1, project_axis);
+	point_2 = Point::point2D(point_2, project_axis);
+
+	Point cp1 = (line_b - line_a).crossProduct(point_1 - line_a);
+    Point cp2 = (line_b - line_a).crossProduct(point_2 - line_a);
+	return (cp1.dotProduct(cp2) >= 0.0f);
+
 }
-*/
 
 }  // namespace Math
 }  // namespace Project

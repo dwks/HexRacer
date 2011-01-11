@@ -37,11 +37,17 @@ public:
     */
     static double distance(Point one, Point two);
 
-	/*
-	static bool lineHLineIntersects2D(Point2D line_a, Point2D line_b, float hline_y, float hline_xmin, float hline_xmax);
-	static bool lineVLineIntersects2D(Point2D line_a, Point2D line_b, float hline_x, float vline_ymin, float vline_ymax);
-	static bool triangleBoxIntersects2D(Point2D tri_a, Point2D tri_b, Point2D tri_c, Point2D box1, Point2D box2);
-	*/
+	
+	static bool lineHLineIntersects2D(Point line_a, Point line_b, double hline_v, double hline_umin, double hline_umax, Axis project_axis = Z_AXIS);
+	
+	static bool lineVLineIntersects2D(Point line_a, Point line_b, double hline_u, double vline_vmin, double vline_vmax, Axis project_axis = Z_AXIS);
+
+	/** Determines if two points are on the same side of a line
+        
+        @return True if @a point_1 and @a point_2 are on the same side of
+			the line denoted by @a line_a and @a line_b
+    */
+	static bool sameSideOfLine2D(Point line_a, Point line_b, Point point_1, Point point_2, Axis project_axis = Z_AXIS);
 	//static bool lineSegementIntersection2D(Point2D line1a, Point2D line1b, Point2D line2a, Point2D line2b, Point2D *intersection = NULL);
 };
 
