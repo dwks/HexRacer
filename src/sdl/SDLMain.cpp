@@ -87,12 +87,12 @@ void SDLMain::run() {
                     Point2D(event.resize.w, event.resize.h));
                 break;
             case SDL_KEYDOWN:
-                if(std::isprint(event.key.keysym.sym)) {
+                /*if(event.key.keysym.sym < 128) {
                     LOG2(SDL, INPUT, "Key pressed: '" << char(event.key.keysym.sym) << "'");
                 }
                 else {
                     //LOG2(SDL, INPUT, "Extended key pressed");
-                }
+                }*/
                 
                 handleKeyDown(&event);
                 

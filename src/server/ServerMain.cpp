@@ -1,5 +1,3 @@
-#include <unistd.h>
-
 #include "ServerMain.h"
 #include "ClientManager.h"
 
@@ -17,6 +15,12 @@
 #include "object/PlayerList.h"
 
 #include "log/Logger.h"
+
+#ifdef WIN32
+	#include <windows.h>
+#else
+	#include <unistd.h>
+#endif
 
 namespace Project {
 namespace Server {
@@ -76,7 +80,11 @@ void ServerMain::run() {
             delete packet;
         }
         
+#ifdef WIN32
+		Sleep(1);
+#else
         usleep(10000);
+#endif
     }
 }
 
