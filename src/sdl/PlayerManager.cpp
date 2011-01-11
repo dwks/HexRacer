@@ -19,8 +19,8 @@ void PlayerManager::PlayerMovementHandler::observe(
 void PlayerManager::UpdatePlayerListHandler::observe(
     Event::UpdatePlayerList *update) {
     
-    LOG(GLOBAL, "Replacing with PlayerList of "
-        << update->getPlayerList()->getPlayerCount() << " players");
+    /*LOG(GLOBAL, "Replacing with PlayerList of "
+        << update->getPlayerList()->getPlayerCount() << " players");*/
     manager->usePlayerList(update->getPlayerList());
 }
 
@@ -55,7 +55,7 @@ void PlayerManager::render() {
         int c = player->getID() % (sizeof(colours) / sizeof(*colours));
         glColor3f(colours[c].r, colours[c].g, colours[c].b);
         
-        LOG(GLOBAL, "Player " << c << " at " << player->getPosition());
+        //LOG(GLOBAL, "Player " << c << " at " << player->getPosition());
         
         glPointSize(10.0f);
         glBegin(GL_POINTS);
