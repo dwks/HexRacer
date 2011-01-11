@@ -46,10 +46,10 @@ void GeometryDrawing::drawBoundingBox3D(BoundingBox3D& object, bool wireframe) {
 
 	glBegin(GL_LINE_STRIP);
 
-	for (int i = 0; i < 4; i++)
+	for (unsigned int i = 0; i < 4; i++)
 		MathWrapper::glVertex(object.getCorner(i));
 	MathWrapper::glVertex(object.getCorner(0));
-	for (int i = 4; i < 8; i++)
+	for (unsigned int i = 4; i < 8; i++)
 		MathWrapper::glVertex(object.getCorner(i));
 	MathWrapper::glVertex(object.getCorner(4));
 	glEnd();
@@ -70,7 +70,7 @@ void GeometryDrawing::drawBoundingBox3D(BoundingBox3D& object, bool wireframe) {
 void GeometryDrawing::drawBoundingBox2D(BoundingBox2D& object, bool wireframe) {
 
 	glBegin(GL_LINE_LOOP);
-	for (int i = 0; i < 4; i++) {
+	for (unsigned int i = 0; i < 4; i++) {
 		MathWrapper::glVertex(object.getCorner(i));
 	}
 	glEnd();

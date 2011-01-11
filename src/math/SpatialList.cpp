@@ -17,7 +17,7 @@ bool SpatialList::add(ObjectSpatial* object) {
 
 bool SpatialList::remove(ObjectSpatial* object) {
 
-	for (int i = 0; i < objectList.size(); i++) {
+	for (unsigned int i = 0; i < objectList.size(); i++) {
 		if (objectList[i] == object) {
 			//Swap the object with the last object in the list and decrement the size
 			objectList[i] = objectList[objectList.size()-1];
@@ -30,7 +30,7 @@ bool SpatialList::remove(ObjectSpatial* object) {
 }
 
 bool SpatialList::contains(ObjectSpatial* object) {
-	for (int i = 0; i < objectList.size(); i++) {
+	for (unsigned int i = 0; i < objectList.size(); i++) {
 		if (objectList[i] == object)
 			return true;
 	}
@@ -46,7 +46,7 @@ vector<ObjectSpatial*> SpatialList::query(BoundingObject& bounding_object, Query
 
 void SpatialList::appendQuery(vector<ObjectSpatial*>* result_list, BoundingObject& bounding_object, QueryType query_type) {
 
-	for (int i = 0; i < objectList.size(); i++) {
+	for (unsigned int i = 0; i < objectList.size(); i++) {
 
 		if (queryTypeFilter(objectList[i], bounding_object, query_type)) {
 			result_list->push_back(objectList[i]);

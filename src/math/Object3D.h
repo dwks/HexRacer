@@ -19,7 +19,7 @@ public:
 	void moveCentroid(const Point& position);
 
 	virtual bool intersects3D(const BoundingObject3D& bound_obj) const = 0;
-	virtual BoundingObject2D& projectTo2D(Axis project_axis) const = 0;
+	virtual BoundingObject2D* projectTo2D(Axis project_axis) const = 0;
 	
 
 };

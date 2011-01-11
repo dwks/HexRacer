@@ -9,9 +9,9 @@ bool Object3D::intersects(const BoundingObject& bound_obj) const {
 	
 	if (bound_2D) {
 		//Intersection test on 2D object
-		BoundingObject2D& this_2D = projectTo2D(bound_2D->getProjectAxis()); //Get the 2D equivalent of this object
-		bool intersect = this_2D.intersects2D(*bound_2D); //Perform the intersection test in 2D
-		delete(&this_2D); //Delete the temporary 2D object
+		BoundingObject2D* this_2D = projectTo2D(bound_2D->getProjectAxis()); //Get the 2D equivalent of this object
+		bool intersect = this_2D->intersects2D(*bound_2D); //Perform the intersection test in 2D
+		delete(this_2D); //Delete the temporary 2D object
 		return intersect;
 	}
 	else
