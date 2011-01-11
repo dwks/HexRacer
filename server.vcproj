@@ -211,10 +211,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\server\ClientManager.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\connection\ConstructedTCPSocket.cpp"
 				>
 			</File>
@@ -323,10 +319,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\math\Point2D.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\network\PointSerializer.cpp"
 				>
 			</File>
@@ -343,23 +335,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\server\server.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\server\ServerMain.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\connection\ServerManager.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\network\SinglePortal.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\misc\Singleton.cpp"
 				>
 			</File>
 			<File
@@ -376,10 +356,6 @@
 			</File>
 			<File
 				RelativePath=".\src\log\Stream.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\misc\StreamAsString.cpp"
 				>
 			</File>
 			<File
@@ -410,6 +386,54 @@
 				RelativePath=".\src\log\VerbosityLevel.cpp"
 				>
 			</File>
+			<Filter
+				Name="connection"
+				>
+			</Filter>
+			<Filter
+				Name="event"
+				>
+			</Filter>
+			<Filter
+				Name="log"
+				>
+			</Filter>
+			<Filter
+				Name="math"
+				>
+			</Filter>
+			<Filter
+				Name="misc"
+				>
+				<File
+					RelativePath=".\src\misc\Singleton.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\misc\StreamAsString.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="server"
+				>
+				<File
+					RelativePath=".\src\server\ClientManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\server\server.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\server\ServerMain.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="sdl"
+				>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -454,14 +478,6 @@
 			</File>
 			<File
 				RelativePath=".\src\math\BSPTree3D.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\server\ClientManager.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\config.h"
 				>
 			</File>
 			<File
@@ -573,10 +589,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\math\Point2D.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\network\PointSerializer.h"
 				>
 			</File>
@@ -593,19 +605,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\server\ServerMain.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\connection\ServerManager.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\network\SinglePortal.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\misc\Singleton.h"
 				>
 			</File>
 			<File
@@ -622,10 +626,6 @@
 			</File>
 			<File
 				RelativePath=".\src\log\Stream.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\misc\StreamAsString.h"
 				>
 			</File>
 			<File
@@ -656,6 +656,50 @@
 				RelativePath=".\src\log\VerbosityLevel.h"
 				>
 			</File>
+			<Filter
+				Name="connection"
+				>
+			</Filter>
+			<Filter
+				Name="event"
+				>
+			</Filter>
+			<Filter
+				Name="log"
+				>
+			</Filter>
+			<Filter
+				Name="math"
+				>
+			</Filter>
+			<Filter
+				Name="misc"
+				>
+				<File
+					RelativePath=".\src\misc\Singleton.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\misc\StreamAsString.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="server"
+				>
+				<File
+					RelativePath=".\src\server\ClientManager.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\server\ServerMain.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="sdl"
+				>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"

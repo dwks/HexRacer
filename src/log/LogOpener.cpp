@@ -1,9 +1,9 @@
 #include <iostream>
 #include "config.h"
 
-#ifdef WIN32
-    #include <windows.h>
-#elif defined(HAVE_BOOST)
+//#ifdef WIN32
+//    #include <windows.h>
+#if defined(HAVE_BOOST)
     #include "boost/filesystem.hpp"
 #else
     #include <unistd.h>
@@ -22,9 +22,9 @@ namespace Project {
 namespace Log {
 
 void LogOpener::openLogs() {
-#ifdef WIN32
-    CreateDirectory((LPCWSTR)LOG_DIRECTORY, NULL);
-#elif defined(HAVE_BOOST)
+//#ifdef WIN32
+//    CreateDirectory((LPCWSTR)LOG_DIRECTORY, NULL);
+#if defined(HAVE_BOOST)
     boost::filesystem::create_directory(LOG_DIRECTORY);
 #else
     mkdir(LOG_DIRECTORY, 0755);
@@ -34,9 +34,9 @@ void LogOpener::openLogs() {
     for(int x = 0; x < 10000; x ++) {
         logfile = Misc::StreamAsString() << LOG_DIRECTORY << x;
 
-#ifdef WIN32
-        if(GetFileAttributes((LPCWSTR)logfile.c_str()) == 0xFFFFFFFF)
-#elif defined(HAVE_BOOST)
+//#ifdef WIN32
+//        if(GetFileAttributes((LPCWSTR)logfile.c_str()) == 0xFFFFFFFF)
+#if defined(HAVE_BOOST)
         if(!boost::filesystem::exists(logfile))
 #else
         if(access(logfile.c_str(), F_OK) != 0)
