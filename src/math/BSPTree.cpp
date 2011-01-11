@@ -36,7 +36,6 @@ bool BSPTree::add(ObjectSpatial* object) {
 	}
 
 	for (short i = 0; i < 2; i++) {
-		BoundingObject& b = child[i]->getBoundingObject();
 		if (object->isInside(child[i]->getBoundingObject())) {
 			child[i]->add(object);
 			return true;
@@ -118,10 +117,6 @@ void BSPTree::appendQuery(vector<ObjectSpatial*>* result_list, BoundingObject& b
 			if (append_child) {
 				child[i]->appendQuery(result_list, bounding_object, query_type);
 			}
-			else {
-				int b = 5;
-			}
-			
 		}
 	}
 

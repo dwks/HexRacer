@@ -1,0 +1,12 @@
+Subdirectory                Used by
+
+    connection/             sdl server
+    event/                  sdl server
+    log/                    sdl server
+    math/                   sdl server
+    misc/                   sdl server
+    network/                sdl server
+    object/                 sdl server
+    opengl/                 sdl
+    sdl/                    sdl
+    server/                 server
