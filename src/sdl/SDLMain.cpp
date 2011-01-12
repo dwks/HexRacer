@@ -69,6 +69,8 @@ void SDLMain::run() {
     joystick = new JoystickManager();
     joystick->open();
     
+    inputManager = new InputManager();
+    
     network = new NetworkPortal();
     if(network->connectTo("localhost", 1820)) {
         network->waitForWorld();
@@ -93,17 +95,6 @@ void SDLMain::run() {
                 projector.setCurrentDimensions(
                     Point2D(event.resize.w, event.resize.h));
                 break;
-            case SDL_KEYDOWN:
-                /*if(event.key.keysym.sym < 128) {
-                    LOG2(SDL, INPUT, "Key pressed: '" << char(event.key.keysym.sym) << "'");
-                }
-                else {
-                    //LOG2(SDL, INPUT, "Extended key pressed");
-                }*/
-                
-                handleKeyDown(&event);
-                
-                break;
             case SDL_MOUSEBUTTONDOWN:
                 /*LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " pressed "
                     << "at " << event.button.x << "," << event.button.y);*/
@@ -119,6 +110,9 @@ void SDLMain::run() {
                 break;
             case SDL_MOUSEBUTTONUP:
                 //LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " released");
+                break;
+            case SDL_KEYDOWN:
+                inputManager->handleEvent(&event);
                 break;
             }
         }
@@ -137,6 +131,7 @@ void SDLMain::run() {
     
     delete trackball;
     delete joystick;
+    delete inputManager;
     delete network;
 }
 

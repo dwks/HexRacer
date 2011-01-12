@@ -1,1 +1,3 @@
 - Make server exit gracefully when it receives CTRL-C
+- Do something about sound...
+- Make Singleton work under Windows (MSVC)

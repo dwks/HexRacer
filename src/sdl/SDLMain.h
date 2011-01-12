@@ -6,6 +6,7 @@
 #include "JoystickManager.h"
 #include "NetworkPortal.h"
 #include "PlayerManager.h"
+#include "InputManager.h"
 
 #define FIELD_OF_VIEW 60
 #define SDL_INIT_FLAGS (SDL_HWSURFACE | SDL_OPENGL | SDL_RESIZABLE)
@@ -20,6 +21,7 @@ private:
     OpenGL::Trackball *trackball;
     Projector projector;
     JoystickManager *joystick;
+    InputManager *inputManager;
     NetworkPortal *network;
     PlayerManager *playerManager;
 public:

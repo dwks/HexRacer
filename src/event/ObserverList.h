@@ -57,7 +57,7 @@ public:
     /** Notifies all interested observers of @a event. The pointer @a event is
         not freed by ObserverList if @a freeEvent is false.
     */
-    void notifyObservers(EventBase *event, bool freeEvent = false);
+    void notifyObservers(EventBase *event, bool freeEvent);
 };
 
 template <typename Type>
