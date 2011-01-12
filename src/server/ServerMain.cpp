@@ -28,7 +28,12 @@ void ServerMain::ServerVisitor::visit(Network::HandshakePacket &packet) {
 
 void ServerMain::ServerVisitor::visit(Network::EventPacket &packet) {
     // bootstrap into event subsystem
-    Event::ObserverList::getInstance().notifyObservers(packet.getEvent());
+    
+    //EMIT_EVENT(packet.getEvent());
+    
+    // don't free this Event
+    Event::ObserverList::getInstance().notifyObservers(
+        packet.getEvent(), false);
 }
 
 void ServerMain::ServerObserver::observe(Event::EventBase *event) {
