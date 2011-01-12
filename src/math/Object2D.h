@@ -26,10 +26,11 @@ public:
 
 	virtual bool intersects2D(const BoundingObject2D& bound_obj) const = 0;
 	virtual bool isInside2D(const BoundingObject2D& bounding_obj) const = 0;
-	virtual double minU() const = 0;
-	virtual double minV() const = 0;
-	virtual double maxU() const = 0;
-	virtual double maxV() const = 0;
+
+	double minU() const;
+	double minV() const;
+	double maxU() const;
+	double maxV() const;
 
 	double widthU() const { return maxU()-minU(); }
 	double widthV() const { return maxV()-minV(); }

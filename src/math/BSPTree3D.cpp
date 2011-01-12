@@ -14,15 +14,15 @@ BSPTree3D::~BSPTree3D(void)
 {
 }
 
-bool BSPTree3D::allowSplit() {
+bool BSPTree3D::allowSplit() const {
 	return (
-		boundingBox.widthX() >= minLength &&
-		boundingBox.widthY() >= minLength &&
+		boundingBox.widthX() >= minLength ||
+		boundingBox.widthY() >= minLength ||
 		boundingBox.widthZ() >= minLength
 		);
 }
 
-void BSPTree3D::split() {
+void BSPTree3D::split(vector<ObjectSpatial*>* objects) {
 
 	leaf = false;
 
@@ -31,6 +31,8 @@ void BSPTree3D::split() {
 	SplitMethod next_split_method = splitMethod;
 	Axis split_axis = X_AXIS;
 	Axis largest_axis = X_AXIS;
+	Axis min_overlap_axis = X_AXIS;
+	int min_overlap_num = 0;
 	double largest_axis_width = boundingBox.widthX();
 
 	switch (splitMethod) {
@@ -62,6 +64,38 @@ void BSPTree3D::split() {
 			}
 			split_axis = largest_axis;
 			;break;
+
+		case MIN_OVERLAP:
+			if (objects == NULL) {
+				next_split_method = FAIR_XSTART;
+				split_axis = X_AXIS;
+			}
+			else {
+				for (unsigned int i = 0; i < 3; i++) {
+					Axis axis = (Axis) i;
+					int overlap_num = 0;
+					double test_mid = (boundingBox.minCoord(axis) + boundingBox.maxCoord(axis))*0.5f;
+					for (unsigned int j = 0; j < objects->size(); j++) {
+						if (objects->at(j)->minCoord(axis) < test_mid && objects->at(j)->maxCoord(axis) > test_mid) {
+							overlap_num++;
+						}
+					}
+					if (i == 0 || overlap_num < min_overlap_num) {
+						min_overlap_num = overlap_num;
+						min_overlap_axis = axis;
+					}
+					next_split_method = MIN_OVERLAP;
+					split_axis = min_overlap_axis;
+				}
+				
+			}
+			;break;
+
+	}
+
+	//Don't split on an axis that is below the min length
+	while (boundingBox.widthCoord(split_axis) < minLength) {
+		split_axis = (Axis) ((((int) split_axis)+1) % 3);
 	}
 
 	double mid_val = (boundingBox.minCoord(split_axis) + boundingBox.maxCoord(split_axis))*0.5f;
@@ -96,6 +130,6 @@ void BSPTree3D::split() {
 		next_split_method, splitCount, minLength);
 }
 
-BoundingObject& BSPTree3D::getBoundingObject() {
+const BoundingObject& BSPTree3D::getBoundingObject() const {
 	return boundingBox;
 }

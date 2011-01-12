@@ -27,10 +27,6 @@ public:
 	double maxX() const { return maxCorner.getX(); }
 	double maxY() const { return maxCorner.getY(); }
 	double maxZ() const { return maxCorner.getZ(); }
-	double minU() const { return minCorner.getU(projectAxis); }
-	double minV() const { return minCorner.getV(projectAxis); }
-	double maxU() const { return maxCorner.getU(projectAxis); }
-	double maxV() const { return maxCorner.getV(projectAxis); }
 	Point centroid() const;
 	bool isInside2D(const BoundingObject2D& bounding_obj) const;
 	bool pointInside(const Point& p) const;

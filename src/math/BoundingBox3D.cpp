@@ -14,10 +14,7 @@ BoundingBox3D::BoundingBox3D(double width, double height, double depth, Point ce
 }
 
 BoundingBox3D::BoundingBox3D(const ObjectSpatial& object) {
-	setCorners(
-		Point(object.minX(), object.minY(), object.minZ()),
-		Point(object.maxX(), object.maxY(), object.maxZ())
-		);
+	setToObject(object);
 }
 
 BoundingBox3D::~BoundingBox3D(void)
@@ -60,8 +57,10 @@ bool BoundingBox3D::pointInside(const Point& p) const {
 }
 
 bool BoundingBox3D::intersects3D(const BoundingObject3D& bound_obj) const {
+
 	const BoundingBox3D* box_3D = dynamic_cast<const BoundingBox3D*>(&bound_obj);
 	if (box_3D) {
+		//3D Box-Box Intersection
 		return (
 			box_3D->minX() <= maxX() && box_3D->maxX() >= minX() &&
 			box_3D->minY() <= maxY() && box_3D->maxY() >= minY() &&
@@ -69,8 +68,8 @@ bool BoundingBox3D::intersects3D(const BoundingObject3D& bound_obj) const {
 			);
 	}
 
-
-	return false; //Implement me!
+	//Defer to the other object's interesection tests
+	return bound_obj.intersects3D(*this);
 }
 
 void BoundingBox3D::translate(const Point& translation) {
@@ -127,4 +126,11 @@ void BoundingBox3D::expandToInclude(const Point& point) {
 void BoundingBox3D::expandToInclude(const ObjectSpatial& object) {
 	expandToInclude(Point(object.minX(), object.minY(), object.minZ()));
 	expandToInclude(Point(object.maxX(), object.maxY(), object.maxZ()));
+}
+
+void BoundingBox3D::setToObject(const ObjectSpatial& object) {
+	setCorners(
+		Point(object.minX(), object.minY(), object.minZ()),
+		Point(object.maxX(), object.maxY(), object.maxZ())
+		);
 }

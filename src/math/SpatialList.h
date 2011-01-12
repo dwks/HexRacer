@@ -1,5 +1,6 @@
 #pragma once
 #include "SpatialContainer.h"
+#include "BoundingBox3D.h"
 
 namespace Project {
 namespace Math {
@@ -8,22 +9,26 @@ class SpatialList :
 	public SpatialContainer
 {
 public:
-	SpatialList(void);
+	SpatialList(bool use_bounding_box = false);
 	~SpatialList(void);
 
 	bool add(ObjectSpatial* object);
 	bool remove(ObjectSpatial* object);
-	bool contains(ObjectSpatial* object);
-	vector<ObjectSpatial*> query(BoundingObject& bounding_object, QueryType query_type);
-	vector<ObjectSpatial*> all();
-	int size();
+	bool contains(ObjectSpatial* object) const;
+	void add(vector<ObjectSpatial*> objects);
+	vector<ObjectSpatial*> query(BoundingObject& bounding_object, QueryType query_type) const;
+	vector<ObjectSpatial*> all() const;
+	int size() const;
 	void clear();
 
-	void appendQuery(vector<ObjectSpatial*>* result_list, BoundingObject& bounding_object, QueryType query_type);
+	void appendQuery(vector<ObjectSpatial*>* result_list, BoundingObject& bounding_object, QueryType query_type) const;
 
 private:
 
+	BoundingBox3D* boundingBox;
 	vector<ObjectSpatial*> objectList;
+
+	void refreshBoundingBox();
 
 };
 

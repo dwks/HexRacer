@@ -203,6 +203,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\BoundingTriangle2D.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BSPTree.cpp"
 				>
 			</File>
@@ -343,6 +347,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\misc\Sleeper.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\connection\Socket.cpp"
 				>
 			</File>
@@ -470,6 +478,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\BoundingObject3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\BoundingTriangle2D.h"
 				>
 			</File>
 			<File
@@ -610,6 +622,10 @@
 			</File>
 			<File
 				RelativePath=".\src\network\SinglePortal.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc\Sleeper.h"
 				>
 			</File>
 			<File

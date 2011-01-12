@@ -33,6 +33,7 @@ public:
 	void translate(const Point& translation);
 
 	//Class specific
+	void setToObject(const ObjectSpatial& object);
 	void setCorners(Point corner1, Point corner2);
 	Point getCorner(int index) const;
 	Point getCorner(bool max_x, bool max_y, bool max_z) const;
