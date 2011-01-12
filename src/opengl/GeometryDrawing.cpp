@@ -31,6 +31,12 @@ void GeometryDrawing::drawObject(ObjectSpatial& object, bool wireframe) {
 		return;
 	}
 
+	Triangle3D* t3D = dynamic_cast<Triangle3D*>(&object);
+	if (t3D) {
+		drawTriangle3D(*t3D, wireframe);
+		return;
+	}
+
 }
 
 void GeometryDrawing::drawBoundingObject(Math::BoundingObject& object, bool wireframe) {
@@ -123,6 +129,20 @@ void GeometryDrawing::drawBoundingBox2D(BoundingBox2D& object, bool wireframe) {
 }
 
 void GeometryDrawing::drawBoundingTriangle2D(Math::BoundingTriangle2D& object, bool wireframe) {
+
+	if (wireframe)
+		glBegin(GL_LINE_LOOP);
+	else
+		glBegin(GL_TRIANGLES);
+
+	for (unsigned int i = 0; i < 3; i++) {
+		MathWrapper::glVertex(object.getVertex(i));
+	}
+	glEnd();
+
+}
+
+void GeometryDrawing::drawTriangle3D(Math::Triangle3D& object, bool wireframe) {
 
 	if (wireframe)
 		glBegin(GL_LINE_LOOP);

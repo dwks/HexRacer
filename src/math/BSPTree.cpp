@@ -46,6 +46,46 @@ bool BSPTree::add(ObjectSpatial* object) {
 	return true;
 }
 
+void BSPTree::add(vector<ObjectSpatial*> objects) {
+	if (leaf) {
+		if (size()+static_cast<int>(objects.size()) <= splitCount || !allowSplit()) {
+			list.add(objects);
+			return;
+		}
+		else {
+			vector<ObjectSpatial*> old_objects = list.all();
+			list.clear();
+			for (unsigned int i = 0; i < old_objects.size(); i++)
+				objects.push_back(old_objects[i]);
+			split(&objects);
+		}
+	}
+	
+	if (!leaf) {
+
+		vector<ObjectSpatial*> add_to_child_0;
+		vector<ObjectSpatial*> add_to_child_1;
+		vector<ObjectSpatial*> add_to_this;
+
+		for (unsigned int i = 0; i < objects.size(); i++) {
+
+			if (objects[i]->isInside(child[0]->getBoundingObject()))
+				add_to_child_0.push_back(objects[i]);
+			else if (objects[i]->isInside(child[1]->getBoundingObject()))
+				add_to_child_1.push_back(objects[i]);
+			else
+				add_to_this.push_back(objects[i]);
+
+		}
+
+		child[0]->add(add_to_child_0);
+		child[1]->add(add_to_child_1);
+		list.add(add_to_this);
+		
+	}
+	
+}
+
 bool BSPTree::remove(ObjectSpatial* object) {
 	return false;
 }

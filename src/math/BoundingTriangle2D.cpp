@@ -38,6 +38,10 @@ namespace Math {
 	}
 
 	bool BoundingTriangle2D::isInside2D(const BoundingObject2D& bounding_obj) const {
+
+		if (bounding_obj.getProjectAxis() != projectAxis)
+			return false;
+
 		return (
 			bounding_obj.pointInside(getVertex(0)) &&
 			bounding_obj.pointInside(getVertex(1)) &&

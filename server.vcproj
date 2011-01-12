@@ -347,6 +347,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\misc\Sleeper.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\connection\Socket.cpp"
 				>
 			</File>
@@ -618,6 +622,10 @@
 			</File>
 			<File
 				RelativePath=".\src\network\SinglePortal.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc\Sleeper.h"
 				>
 			</File>
 			<File

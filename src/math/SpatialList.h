@@ -14,6 +14,7 @@ public:
 	bool add(ObjectSpatial* object);
 	bool remove(ObjectSpatial* object);
 	bool contains(ObjectSpatial* object);
+	void add(vector<ObjectSpatial*> objects);
 	vector<ObjectSpatial*> query(BoundingObject& bounding_object, QueryType query_type);
 	vector<ObjectSpatial*> all();
 	int size();

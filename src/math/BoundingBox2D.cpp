@@ -45,6 +45,9 @@ Point BoundingBox2D::centroid() const {
 
 bool BoundingBox2D::isInside2D(const BoundingObject2D& bounding_obj) const {
 
+	if (bounding_obj.getProjectAxis() != projectAxis)
+		return false;
+
 	for (unsigned int i = 0; i < 4; i++) {
 		if (!bounding_obj.pointInside( getCorner(i) )) {
 			return false;

@@ -188,6 +188,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\src\math\Triangle3D.cpp"
+				>
+			</File>
 			<Filter
 				Name="connection"
 				>
@@ -504,6 +508,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\MultiObserver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\Triangle3D.h"
 				>
 			</File>
 			<Filter

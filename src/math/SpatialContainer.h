@@ -20,6 +20,7 @@ public:
 	virtual bool add(ObjectSpatial* object) = 0;
 	virtual bool remove(ObjectSpatial* object) = 0;
 	virtual bool contains(ObjectSpatial* object) = 0;
+	virtual void add(vector<ObjectSpatial*> objects) = 0;
 	virtual vector<ObjectSpatial*> query(BoundingObject& bounding_object, QueryType query_type) = 0;
 	virtual vector<ObjectSpatial*> all() = 0;
 	virtual int size() = 0;

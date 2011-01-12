@@ -14,6 +14,7 @@ public:
 	bool add(ObjectSpatial* object);
 	bool remove(ObjectSpatial* object);
 	bool contains(ObjectSpatial* object);
+	void add(vector<ObjectSpatial*> objects);
 	vector<ObjectSpatial*> query(BoundingObject& bounding_object, QueryType query_type);
 	vector<ObjectSpatial*> all();
 	int size();
@@ -31,7 +32,7 @@ protected:
 	SpatialList list;
 
 	virtual bool allowSplit() = 0;
-	virtual void split() = 0;
+	virtual void split(vector<ObjectSpatial*>* objects = NULL) = 0;
 	virtual BoundingObject& getBoundingObject() = 0;
 
 };

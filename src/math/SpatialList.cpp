@@ -15,6 +15,12 @@ bool SpatialList::add(ObjectSpatial* object) {
 	return true;
 }
 
+void SpatialList::add(vector<ObjectSpatial*> objects) {
+	for (unsigned int i = 0; i < objects.size(); i++) {
+		add(objects[i]);
+	}
+}
+
 bool SpatialList::remove(ObjectSpatial* object) {
 
 	for (unsigned int i = 0; i < objectList.size(); i++) {
