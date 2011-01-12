@@ -6,6 +6,7 @@ using namespace Math;
 
 BSPTree::BSPTree(int split_count)
 {
+	list = SpatialList(true);
 	splitCount = split_count;
 	leaf = true;
 	subtreeSize = 0;
@@ -90,11 +91,11 @@ bool BSPTree::remove(ObjectSpatial* object) {
 	return false;
 }
 
-bool BSPTree::contains(ObjectSpatial* object) {
+bool BSPTree::contains(ObjectSpatial* object) const {
 	return false;
 }
 
-vector<ObjectSpatial*> BSPTree::query(BoundingObject& bounding_object, QueryType query_type) {
+vector<ObjectSpatial*> BSPTree::query(BoundingObject& bounding_object, QueryType query_type) const {
 	if (leaf)
 		return list.query(bounding_object, query_type);
 	else {
@@ -104,7 +105,7 @@ vector<ObjectSpatial*> BSPTree::query(BoundingObject& bounding_object, QueryType
 	}
 }
 
-vector<ObjectSpatial*> BSPTree::all() {
+vector<ObjectSpatial*> BSPTree::all() const {
 	vector<ObjectSpatial*> return_list;
 
 	vector<ObjectSpatial*> list_all = list.all();
@@ -123,7 +124,7 @@ vector<ObjectSpatial*> BSPTree::all() {
 	return return_list;
 }
 
-int BSPTree::size() {
+int BSPTree::size() const {
 	if (leaf)
 		return list.size();
 	else
@@ -134,7 +135,7 @@ void BSPTree::clear() {
 
 }
 
-void BSPTree::appendQuery(vector<ObjectSpatial*>* result_list, BoundingObject& bounding_object, QueryType query_type) {
+void BSPTree::appendQuery(vector<ObjectSpatial*>* result_list, BoundingObject& bounding_object, QueryType query_type) const {
 
 	list.appendQuery(result_list, bounding_object, query_type);
 	if (!leaf) {
@@ -142,13 +143,13 @@ void BSPTree::appendQuery(vector<ObjectSpatial*>* result_list, BoundingObject& b
 
 			bool append_child = false;
 
-			BoundingObject& child_bound = child[i]->getBoundingObject();
-			BoundingObject3D* bound_3D = dynamic_cast<BoundingObject3D*>(&child_bound);
+			const BoundingObject& child_bound = child[i]->getBoundingObject();
+			const BoundingObject3D* bound_3D = dynamic_cast<const BoundingObject3D*>(&child_bound);
 			if (bound_3D) {
 				append_child = bound_3D->intersects(bounding_object);
 			}
 			else {
-				BoundingObject2D* bound_2D = dynamic_cast<BoundingObject2D*>(&child_bound);
+				const BoundingObject2D* bound_2D = dynamic_cast<const BoundingObject2D*>(&child_bound);
 				if (bound_2D) {
 					append_child = bound_2D->intersects(bounding_object);
 				}

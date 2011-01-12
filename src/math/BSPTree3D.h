@@ -15,9 +15,9 @@ public:
 	BSPTree3D(BoundingBox3D bounding_box, SplitMethod split_method = FAIR_XSTART, int split_count = 4, double min_length = 0.0001f);
 	~BSPTree3D(void);
 
-	bool allowSplit();
+	bool allowSplit() const;
 	void split(vector<ObjectSpatial*>* objects = NULL);
-	BoundingObject& getBoundingObject();
+	const BoundingObject& getBoundingObject() const;
 
 private:
 

@@ -14,10 +14,7 @@ BoundingBox3D::BoundingBox3D(double width, double height, double depth, Point ce
 }
 
 BoundingBox3D::BoundingBox3D(const ObjectSpatial& object) {
-	setCorners(
-		Point(object.minX(), object.minY(), object.minZ()),
-		Point(object.maxX(), object.maxY(), object.maxZ())
-		);
+	setToObject(object);
 }
 
 BoundingBox3D::~BoundingBox3D(void)
@@ -129,4 +126,11 @@ void BoundingBox3D::expandToInclude(const Point& point) {
 void BoundingBox3D::expandToInclude(const ObjectSpatial& object) {
 	expandToInclude(Point(object.minX(), object.minY(), object.minZ()));
 	expandToInclude(Point(object.maxX(), object.maxY(), object.maxZ()));
+}
+
+void BoundingBox3D::setToObject(const ObjectSpatial& object) {
+	setCorners(
+		Point(object.minX(), object.minY(), object.minZ()),
+		Point(object.maxX(), object.maxY(), object.maxZ())
+		);
 }

@@ -19,17 +19,17 @@ public:
 
 	virtual bool add(ObjectSpatial* object) = 0;
 	virtual bool remove(ObjectSpatial* object) = 0;
-	virtual bool contains(ObjectSpatial* object) = 0;
+	virtual bool contains(ObjectSpatial* object) const = 0;
 	virtual void add(vector<ObjectSpatial*> objects) = 0;
-	virtual vector<ObjectSpatial*> query(BoundingObject& bounding_object, QueryType query_type) = 0;
-	virtual vector<ObjectSpatial*> all() = 0;
-	virtual int size() = 0;
+	virtual vector<ObjectSpatial*> query(BoundingObject& bounding_object, QueryType query_type) const = 0;
+	virtual vector<ObjectSpatial*> all() const = 0;
+	virtual int size() const = 0;
 	virtual void clear() = 0;
 
 protected:
 
-	bool queryTypeFilter(ObjectSpatial* object, BoundingObject& bounding_object, QueryType query_type);
-	virtual void appendQuery(vector<ObjectSpatial*>* result_list, BoundingObject& bounding_object, QueryType query_type) = 0;
+	bool queryTypeFilter(ObjectSpatial* object, BoundingObject& bounding_object, QueryType query_type) const;
+	virtual void appendQuery(vector<ObjectSpatial*>* result_list, BoundingObject& bounding_object, QueryType query_type) const = 0;
 
 };
 

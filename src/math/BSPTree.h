@@ -13,14 +13,14 @@ public:
 
 	bool add(ObjectSpatial* object);
 	bool remove(ObjectSpatial* object);
-	bool contains(ObjectSpatial* object);
+	bool contains(ObjectSpatial* object) const;
 	void add(vector<ObjectSpatial*> objects);
-	vector<ObjectSpatial*> query(BoundingObject& bounding_object, QueryType query_type);
-	vector<ObjectSpatial*> all();
-	int size();
+	vector<ObjectSpatial*> query(BoundingObject& bounding_object, QueryType query_type) const;
+	vector<ObjectSpatial*> all() const;
+	int size() const;
 	void clear();
 
-	void appendQuery(vector<ObjectSpatial*>* result_list, BoundingObject& bounding_object, QueryType query_type);
+	void appendQuery(vector<ObjectSpatial*>* result_list, BoundingObject& bounding_object, QueryType query_type) const;
 
 protected:
 
@@ -31,9 +31,9 @@ protected:
 
 	SpatialList list;
 
-	virtual bool allowSplit() = 0;
+	virtual bool allowSplit() const = 0;
 	virtual void split(vector<ObjectSpatial*>* objects = NULL) = 0;
-	virtual BoundingObject& getBoundingObject() = 0;
+	virtual const BoundingObject& getBoundingObject() const = 0;
 
 };
 

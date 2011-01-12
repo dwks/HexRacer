@@ -4,7 +4,7 @@
 using namespace Project;
 using namespace Math;
 
-bool SpatialContainer::queryTypeFilter(ObjectSpatial* object, BoundingObject& bounding_object, QueryType query_type) {
+bool SpatialContainer::queryTypeFilter(ObjectSpatial* object, BoundingObject& bounding_object, QueryType query_type) const {
 
 	Object2D* obj_2D;
 	switch (query_type) {

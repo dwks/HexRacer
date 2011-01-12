@@ -14,7 +14,7 @@ BSPTree3D::~BSPTree3D(void)
 {
 }
 
-bool BSPTree3D::allowSplit() {
+bool BSPTree3D::allowSplit() const {
 	return (
 		boundingBox.widthX() >= minLength ||
 		boundingBox.widthY() >= minLength ||
@@ -130,6 +130,6 @@ void BSPTree3D::split(vector<ObjectSpatial*>* objects) {
 		next_split_method, splitCount, minLength);
 }
 
-BoundingObject& BSPTree3D::getBoundingObject() {
+const BoundingObject& BSPTree3D::getBoundingObject() const {
 	return boundingBox;
 }
