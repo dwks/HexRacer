@@ -14,6 +14,9 @@
 #include "event/ObserverList.h"
 #include "event/PlayerMovement.h"
 
+#include "math/BoundingBox3D.h"
+#include "opengl/GeometryDrawing.h"
+
 #include "config.h"
 
 namespace Project {
@@ -178,15 +181,18 @@ void SDLMain::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     
-    glTranslated(0.0, 0.0, -1.0);
+    glTranslated(0.0, 0.0, -5.0);
     
     trackball->applyTransform();
     
-    glBegin(GL_TRIANGLES);
+    /*glBegin(GL_TRIANGLES);
     OpenGL::MathWrapper::glVertex(Math::Point(0.0, 0.1, 0.0));
     OpenGL::MathWrapper::glVertex(Math::Point(-0.1, 0.0, 0.0));
     OpenGL::MathWrapper::glVertex(Math::Point(+0.1, 0.0, 0.0));
-    glEnd();
+    glEnd();*/
+    
+    Math::BoundingBox3D box(5.0, 1.0, 1.0, Math::Point(0.0, 0.0, 0.0));
+    OpenGL::GeometryDrawing::drawObject(box, true);
     
     glFlush();
 }

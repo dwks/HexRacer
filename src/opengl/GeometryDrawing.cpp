@@ -14,7 +14,8 @@ GeometryDrawing::~GeometryDrawing(void)
 }
 
 void GeometryDrawing::drawObject(ObjectSpatial& object, bool wireframe) {
-
+    // !!! use typeid
+    
 	BoundingBox3D* bb3D = dynamic_cast<BoundingBox3D*>(&object);
 	if (bb3D) {
 		drawBoundingBox3D(*bb3D, wireframe);
