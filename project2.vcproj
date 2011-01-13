@@ -173,7 +173,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\src\object\AbstractObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\BaseRenderable.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingTriangle2D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\CompositeRenderable.cpp"
 				>
 			</File>
 			<File
@@ -187,6 +199,34 @@
 						PreprocessorDefinitions="-D_WIN32_WINDOWS"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\src\render\model_obj.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\object\ObjectBase.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicalObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderableBox.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderableObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Renderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderListAccessor.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\src\math\Triangle3D.cpp"
@@ -499,7 +539,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\src\object\AbstractObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\BaseRenderable.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingTriangle2D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\CompositeRenderable.h"
 				>
 			</File>
 			<File
@@ -507,7 +559,35 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\model_obj.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\MultiObserver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\object\ObjectBase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicalObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderableBox.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderableObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Renderer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderListAccessor.h"
 				>
 			</File>
 			<File

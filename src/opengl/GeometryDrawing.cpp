@@ -1,6 +1,7 @@
 #include "GeometryDrawing.h"
 #include "MathWrapper.h"
 #include "OpenGL.h"
+#include <typeinfo>
 using namespace Project;
 using namespace OpenGL;
 using namespace Math;
@@ -14,7 +15,28 @@ GeometryDrawing::~GeometryDrawing(void)
 }
 
 void GeometryDrawing::drawObject(ObjectSpatial& object, bool wireframe) {
-    // !!! use typeid
+
+	const type_info& object_type = typeid(object);
+
+	if (object_type == typeid(BoundingBox3D&)) {
+		drawBoundingBox3D((BoundingBox3D&) object, wireframe);
+		return;
+	}
+	else if (object_type == typeid(BoundingBox2D&)) {
+		drawBoundingBox2D((BoundingBox2D&) object, wireframe);
+		return;
+	}
+	else if (object_type == typeid(BoundingTriangle2D&)) {
+		drawBoundingTriangle2D((BoundingTriangle2D&) object, wireframe);
+		return;
+	}
+	else if (object_type == typeid(Triangle3D&)) {
+		drawTriangle3D((Triangle3D&) object, wireframe);
+		return;
+	}
+
+
+	/*
     
 	BoundingBox3D* bb3D = dynamic_cast<BoundingBox3D*>(&object);
 	if (bb3D) {
@@ -38,6 +60,8 @@ void GeometryDrawing::drawObject(ObjectSpatial& object, bool wireframe) {
 		return;
 	}
 
+	*/
+
 }
 
 void GeometryDrawing::drawBoundingObject(Math::BoundingObject& object, bool wireframe) {
@@ -52,6 +76,7 @@ void GeometryDrawing::drawBoundingObject(Math::BoundingObject& object, bool wire
 		drawObject(*obj_2D, wireframe);
 		return;
 	}
+
 }
 
 void GeometryDrawing::drawBoundingBox3D(BoundingBox3D& object, bool wireframe) {
