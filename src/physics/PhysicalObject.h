@@ -6,6 +6,7 @@ namespace Physics {
 
 class PhysicalObject {
 public:
+  
 };
 
 }  // namespace Physics
