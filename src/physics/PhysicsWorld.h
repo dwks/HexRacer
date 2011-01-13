@@ -2,8 +2,10 @@
 #define PROJECT_PHYSICS__PHYSICS_WORLD_H
 
 #include <vector>
+#include <string>
 #include "math/Point.h"
 #include "log/Logger.h"
+#include "PhysicalPlayer.h"
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
@@ -17,19 +19,24 @@ public:
   void setupPhysicsWorld();
   void stepWorld(float microseconds);
   void setGravity(float xAccel, float yAccel, float zAccel);
-  void createRigidGenericBoxShape(float width, float height, float depth, Math::Point origin, float _mass);
+  
+  void createPlayer(int playerID);
+  
+  btRigidBody* createRigidStaticPlane(Math::Point planeNormal, Math::Point origin);
+  btRigidBody* createRigidSphere(float radius, Math::Point origin, float mass);
+  btRigidBody* createRigidBox(float width, float height, float depth, Math::Point origin, float mass);
   void createTestScene();
   
   void render();
-  
-  std::vector<btRigidBody*> collisionShapes;
-  
 private:
   btBroadphaseInterface *broadPhaseInterface;
   btCollisionDispatcher *collisionDispatcher;
   btDefaultCollisionConfiguration *collisionConfiguration;
   btConstraintSolver *constraintSolver;
   btDiscreteDynamicsWorld *dynamicsWorld;
+  
+  std::vector<btRigidBody*> collisionBodies;
+  std::vector<PhysicalPlayer*> playerEntities;
 };
 
 }  // namespace Physics

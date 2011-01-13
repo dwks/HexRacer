@@ -17,11 +17,10 @@ void PhysicsWorld::stepWorld(float microseconds) {
 
 void PhysicsWorld::createTestScene(){
     //The "Plane"
-    createRigidGenericBoxShape(50.0,5.0,50.0,Math::Point(0.0,-5.0,0.0),0.0);
+    createRigidStaticPlane(Math::Point(0.0,1.0,0.0), Math::Point(0.0,0.0,0.0));
     
-    //Two Boxes
-    createRigidGenericBoxShape(2.0,2.0,2.0,Math::Point(0.0,5.0,0.0),1.0);
-    createRigidGenericBoxShape(2.0,2.0,2.0,Math::Point(4.0,5.0,0.0),1.0);
+    //A player
+    createPlayer(0);
 }
 
 void PhysicsWorld::setupPhysicsWorld() {
@@ -47,40 +46,62 @@ void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
     dynamicsWorld->setGravity ( btVector3 ( xAccel,yAccel,zAccel ) );
 }
 
-void PhysicsWorld::createRigidGenericBoxShape ( float width, float height, float depth, Math::Point origin, float _mass ) {
-    LOG2(PHYSICS, INITBOX, "Creating Generic Box Shape: W: " << width << " H: " << height << " D: " << depth << " Origin: " << origin.getX() << ", " << origin.getY() << ", " << origin.getZ() << " Mass: " << _mass);
-    btCollisionShape* groundShape = new btBoxShape ( btVector3 ( btScalar ( width ),btScalar ( height ),btScalar ( depth ) ) );
+void PhysicsWorld::createPlayer(int playerID){
+    LOG2(PHYSICS, CREATE, "Creating Player. ID: " << playerID);
+    Physics::PhysicalPlayer* player = new Physics::PhysicalPlayer(PhysicsWorld::createRigidBox(2.0,2.0,2.0,Math::Point(0.0,2.0,0.0),2.0));
     
-    btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1,0)));
-        btRigidBody::btRigidBodyConstructionInfo
-                groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
-        btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-        dynamicsWorld->addRigidBody(groundRigidBody);
+    playerEntities.push_back(player);
+}
 
-    collisionShapes.push_back ( groundRigidBody );
 
-    btTransform groundTransform;
-    groundTransform.setIdentity();
-    groundTransform.setOrigin ( btVector3 ( origin.getX(),origin.getY(),origin.getZ() ) );
+btRigidBody* PhysicsWorld::createRigidStaticPlane(Math::Point planeNormal, Math::Point origin){
+    LOG2(PHYSICS, CREATE, "Creating Static Plane: Normal: " << planeNormal.getX() << " " << planeNormal.getY() << " " << planeNormal.getZ() << " Location: " << origin.getX() << " " << origin.getY()<< " " << origin.getZ());
+    btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(planeNormal.getX(),planeNormal.getY(),planeNormal.getZ()),1);
 
-    btScalar mass ( _mass );
+    btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(origin.getX(),origin.getY(),origin.getZ())));
+    btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
+    btRigidBody* rigidBody = new btRigidBody(groundRigidBodyCI);
+    
+    collisionBodies.push_back(rigidBody);
+    dynamicsWorld->addRigidBody(rigidBody);
+    
+    return rigidBody;
+}
 
-    bool isDynamic = ( mass != 0.f );
+btRigidBody* PhysicsWorld::createRigidSphere(float radius, Math::Point origin, float mass){
+    LOG2(PHYSICS, CREATE, "Creating Sphere: Radius: " << radius << " Origin: " << origin.getX() << ", " << origin.getY() << ", " << origin.getZ() << " Mass: " << mass);
+    btCollisionShape* sphereShape = new btSphereShape ( radius );
+    
+    btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(origin.getX(),origin.getY(),origin.getZ())));
+    btVector3 fallInertia(0,0,0);
+    sphereShape->calculateLocalInertia(mass,fallInertia);
+    btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass,fallMotionState,sphereShape,fallInertia);
+    btRigidBody* rigidBody = new btRigidBody(fallRigidBodyCI);
+        
+    collisionBodies.push_back(rigidBody);
+    dynamicsWorld->addRigidBody(rigidBody);
+    
+    return rigidBody;
+}
 
-    btVector3 localInertia ( 0,0,0 );
-    if ( isDynamic )
-        groundShape->calculateLocalInertia ( mass,localInertia );
-
-    btDefaultMotionState* myMotionState = new btDefaultMotionState ( groundTransform );
-    btRigidBody::btRigidBodyConstructionInfo rbInfo ( mass,myMotionState,groundShape,localInertia );
-    btRigidBody* body = new btRigidBody ( rbInfo );
-
-    dynamicsWorld->addRigidBody ( body );
-    LOG2(PHYSICS, INITBOX, "Finished Making the generic box.");
+btRigidBody* PhysicsWorld::createRigidBox(float width, float height, float depth, Math::Point origin, float mass){
+    LOG2(PHYSICS, CREATE, "Creating BoxShape: W: " << width << " H: " << height << " D: " << depth << " Origin: " << origin.getX() << ", " << origin.getY() << ", " << origin.getZ() << " Mass: " << mass);
+    btCollisionShape* boxShape = new btBoxShape ( btVector3 (width,height,depth) );
+    
+    btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(origin.getX(),origin.getY(),origin.getZ())));
+    btVector3 fallInertia(0,0,0);
+    boxShape->calculateLocalInertia(mass,fallInertia);
+    btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass,fallMotionState,boxShape,fallInertia);
+    btRigidBody* rigidBody = new btRigidBody(fallRigidBodyCI);
+        
+    collisionBodies.push_back(rigidBody);
+    dynamicsWorld->addRigidBody(rigidBody);
+    
+    return rigidBody;
 }
 
 void PhysicsWorld::render() {
-    for(std::size_t x = 0; x < collisionShapes.size(); x ++) {
+    for(std::size_t x = 0; x < collisionBodies.size(); x ++) {
         
     }
 }

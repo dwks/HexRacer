@@ -8,7 +8,11 @@ namespace Physics {
 
 class PhysicalPlayer : public PhysicalObject {
 public:
-  
+    PhysicalPlayer(btRigidBody* pRigidBody);
+    Math::Point getOrigin();
+    
+protected:
+    btRigidBody* primaryRigidBody; 
 };
 
 }  // namespace Physics
