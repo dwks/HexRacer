@@ -128,6 +128,7 @@ void SDLMain::run() {
         
         render();
         playerManager->render();
+        physicsWorld->render();  // for debugging
         
         SDL_GL_SwapBuffers();
         
