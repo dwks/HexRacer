@@ -185,6 +185,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\sdl\InputManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\main.cpp"
 				>
 				<FileConfiguration
@@ -206,6 +210,14 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\PhysicalObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicalPlayer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicsWorld.cpp"
 				>
 			</File>
 			<File
@@ -547,6 +559,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\sdl\InputManager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\model_obj.h"
 				>
 			</File>
@@ -560,6 +576,14 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\PhysicalObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicalPlayer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicsWorld.h"
 				>
 			</File>
 			<File

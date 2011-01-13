@@ -50,7 +50,7 @@ void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
 }
 
 void PhysicsWorld::createRigidGenericBoxShape ( float width, float height, float depth, Math::Point origin, float mass ) {
-    LOG2(PHYSICS, INITBOX, "Creating Generic Box Shape: W: " << width << " H: " << height << " D: " << depth << " Origin: " << origin.getX << ", " << origin.getY << ", " << origin.getZ << " Mass: " << mass);
+    LOG2(PHYSICS, INITBOX, "Creating Generic Box Shape: W: " << width << " H: " << height << " D: " << depth << " Origin: " << origin.getX() << ", " << origin.getY() << ", " << origin.getZ() << " Mass: " << mass);
     btCollisionShape* groundShape = new btBoxShape ( btVector3 ( btScalar ( width ),btScalar ( height ),btScalar ( depth ) ) );
     collisionShapes.push_back ( groundShape );
 
