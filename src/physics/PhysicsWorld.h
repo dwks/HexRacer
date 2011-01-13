@@ -20,7 +20,9 @@ public:
   void createRigidGenericBoxShape(float width, float height, float depth, Math::Point origin, float _mass);
   void createTestScene();
   
-  btAlignedObjectArray<btCollisionShape*> collisionShapes;
+  void render();
+  
+  std::vector<btCollisionShape*> collisionShapes;
   
 private:
   btBroadphaseInterface *broadPhaseInterface;

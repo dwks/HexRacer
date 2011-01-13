@@ -1,3 +1,4 @@
+#include <cstddef>  // for std::size_t
 #include "PhysicsWorld.h"
 
 namespace Project {
@@ -73,5 +74,12 @@ void PhysicsWorld::createRigidGenericBoxShape ( float width, float height, float
     dynamicsWorld->addRigidBody ( body );
     LOG2(PHYSICS, INITBOX, "Finished Making the generic box.");
 }
+
+void PhysicsWorld::render() {
+    for(std::size_t x = 0; x < collisionShapes.size(); x ++) {
+        
+    }
+}
+
 }  // namespace Physics
 }  // namespace Project
