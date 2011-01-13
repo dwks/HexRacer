@@ -1,15 +1,20 @@
 #ifndef PROJECT_RENDER__COMPOSITE_RENDERABLE_H
 #define PROJECT_RENDER__COMPOSITE_RENDERABLE_H
 
-#include "RenderListAccessor.h"
+#include "RenderableObject.h"
+#include <vector>
 
 namespace Project {
 namespace Render {
 
-class CompositeRenderable {
-public:
+class CompositeRenderable
+	: public RenderableObject {
 
-	virtual void addToRenderList(RenderListAccessor* accessor) = 0;
+	void renderGeometry();
+
+private:
+
+	virtual std::vector<RenderableObject*> getChildren() = 0;
 
 };
 
