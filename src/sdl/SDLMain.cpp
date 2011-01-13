@@ -112,7 +112,6 @@ void SDLMain::run() {
                 //LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " released");
                 break;
             case SDL_KEYDOWN:
-                handleKeyDown(&event);
             case SDL_KEYUP:
                 inputManager->handleEvent(&event);
                 break;
