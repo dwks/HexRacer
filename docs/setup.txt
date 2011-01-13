@@ -1,3 +1,6 @@
+To link with bullet:
+- Add these libraries in this order: BulletDynamics BulletCollision LinearMath
+
 To setup a Visual Studio project:
 - Add boost and SDL include/lib paths to global Visual Studio options
 - Somehow create a server.vcproj
@@ -9,8 +12,11 @@ To setup a Visual Studio project:
 To setup origin to point at the correct place
 (in case you locally clone a repo): [only works with git >= 1.7.0.0]
 - git remote rm origin
-- git remote add origin yourusername@csc.cpsc.ucalgary.ca:~dcwillia/git/585/project2
+- git remote add origin yourusername@csc.cpsc.ucalgary.ca:~dcwillia/git/585/project
 - git branch --set-upstream master remotes/origin/master
+
+To create a local branch synced with a remote one
+- git checkout --track -b physics origin/physics
 
 To setup kdiff3 as a diff tool on Windows:
 - Install http://sourceforge.net/projects/kdiff3/files/kdiff3/0.9.95/KDiff3Setup_0.9.95-2.exe/download
