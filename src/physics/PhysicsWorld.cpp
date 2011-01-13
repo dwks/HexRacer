@@ -13,9 +13,6 @@ void PhysicsWorld::stepWorld(float microseconds) {
     if ( dynamicsWorld ) {
         dynamicsWorld->stepSimulation ( microseconds / 1000000.f );
     }
-    for(int i=0;i<collisionShapes->getNumCollisionObjects();i++){
-        collisionShapes[i].
-    }
 }
 
 void PhysicsWorld::createTestScene(){
@@ -53,7 +50,14 @@ void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
 void PhysicsWorld::createRigidGenericBoxShape ( float width, float height, float depth, Math::Point origin, float _mass ) {
     LOG2(PHYSICS, INITBOX, "Creating Generic Box Shape: W: " << width << " H: " << height << " D: " << depth << " Origin: " << origin.getX() << ", " << origin.getY() << ", " << origin.getZ() << " Mass: " << _mass);
     btCollisionShape* groundShape = new btBoxShape ( btVector3 ( btScalar ( width ),btScalar ( height ),btScalar ( depth ) ) );
-    collisionShapes.push_back ( groundShape );
+    
+    btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1,0)));
+        btRigidBody::btRigidBodyConstructionInfo
+                groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
+        btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
+        dynamicsWorld->addRigidBody(groundRigidBody);
+
+    collisionShapes.push_back ( groundRigidBody );
 
     btTransform groundTransform;
     groundTransform.setIdentity();
