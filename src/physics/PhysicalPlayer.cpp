@@ -1,4 +1,5 @@
 #include "PhysicalPlayer.h"
+#include "Converter.h"
 
 namespace Project {
 namespace Physics {
@@ -11,7 +12,7 @@ Math::Point PhysicalPlayer::getOrigin() {
     btTransform trans;
     primaryRigidBody->getMotionState()->getWorldTransform(trans);
     
-    return Math::Point( trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ());
+    return Converter::toPoint(trans.getOrigin());
 }
 
     

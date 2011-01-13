@@ -1,5 +1,6 @@
 #include <cstddef>  // for std::size_t
 #include "PhysicsWorld.h"
+#include "Converter.h"
 
 namespace Project {
 namespace Physics {
@@ -26,18 +27,18 @@ void PhysicsWorld::createTestScene(){
 void PhysicsWorld::setupPhysicsWorld() {
     LOG2 ( PHYSICS, INIT, "Physics Setup Initialized..." );
     collisionConfiguration = new btDefaultCollisionConfiguration();
-
+    
     ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-    collisionDispatcher = new   btCollisionDispatcher ( collisionConfiguration );
-
+    collisionDispatcher = new btCollisionDispatcher ( collisionConfiguration );
+    
     broadPhaseInterface = new btDbvtBroadphase();
-
+    
     ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
     btSequentialImpulseConstraintSolver* sol = new btSequentialImpulseConstraintSolver;
     constraintSolver = sol;
-
+    
     dynamicsWorld = new btDiscreteDynamicsWorld ( collisionDispatcher,broadPhaseInterface,constraintSolver,collisionConfiguration );
-
+    
     dynamicsWorld->setGravity ( btVector3 ( 0.0,-9.81,0.0 ) );
     LOG2 ( PHYSICS, INIT, "Physics Setup Completed!" );
 }
@@ -72,12 +73,15 @@ btRigidBody* PhysicsWorld::createRigidSphere(float radius, Math::Point origin, f
     LOG2(PHYSICS, CREATE, "Creating Sphere: Radius: " << radius << " Origin: " << origin.getX() << ", " << origin.getY() << ", " << origin.getZ() << " Mass: " << mass);
     btCollisionShape* sphereShape = new btSphereShape ( radius );
     
-    btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(origin.getX(),origin.getY(),origin.getZ())));
+    btDefaultMotionState* fallMotionState
+        = new btDefaultMotionState(
+            btTransform(btQuaternion(0,0,0,1),
+                Converter::toVector(origin)));
     btVector3 fallInertia(0,0,0);
     sphereShape->calculateLocalInertia(mass,fallInertia);
     btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass,fallMotionState,sphereShape,fallInertia);
     btRigidBody* rigidBody = new btRigidBody(fallRigidBodyCI);
-        
+    
     collisionBodies.push_back(rigidBody);
     dynamicsWorld->addRigidBody(rigidBody);
     
@@ -85,10 +89,15 @@ btRigidBody* PhysicsWorld::createRigidSphere(float radius, Math::Point origin, f
 }
 
 btRigidBody* PhysicsWorld::createRigidBox(float width, float height, float depth, Math::Point origin, float mass){
-    LOG2(PHYSICS, CREATE, "Creating BoxShape: W: " << width << " H: " << height << " D: " << depth << " Origin: " << origin.getX() << ", " << origin.getY() << ", " << origin.getZ() << " Mass: " << mass);
+    LOG2(PHYSICS, CREATE,
+        "Creating BoxShape: W: " << width << " H: " << height << " D: " << depth
+        << " Origin: " << origin << " Mass: " << mass);
     btCollisionShape* boxShape = new btBoxShape ( btVector3 (width,height,depth) );
     
-    btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(origin.getX(),origin.getY(),origin.getZ())));
+    btDefaultMotionState* fallMotionState
+        = new btDefaultMotionState(
+            btTransform(btQuaternion(0,0,0,1),
+                Converter::toVector(origin)));
     btVector3 fallInertia(0,0,0);
     boxShape->calculateLocalInertia(mass,fallInertia);
     btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass,fallMotionState,boxShape,fallInertia);
@@ -101,8 +110,14 @@ btRigidBody* PhysicsWorld::createRigidBox(float width, float height, float depth
 }
 
 void PhysicsWorld::render() {
+    stepWorld(10 * 1000);  // step world by 10 ms
+    
     for(std::size_t x = 0; x < collisionBodies.size(); x ++) {
+        btTransform transform;
+        collisionBodies[x]->getMotionState()->getWorldTransform(transform);
         
+        LOG(PHYSICS, "body " << collisionBodies[x] << " at "
+            << Converter::toPoint(transform.getOrigin()));
     }
 }
 

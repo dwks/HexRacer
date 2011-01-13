@@ -10,7 +10,9 @@ namespace Physics {
 
 class PhysicalObject {
 public:
-    Math::Point getOrigin();
+    virtual ~PhysicalObject() {}
+    
+    virtual Math::Point getOrigin() = 0;
     
 protected:
     btRigidBody* primaryRigidBody; 
