@@ -22,7 +22,7 @@ public:
   
   void render();
   
-  std::vector<btCollisionShape*> collisionShapes;
+  std::vector<btRigidBody*> collisionShapes;
   
 private:
   btBroadphaseInterface *broadPhaseInterface;
