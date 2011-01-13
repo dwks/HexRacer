@@ -36,7 +36,6 @@ public:
 private:
     void resizeGL(int width, int height);
     void handleJoystick();
-    void handleKeyDown(SDL_Event *event);
     void render();
 };
 

@@ -177,10 +177,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\BaseRenderable.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\math\BoundingTriangle2D.cpp"
 				>
 			</File>
@@ -222,10 +218,6 @@
 			</File>
 			<File
 				RelativePath=".\src\render\Renderer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\RenderListAccessor.cpp"
 				>
 			</File>
 			<File
@@ -543,10 +535,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\BaseRenderable.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\math\BoundingTriangle2D.h"
 				>
 			</File>
@@ -584,10 +572,6 @@
 			</File>
 			<File
 				RelativePath=".\src\render\Renderer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\RenderListAccessor.h"
 				>
 			</File>
 			<File

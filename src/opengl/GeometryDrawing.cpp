@@ -16,7 +16,7 @@ GeometryDrawing::~GeometryDrawing(void)
 
 void GeometryDrawing::drawObject(ObjectSpatial& object, bool wireframe) {
 
-	const type_info& object_type = typeid(object);
+	const std::type_info& object_type = typeid(object);
 
 	if (object_type == typeid(BoundingBox3D&)) {
 		drawBoundingBox3D((BoundingBox3D&) object, wireframe);
