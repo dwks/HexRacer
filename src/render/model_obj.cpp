@@ -42,6 +42,10 @@
 #include <string>
 #include "model_obj.h"
 
+#ifdef WIN32
+    #pragma warning(disable : 4996) //allows use of fopen 
+#endif
+
 using namespace Project;
 using namespace Render;
 
