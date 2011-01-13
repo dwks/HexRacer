@@ -47,9 +47,10 @@ TypeRegistry::TypeRegistry() {
     //PHYSICS log message types
     {
 	int counter = 1;
+        registerType(Subsystem::PHYSICS, "LOCATION", counter++);
+        registerType(Subsystem::PHYSICS, "TIMESTEP", counter++);
 	registerType(Subsystem::PHYSICS, "INIT", counter++);
         registerType(Subsystem::PHYSICS, "INITBOX", counter++);
-	registerType(Subsystem::PHYSICS, "LOCATION", counter++);
     }
 }
 

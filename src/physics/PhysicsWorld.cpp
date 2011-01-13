@@ -8,9 +8,12 @@ PhysicsWorld::PhysicsWorld() {
 }
 
 void PhysicsWorld::stepWorld(float microseconds) {
-    //TimeStep is hacked right now
+    LOG2( PHYSICS, TIMESTEP, "Stepping simulation by: " << microseconds << " microseconds");
     if ( dynamicsWorld ) {
         dynamicsWorld->stepSimulation ( microseconds / 1000000.f );
+    }
+    for(int i=0;i<collisionShapes->getNumCollisionObjects();i++){
+        collisionShapes[i].
     }
 }
 
@@ -25,9 +28,7 @@ void PhysicsWorld::createTestScene(){
 
 void PhysicsWorld::setupPhysicsWorld() {
     LOG2 ( PHYSICS, INIT, "Physics Setup Initialized..." );
-    ///collision configuration contains default setup for memory, collision setup
     collisionConfiguration = new btDefaultCollisionConfiguration();
-    //m_collisionConfiguration->setConvexConvexMultipointIterations();
 
     ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
     collisionDispatcher = new   btCollisionDispatcher ( collisionConfiguration );
@@ -42,7 +43,6 @@ void PhysicsWorld::setupPhysicsWorld() {
 
     dynamicsWorld->setGravity ( btVector3 ( 0.0,-9.81,0.0 ) );
     LOG2 ( PHYSICS, INIT, "Physics Setup Completed!" );
-
 }
 
 void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
