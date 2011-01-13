@@ -3,28 +3,77 @@
 namespace Project {
 namespace Physics {
 
-  PhysicsWorld::setupWorld(){
-	///collision configuration contains default setup for memory, collision setup
-	collisionConfiguration = new btDefaultCollisionConfiguration();
-	//m_collisionConfiguration->setConvexConvexMultipointIterations();
+PhysicsWorld::PhysicsWorld() {
+    setupPhysicsWorld();
+}
 
-	///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-	collisionDispatcher = new	btCollisionDispatcher(collisionConfiguration);
+PhysicsWorld::stepWorld(float microseconds) {
+    //TimeStep is hacked right now
+    if ( dynamicsWorld ) {
+        dynamicsWorld->stepSimulation ( microseconds / 1000000.f );
+    }
+}
 
-	broadPhaseInterface = new btDbvtBroadphase();
+PhysicsWorld::createTestScene(){
+    //The "Plane"
+    createRigidGenericBoxShape(50.0,5.0,50.0,Math::Point(0.0,-5.0,0.0),0.0);
+    
+    //Two Boxes
+    createRigidGenericBoxShape(2.0,2.0,2.0,Math::Point(0.0,5.0,0.0),1.0);
+    createRigidGenericBoxShape(2.0,2.0,2.0,Math::Point(4.0,5.0,0.0),1.0);
+}
 
-	///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-	btSequentialImpulseConstraintSolver* sol = new btSequentialImpulseConstraintSolver;
-	constraintSolver = sol;
+PhysicsWorld::setupPhysicsWorld() {
+    LOG2 ( PHYSICS, INIT, "Physics Setup Initialized..." );
+    ///collision configuration contains default setup for memory, collision setup
+    collisionConfiguration = new btDefaultCollisionConfiguration();
+    //m_collisionConfiguration->setConvexConvexMultipointIterations();
 
-	dynamicsWorld = new btDiscreteDynamicsWorld(collisionDispatcher,broadPhaseInterface,constraintSolver,collisionConfiguration);
+    ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
+    collisionDispatcher = new   btCollisionDispatcher ( collisionConfiguration );
 
-	dynamicsWorld->setGravity(btVector3(0.0,-9.81,0.0));
-  }
-  
-  PhysicsWorld::setGravity(float xAccel, float yAccel, float zAccel){
-    dynamicsWorld->setGravity(btVector3(xAccel,yAccel,zAccel));
-  }
-  
+    broadPhaseInterface = new btDbvtBroadphase();
+
+    ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
+    btSequentialImpulseConstraintSolver* sol = new btSequentialImpulseConstraintSolver;
+    constraintSolver = sol;
+
+    dynamicsWorld = new btDiscreteDynamicsWorld ( collisionDispatcher,broadPhaseInterface,constraintSolver,collisionConfiguration );
+
+    dynamicsWorld->setGravity ( btVector3 ( 0.0,-9.81,0.0 ) );
+    LOG2 ( PHYSICS, INIT, "Physics Setup Completed!" );
+
+}
+
+PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
+    dynamicsWorld->setGravity ( btVector3 ( xAccel,yAccel,zAccel ) );
+}
+
+PhysicsWorld::createRigidGenericBoxShape ( float width, float height, float depth, Math::Point origin, float mass ) {
+    LOG2(PHYSICS, INITBOX, "Creating Generic Box Shape: W: " << width << " H: " << height << " D: " << depth << " Origin: " << origin.getX << ", " << origin.getY << ", " << origin.getZ << " Mass: " << mass);
+    btCollisionShape* groundShape = new btBoxShape ( btVector3 ( btScalar ( width ),btScalar ( height ),btScalar ( depth ) ) );
+    collisionShapes.push_back ( groundShape );
+
+    btTransform groundTransform;
+    groundTransform.setIdentity();
+    groundTransform.setOrigin ( btVector3 ( origin.getX(),origin.getY(),origin.getZ() ) );
+
+    btScalar mass ( mass );
+
+    bool isDynamic = ( mass != 0.f );
+
+    btVector3 localInertia ( 0,0,0 );
+    if ( isDynamic )
+        groundShape->calculateLocalInertia ( mass,localInertia );
+
+    btDefaultMotionState* myMotionState = new btDefaultMotionState ( groundTransform );
+    btRigidBody::btRigidBodyConstructionInfo rbInfo ( mass,myMotionState,groundShape,localInertia );
+    btRigidBody* body = new btRigidBody ( rbInfo );
+
+    dynamicsWorld->addRigidBody ( body );
+    LOG2(PHYSICS, INITBOX, "Finished Making the generic box.");
+}
+
+
 }  // namespace Physics
 }  // namespace Project

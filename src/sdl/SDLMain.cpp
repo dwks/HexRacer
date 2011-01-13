@@ -79,7 +79,10 @@ void SDLMain::run() {
     else {
         playerManager = new PlayerManager(0);
     }
-    
+
+    physicsWorld = new Physics::PhysicsWorld();
+    physicsWorld->createTestScene();
+
     bool quit = false;
     while(!quit) {
         SDL_Event event;

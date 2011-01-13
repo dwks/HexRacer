@@ -1,21 +1,26 @@
 #ifndef PROJECT_PHYSICS__PHYSICS_WORLD_H
 #define PROJECT_PHYSICS__PHYSICS_WORLD_H
 
-#include "BulletCollision/BroadphaseCollision/btBroadphaseInterface.h"
-#include "BulletCollision/BroadphaseCollision/btDbvtBroadphase.h"
-#include "BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
-#include "BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h"
-#include "BulletDynamics/ConstraintSolver/btConstraintSolver.h"
-#include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
-#include "BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"
+#include <vector>
+#include "math/Point.h"
+#include "log/Logger.h"
+
+#include "btBulletCollisionCommon.h"
+#include "btBulletDynamicsCommon.h"
 
 namespace Project {
 namespace Physics {
 
 class PhysicsWorld {
 public:
-  setupWorld();
+  PhysicsWorld();
+  setupPhysicsWorld();
+  stepWorld(float microseconds);
   setGravity(float xAccel, float yAccel, float zAccel);
+  createRigidGenericBoxShape(float width, float height, float depth, Math::Point origin, float mass);
+  createTestScene();
+  
+  btAlignedObjectArray<btCollisionShape*> collisionShapes;
   
 private:
   btBroadphaseInterface *broadPhaseInterface;

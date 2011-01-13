@@ -43,6 +43,14 @@ TypeRegistry::TypeRegistry() {
         registerType(Subsystem::NETWORK, "CONNECT", counter ++);
         registerType(Subsystem::NETWORK, "PACKET", counter ++);
     }
+    
+    //PHYSICS log message types
+    {
+	int counter = 1;
+	registerType(Subsystem::PHYSICS, "INIT", counter++);
+        registerType(Subsystem::PHYSICS, "INITBOX", counter++);
+	registerType(Subsystem::PHYSICS, "LOCATION", counter++);
+    }
 }
 
 void TypeRegistry::registerType(Subsystem subsystem,

@@ -14,6 +14,7 @@ public:
         OPENGL,
         SDL,
         NETWORK,
+	PHYSICS,
         SUBSYSTEMS
     };
 private:

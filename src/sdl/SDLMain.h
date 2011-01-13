@@ -7,9 +7,11 @@
 #include "NetworkPortal.h"
 #include "PlayerManager.h"
 #include "InputManager.h"
+#include "physics/PhysicsWorld.h"
 
 #define FIELD_OF_VIEW 60
 #define SDL_INIT_FLAGS (SDL_HWSURFACE | SDL_OPENGL | SDL_RESIZABLE)
+#include <physics/PhysicsWorld.h>
 
 union SDL_Event;
 
@@ -24,6 +26,8 @@ private:
     InputManager *inputManager;
     NetworkPortal *network;
     PlayerManager *playerManager;
+    Physics::PhysicsWorld *physicsWorld;
+    
 public:
     SDLMain();
     ~SDLMain();
