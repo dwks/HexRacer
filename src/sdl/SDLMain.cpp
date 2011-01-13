@@ -112,6 +112,8 @@ void SDLMain::run() {
                 //LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " released");
                 break;
             case SDL_KEYDOWN:
+                handleKeyDown(&event);
+            case SDL_KEYUP:
                 inputManager->handleEvent(&event);
                 break;
             }
@@ -120,6 +122,7 @@ void SDLMain::run() {
         network->checkNetwork();
         
         handleJoystick();
+        inputManager->advanceToNextFrame();
         
         render();
         playerManager->render();
@@ -151,7 +154,7 @@ void SDLMain::handleJoystick() {
     }
 }
 
-void SDLMain::handleKeyDown(SDL_Event *event) {
+/*void SDLMain::handleKeyDown(SDL_Event *event) {
     switch(event->key.keysym.sym) {
     case SDLK_LEFT:
         EMIT_EVENT(new Event::PlayerMovement(Math::Point(-0.1, 0.0)));
@@ -168,7 +171,7 @@ void SDLMain::handleKeyDown(SDL_Event *event) {
     default:
         break;
     }
-}
+}*/
 
 void SDLMain::render() {
     glMatrixMode(GL_MODELVIEW);
