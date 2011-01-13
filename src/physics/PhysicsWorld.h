@@ -14,11 +14,11 @@ namespace Physics {
 class PhysicsWorld {
 public:
   PhysicsWorld();
-  setupPhysicsWorld();
-  stepWorld(float microseconds);
-  setGravity(float xAccel, float yAccel, float zAccel);
-  createRigidGenericBoxShape(float width, float height, float depth, Math::Point origin, float mass);
-  createTestScene();
+  void setupPhysicsWorld();
+  void stepWorld(float microseconds);
+  void setGravity(float xAccel, float yAccel, float zAccel);
+  void createRigidGenericBoxShape(float width, float height, float depth, Math::Point origin, float mass);
+  void createTestScene();
   
   btAlignedObjectArray<btCollisionShape*> collisionShapes;
   

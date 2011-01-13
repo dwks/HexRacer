@@ -7,14 +7,14 @@ PhysicsWorld::PhysicsWorld() {
     setupPhysicsWorld();
 }
 
-PhysicsWorld::stepWorld(float microseconds) {
+void PhysicsWorld::stepWorld(float microseconds) {
     //TimeStep is hacked right now
     if ( dynamicsWorld ) {
         dynamicsWorld->stepSimulation ( microseconds / 1000000.f );
     }
 }
 
-PhysicsWorld::createTestScene(){
+void PhysicsWorld::createTestScene(){
     //The "Plane"
     createRigidGenericBoxShape(50.0,5.0,50.0,Math::Point(0.0,-5.0,0.0),0.0);
     
@@ -23,7 +23,7 @@ PhysicsWorld::createTestScene(){
     createRigidGenericBoxShape(2.0,2.0,2.0,Math::Point(4.0,5.0,0.0),1.0);
 }
 
-PhysicsWorld::setupPhysicsWorld() {
+void PhysicsWorld::setupPhysicsWorld() {
     LOG2 ( PHYSICS, INIT, "Physics Setup Initialized..." );
     ///collision configuration contains default setup for memory, collision setup
     collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -45,11 +45,11 @@ PhysicsWorld::setupPhysicsWorld() {
 
 }
 
-PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
+void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
     dynamicsWorld->setGravity ( btVector3 ( xAccel,yAccel,zAccel ) );
 }
 
-PhysicsWorld::createRigidGenericBoxShape ( float width, float height, float depth, Math::Point origin, float mass ) {
+void PhysicsWorld::createRigidGenericBoxShape ( float width, float height, float depth, Math::Point origin, float mass ) {
     LOG2(PHYSICS, INITBOX, "Creating Generic Box Shape: W: " << width << " H: " << height << " D: " << depth << " Origin: " << origin.getX << ", " << origin.getY << ", " << origin.getZ << " Mass: " << mass);
     btCollisionShape* groundShape = new btBoxShape ( btVector3 ( btScalar ( width ),btScalar ( height ),btScalar ( depth ) ) );
     collisionShapes.push_back ( groundShape );
@@ -73,7 +73,5 @@ PhysicsWorld::createRigidGenericBoxShape ( float width, float height, float dept
     dynamicsWorld->addRigidBody ( body );
     LOG2(PHYSICS, INITBOX, "Finished Making the generic box.");
 }
-
-
 }  // namespace Physics
 }  // namespace Project
