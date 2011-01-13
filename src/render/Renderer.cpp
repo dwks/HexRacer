@@ -1,5 +1,4 @@
 #include "Renderer.h"
-#include "BaseRenderable.h"
 #include "CompositeRenderable.h"
 #include <typeinfo>
 #include "opengl/OpenGL.h"
@@ -10,17 +9,7 @@ namespace Render {
 
 	void Renderer::addRenderableObject(RenderableObject* renderable) {
 
-		BaseRenderable* base = dynamic_cast<BaseRenderable*> renderable;
-		if (base) {
-			renderList.push_back(base);
-			return;
-		}
-
-		CompositeRenderable* composite = dynamic_cast<CompositeRenderable*> renderable;
-		if (composite) {
-			//Composite object
-			return;
-		}
+		renderList.push_back(renderable);
 		
 	}
 
@@ -29,7 +18,7 @@ namespace Render {
 	}
 
 	void Renderer::render() {
-		for (int i = 0; i < renderList.size(); i++) {
+		for (unsigned int i = 0; i < renderList.size(); i++) {
 			renderList[i]->render();
 		}
 	}

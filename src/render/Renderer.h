@@ -2,8 +2,6 @@
 #define PROJECT_RENDER__RENDERER_H
 
 #include "RenderableObject.h"
-#include "BaseRenderable.h"
-#include "RenderListAccessor.h"
 #include <vector>
 
 namespace Project {
@@ -19,7 +17,7 @@ public:
 
 private:
 
-	std::vector<BaseRenderable*> renderList;
+	std::vector<RenderableObject*> renderList;
 };
 
 }  // namespace Render
