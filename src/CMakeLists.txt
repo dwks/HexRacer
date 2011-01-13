@@ -71,6 +71,7 @@ add_executable(server
 
 target_link_libraries(sdl
     ${CORE_LIBRARY} ${Boost_LIBRARIES} ${SDL_LIBRARY} ${OPENGL_LIBRARIES}
-    LinearMath BulletCollision BulletDynamics)
+    #LinearMath BulletDynamics BulletCollision)
+    BulletDynamics BulletCollision LinearMath)
 target_link_libraries(server
     ${CORE_LIBRARY} ${Boost_LIBRARIES} ${OPENGL_LIBRARIES})

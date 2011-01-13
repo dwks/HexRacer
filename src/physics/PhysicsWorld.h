@@ -17,7 +17,7 @@ public:
   void setupPhysicsWorld();
   void stepWorld(float microseconds);
   void setGravity(float xAccel, float yAccel, float zAccel);
-  void createRigidGenericBoxShape(float width, float height, float depth, Math::Point origin, float mass);
+  void createRigidGenericBoxShape(float width, float height, float depth, Math::Point origin, float _mass);
   void createTestScene();
   
   btAlignedObjectArray<btCollisionShape*> collisionShapes;

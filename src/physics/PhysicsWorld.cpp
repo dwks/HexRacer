@@ -49,8 +49,8 @@ void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
     dynamicsWorld->setGravity ( btVector3 ( xAccel,yAccel,zAccel ) );
 }
 
-void PhysicsWorld::createRigidGenericBoxShape ( float width, float height, float depth, Math::Point origin, float mass ) {
-    LOG2(PHYSICS, INITBOX, "Creating Generic Box Shape: W: " << width << " H: " << height << " D: " << depth << " Origin: " << origin.getX() << ", " << origin.getY() << ", " << origin.getZ() << " Mass: " << mass);
+void PhysicsWorld::createRigidGenericBoxShape ( float width, float height, float depth, Math::Point origin, float _mass ) {
+    LOG2(PHYSICS, INITBOX, "Creating Generic Box Shape: W: " << width << " H: " << height << " D: " << depth << " Origin: " << origin.getX() << ", " << origin.getY() << ", " << origin.getZ() << " Mass: " << _mass);
     btCollisionShape* groundShape = new btBoxShape ( btVector3 ( btScalar ( width ),btScalar ( height ),btScalar ( depth ) ) );
     collisionShapes.push_back ( groundShape );
 
@@ -58,7 +58,7 @@ void PhysicsWorld::createRigidGenericBoxShape ( float width, float height, float
     groundTransform.setIdentity();
     groundTransform.setOrigin ( btVector3 ( origin.getX(),origin.getY(),origin.getZ() ) );
 
-    btScalar mass ( mass );
+    btScalar mass ( _mass );
 
     bool isDynamic = ( mass != 0.f );
 
