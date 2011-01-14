@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDLmain.lib opengl.lib glu.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
+				AdditionalDependencies="glew32.lib SDL.lib SDLmain.lib opengl.lib glu32.lib glu.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -177,11 +177,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\BaseRenderable.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingTriangle2D.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\render\CompositeRenderable.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc\DirectoryFunctions.cpp"
 				>
 			</File>
 			<File
@@ -199,6 +207,30 @@
 						PreprocessorDefinitions="-D_WIN32_WINDOWS"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\src\render\Material.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Mesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshGroup.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshLoader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshTriangle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshVertex.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\src\render\model_obj.cpp"
@@ -229,11 +261,35 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Renderer.cpp"
+				RelativePath=".\src\render\RenderManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderProperties.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Shader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ShaderParamSetter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Texture.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\math\Triangle3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\Vertex2D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\Vertex3D.cpp"
 				>
 			</File>
 			<Filter
@@ -547,6 +603,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\BaseRenderable.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingTriangle2D.h"
 				>
 			</File>
@@ -559,7 +619,35 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\misc\DirectoryFunctions.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\InputManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Material.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Mesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshGroup.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshTriangle.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshVertex.h"
 				>
 			</File>
 			<File
@@ -595,11 +683,35 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Renderer.h"
+				RelativePath=".\src\render\RenderManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderProperties.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Shader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ShaderParamSetter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Texture.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\math\Triangle3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\Vertex2D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\Vertex3D.h"
 				>
 			</File>
 			<Filter

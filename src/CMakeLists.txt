@@ -56,10 +56,10 @@ find_package(SDL)
 include_directories(${SDL_INCLUDE_DIR})
 
 # Qt 4 stuff
-find_package(Qt4 COMPONENTS
-    QtCore QtGui QtOpenGL REQUIRED)
-include(${QT_USE_FILE})
-QT4_AUTOMOC(${SOURCES} ${QT_SOURCES})
+#find_package(Qt4 COMPONENTS
+#    QtCore QtGui QtOpenGL REQUIRED)
+#include(${QT_USE_FILE})
+#QT4_AUTOMOC(${SOURCES} ${QT_SOURCES})
 
 # The main project-core library
 set(CORE_LIBRARY project-core)

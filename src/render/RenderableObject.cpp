@@ -2,6 +2,7 @@
 #include "opengl/OpenGL.h"
 #include "opengl/MathWrapper.h"
 #include "math/Matrix.h"
+#include "RenderManager.h"
 using namespace Project;
 using namespace OpenGL;
 using namespace Math;
@@ -10,46 +11,35 @@ namespace Project {
 namespace Render {
 
 	RenderableObject::RenderableObject() {
-		transformation = NULL;
+		renderProperties = NULL;
 	}
 
-	void RenderableObject::render() {
-
-		if (hasTransformation()) {
-			glPushMatrix();
-			MathWrapper::glMultMatrix(getTransformation());
-		}
-
-		renderGeometry();
-
-		if (hasTransformation()) {
-			glPopMatrix();
-		}
-			
+	RenderableObject::~RenderableObject() {
 	}
 
-	bool RenderableObject::hasTransformation() const {
-		return (transformation != NULL);
+	void RenderableObject::render(RenderManager* manager) {
+		manager->setRenderProperties(this);
+		setShaderParams(manager->getShaderParamSetter());
+
+		subRender(manager);
+	
+		manager->revertRenderProperties(this);
 	}
 
-	void RenderableObject::clearTransformation() {
-		if (hasTransformation()) {
-			delete(transformation);
-			transformation = NULL;
-		}
+	bool RenderableObject::hasRenderProperties() const {
+		return (renderProperties != NULL);
 	}
 
-	void RenderableObject::setTransformation(const Matrix &transform) {
-		transformation = new Matrix(transform);
+	RenderProperties* RenderableObject::getRenderProperties() const {
+		return renderProperties;
+	}
+	
+	void RenderableObject::setRenderProperties(RenderProperties* properties) {
+		renderProperties = properties;
 	}
 
-	Matrix RenderableObject::getTransformation() const {
-		if (hasTransformation()) {
-			return (*transformation);
-		}
-		else {
-			return Matrix();
-		}
+	void RenderableObject::clearRenderProperties() {
+		renderProperties = NULL;
 	}
 
 }  // namespace Render

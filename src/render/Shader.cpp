@@ -1,14 +1,13 @@
-//Commented out until code is ready to be used
-#if (0)
+//#if(0)
 
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
 
-#include "shader.h"
+#include "Shader.h"
 
 using namespace Project;
-using namespace OpenGL;
+using namespace Render;
 using namespace std;
 
 
@@ -46,11 +45,11 @@ Shader::Shader(GLchar *fs, GLchar *vs) { // Built the shader program
 	}
 }
 
-void Shader::turnShaderOn() {
+void Shader::turnShaderOn() const{
 	glUseProgram(p);
 }
 
-void Shader::turnShaderOff() {
+void Shader::turnShaderOff() const{
 	glUseProgram(NULL);
 }
 
@@ -136,4 +135,4 @@ int Shader::getAttrLoc(const char *name) {
 	return loc;
 }
 
-#endif
+//#endif

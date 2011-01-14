@@ -11,7 +11,7 @@ namespace Render {
 		this->box = box;
 	}
 
-	void RenderableBox::renderGeometry() {
+	void RenderableBox::renderGeometry(ShaderParamSetter setter) {
 		GeometryDrawing::drawBoundingBox3D(box);
 	}
 

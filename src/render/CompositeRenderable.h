@@ -10,10 +10,7 @@ namespace Render {
 class CompositeRenderable
 	: public RenderableObject {
 
-	void renderGeometry();
-
-private:
-
+	void subRender(RenderManager* manager);
 	virtual std::vector<RenderableObject*> getChildren() = 0;
 
 };

@@ -1,30 +1,33 @@
 #ifndef PROJECT_RENDER__RENDERABLE_OBJECT_H
 #define PROJECT_RENDER__RENDERABLE_OBJECT_H
 
-#include "math/Matrix.h"
+#include "RenderProperties.h"
+#include "ShaderParamSetter.h"
 
 namespace Project {
 namespace Render {
 
+class RenderManager;
+
 class RenderableObject {
+
 public:
 
 	RenderableObject();
-	virtual ~RenderableObject() {}
-	
-	virtual void renderGeometry() = 0;
+	virtual ~RenderableObject();
 
-	void render();
+	void render(RenderManager* manager);
+	virtual void subRender(RenderManager* manager) = 0;
+	virtual void setShaderParams(ShaderParamSetter setter) {}
 
-	bool hasTransformation() const;
-	void clearTransformation();
-	void setTransformation(const Math::Matrix &transform);
-	Math::Matrix getTransformation() const;
+	bool hasRenderProperties() const;
+	RenderProperties* getRenderProperties() const;
+	void setRenderProperties(RenderProperties* properties);
+	void clearRenderProperties();
 
 private:
-
-	Math::Matrix* transformation;
-
+	RenderProperties* renderProperties;
+	
 };
 
 }  // namespace Render

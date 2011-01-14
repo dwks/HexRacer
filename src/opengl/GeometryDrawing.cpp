@@ -118,7 +118,7 @@ void GeometryDrawing::drawBoundingBox3D(BoundingBox3D& object, bool wireframe) {
 		MathWrapper::glVertex(object.getCorner(false, true, false));
 		
 		//Bottom face
-		glNormal3f(0.0f, 1.0f, 0.0f);
+		glNormal3f(0.0f, -1.0f, 0.0f);
 		MathWrapper::glVertex(object.getCorner(false, false, true));
 		MathWrapper::glVertex(object.getCorner(true, false, true));
 		MathWrapper::glVertex(object.getCorner(true, false, false));
@@ -137,6 +137,22 @@ void GeometryDrawing::drawBoundingBox3D(BoundingBox3D& object, bool wireframe) {
 		MathWrapper::glVertex(object.getCorner(true, true, true));
 		MathWrapper::glVertex(object.getCorner(true, false, true));
 		MathWrapper::glVertex(object.getCorner(false, false, true));
+
+		//Left face
+		glNormal3f(-1.0f, 0.0f, 0.0f);
+		MathWrapper::glVertex(object.getCorner(false, false, true));
+		MathWrapper::glVertex(object.getCorner(false, true, true));
+		MathWrapper::glVertex(object.getCorner(false, true, false));
+		MathWrapper::glVertex(object.getCorner(false, false, false));
+
+		//Right face
+		glNormal3f(1.0f, 0.0f, 0.0f);
+		MathWrapper::glVertex(object.getCorner(true, false, true));
+		MathWrapper::glVertex(object.getCorner(true, true, true));
+		MathWrapper::glVertex(object.getCorner(true, true, false));
+		MathWrapper::glVertex(object.getCorner(true, false, false));
+
+		glEnd();
 	}
 
 }

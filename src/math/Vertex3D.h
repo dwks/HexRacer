@@ -1,19 +1,21 @@
-#pragma once
+#ifndef PROJECT_MATH__VERTEX3_D_H
+#define PROJECT_MATH__VERTEX3_D_H
 
 #include "Object3D.h"
 
 namespace Project {
 namespace Math {
 
-class Triangle3D
-	: public Object3D
-{
+class Vertex3D
+	: public Object3D {
 private:
-	Point vertex[3];
+	Point position;
 public:
-	Triangle3D(void);
-	Triangle3D(Point vertex1, Point vertex2, Point vertex3);
-	~Triangle3D(void);
+
+	Vertex3D()
+		: position() {}
+	Vertex3D(Point point)
+		: position(point) {}
 
 	//Abstract method implementations
 	double minX() const;
@@ -29,8 +31,11 @@ public:
 	void translate(const Point& translation);
 
 	//Class specific
-	virtual Point getVertex(short vert_index) const;
+	Point getPosition() const { return position; }
+
 };
 
 }  // namespace Math
 }  // namespace Project
+
+#endif
