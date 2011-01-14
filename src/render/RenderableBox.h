@@ -1,21 +1,21 @@
 #ifndef PROJECT_RENDER__RENDERABLE_BOX_H
 #define PROJECT_RENDER__RENDERABLE_BOX_H
 
-#include "RenderableObject.h"
+#include "BaseRenderable.h"
 #include "math/BoundingBox3D.h"
 
 namespace Project {
 namespace Render {
 
 class RenderableBox
-	: public RenderableObject {
+	: public BaseRenderable {
 private:
 	Math::BoundingBox3D box;
 public:
 
 	RenderableBox(Math::BoundingBox3D box);
 
-	void renderGeometry();
+	void renderGeometry(ShaderParamSetter setter);
 };
 
 }  // namespace Render

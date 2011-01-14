@@ -13,9 +13,9 @@ Color::Color(float red, float green, float blue, float alpha) {
 }
 
 Color::Color(Point p, float alpha) {
-	setRedf(p.getX());
-	setGreenf(p.getY());
-	setBluef(p.getZ());
+	setRedf((float) p.getX());
+	setGreenf((float) p.getY());
+	setBluef((float) p.getZ());
 	setAlphaf(alpha);
 }
 
@@ -179,6 +179,14 @@ void Color::invert() {
 	setBluef(1.0f-bluef());
 	setAlphaf(1.0f-alphaf());
 }
+
+/*
+GLfloat[4] Color::toGLfloat() {
+	GLfloat glf[4] = {red(), green(), blue(), alpha()};
+	return glf;
+}
+*/
+
 Color Color::operator + (const Color &other) const {
 	return Color(
 		redf()+other.redf(),
@@ -215,7 +223,7 @@ Color Color::operator / (const Color &other) const {
 	);
 }
 
-Color Color::operator * (double factor) const {
+Color Color::operator * (float factor) const {
 	return Color(
 		redf()*factor,
 		greenf()*factor,
@@ -224,7 +232,7 @@ Color Color::operator * (double factor) const {
 	);
 }
 
-Color Color::operator / (double factor) const {
+Color Color::operator / (float factor) const {
 	return Color(
 		redf()/factor,
 		greenf()/factor,
@@ -261,24 +269,28 @@ void Color::operator /= (const Color &other) {
 	setAlphaf(alphaf()/other.alphaf());
 }
 
-void Color::operator *= (double factor) {
+void Color::operator *= (float factor) {
 	setRedf(redf()*factor);
 	setGreenf(greenf()*factor);
 	setBluef(bluef()*factor);
 	setAlphaf(alphaf()*factor);
 }
 
-void Color::operator /= (double factor) {
+void Color::operator /= (float factor) {
 	setRedf(redf()/factor);
 	setGreenf(greenf()/factor);
 	setBluef(bluef()/factor);
 	setAlphaf(alphaf()/factor);
 }
 
+void Color::glApply() const {
+	glColor(*this);
+}
+
 void Color::glColor(Color color) {
 	glColor4f(color.redf(), color.greenf(), color.bluef(), color.alphaf());
 }
 
-void Color::glColor(Color color, double force_alpha) {
+void Color::glColor(Color color, float force_alpha) {
 	glColor4f(color.redf(), color.greenf(), color.bluef(), force_alpha);
 }

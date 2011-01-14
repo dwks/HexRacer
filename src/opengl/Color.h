@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../math/Point.h"
+#include "OpenGL.h"
 
 namespace Project {
 namespace OpenGL {
@@ -46,21 +47,23 @@ public:
 
 	void invert();
 
+	void glApply() const;
+
 	static void glColor(Color color);
-	static void glColor(Color color, double force_alpha);
+	static void glColor(Color color, float force_alpha);
 
 	Color operator + (const Color &other) const;
 	Color operator - (const Color &other) const;
 	Color operator * (const Color &other) const;
 	Color operator / (const Color &other) const;
-	Color operator * (double factor) const;
-	Color operator / (double factor) const;
+	Color operator * (float factor) const;
+	Color operator / (float factor) const;
 	void operator += (const Color &other);
 	void operator -= (const Color &other);
 	void operator *= (const Color &other);
 	void operator /= (const Color &other);
-	void operator *= (double factor);
-	void operator /= (double factor);
+	void operator *= (float factor);
+	void operator /= (float factor);
 
 };
 

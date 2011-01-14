@@ -1,5 +1,4 @@
-//Commented out until code is ready to be used
-#if (0)
+//#if(0)
 
 #pragma once
 
@@ -8,14 +7,14 @@
 using namespace std;
 
 namespace Project {
-namespace OpenGL {
+namespace Render {
 
 class Shader {
 public:
 	Shader(GLchar *fs, GLchar *vs);
 
-	void turnShaderOn();
-	void turnShaderOff();
+	void turnShaderOn() const;
+	void turnShaderOff() const;
 	int getUniLoc(const char *name);
 	int getAttrLoc(const char *name);
 
@@ -27,7 +26,7 @@ private:
 	int textFileWrite(char *fn, char *s);
 };
 
-}  // namespace OpenGL
+}  // namespace Render
 }  // namespace Project
 
-#endif
+//#endif
