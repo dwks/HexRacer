@@ -2,6 +2,10 @@
 #include "PhysicsWorld.h"
 #include "Converter.h"
 
+#include "math/BoundingBox3D.h"
+#include "opengl/GeometryDrawing.h"
+#include "opengl/OpenGL.h"
+
 namespace Project {
 namespace Physics {
 
@@ -10,7 +14,8 @@ PhysicsWorld::PhysicsWorld() {
 }
 
 void PhysicsWorld::stepWorld(float microseconds) {
-    LOG2( PHYSICS, TIMESTEP, "Stepping simulation by: " << microseconds << " microseconds");
+    //LOG2( PHYSICS, TIMESTEP, "Stepping simulation by: " << microseconds << " microseconds");
+    
     if ( dynamicsWorld ) {
         dynamicsWorld->stepSimulation ( microseconds / 1000000.f );
     }
@@ -18,7 +23,7 @@ void PhysicsWorld::stepWorld(float microseconds) {
 
 void PhysicsWorld::createTestScene(){
     //The "Plane"
-    createRigidStaticPlane(Math::Point(0.0,1.0,0.0), Math::Point(0.0,0.0,0.0));
+    createRigidStaticPlane(Math::Point(0.0,1.0,0.0), Math::Point(0.0,-2.0,0.0));
     
     //A player
     createPlayer(0);
@@ -49,15 +54,17 @@ void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
 
 void PhysicsWorld::createPlayer(int playerID){
     LOG2(PHYSICS, CREATE, "Creating Player. ID: " << playerID);
-    Physics::PhysicalPlayer* player = new Physics::PhysicalPlayer(PhysicsWorld::createRigidBox(2.0,2.0,2.0,Math::Point(0.0,2.0,0.0),2.0));
+    Physics::PhysicalPlayer* player = new Physics::PhysicalPlayer(PhysicsWorld::createRigidBox(2.0,2.0,2.0,Math::Point(0.0,0.0,0.0),2.0));
     
     playerEntities.push_back(player);
 }
 
 
 btRigidBody* PhysicsWorld::createRigidStaticPlane(Math::Point planeNormal, Math::Point origin){
-    LOG2(PHYSICS, CREATE, "Creating Static Plane: Normal: " << planeNormal.getX() << " " << planeNormal.getY() << " " << planeNormal.getZ() << " Location: " << origin.getX() << " " << origin.getY()<< " " << origin.getZ());
-    btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(planeNormal.getX(),planeNormal.getY(),planeNormal.getZ()),1);
+    LOG2(PHYSICS, CREATE,
+        "Creating Static Plane: Normal: " << planeNormal
+        << " Location: " << origin.getX() << " " << origin.getY()<< " " << origin.getZ());
+    btCollisionShape* groundShape = new btStaticPlaneShape(Converter::toVector(planeNormal), 1);
 
     btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(origin.getX(),origin.getY(),origin.getZ())));
     btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
@@ -102,7 +109,7 @@ btRigidBody* PhysicsWorld::createRigidBox(float width, float height, float depth
     boxShape->calculateLocalInertia(mass,fallInertia);
     btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass,fallMotionState,boxShape,fallInertia);
     btRigidBody* rigidBody = new btRigidBody(fallRigidBodyCI);
-        
+    
     collisionBodies.push_back(rigidBody);
     dynamicsWorld->addRigidBody(rigidBody);
     
@@ -116,9 +123,13 @@ void PhysicsWorld::render() {
         btTransform transform;
         collisionBodies[x]->getMotionState()->getWorldTransform(transform);
         
-        LOG(PHYSICS, "body " << collisionBodies[x] << " at "
-            << Converter::toPoint(transform.getOrigin()));
+        /*LOG(PHYSICS, "body " << collisionBodies[x] << " at "
+            << Converter::toPoint(transform.getOrigin()));*/
     }
+    
+    Math::BoundingBox3D box(2.0, 2.0, 2.0,
+        Converter::toPoint(collisionBodies[1]->getCenterOfMassPosition()));
+    OpenGL::GeometryDrawing::drawObject(box, true);
 }
 
 }  // namespace Physics
