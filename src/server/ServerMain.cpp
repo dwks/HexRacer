@@ -78,8 +78,7 @@ void ServerMain::run() {
                 packetSerializer.packetToString(packet));
             
             clients.addClient(socket);
-            playerList.addPlayer(
-                new Object::Player(clientCount, Math::Point()));
+            playerList.addPlayer(new Object::Player(clientCount));
             
             clientCount ++;
         }

@@ -1,32 +1,34 @@
 #ifndef PROJECT_OBJECT__PLAYER_H
 #define PROJECT_OBJECT__PLAYER_H
 
+#include "AbstractObject.h"
 #include "math/Point.h"
-
-#include "boost/serialization/access.hpp"
 
 namespace Project {
 namespace Object {
 
-class Player {
+class Player : public AbstractObject {
 private:
     friend class boost::serialization::access;
     
     template <typename Archive>
     void serialize(Archive &ar, const unsigned version) {
-        ar & id;
-        ar & position;
+        ar & boost::serialization::base_object<AbstractObject>(*this);
     }
 private:
-    int id;
-    Math::Point position;
+    Physics::PhysicalObject *physical;
+    Render::RenderableObject *renderable;
 public:
-    Player() : id(-1) {}
-    Player(int id, Math::Point position) : id(id), position(position) {}
+    Player();
+    Player(int id);
     
-    int getID() const { return id; }
-    Math::Point getPosition() const { return position; }
-    void addPosition(Math::Point add) { position += add; }
+    virtual Physics::PhysicalObject *getPhysicalObject()
+        { return physical; }
+    virtual Render::RenderableObject *getRenderableObject()
+        { return renderable; }
+    
+    Math::Point getPosition() const { return Math::Point(); }
+    void addPosition(Math::Point add) {}
 };
 
 }  // namespace Object

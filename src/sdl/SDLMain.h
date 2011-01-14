@@ -11,9 +11,8 @@
 
 #define FIELD_OF_VIEW 60
 #define SDL_INIT_FLAGS (SDL_HWSURFACE | SDL_OPENGL | SDL_RESIZABLE)
-#include <physics/PhysicsWorld.h>
 
-union SDL_Event;
+union SDL_Event;  // forward declaration
 
 namespace Project {
 namespace SDL {

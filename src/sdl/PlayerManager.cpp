@@ -25,7 +25,7 @@ void PlayerManager::UpdatePlayerListHandler::observe(
 }
 
 PlayerManager::PlayerManager(int id) : id(id) {
-    Object::Player *player = new Object::Player(id, Math::Point());
+    Object::Player *player = new Object::Player(id);
     
     playerList = new Object::PlayerList();
     playerList->addPlayer(player);

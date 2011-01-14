@@ -14,6 +14,10 @@ namespace Project {
 namespace Physics {
 
 class PhysicsWorld {
+private:
+  static PhysicsWorld *instance;
+public:
+  static PhysicsWorld *getInstance() { return instance; }
 public:
   PhysicsWorld();
   void setupPhysicsWorld();

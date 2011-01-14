@@ -9,7 +9,10 @@
 namespace Project {
 namespace Physics {
 
+PhysicsWorld *PhysicsWorld::instance;
+
 PhysicsWorld::PhysicsWorld() {
+    instance = this;
     setupPhysicsWorld();
 }
 
@@ -117,6 +120,8 @@ btRigidBody* PhysicsWorld::createRigidBox(float width, float height, float depth
 }
 
 void PhysicsWorld::render() {
+    //collisionBodies[1]->applyCentralForce(btVector3(2.0f, 0.0f, 0.0f));
+    
     stepWorld(10 * 1000);  // step world by 10 ms
     
     for(std::size_t x = 0; x < collisionBodies.size(); x ++) {
