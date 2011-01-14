@@ -4,13 +4,6 @@ add_definitions(-DCMAKE_BUILD)
 
 include_directories(.)
 
-include_directories(../build)  # for the moc
-include_directories(../bullet-2.77/src)
-link_directories(
-    ../bullet-2.77/src/LinearMath
-    ../bullet-2.77/src/BulletCollision
-    ../bullet-2.77/src/BulletDynamics)
-
 aux_source_directory(connection CONNECTION_SOURCES)
 aux_source_directory(event EVENT_SOURCES)
 aux_source_directory(log LOG_SOURCES)
@@ -32,10 +25,10 @@ set(SOURCES
     ${OBJECT_SOURCES}
     ${CONNECTION_SOURCES}
     ${NETWORK_SOURCES}
-    ${PHYSICS_SOURCES})
+    ${PHYSICS_SOURCES}
+    ${OPENGL_SOURCES})
 
 set(SDL_SOURCES
-    ${OPENGL_SOURCES}
     ${SDL_DIR_SOURCES}
     ${RENDER_SOURCES})
 
@@ -49,7 +42,7 @@ find_package(Boost COMPONENTS
 include_directories(${Boost_INCLUDE_DIRS})
 
 # OpenGL stuff
-set(OPENGL_LIBRARIES GLU)
+set(OPENGL_LIBRARIES GL GLU GLEW)
 
 # SDL stuff
 find_package(SDL)
@@ -60,20 +53,34 @@ include_directories(${SDL_INCLUDE_DIR})
 #    QtCore QtGui QtOpenGL REQUIRED)
 #include(${QT_USE_FILE})
 #QT4_AUTOMOC(${SOURCES} ${QT_SOURCES})
+#include_directories(../build)  # for the moc
+
+# bullet stuff
+set(BULLET_LIBRARIES BulletDynamics BulletCollision LinearMath)
+include_directories(../bullet-2.77/src)
+link_directories(
+    ../bullet-2.77/src/LinearMath
+    ../bullet-2.77/src/BulletCollision
+    ../bullet-2.77/src/BulletDynamics)
 
 # The main project-core library
 set(CORE_LIBRARY project-core)
 add_library(${CORE_LIBRARY} ${SOURCES})
 
 # Executables
-add_executable(sdl
-    ${SDL_SOURCES})
-add_executable(server
-    ${SERVER_SOURCES})
+add_executable(sdl ${SDL_SOURCES})
+add_executable(server ${SERVER_SOURCES})
+
+set(COMMON_LIBRARIES
+    ${CORE_LIBRARY} ${Boost_LIBRARIES} ${OPENGL_LIBRARIES} ${BULLET_LIBRARIES})
+
+#target_link_libraries(sdl ${COMMON_LIBRARIES} ${SDL_LIBRARIES})
+#target_link_libraries(server ${COMMON_LIBRARIES})
 
 target_link_libraries(sdl
     ${CORE_LIBRARY} ${Boost_LIBRARIES} ${SDL_LIBRARY} ${OPENGL_LIBRARIES}
-    #LinearMath BulletDynamics BulletCollision)
     BulletDynamics BulletCollision LinearMath)
 target_link_libraries(server
-    ${CORE_LIBRARY} ${Boost_LIBRARIES} ${OPENGL_LIBRARIES})
+    ${CORE_LIBRARY} ${Boost_LIBRARIES} ${OPENGL_LIBRARIES}
+    BulletDynamics BulletCollision LinearMath)
+

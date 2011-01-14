@@ -13,7 +13,7 @@ namespace Render {
 class MeshLoader {
 public:
 
-	bool MeshLoader::loadOBJ(string model_name, string filename);
+	bool loadOBJ(string model_name, string filename);
 	MeshGroup* getModelByName(string model_name);
 	Material* getMaterialByName(string name);
 	Texture* getTextureByName(string name);
