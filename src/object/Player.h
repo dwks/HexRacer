@@ -14,8 +14,10 @@ private:
     template <typename Archive>
     void serialize(Archive &ar, const unsigned version) {
         ar & boost::serialization::base_object<AbstractObject>(*this);
+        ar & position;
     }
 private:
+    Math::Point position;
     Physics::PhysicalObject *physical;
     Render::RenderableObject *renderable;
 public:
@@ -27,8 +29,8 @@ public:
     virtual Render::RenderableObject *getRenderableObject()
         { return renderable; }
     
-    Math::Point getPosition() const { return Math::Point(); }
-    void addPosition(Math::Point add) {}
+    Math::Point getPosition() const { return position; }
+    void addPosition(Math::Point add) { position += add; }
 };
 
 }  // namespace Object
