@@ -18,12 +18,12 @@ public:
 
 	bool hasTransformation() const;
 	void clearTransformation();
-	void setTransformation(Project::Math::Matrix transform);
-	Project::Math::Matrix getTransformation() const;
+	void setTransformation(const Math::Matrix &transform);
+	Math::Matrix getTransformation() const;
 
 private:
 
-	Project::Math::Matrix* transformation;
+	Math::Matrix* transformation;
 
 };
 

@@ -39,7 +39,7 @@ namespace Render {
 		}
 	}
 
-	void RenderableObject::setTransformation(Matrix transform) {
+	void RenderableObject::setTransformation(const Matrix &transform) {
 		transformation = new Matrix(transform);
 	}
 

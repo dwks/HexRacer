@@ -20,6 +20,7 @@ aux_source_directory(network NETWORK_SOURCES)
 aux_source_directory(object OBJECT_SOURCES)
 aux_source_directory(opengl OPENGL_SOURCES)
 aux_source_directory(physics PHYSICS_SOURCES)
+aux_source_directory(render RENDER_SOURCES)
 aux_source_directory(server SERVER_DIR_SOURCES)
 aux_source_directory(sdl SDL_DIR_SOURCES)
 
@@ -35,7 +36,8 @@ set(SOURCES
 set(SDL_SOURCES
     ${OPENGL_SOURCES}
     ${SDL_DIR_SOURCES}
-    ${PHYSICS_SOURCES})
+    ${PHYSICS_SOURCES}
+    ${RENDER_SOURCES})
 
 set(SERVER_SOURCES
     ${SERVER_DIR_SOURCES})

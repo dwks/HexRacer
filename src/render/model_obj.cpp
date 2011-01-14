@@ -313,9 +313,9 @@ void ModelOBJ::addTrianglePos(int index, int material, int v0, int v1, int v2)
 {
     Vertex vertex =
     {
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f
+        {0.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f},
+        {0.0f, 0.0f, 0.0f}
     };
 
     m_attributeBuffer[index] = material;
@@ -341,10 +341,10 @@ void ModelOBJ::addTrianglePosNormal(int index, int material, int v0, int v1,
 {
     Vertex vertex =
     {
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f
+        {0.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f},
+        {0.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 0.0f}
     };
 
     m_attributeBuffer[index] = material;
@@ -379,10 +379,10 @@ void ModelOBJ::addTrianglePosTexCoord(int index, int material, int v0, int v1,
 {
     Vertex vertex =
     {
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f
+        {0.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f},
+        {0.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 0.0f}
     };
 
     m_attributeBuffer[index] = material;
@@ -415,10 +415,10 @@ void ModelOBJ::addTrianglePosTexCoordNormal(int index, int material, int v0,
 {
     Vertex vertex =
     {
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f
+        {0.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f},
+        {0.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 0.0f}
     };
 
     m_attributeBuffer[index] = material;
@@ -910,9 +910,9 @@ void ModelOBJ::importGeometryFirstPass(FILE *pFile)
     {
         Material defaultMaterial =
         {
-            0.2f, 0.2f, 0.2f, 1.0f,
-            0.8f, 0.8f, 0.8f, 1.0f,
-            0.0f, 0.0f, 0.0f, 1.0f,
+            {0.2f, 0.2f, 0.2f, 1.0f},
+            {0.8f, 0.8f, 0.8f, 1.0f},
+            {0.0f, 0.0f, 0.0f, 1.0f},
             0.0f,
             1.0f,
             std::string("default"),
