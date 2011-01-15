@@ -14,12 +14,16 @@ namespace Physics {
 void PhysicsWorld::PlayerMovementHandler::observe(
     Event::PlayerMovement *event) {
     
+    player->activate();
+    
     player->applyCentralForce(Converter::toVector(
         event->getMovement() * 5000.0f));
     /*player->applyCentralImpulse(Converter::toVector(
-        Math::Point(1000000.0f, 0.0f, 0.0f)));*/
-    /*player->applyTorque(Converter::toVector(
-        Math::Point(1000000.0f, 1000000.0f, 0.0f)));*/
+        event->getMovement() * 100.0f));*/
+    /*player->applyTorqueImpulse(Converter::toVector(
+        event->getMovement() * 100.0f));
+    player->applyTorque(Converter::toVector(
+        event->getMovement() * 10000.0f));*/
 }
 
 PhysicsWorld *PhysicsWorld::instance;
