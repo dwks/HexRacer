@@ -4,6 +4,7 @@
 #include "ShaderParamSetter.h"
 #include "Shader.h"
 #include "RenderProperties.h"
+#include "opengl/OpenGL.h"
 #include <string>
 #include <vector>
 #include <stack>
@@ -15,17 +16,23 @@ namespace Render {
 class RenderableObject;
 
 class RenderManager {
+private:
+	static const GLenum colorMapTexture = GL_TEXTURE0;
+	static const int colorMapTextureNum = 0;
+	static const GLenum normalMapTexture = GL_TEXTURE1;
+	static const int normalMapTextureNum = 1;
 public:
 
 	RenderManager();
 	~RenderManager();
 
-	void setRenderProperties(const RenderableObject* renderable);
-	void revertRenderProperties(const RenderableObject* renderable);
+	void setRenderProperties(RenderableObject* renderable);
+	void revertRenderProperties(RenderableObject* renderable);
 	ShaderParamSetter getShaderParamSetter();
 
-	void loadShader(string name, string vertex_file, string fragment_file);
+	void loadShader(string name, string fragment_file, string vertex_file);
 
+	void setUniformInt(const char *name, GLint value);
 	void setUniformVector3(const char *name, Project::Math::Point point);
 	void setUniformVector4(const char *name, Project::OpenGL::Color color);
 	void setAttributeVector3(const char *name, Project::Math::Point point);
@@ -57,6 +64,7 @@ private:
 	void enableShader(int shader_index);
 	void disableShader(int shader_index);
 	Shader* getShaderByIndex(int shader_index);
+	int getShaderIndexByName(string name);
 
 };
 

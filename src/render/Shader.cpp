@@ -110,8 +110,10 @@ int Shader::getUniLoc(const char *name) {
 	int loc;
 	loc = glGetUniformLocation(p, name);
 
+	/*
 	if (loc == -1)
 		printf("No such uniform named \"%s\"\n", name);
+	*/
 
 	return loc;
 }
@@ -129,8 +131,10 @@ int Shader::getAttrLoc(const char *name) {
 	int loc;
 	loc = glGetAttribLocation(p, name);
 
+	/*
 	if (loc == -1)
 		printf("No such uniform named \"%s\"\n", name);
+	*/
 
 	return loc;
 }

@@ -12,11 +12,8 @@ class Texture {
 private:
 
 	std::string name;
-	bool colorMapSet;
-	bool normalMapSet;
 	GLuint colorMap;
 	GLuint normalMap;
-
 
 public:
 
@@ -28,6 +25,10 @@ public:
 	GLuint getColorMap() const;
 	bool hasNormalMap() const;
 	GLuint getNormalMap() const;
+
+	static GLuint loadTexture(std::string filename,
+		GLint wrap_s = GL_REPEAT, GLint wrap_t = GL_REPEAT,
+		GLint filter_s = GL_LINEAR, GLint filter_t = GL_LINEAR);
 
 
 };

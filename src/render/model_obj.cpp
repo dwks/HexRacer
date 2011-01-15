@@ -1279,9 +1279,25 @@ bool ModelOBJ::importMaterials(const char *pszFilename)
             pMaterial->name = buffer;
             pMaterial->colorMapFilename.clear();
             pMaterial->bumpMapFilename.clear();
+			pMaterial->shaderName.clear();
 
             m_materialCache[pMaterial->name] = numMaterials;
             ++numMaterials;
+            break;
+
+		case 'S': // Sh
+            switch (buffer[1])
+            {
+            case 'h': // Sh
+                fgets(buffer, sizeof(buffer), pFile);
+                sscanf(buffer, "%s %s", buffer, buffer);
+                pMaterial->shaderName = buffer;
+                break;
+
+            default:
+                fgets(buffer, sizeof(buffer), pFile);
+                break;
+            }
             break;
 
         default:

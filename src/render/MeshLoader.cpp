@@ -32,7 +32,7 @@ namespace Render {
 				Point(vertex.tangent[0], vertex.tangent[1], vertex.tangent[2]),
 				Point(vertex.bitangent[0], vertex.bitangent[1], vertex.bitangent[2]),
 				vertex.texCoord[0],
-				vertex.texCoord[1]));
+				1.0f-vertex.texCoord[1]));
 
 		}
 

@@ -24,6 +24,7 @@ namespace Render {
 				MathWrapper::glNormal(vert->getNormal());
 				setter.setAttributeVector3("tangent", vert->getTangent());
 				setter.setAttributeVector3("bitangent", vert->getBitangent());
+				glTexCoord2d(vert->getTexCoordU(), vert->getTexCoordV());
 				MathWrapper::glVertex(vert->getPosition());
 			}
 		}

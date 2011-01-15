@@ -17,6 +17,8 @@
 #include "math/BoundingBox3D.h"
 #include "opengl/GeometryDrawing.h"
 
+#include "SDL_image.h"
+
 #include "config.h"
 
 namespace Project {
@@ -68,7 +70,30 @@ void SDLMain::run() {
     
     joystick = new JoystickManager();
     joystick->open();
-    
+
+	//Initialize a light
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, white);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, white);
+
+	glewInit();
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_RESCALE_NORMAL);
+	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	
+	meshLoader = new Render::MeshLoader();
+	renderer = new Render::RenderManager();
+
+	//Load the test shader
+	renderer->loadShader("testShader", "test.frag", "test.vert");
+	//Load the model
+	meshLoader->loadOBJ("glassdagger", "glassdagger.obj");
+	testMesh = meshLoader->getModelByName("glassdagger");
+	testMesh->getRenderProperties()->setWantsShaderName("testShader");
+
     inputManager = new InputManager();
     
     network = new NetworkPortal();
@@ -190,15 +215,20 @@ void SDLMain::render() {
     glTranslated(0.0, 0.0, -10.0);
     
     trackball->applyTransform();
-    
-    /*glBegin(GL_TRIANGLES);
-    OpenGL::MathWrapper::glVertex(Math::Point(0.0, 0.1, 0.0));
-    OpenGL::MathWrapper::glVertex(Math::Point(-0.1, 0.0, 0.0));
-    OpenGL::MathWrapper::glVertex(Math::Point(+0.1, 0.0, 0.0));
-    glEnd();*/
-    
-    /*Math::BoundingBox3D box(5.0, 1.0, 1.0, Math::Point(0.0, 0.0, 0.0));
-    OpenGL::GeometryDrawing::drawObject(box, true);*/
+
+	glPushMatrix();
+	glScalef(3.0f, 3.0f, 3.0f);
+
+	Math::Point lightp(1.0f, 1.0f, -0.5f);
+	GLfloat light_pos[4] = {lightp.getX(), lightp.getY(), lightp.getZ(), 1.0f};
+	glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+
+	//Render the test mesh
+	glEnable(GL_TEXTURE_2D);
+	testMesh->render(renderer);
+	glDisable(GL_TEXTURE_2D);
+
+	glPopMatrix();
     
     glFlush();
 }
