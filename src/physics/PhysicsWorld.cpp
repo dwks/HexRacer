@@ -7,6 +7,7 @@
 #include "opengl/OpenGL.h"
 
 #include "event/ObserverList.h"
+#include "PhysicsSerializer.h"
 
 #include "render/RenderableBox.h"
 
@@ -33,7 +34,7 @@ void PhysicsWorld::createTestScene(){
     createRigidStaticPlane(Math::Point(0.0,1.0,0.0), Math::Point(0.0,-2.0,0.0));
     
     //A player
-    //createPlayer(0);
+    //createPlayer(10);
 }
 
 void PhysicsWorld::setupPhysicsWorld() {
@@ -127,6 +128,13 @@ btRigidBody* PhysicsWorld::createRigidBox(float width, float height, float depth
 
 void PhysicsWorld::render() {
     //collisionBodies[1]->applyCentralForce(btVector3(2.0f, 0.0f, 0.0f));
+    
+    static bool first = true;
+    if(first) {
+        first = false;
+        
+        PhysicsSerializer().serialize(collisionBodies[1]);
+    }
     
     stepWorld(10 * 1000);  // step world by 10 ms
     
