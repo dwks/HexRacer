@@ -206,6 +206,10 @@ void SDLMain::render() {
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+
+	Math::Point lightp(1.0f, 1.0f, -1.0f);
+	GLfloat light_pos[4] = {lightp.getX(), lightp.getY(), lightp.getZ(), 1.0f};
+	glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
     
     glTranslated(0.0, 0.0, -10.0);
     
@@ -214,16 +218,16 @@ void SDLMain::render() {
 	glPushMatrix();
 	glScalef(3.0f, 3.0f, 3.0f);
 
-	Math::Point lightp(1.0f, 1.0f, -0.5f);
-	GLfloat light_pos[4] = {lightp.getX(), lightp.getY(), lightp.getZ(), 1.0f};
-	glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-
 	//Render the test mesh
-	glEnable(GL_TEXTURE_2D);
 	testMesh->render(renderer);
-	glDisable(GL_TEXTURE_2D);
 
 	glPopMatrix();
+
+	//Revert the rendering state
+	glDisable(GL_COLOR_MATERIAL);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_LIGHT0);
+	glDisable(GL_TEXTURE_2D);
     
     glFlush();
 }

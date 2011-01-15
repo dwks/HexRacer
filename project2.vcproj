@@ -277,6 +277,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\ShaderAttributeLocation.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\ShaderParamSetter.cpp"
 				>
 			</File>
@@ -700,6 +704,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\Shader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ShaderAttributeLocation.h"
 				>
 			</File>
 			<File
