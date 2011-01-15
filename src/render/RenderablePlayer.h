@@ -6,9 +6,13 @@
 namespace Project {
 namespace Render {
 
-class RenderablePlayer {
+class RenderablePlayer : public RenderableObject {
+private:
+    Math::Point origin;
 public:
+    void updatePhysicalData(const Math::Point &origin);
     
+    virtual void renderGeometry(ShaderParamSetter setter) = 0;
 };
 
 }  // namespace Render

@@ -1,0 +1,36 @@
+#ifndef PROJECT_OBJECT__WORLD_H
+#define PROJECT_OBJECT__WORLD_H
+
+#include <vector>
+#include "AbstractObject.h"
+
+#include "boost/serialization/vector.hpp"
+
+namespace Project {
+namespace Object {
+
+class World : public AbstractObject {
+private:
+    friend class boost::serialization::access;
+    
+    template <typename Archive>
+    void serialize(Archive &ar, const unsigned version) {
+        ar & boost::serialization::base_object<AbstractObject>(*this);
+        ar & objectList;
+    }
+private:
+    typedef std::vector<ObjectBase *> objectListType;
+    objectListType objectList;
+public:
+    void addObject(ObjectBase *object);
+    
+    virtual Physics::PhysicalObject *getPhysicalObject()
+        { return NULL; }
+    virtual Render::RenderableObject *getRenderableObject()
+        { return NULL; }
+};
+
+}  // namespace Object
+}  // namespace Project
+
+#endif

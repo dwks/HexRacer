@@ -79,11 +79,12 @@ void SDLMain::run() {
     else {
         playerManager = new PlayerManager(0);
     }
-
+    
     physicsWorld = new Physics::PhysicsWorld();
     physicsWorld->createTestScene();
-
+    
     bool quit = false;
+    Uint32 lastTime = 0;
     while(!quit) {
         SDL_Event event;
         while(SDL_PollEvent(&event)) {
@@ -126,9 +127,13 @@ void SDLMain::run() {
         handleJoystick();
         inputManager->advanceToNextFrame();
         
+        Uint32 thisTime = SDL_GetTicks();
+        physicsWorld->stepWorld((thisTime - lastTime) * 1000);
+        lastTime = thisTime;
+        
         render();
         playerManager->render();
-        physicsWorld->render();  // for debugging
+        physicsWorld->render();
         
         SDL_GL_SwapBuffers();
         

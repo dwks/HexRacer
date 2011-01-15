@@ -93,7 +93,7 @@ void ServerMain::run() {
             }
         }
         
-        if(++loops == 200) {
+        if(++loops == 10) {
             loops = 0;
             
             Event::UpdatePlayerList *update
