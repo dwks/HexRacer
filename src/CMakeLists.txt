@@ -46,7 +46,8 @@ set(OPENGL_LIBRARIES GL GLU GLEW)
 
 # SDL stuff
 find_package(SDL)
-include_directories(${SDL_INCLUDE_DIR})
+find_package(SDL_image)
+include_directories(${SDL_INCLUDE_DIR} ${SDLIMAGE_INCLUDE_DIR})
 
 # Qt 4 stuff
 #find_package(Qt4 COMPONENTS
@@ -78,7 +79,7 @@ set(COMMON_LIBRARIES
 #target_link_libraries(server ${COMMON_LIBRARIES})
 
 target_link_libraries(sdl
-    ${CORE_LIBRARY} ${Boost_LIBRARIES} ${SDL_LIBRARY} ${OPENGL_LIBRARIES}
+    ${CORE_LIBRARY} ${Boost_LIBRARIES} ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${OPENGL_LIBRARIES}
     BulletDynamics BulletCollision LinearMath)
 target_link_libraries(server
     ${CORE_LIBRARY} ${Boost_LIBRARIES} ${OPENGL_LIBRARIES}
