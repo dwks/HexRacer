@@ -12,7 +12,6 @@ Subsystem::Subsystem(subsystem_t subsystem) : subsystem(subsystem) {
 std::string Subsystem::getDescription() const {
     static const char *descriptions[] = {
         "GLOBAL",
-        "GUI",
         "OPENGL",
         "SDL",
         "NETWORK",

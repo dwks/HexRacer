@@ -6,8 +6,21 @@
 #include "opengl/GeometryDrawing.h"
 #include "opengl/OpenGL.h"
 
+#include "event/ObserverList.h"
+
 namespace Project {
 namespace Physics {
+
+void PhysicsWorld::PlayerMovementHandler::observe(
+    Event::PlayerMovement *event) {
+    
+    player->applyCentralForce(Converter::toVector(
+        event->getMovement() * 5000.0f));
+    /*player->applyCentralImpulse(Converter::toVector(
+        Math::Point(1000000.0f, 0.0f, 0.0f)));*/
+    /*player->applyTorque(Converter::toVector(
+        Math::Point(1000000.0f, 1000000.0f, 0.0f)));*/
+}
 
 PhysicsWorld *PhysicsWorld::instance;
 
@@ -30,6 +43,8 @@ void PhysicsWorld::createTestScene(){
     
     //A player
     createPlayer(0);
+    
+    ADD_OBSERVER(new PlayerMovementHandler(collisionBodies[1]));
 }
 
 void PhysicsWorld::setupPhysicsWorld() {

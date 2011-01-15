@@ -38,3 +38,9 @@ Makefile
 
 # Windows clutter
 *.db
+
+# Objects and meshes
+glass*.png
+glass*.mtl
+glass*.obj
+

@@ -61,6 +61,7 @@ void SDLMain::run() {
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     
+    SDL_WM_SetCaption("The Project", NULL);
     SDL_SetVideoMode(WIDTH, HEIGHT, 0, SDL_INIT_FLAGS);
     
     projector.setCurrentDimensions(Point2D(WIDTH, HEIGHT));
@@ -69,7 +70,7 @@ void SDLMain::run() {
     trackball = new OpenGL::Trackball();
     
     joystick = new JoystickManager();
-    joystick->open();
+    //joystick->open();
 
 	//Initialize a light
 	glEnable(GL_LIGHTING);
@@ -107,6 +108,8 @@ void SDLMain::run() {
     
     physicsWorld = new Physics::PhysicsWorld();
     physicsWorld->createTestScene();
+    
+    LOG2(GLOBAL, PROGRESS, "Entering main game loop");
     
     bool quit = false;
     Uint32 lastTime = 0;
@@ -165,6 +168,8 @@ void SDLMain::run() {
         SDL_Delay(10);
     }
     
+    LOG2(GLOBAL, PROGRESS, "Exiting main game loop");
+    
     delete trackball;
     delete joystick;
     delete inputManager;
@@ -186,25 +191,6 @@ void SDLMain::handleJoystick() {
         trackball->setMouseCurrentAt(translation);
     }
 }
-
-/*void SDLMain::handleKeyDown(SDL_Event *event) {
-    switch(event->key.keysym.sym) {
-    case SDLK_LEFT:
-        EMIT_EVENT(new Event::PlayerMovement(Math::Point(-0.1, 0.0)));
-        break;
-    case SDLK_RIGHT:
-        EMIT_EVENT(new Event::PlayerMovement(Math::Point(+0.1, 0.0)));
-        break;
-    case SDLK_UP:
-        EMIT_EVENT(new Event::PlayerMovement(Math::Point(0.0, +0.1)));
-        break;
-    case SDLK_DOWN:
-        EMIT_EVENT(new Event::PlayerMovement(Math::Point(0.0, -0.1)));
-        break;
-    default:
-        break;
-    }
-}*/
 
 void SDLMain::render() {
     glMatrixMode(GL_MODELVIEW);

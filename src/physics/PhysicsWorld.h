@@ -7,6 +7,9 @@
 #include "log/Logger.h"
 #include "PhysicalPlayer.h"
 
+#include "event/TypedObserver.h"
+#include "event/PlayerMovement.h"
+
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
 
@@ -18,6 +21,16 @@ private:
   static PhysicsWorld *instance;
 public:
   static PhysicsWorld *getInstance() { return instance; }
+private:
+    class PlayerMovementHandler
+        : public Event::TypedObserver<Event::PlayerMovement> {
+    private:
+        btRigidBody *player;
+    public:
+        PlayerMovementHandler(btRigidBody *player) : player(player) {}
+        
+        virtual void observe(Event::PlayerMovement *event);
+    };
 public:
   PhysicsWorld();
   void setupPhysicsWorld();
