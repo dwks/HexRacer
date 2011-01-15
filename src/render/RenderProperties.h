@@ -5,6 +5,7 @@
 #include "Material.h"
 #include "Texture.h"
 #include "Shader.h"
+#include <string>
 
 namespace Project {
 namespace Render {
@@ -30,8 +31,8 @@ public:
 	void clearTexture();
 	void setTexture(Texture* _texture);
 	Texture* getTexture() const;
-	bool getTextureOverride() const;
-	void setTextureOverride(bool override_children);
+	//bool getTextureOverride() const;
+	//void setTextureOverride(bool override_children);
 
 	bool hasShader() const;
 	void clearShader();
@@ -39,6 +40,10 @@ public:
 	int getShaderIndex() const;
 	bool getShaderOverride() const;
 	void setShaderOverride(bool override_children);
+
+	bool wantsShader() const;
+	std::string getWantsShaderName();
+	void setWantsShaderName(std::string shader_name);
 
 private:
 
@@ -50,7 +55,7 @@ private:
 	bool textureOverrideChildren;
 	int shader;
 	bool shaderOverrideChildren;
-
+	std::string wantsShaderName;
 
 };
 

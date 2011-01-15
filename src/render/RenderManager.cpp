@@ -1,6 +1,7 @@
 #include "RenderManager.h"
 #include "RenderableObject.h"
 #include "opengl/MathWrapper.h"
+#include "log/Logger.h"
 using namespace Project;
 using namespace OpenGL;
 using namespace Math;
@@ -23,7 +24,7 @@ namespace Render {
 
 	}
 
-	void RenderManager::setRenderProperties(const RenderableObject* renderable) {
+	void RenderManager::setRenderProperties(RenderableObject* renderable) {
 
 		if (renderable->hasRenderProperties()) {
 
@@ -48,37 +49,80 @@ namespace Render {
 
 			}
 
-			if (properties->hasTexture()) {
-
-				if (!texturesOverridden()) {
-					//Apply the new textures
-					textureStack.push(properties->getTexture());
-					//Do something here?
+			if (properties->wantsShader()) {
+				int wanted_shader_index = getShaderIndexByName(properties->getWantsShaderName());
+				if (wanted_shader_index >= 0) {
+					properties->setShaderIndex(wanted_shader_index);
 				}
-
-				if (properties->getTextureOverride())
-					numTextureOverrides++;
-
 			}
 
 			if (properties->hasShader()) {
 
-				if (!shadersOverridden()) {
+				if (!shadersOverridden() && properties->getShaderIndex() != enabledShaderIndex) {
 					//Disable the old shader and apply the new one
 					shaderStack.push(properties->getShaderIndex());
-					disableShader(enabledShaderIndex);
+					//disableShader(enabledShaderIndex);
 					enableShader(properties->getShaderIndex());
 				}
 
 				if (properties->getShaderOverride())
 					numShaderOverrides++;
 			}
+			
+			if (properties->hasTexture()) {
+
+				/*
+				if (!texturesOverridden()) {
+					//Apply the new textures
+					textureStack.push(properties->getTexture());
+				}
+				*/
+				
+				//Bind the textures
+				Texture* texture = properties->getTexture();
+				//textureStack.push(texture);
+
+				glActiveTexture(normalMapTexture);
+				if (texture->hasNormalMap()) {
+					glEnable(GL_TEXTURE_2D);
+					glBindTexture(GL_TEXTURE_2D, texture->getNormalMap());
+					setUniformInt("normal_map", normalMapTextureNum);
+					glDisable(GL_TEXTURE_2D);
+				}
+				else {
+					glDisable(GL_TEXTURE_2D);
+					setUniformInt("normal_map", -1);
+				}
+
+				glActiveTexture(colorMapTexture);
+				glActiveTexture(colorMapTexture);
+				if (texture->hasColorMap()) {
+					glEnable(GL_TEXTURE_2D);
+					glBindTexture(GL_TEXTURE_2D, texture->getColorMap());
+					setUniformInt("color_map", colorMapTextureNum);
+				}
+				else {
+					glDisable(GL_TEXTURE_2D);
+					setUniformInt("color_map", -1);
+				}
+				/*
+				if (properties->getTextureOverride())
+					numTextureOverrides++;
+				*/
+
+			}
+			else {
+				glActiveTexture(colorMapTexture);
+				glDisable(GL_TEXTURE_2D);
+				setUniformInt("normal_map", -1);
+				setUniformInt("color_map", -1);
+			}
 
 		}
 
 	}
 
-	void RenderManager::revertRenderProperties(const RenderableObject* renderable) {
+	void RenderManager::revertRenderProperties(RenderableObject* renderable) {
 
 		if (renderable->hasRenderProperties()) {
 
@@ -88,7 +132,7 @@ namespace Render {
 				glPopMatrix(); //Restore old transformation
 			}
 
-			if (properties->hasMaterial()) {
+			if (false && properties->hasMaterial()) {
 
 				if (!materialsOverridden()) {
 					materialStack.pop();
@@ -102,9 +146,10 @@ namespace Render {
 					numMaterialOverrides--;
 
 			}
-
+			
+			/*
 			if (properties->hasTexture()) {
-
+				
 				if (!texturesOverridden()) {
 					textureStack.pop();
 					//Do something here?
@@ -112,8 +157,9 @@ namespace Render {
 
 				if (properties->getTextureOverride())
 					numTextureOverrides--;
-
+				
 			}
+			*/
 
 			if (properties->hasShader()) {
 
@@ -138,8 +184,16 @@ namespace Render {
 		return paramSetter;
 	}
 
-	void RenderManager::loadShader(string name, string vertex_file, string fragment_file) {
-
+	void RenderManager::loadShader(string name, string fragment_file, string vertex_file) {
+		if (name.length() > 0) {
+			Shader* new_shader = new Shader((GLchar*) fragment_file.c_str(),(GLchar*) vertex_file.c_str());
+			new_shader->turnShaderOff();
+			shader.push_back(new_shader);
+			shaderName.push_back(name);
+		}
+		else {
+			LOG(OPENGL, "Empty shader name provided");
+		}
 	}
 
 	bool RenderManager::materialsOverridden() {
@@ -168,7 +222,8 @@ namespace Render {
 	void RenderManager::disableShader(int shader_index) {
 		if (shader_index < 0 || static_cast<unsigned int>(shader_index) > shader.size())
 			return;
-
+		if (shader_index == enabledShaderIndex)
+			enabledShaderIndex = -1;
 		shader[shader_index]->turnShaderOff();
 	}
 
@@ -179,12 +234,32 @@ namespace Render {
 		return shader[shader_index];
 	}
 
+	int RenderManager::getShaderIndexByName(string name) {
+
+		for (unsigned int i = 0; i < shaderName.size(); i++) {
+			if (shaderName[i] == name)
+				return i;
+		}
+		return -1;
+
+	}
+	void RenderManager::setUniformInt(const char *name, GLint value) {
+		Shader* active_shader = getShaderByIndex(enabledShaderIndex);
+		if (active_shader) {
+
+			int uniform_loc = active_shader->getUniLoc(name);
+			if (uniform_loc > 0) {
+				glUniform1i(uniform_loc, value);
+			}
+
+		}
+	}
 	void RenderManager::setUniformVector3(const char *name, Point point) {
 		Shader* active_shader = getShaderByIndex(enabledShaderIndex);
 		if (active_shader) {
 
 			int uniform_loc = active_shader->getUniLoc(name);
-			if (uniform_loc >= 0) {
+			if (uniform_loc > 0) {
 				GLfloat values [3] = {point.getX(), point.getY(), point.getZ()};
 				glUniform3fv(uniform_loc, 1, values);
 			}
@@ -196,7 +271,7 @@ namespace Render {
 		if (active_shader) {
 
 			int uniform_loc = active_shader->getUniLoc(name);
-			if (uniform_loc >= 0) {
+			if (uniform_loc > 0) {
 				GLfloat values [4] = {color.redf(), color.greenf(), color.bluef(), color.alphaf()};
 				glUniform4fv(uniform_loc, 1, values);
 			}
@@ -210,9 +285,9 @@ namespace Render {
 		if (active_shader) {
 
 			int attr_loc = active_shader->getAttrLoc(name);
-			if (attr_loc >= 0) {
-				GLfloat values [3] = {point.getX(), point.getY(), point.getZ()};
-				glVertexAttrib3fv(attr_loc, values);
+			if (attr_loc > 0) {
+				//GLfloat values [3] = {point.getX(), point.getY(), point.getZ()};
+				glVertexAttrib3f(attr_loc, point.getX(), point.getY(), point.getZ());
 			}
 
 		}
@@ -223,7 +298,7 @@ namespace Render {
 		if (active_shader) {
 
 			int attr_loc = active_shader->getUniLoc(name);
-			if (attr_loc >= 0) {
+			if (attr_loc > 0) {
 				GLfloat values [4] = {color.redf(), color.greenf(), color.bluef(), color.alphaf()};
 				glVertexAttrib4fv(attr_loc, values);
 			}

@@ -11,10 +11,12 @@ namespace Project {
 namespace Render {
 
 	RenderableObject::RenderableObject() {
-		renderProperties = NULL;
+		renderProperties = new RenderProperties();
+		originalRenderProperties = renderProperties;
 	}
 
 	RenderableObject::~RenderableObject() {
+		delete(originalRenderProperties);
 	}
 
 	void RenderableObject::render(RenderManager* manager) {

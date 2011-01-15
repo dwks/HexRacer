@@ -13,6 +13,7 @@ namespace Render {
 		textureOverrideChildren = false;
 		shader = -1;
 		shaderOverrideChildren = false;
+		wantsShaderName = "";
 	}
 
 	bool RenderProperties::hasTransformation() const {
@@ -63,15 +64,17 @@ namespace Render {
 	Texture* RenderProperties::getTexture() const {
 		return texture;
 	}
+	/*
 	bool RenderProperties::getTextureOverride() const {
 		return textureOverrideChildren;
 	}
 	void RenderProperties::setTextureOverride(bool override_children) {
 		textureOverrideChildren = override_children;
 	}
+	*/
 
 	bool RenderProperties::hasShader() const {
-		return (shader > 0);
+		return (shader >= 0);
 	}
 	void RenderProperties::clearShader() {
 		shader = -1;
@@ -87,6 +90,16 @@ namespace Render {
 	}
 	void RenderProperties::setShaderOverride(bool override_children) {
 		shaderOverrideChildren = override_children;
+	}
+
+	bool RenderProperties::wantsShader() const {
+		return (wantsShaderName.length() > 0);
+	}
+	std::string RenderProperties::getWantsShaderName() {
+		return wantsShaderName;
+	}
+	void RenderProperties::setWantsShaderName(std::string shader_name) {
+		wantsShaderName = shader_name;
 	}
 
 }  // namespace Render

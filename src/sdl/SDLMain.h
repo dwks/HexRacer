@@ -8,6 +8,9 @@
 #include "PlayerManager.h"
 #include "InputManager.h"
 #include "physics/PhysicsWorld.h"
+#include "render/RenderManager.h"
+#include "render/Shader.h"
+#include "render/MeshLoader.h"
 
 #define FIELD_OF_VIEW 60
 #define SDL_INIT_FLAGS (SDL_HWSURFACE | SDL_OPENGL | SDL_RESIZABLE)
@@ -26,6 +29,12 @@ private:
     NetworkPortal *network;
     PlayerManager *playerManager;
     Physics::PhysicsWorld *physicsWorld;
+
+	Render::MeshLoader *meshLoader;
+	Render::RenderManager *renderer;
+
+	Render::RenderableObject *testMesh;
+	Render::Shader *testShader;
     
 public:
     SDLMain();
@@ -36,6 +45,7 @@ private:
     void resizeGL(int width, int height);
     void handleJoystick();
     void render();
+
 };
 
 }  // namespace SDL

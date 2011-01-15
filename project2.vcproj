@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glew32.lib SDL.lib SDLmain.lib opengl.lib glu32.lib glu.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
+				AdditionalDependencies="glew32.lib SDL.lib SDLmain.lib SDL_image.lib opengl.lib glu32.lib glu.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -186,6 +186,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\CompositeRenderable.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\Converter.cpp"
 				>
 			</File>
 			<File
@@ -616,6 +620,10 @@
 			</File>
 			<File
 				RelativePath=".\src\config.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\Converter.h"
 				>
 			</File>
 			<File

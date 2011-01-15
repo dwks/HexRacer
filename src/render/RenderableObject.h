@@ -27,6 +27,7 @@ public:
 
 private:
 	RenderProperties* renderProperties;
+	RenderProperties* originalRenderProperties;
 	
 };
 
