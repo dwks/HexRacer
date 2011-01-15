@@ -5,7 +5,7 @@ namespace Project {
 namespace Physics {
 
 PhysicalPlayer::PhysicalPlayer(btRigidBody* pRigidBody){
-    primaryRigidBody=pRigidBody;
+    primaryRigidBody = pRigidBody;
 }
 
 Math::Point PhysicalPlayer::getOrigin() {
@@ -15,6 +15,12 @@ Math::Point PhysicalPlayer::getOrigin() {
     return Converter::toPoint(trans.getOrigin());
 }
 
+void PhysicalPlayer::applyMovement(const Math::Point &movement) {
+    primaryRigidBody->activate();
     
+    primaryRigidBody->applyCentralForce(Converter::toVector(
+        movement * 5000.0f));
+}
+
 }  // namespace Physics
 }  // namespace Project

@@ -21,23 +21,13 @@ private:
   static PhysicsWorld *instance;
 public:
   static PhysicsWorld *getInstance() { return instance; }
-private:
-    class PlayerMovementHandler
-        : public Event::TypedObserver<Event::PlayerMovement> {
-    private:
-        btRigidBody *player;
-    public:
-        PlayerMovementHandler(btRigidBody *player) : player(player) {}
-        
-        virtual void observe(Event::PlayerMovement *event);
-    };
 public:
   PhysicsWorld();
   void setupPhysicsWorld();
   void stepWorld(float microseconds);
   void setGravity(float xAccel, float yAccel, float zAccel);
   
-  void createPlayer(int playerID);
+  PhysicalPlayer* createPlayer(int playerID);
   
   btRigidBody* createRigidStaticPlane(Math::Point planeNormal, Math::Point origin);
   btRigidBody* createRigidSphere(float radius, Math::Point origin, float mass);

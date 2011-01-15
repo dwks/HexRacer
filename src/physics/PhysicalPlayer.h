@@ -11,6 +11,8 @@ public:
     PhysicalPlayer(btRigidBody* pRigidBody);
     virtual Math::Point getOrigin();
     
+    void applyMovement(const Math::Point &movement);
+    
 protected:
     btRigidBody* primaryRigidBody; 
 };

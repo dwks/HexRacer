@@ -97,6 +97,10 @@ void SDLMain::run() {
 
     inputManager = new InputManager();
     
+    // this must happen before Players are created
+    physicsWorld = new Physics::PhysicsWorld();
+    physicsWorld->createTestScene();
+    
     network = new NetworkPortal();
     if(network->connectTo("localhost", 1820)) {
         network->waitForWorld();
@@ -105,9 +109,6 @@ void SDLMain::run() {
     else {
         playerManager = new PlayerManager(0);
     }
-    
-    physicsWorld = new Physics::PhysicsWorld();
-    physicsWorld->createTestScene();
     
     LOG2(GLOBAL, PROGRESS, "Entering main game loop");
     

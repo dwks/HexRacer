@@ -13,7 +13,7 @@ namespace SDL {
 void PlayerManager::PlayerMovementHandler::observe(
     Event::PlayerMovement *movement) {
     
-    manager->getPlayer()->addPosition(movement->getMovement());
+    manager->getPlayer()->applyMovement(movement->getMovement());
 }
 
 void PlayerManager::UpdatePlayerListHandler::observe(

@@ -8,23 +8,10 @@
 
 #include "event/ObserverList.h"
 
+#include "render/RenderableBox.h"
+
 namespace Project {
 namespace Physics {
-
-void PhysicsWorld::PlayerMovementHandler::observe(
-    Event::PlayerMovement *event) {
-    
-    player->activate();
-    
-    player->applyCentralForce(Converter::toVector(
-        event->getMovement() * 5000.0f));
-    /*player->applyCentralImpulse(Converter::toVector(
-        event->getMovement() * 100.0f));*/
-    /*player->applyTorqueImpulse(Converter::toVector(
-        event->getMovement() * 100.0f));
-    player->applyTorque(Converter::toVector(
-        event->getMovement() * 10000.0f));*/
-}
 
 PhysicsWorld *PhysicsWorld::instance;
 
@@ -46,9 +33,7 @@ void PhysicsWorld::createTestScene(){
     createRigidStaticPlane(Math::Point(0.0,1.0,0.0), Math::Point(0.0,-2.0,0.0));
     
     //A player
-    createPlayer(0);
-    
-    ADD_OBSERVER(new PlayerMovementHandler(collisionBodies[1]));
+    //createPlayer(0);
 }
 
 void PhysicsWorld::setupPhysicsWorld() {
@@ -61,7 +46,7 @@ void PhysicsWorld::setupPhysicsWorld() {
     broadPhaseInterface = new btDbvtBroadphase();
     
     ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-    btSequentialImpulseConstraintSolver* sol = new btSequentialImpulseConstraintSolver;
+    btSequentialImpulseConstraintSolver* sol = new btSequentialImpulseConstraintSolver();
     constraintSolver = sol;
     
     dynamicsWorld = new btDiscreteDynamicsWorld ( collisionDispatcher,broadPhaseInterface,constraintSolver,collisionConfiguration );
@@ -74,11 +59,13 @@ void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
     dynamicsWorld->setGravity ( btVector3 ( xAccel,yAccel,zAccel ) );
 }
 
-void PhysicsWorld::createPlayer(int playerID){
+PhysicalPlayer* PhysicsWorld::createPlayer(int playerID){
     LOG2(PHYSICS, CREATE, "Creating Player. ID: " << playerID);
     Physics::PhysicalPlayer* player = new Physics::PhysicalPlayer(PhysicsWorld::createRigidBox(2.0,2.0,2.0,Math::Point(0.0,0.0,0.0),2.0));
     
     playerEntities.push_back(player);
+    
+    return player;
 }
 
 
@@ -153,6 +140,7 @@ void PhysicsWorld::render() {
     
     Math::BoundingBox3D box(2.0, 2.0, 2.0,
         Converter::toPoint(collisionBodies[1]->getCenterOfMassPosition()));
+    //Render::RenderableBox box2(box);
     OpenGL::GeometryDrawing::drawObject(box, true);
 }
 

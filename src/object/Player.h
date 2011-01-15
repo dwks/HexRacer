@@ -5,6 +5,12 @@
 #include "math/Point.h"
 
 namespace Project {
+namespace Physics {
+class PhysicalPlayer;
+}  // namespace Physics
+}  // namespace Project
+
+namespace Project {
 namespace Object {
 
 class Player : public AbstractObject {
@@ -14,23 +20,19 @@ private:
     template <typename Archive>
     void serialize(Archive &ar, const unsigned version) {
         ar & boost::serialization::base_object<AbstractObject>(*this);
-        ar & position;
     }
 private:
-    Math::Point position;
-    Physics::PhysicalObject *physical;
+    Physics::PhysicalPlayer *physical;
     Render::RenderableObject *renderable;
 public:
     Player();
     Player(int id);
     
-    virtual Physics::PhysicalObject *getPhysicalObject()
-        { return physical; }
-    virtual Render::RenderableObject *getRenderableObject()
-        { return renderable; }
+    virtual Physics::PhysicalObject *getPhysicalObject();
+    virtual Render::RenderableObject *getRenderableObject();
     
-    Math::Point getPosition() const { return position; }
-    void addPosition(Math::Point add) { position += add; }
+    Math::Point getPosition() const;
+    void applyMovement(const Math::Point &movement);
 };
 
 }  // namespace Object
