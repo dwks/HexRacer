@@ -113,7 +113,7 @@ void SDLMain::run() {
     LOG2(GLOBAL, PROGRESS, "Entering main game loop");
     
     bool quit = false;
-    Uint32 lastTime = 0;
+    Uint32 lastTime = SDL_GetTicks();
     while(!quit) {
         SDL_Event event;
         while(SDL_PollEvent(&event)) {

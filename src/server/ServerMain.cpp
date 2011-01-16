@@ -70,6 +70,7 @@ void ServerMain::run() {
     ADD_OBSERVER(new ServerObserver(this));
     
     int loops = 0;
+    unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
     for(;;) {
         for(;;) {
             Connection::Socket *socket = server.checkForConnections();
@@ -98,8 +99,17 @@ void ServerMain::run() {
             }
         }
         
-        if(++loops == 200) {
+        unsigned long thisTime = Misc::Sleeper::getTimeMilliseconds();
+        physicsWorld->stepWorld((thisTime - lastTime) * 1000);
+        lastTime = thisTime;
+        
+        if(++loops == 100) {
             loops = 0;
+            
+            for(int p = 0; p < clientCount; p ++) {
+                LOG(PHYSICS, "Player " << p << " is at "
+                    << getPlayerList().getPlayer(p)->getPosition());
+            }
             
             Event::UpdatePlayerList *update
                 = new Event::UpdatePlayerList(&playerList);

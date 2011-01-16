@@ -34,6 +34,10 @@ public:
   btRigidBody* createRigidBox(float width, float height, float depth, Math::Point origin, float mass);
   void createTestScene();
   
+  /** This does not automatically free the memory for @a body.
+  */
+  void destroyRigidBody(btRigidBody *body);
+  
   void render();
 private:
   btBroadphaseInterface *broadPhaseInterface;

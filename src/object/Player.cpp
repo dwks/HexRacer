@@ -23,6 +23,11 @@ Player::Player(int id) : AbstractObject(id) {
     renderable = NULL; //new Render::RenderablePlayer();
 }
 
+Player::~Player() {
+    delete physical;
+    delete renderable;
+}
+
 Physics::PhysicalObject *Player::getPhysicalObject() {
     return physical;
 }

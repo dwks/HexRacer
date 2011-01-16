@@ -29,6 +29,7 @@ private:
 public:
     Player();
     Player(int id);
+    virtual ~Player();
     
     virtual Physics::PhysicalObject *getPhysicalObject();
     virtual Render::RenderableObject *getRenderableObject();

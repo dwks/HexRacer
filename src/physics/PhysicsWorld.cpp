@@ -37,6 +37,16 @@ void PhysicsWorld::createTestScene(){
     //createPlayer(10);
 }
 
+void PhysicsWorld::destroyRigidBody(btRigidBody *body) {
+    dynamicsWorld->removeRigidBody(body);
+    
+    std::vector<btRigidBody*>::iterator found = std::find(
+        collisionBodies.begin(), collisionBodies.end(), body);
+    if(found != collisionBodies.end()) {
+        collisionBodies.erase(found);
+    }
+}
+
 void PhysicsWorld::setupPhysicsWorld() {
     LOG2 ( PHYSICS, INIT, "Physics Setup Initialized..." );
     collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -62,9 +72,9 @@ void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
 
 PhysicalPlayer* PhysicsWorld::createPlayer(int playerID, Math::Point origin) {
     LOG2(PHYSICS, CREATE, "Creating Player. ID: " << playerID);
-    Physics::PhysicalPlayer* player = new Physics::PhysicalPlayer(PhysicsWorld::createRigidBox(2.0,2.0,2.0,origin,2.0));
+    Physics::PhysicalPlayer* player = new Physics::PhysicalPlayer(origin);
     
-    playerEntities.push_back(player);
+    //playerEntities.push_back(player);
     
     return player;
 }

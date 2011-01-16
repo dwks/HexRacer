@@ -2,18 +2,29 @@
 #include "Converter.h"
 #include "PhysicsWorld.h"
 
+#include "log/Logger.h"
+
 namespace Project {
 namespace Physics {
 
-PhysicalPlayer::PhysicalPlayer(btRigidBody* pRigidBody){
-    primaryRigidBody = pRigidBody;
+PhysicalPlayer::PhysicalPlayer(const Math::Point &origin)
+    : primaryRigidBody(NULL) {
+    
+    constructRigidBody(origin);
 }
 
-/*PhysicalPlayer *PhysicalPlayer::construct(const Math::Point &origin) {
-    return new Physics::PhysicalPlayer(
-        PhysicsWorld::getInstance()->createRigidBox(
-            2.0, 2.0, 2.0, origin, 2.0));
-}*/
+PhysicalPlayer::~PhysicalPlayer() {
+    PhysicsWorld::getInstance()->destroyRigidBody(primaryRigidBody);
+    
+    delete primaryRigidBody;
+}
+
+void PhysicalPlayer::constructRigidBody(const Math::Point &origin) {
+    delete primaryRigidBody;  // works even if NULL
+    
+    primaryRigidBody = PhysicsWorld::getInstance()->createRigidBox(
+        1.0, 1.0, 1.0, origin, 2.0);
+}
 
 Math::Point PhysicalPlayer::getOrigin() const {
     btTransform trans;
@@ -27,11 +38,6 @@ void PhysicalPlayer::applyMovement(const Math::Point &movement) {
     
     primaryRigidBody->applyCentralForce(Converter::toVector(
         movement * 5000.0f));
-}
-
-void PhysicalPlayer::constructRigidBody(const Math::Point &origin) {
-    primaryRigidBody = PhysicsWorld::getInstance()->createRigidBox(
-        2.0, 2.0, 2.0, origin, 2.0);
 }
 
 }  // namespace Physics
