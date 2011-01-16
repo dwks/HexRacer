@@ -3,12 +3,13 @@
 
 #include "AbstractObject.h"
 #include "math/Point.h"
+#include "physics/PhysicalPlayer.h"
 
-namespace Project {
+/*namespace Project {
 namespace Physics {
 class PhysicalPlayer;
 }  // namespace Physics
-}  // namespace Project
+}  // namespace Project*/
 
 namespace Project {
 namespace Object {
@@ -20,6 +21,7 @@ private:
     template <typename Archive>
     void serialize(Archive &ar, const unsigned version) {
         ar & boost::serialization::base_object<AbstractObject>(*this);
+        ar & physical;
     }
 private:
     Physics::PhysicalPlayer *physical;

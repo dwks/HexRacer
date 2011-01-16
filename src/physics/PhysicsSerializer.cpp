@@ -1,3 +1,4 @@
+//#include <cstdio>
 #include "PhysicsSerializer.h"
 
 #include "log/Logger.h"
@@ -16,6 +17,11 @@ void PhysicsSerializer::serialize(btRigidBody *rigidBody) {
     
     LOG(NETWORK, "btRigidBody serialization is "
         << serializer->getCurrentBufferSize() << " bytes");
+    /*std::fwrite(
+        serializer->getBufferPointer(),
+        serializer->getCurrentBufferSize(),
+        1,
+        stdout);*/
 }
 
 }  // namespace Physics

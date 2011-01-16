@@ -60,9 +60,9 @@ void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
     dynamicsWorld->setGravity ( btVector3 ( xAccel,yAccel,zAccel ) );
 }
 
-PhysicalPlayer* PhysicsWorld::createPlayer(int playerID){
+PhysicalPlayer* PhysicsWorld::createPlayer(int playerID, Math::Point origin) {
     LOG2(PHYSICS, CREATE, "Creating Player. ID: " << playerID);
-    Physics::PhysicalPlayer* player = new Physics::PhysicalPlayer(PhysicsWorld::createRigidBox(2.0,2.0,2.0,Math::Point(0.0,0.0,0.0),2.0));
+    Physics::PhysicalPlayer* player = new Physics::PhysicalPlayer(PhysicsWorld::createRigidBox(2.0,2.0,2.0,origin,2.0));
     
     playerEntities.push_back(player);
     
@@ -138,18 +138,20 @@ void PhysicsWorld::render() {
     
     stepWorld(10 * 1000);  // step world by 10 ms
     
-    for(std::size_t x = 0; x < collisionBodies.size(); x ++) {
+    // hack: don't display plane
+    for(std::size_t x = 1; x < collisionBodies.size(); x ++) {
+        //if(!dynamic_cast<>(collisionBodies[x])) continue;
+        
         btTransform transform;
         collisionBodies[x]->getMotionState()->getWorldTransform(transform);
         
         /*LOG(PHYSICS, "body " << collisionBodies[x] << " at "
             << Converter::toPoint(transform.getOrigin()));*/
+        
+        Math::BoundingBox3D box(2.0, 2.0, 2.0,
+        Converter::toPoint(collisionBodies[x]->getCenterOfMassPosition()));
+        OpenGL::GeometryDrawing::drawObject(box, true);
     }
-    
-    Math::BoundingBox3D box(2.0, 2.0, 2.0,
-        Converter::toPoint(collisionBodies[1]->getCenterOfMassPosition()));
-    //Render::RenderableBox box2(box);
-    OpenGL::GeometryDrawing::drawObject(box, true);
 }
 
 }  // namespace Physics

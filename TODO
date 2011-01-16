@@ -1,3 +1,6 @@
 - Make server exit gracefully when it receives CTRL-C
 - Do something about sound...
 - Make Singleton work under Windows (MSVC)
+
+Notes
+- Player needs to #include "PhysicalPlayer.h" which is quite the dependency ...

@@ -27,7 +27,7 @@ public:
   void stepWorld(float microseconds);
   void setGravity(float xAccel, float yAccel, float zAccel);
   
-  PhysicalPlayer* createPlayer(int playerID);
+  PhysicalPlayer* createPlayer(int playerID, Math::Point origin = Math::Point());
   
   btRigidBody* createRigidStaticPlane(Math::Point planeNormal, Math::Point origin);
   btRigidBody* createRigidSphere(float radius, Math::Point origin, float mass);
