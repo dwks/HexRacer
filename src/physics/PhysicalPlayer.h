@@ -2,6 +2,7 @@
 #define PROJECT_PHYSICS__PHYSICAL_PLAYER_H
 
 #include "PhysicalObject.h"
+#include "Converter.h"
 
 #include "boost/serialization/access.hpp"
 #include "boost/serialization/split_member.hpp"
@@ -18,14 +19,23 @@ private:
     template <typename Archive>
     void save(Archive &ar, const unsigned version) const {
         Math::Point origin = getOrigin();
-        ar << origin;
+        Math::Point linearVelocity
+            = Converter::toPoint(primaryRigidBody->getLinearVelocity());
+        Math::Point angularVelocity
+            = Converter::toPoint(primaryRigidBody->getAngularVelocity());
+        ar << origin << linearVelocity << angularVelocity;
     }
     
     template <typename Archive>
     void load(Archive &ar, const unsigned version) {
-        Math::Point origin;
-        ar >> origin;
+        Math::Point origin, linearVelocity, angularVelocity;
+        ar >> origin >> linearVelocity >> angularVelocity;
         constructRigidBody(origin);
+        
+        primaryRigidBody->setLinearVelocity(
+            Converter::toVector(linearVelocity));
+        primaryRigidBody->setAngularVelocity(
+            Converter::toVector(angularVelocity));
     }
     
     BOOST_SERIALIZATION_SPLIT_MEMBER()

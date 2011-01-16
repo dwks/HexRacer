@@ -115,7 +115,7 @@ btRigidBody* PhysicsWorld::createRigidSphere(float radius, Math::Point origin, f
     return rigidBody;
 }
 
-btRigidBody* PhysicsWorld::createRigidBox(float width, float height, float depth, Math::Point origin, float mass){
+btRigidBody* PhysicsWorld::createRigidBox(float width, float height, float depth, Math::Point origin, float mass) {
     LOG2(PHYSICS, CREATE,
         "Creating BoxShape: W: " << width << " H: " << height << " D: " << depth
         << " Origin: " << origin << " Mass: " << mass);

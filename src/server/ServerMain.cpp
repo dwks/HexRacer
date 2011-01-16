@@ -103,7 +103,7 @@ void ServerMain::run() {
         physicsWorld->stepWorld((thisTime - lastTime) * 1000);
         lastTime = thisTime;
         
-        if(++loops == 100) {
+        if(++loops == 10) {
             loops = 0;
             
             for(int p = 0; p < clientCount; p ++) {
