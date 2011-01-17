@@ -95,7 +95,7 @@ bool BSPTree::contains(ObjectSpatial* object) const {
 	return false;
 }
 
-vector<ObjectSpatial*> BSPTree::query(BoundingObject& bounding_object, QueryType query_type) const {
+vector<ObjectSpatial*> BSPTree::query(const BoundingObject& bounding_object, QueryType query_type) const {
 	if (leaf)
 		return list.query(bounding_object, query_type);
 	else {
@@ -135,7 +135,7 @@ void BSPTree::clear() {
 
 }
 
-void BSPTree::appendQuery(vector<ObjectSpatial*>* result_list, BoundingObject& bounding_object, QueryType query_type) const {
+void BSPTree::appendQuery(vector<ObjectSpatial*>* result_list, const BoundingObject& bounding_object, QueryType query_type) const {
 
 	list.appendQuery(result_list, bounding_object, query_type);
 	if (!leaf) {

@@ -7,6 +7,8 @@ using namespace std;
 namespace Project {
 namespace Render {
 
+/** A location of a vertex shader attribute
+*/
 class ShaderAttributeLocation {
 public:
 

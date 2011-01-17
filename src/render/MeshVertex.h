@@ -6,6 +6,8 @@
 namespace Project {
 namespace Render {
 
+/** A vertex of a polygon mesh
+*/
 class MeshVertex
 	: public Project::Math::Vertex3D {
 private:

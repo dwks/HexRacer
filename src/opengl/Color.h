@@ -8,6 +8,8 @@ namespace OpenGL {
 
 #define PROJECT_OPENGL__COLOR_BIT_DEPTH 255
 
+/** A RGBA color
+*/
 class Color
 {
 private:
@@ -47,8 +49,12 @@ public:
 
 	void invert();
 
+	/** Set this color as the drawing color in openGL
+	*/
 	void glApply() const;
 
+	/** Set a color as the drawing color in openGL
+	*/
 	static void glColor(Color color);
 	static void glColor(Color color, float force_alpha);
 

@@ -1,5 +1,7 @@
 #include <climits>
 #include "SDL.h"
+#include <math.h>
+using namespace std;
 
 #include "JoystickManager.h"
 
@@ -23,15 +25,18 @@ void JoystickManager::open() {
     }
 }
 
-double JoystickManager::getNormalizedAxisValue(int axis) {
+double JoystickManager::getNormalizedAxisValue(int axis, double deadzone) {
     if(joystick == NULL) return 0.0;
     
     int value = SDL_JoystickGetAxis(joystick, axis);
     
     double normalized = (double(value) - SHRT_MIN) / (SHRT_MAX - SHRT_MIN);
     normalized = (normalized - 0.5) * 2;
-    
-    return normalized;
+
+	if (abs(normalized) < deadzone)
+		return 0.0f;
+	else
+		return normalized;
 }
 
 }  // namespace SDL

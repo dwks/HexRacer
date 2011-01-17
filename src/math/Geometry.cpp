@@ -157,5 +157,9 @@ bool Geometry::sameSideOfLine2D(Point line_a, Point line_b, Point point_1, Point
 
 }
 
+bool Geometry::frontOfPlane(Point plane_p, Point plane_normal, Point point) {
+	return ((point-plane_p).dotProduct(plane_normal) >= 0.0f);
+}
+
 }  // namespace Math
 }  // namespace Project

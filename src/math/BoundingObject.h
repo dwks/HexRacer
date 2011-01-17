@@ -7,6 +7,8 @@ namespace Math {
 
 class BoundingObject2D;
 
+/** A spatial object with a defined inside and outside
+*/
 class BoundingObject {
 public:
 	BoundingObject(void) {}

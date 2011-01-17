@@ -56,7 +56,7 @@ bool SpatialList::contains(ObjectSpatial* object) const {
 	return false;
 }
 
-vector<ObjectSpatial*> SpatialList::query(BoundingObject& bounding_object, QueryType query_type) const {
+vector<ObjectSpatial*> SpatialList::query(const BoundingObject& bounding_object, QueryType query_type) const {
 
 	vector<ObjectSpatial*> return_list;
 
@@ -67,7 +67,7 @@ vector<ObjectSpatial*> SpatialList::query(BoundingObject& bounding_object, Query
 	return return_list;
 }
 
-void SpatialList::appendQuery(vector<ObjectSpatial*>* result_list, BoundingObject& bounding_object, QueryType query_type) const {
+void SpatialList::appendQuery(vector<ObjectSpatial*>* result_list, const BoundingObject& bounding_object, QueryType query_type) const {
 
 	if (boundingBox && !boundingBox->intersects(bounding_object))
 		return;

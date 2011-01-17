@@ -2,7 +2,6 @@
 #define PROJECT_MATH__GEOMETRY_H
 
 #include "Point.h"
-//#include "Point2D.h"
 
 namespace Project {
 namespace Math {
@@ -36,10 +35,17 @@ public:
     /** Returns the Euclidean distance between two points.
     */
     static double distance(Point one, Point two);
-
 	
+	/** Returns true iff the 2D line represents by points @a line_a and @a line_b
+		intersects the horizontal 2D line at @a hline_v from @a hline_umin to
+		@a hline_umax on the plane @a project_axis
+	*/
 	static bool lineHLineIntersects2D(Point line_a, Point line_b, double hline_v, double hline_umin, double hline_umax, Axis project_axis = Z_AXIS);
 	
+	/** Returns true iff the 2D line represents by points @a line_a and @a line_b
+		intersects the vertical 2D line at @a hline_u from @a hline_vmin to
+		@a hline_vmax on the plane @a project_axis
+	*/
 	static bool lineVLineIntersects2D(Point line_a, Point line_b, double hline_u, double vline_vmin, double vline_vmax, Axis project_axis = Z_AXIS);
 
 	/** Determines if two points are on the same side of a line
@@ -48,7 +54,11 @@ public:
 			the line denoted by @a line_a and @a line_b
     */
 	static bool sameSideOfLine2D(Point line_a, Point line_b, Point point_1, Point point_2, Axis project_axis = Z_AXIS);
-	//static bool lineSegementIntersection2D(Point2D line1a, Point2D line1b, Point2D line2a, Point2D line2b, Point2D *intersection = NULL);
+
+	/** Returns true iff the point @a is on the front-side of the plane represented
+		by the point @a plane_p and normal @a plane_normal
+	*/
+	static bool frontOfPlane(Point plane_p, Point plane_normal, Point point);
 };
 
 }  // namespace Math

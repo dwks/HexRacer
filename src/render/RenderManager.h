@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "RenderProperties.h"
 #include "ShaderAttributeLocation.h"
+#include "LightManager.h"
 #include "opengl/OpenGL.h"
 #include <string>
 #include <vector>
@@ -14,27 +15,36 @@ using namespace std;
 #define SHADER_COLORMAP_UNIFORM_NAME "colorMap"
 #define SHADER_NORMALMAP_UNIFORM_NAME "normalMap"
 #define SHADER_HASTEXTURE_UNIFORM_NAME "hasTexture"
+#define SHADER_NUMLIGHTS_UNIFORM_NAME "numLights"
 
 namespace Project {
 namespace Render {
 
 class RenderableObject;
 
+/** Manages the rendering state when rendering renderable objects
+*/
 class RenderManager {
 private:
 	static const GLenum colorMapTexture = GL_TEXTURE0;
 	static const int colorMapTextureNum = 0;
 	static const GLenum normalMapTexture = GL_TEXTURE1;
 	static const int normalMapTextureNum = 1;
+	LightManager* lightManager;
 public:
 
 	RenderManager();
 	~RenderManager();
 
+	/** Set the render state to the properties of @a renderable
+	*/
 	void setRenderProperties(RenderableObject* renderable);
+	/** Revert the render state from the properties of @a renderable
+	*/
 	void revertRenderProperties(RenderableObject* renderable);
 	ShaderParamSetter getShaderParamSetter();
 
+	void loadShadersFile(string filename);
 	void loadShader(string name, string fragment_file, string vertex_file);
 
 	void setUniformInt(const char *name, GLint value);
@@ -43,6 +53,8 @@ public:
 	void setUniformVector4(const char *name, Project::OpenGL::Color color);
 	void setAttributeVector3(const char *name, Project::Math::Point point);
 	void setAttributeVector4(const char *name, Project::OpenGL::Color color);
+
+	LightManager* getLightManager() const { return lightManager; }
 
 private:
 
@@ -57,6 +69,7 @@ private:
 	stack<int> shaderStack;
 	stack<Material*> materialStack;
 	stack<Texture*> textureStack;
+	vector< vector<ShaderParameter*> > shaderParams;
 
 	int numMaterialOverrides;
 	int numShaderOverrides;
@@ -65,8 +78,6 @@ private:
 	bool materialsOverridden();
 	bool texturesOverridden();
 	bool shadersOverridden();
-
-	void bindTexture(Texture* texture);
 
 	void enableShader(int shader_index);
 	void disableShader(int shader_index);
@@ -84,7 +95,7 @@ private:
 	int getShaderAttributeLocation(int shader_index, string name);
 	int getShaderUniformLocation(int shader_index, const char *name);
 
-	int boolToInt(bool b);
+	void setShaderParameters();
 
 };
 

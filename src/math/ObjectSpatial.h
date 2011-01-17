@@ -7,6 +7,8 @@ namespace Math {
 
 class BoundingObject;
 
+/** An object that exists in two or three dimensional space
+*/
 class ObjectSpatial
 {
 public:
@@ -30,7 +32,11 @@ public:
 	virtual Point centroid() const = 0;
 	virtual void translate(const Point& translation) = 0;
 	virtual void moveCentroid(const Point& position) = 0;
+	/** Returns true iff this object is entirely contained inside @a bounding obj
+	*/
 	virtual bool isInside(const BoundingObject& bounding_obj) const = 0;
+	/** Returns true iff this object intersects @a bound_obj
+	*/
 	virtual bool intersects(const BoundingObject& bound_obj) const = 0;
 
 };

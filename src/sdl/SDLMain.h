@@ -2,6 +2,8 @@
 #define PROJECT_SDL__SDLMAIN_H
 
 #include "opengl/Trackball.h"
+#include "opengl/SimpleTrackball.h"
+#include "opengl/Camera.h"
 #include "Projector.h"
 #include "JoystickManager.h"
 #include "NetworkPortal.h"
@@ -11,6 +13,7 @@
 #include "render/RenderManager.h"
 #include "render/Shader.h"
 #include "render/MeshLoader.h"
+#include "render/RenderList.h"
 
 #define FIELD_OF_VIEW 60
 #define SDL_INIT_FLAGS (SDL_HWSURFACE | SDL_OPENGL | SDL_RESIZABLE)
@@ -22,7 +25,10 @@ namespace SDL {
 
 class SDLMain {
 private:
-    OpenGL::Trackball *trackball;
+    //OpenGL::Trackball *trackball;
+	OpenGL::SimpleTrackball *simpleTrackball;
+	OpenGL::Camera  *camera;
+
     Projector projector;
     JoystickManager *joystick;
     InputManager *inputManager;
@@ -32,9 +38,10 @@ private:
 
 	Render::MeshLoader *meshLoader;
 	Render::RenderManager *renderer;
+	Render::RenderList* rootRenderable;
+	Render::LightManager *lightManager;
 
-	Render::RenderableObject *testMesh;
-	Render::Shader *testShader;
+	GLUquadric* quadric;
     
 public:
     SDLMain();
@@ -45,6 +52,8 @@ private:
     void resizeGL(int width, int height);
     void handleJoystick();
     void render();
+
+	void updateCamera();
 
 };
 

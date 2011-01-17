@@ -7,6 +7,8 @@
 namespace Project {
 namespace Render {
 
+/** A renderable object that draws geometry
+*/
 class BaseRenderable
 	: public RenderableObject {
 public:

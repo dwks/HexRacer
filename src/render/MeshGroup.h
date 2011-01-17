@@ -10,19 +10,23 @@ using namespace std;
 namespace Project {
 namespace Render {
 
+/** A group of triangle-meshes
+*/
 class MeshGroup
 	: public CompositeRenderable {
-public:
-
-	MeshGroup(string name, vector<Mesh*> meshes);
-	string getName();
-	vector<RenderableObject*> getChildren();
-
-
 private:
 
 	string name;
 	vector<RenderableObject*> meshes;
+	vector<MeshVertex*> vertices;
+
+public:
+
+	MeshGroup(string name, vector<Mesh*> meshes, vector<MeshVertex*> vertices);
+	~MeshGroup();
+	string getName() { return name; }
+	vector<RenderableObject*> getChildren();
+	vector<Project::Math::Triangle3D> getTriangles();
 
 };
 

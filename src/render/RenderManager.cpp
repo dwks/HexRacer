@@ -1,10 +1,14 @@
 #include "RenderManager.h"
 #include "RenderableObject.h"
 #include "opengl/MathWrapper.h"
+#include "misc/DirectoryFunctions.h"
 #include "log/Logger.h"
+#include <fstream>
 using namespace Project;
 using namespace OpenGL;
 using namespace Math;
+using namespace Misc;
+using namespace std;
 
 namespace Project {
 namespace Render {
@@ -18,31 +22,33 @@ namespace Render {
 
 		enabledShaderIndex =-1;
 
+		lightManager = new LightManager();
+
 	}
 
 	RenderManager::~RenderManager() {
-
+		delete(lightManager);
 	}
 
 	void RenderManager::setRenderProperties(RenderableObject* renderable) {
 
-		if (renderable->hasRenderProperties()) {
+		//if (renderable->hasRenderProperties()) {
 
-			RenderProperties* properties = renderable->getRenderProperties();
-			
-			if (properties->hasTransformation()) {
-				glPushMatrix(); //Save previous transformation
-				//Apply new transformation
-				MathWrapper::glMultMatrix(properties->getTransformation());
-			}
-
-			setRenderMaterial(properties);
-
-			setRenderShader(properties);
-			
-			setRenderTexture(properties);
-
+		RenderProperties* properties = renderable->getRenderProperties();
+		
+		if (properties->hasTransformation()) {
+			glPushMatrix(); //Save previous transformation
+			//Apply new transformation
+			MathWrapper::glMultMatrix(properties->getTransformation());
 		}
+
+		setRenderMaterial(properties);
+
+		setRenderShader(properties);
+		
+		setRenderTexture(properties);
+
+		//}
 
 	}
 
@@ -54,14 +60,14 @@ namespace Render {
 				materialStack.push(properties->getMaterial());
 				properties->getMaterial()->glApply();
 			}
-
-			if (properties->getMaterialOverride())
-				numMaterialOverrides++;
-
 		}
+
+		if (properties->getMaterialOverride())
+			numMaterialOverrides++;
 	}
 
 	void RenderManager::setRenderShader(RenderProperties* properties) {
+
 		if (!properties->hasShader() && properties->wantsShader()) {
 			int wanted_shader_index = getShaderIndexByName(properties->getWantsShaderName());
 			if (wanted_shader_index >= 0) {
@@ -69,18 +75,24 @@ namespace Render {
 			}
 		}
 
+		if (properties->hasShaderParams()) {
+			shaderParams.push_back(properties->getShaderParams());
+		}
+
 		if (properties->hasShader()) {
 
-			if (!shadersOverridden() && properties->getShaderIndex() != enabledShaderIndex) {
-				//Disable the old shader and apply the new one
+			if (!shadersOverridden()) {
 				shaderStack.push(properties->getShaderIndex());
-				//disableShader(enabledShaderIndex);
-				enableShader(properties->getShaderIndex());
+				if (properties->getShaderIndex() != enabledShaderIndex) {
+					//Disable the old shader and apply the new one
+					disableShader(enabledShaderIndex);
+					enableShader(properties->getShaderIndex());
+				}
 			}
-
-			if (properties->getShaderOverride())
-				numShaderOverrides++;
 		}
+
+		if (properties->getShaderOverride())
+			numShaderOverrides++;
 	}
 
 	void RenderManager::setRenderTexture(RenderProperties* properties) {
@@ -89,29 +101,36 @@ namespace Render {
 		bool hasNormalMap = false;
 
 		if (properties->hasTexture()) {
+
+			if (!texturesOverridden()) {
 				
-			//Bind the textures
-			Texture* texture = properties->getTexture();
-			//textureStack.push(texture);
+				//Bind the textures
+				Texture* texture = properties->getTexture();
+				//textureStack.push(texture);
 
-			glActiveTexture(normalMapTexture);
-			if (texture->hasNormalMap()) {
-				glEnable(GL_TEXTURE_2D);
-				glBindTexture(GL_TEXTURE_2D, texture->getNormalMap());
-				setUniformInt(SHADER_NORMALMAP_UNIFORM_NAME, normalMapTextureNum);
-				glDisable(GL_TEXTURE_2D);
-				hasNormalMap = true;
-			}
+				glActiveTexture(normalMapTexture);
+				if (texture->hasNormalMap()) {
+					glEnable(GL_TEXTURE_2D);
+					glBindTexture(GL_TEXTURE_2D, texture->getNormalMap());
+					setUniformInt(SHADER_NORMALMAP_UNIFORM_NAME, normalMapTextureNum);
+					glDisable(GL_TEXTURE_2D);
+					hasNormalMap = true;
+				}
 
-			glActiveTexture(colorMapTexture);
-			if (texture->hasColorMap()) {
-				glEnable(GL_TEXTURE_2D);
-				glBindTexture(GL_TEXTURE_2D, texture->getColorMap());
-				setUniformInt(SHADER_COLORMAP_UNIFORM_NAME, colorMapTextureNum);
-				hasColorMap = true;
+				glActiveTexture(colorMapTexture);
+				if (texture->hasColorMap()) {
+					glEnable(GL_TEXTURE_2D);
+					glBindTexture(GL_TEXTURE_2D, texture->getColorMap());
+					setUniformInt(SHADER_COLORMAP_UNIFORM_NAME, colorMapTextureNum);
+					hasColorMap = true;
+				}
+
 			}
 
 		}
+
+		if (properties->getTextureOverride())
+			numTextureOverrides++;
 
 		if (!hasColorMap) {
 			glActiveTexture(colorMapTexture);
@@ -126,19 +145,19 @@ namespace Render {
 
 	void RenderManager::revertRenderProperties(RenderableObject* renderable) {
 
-		if (renderable->hasRenderProperties()) {
+		//if (renderable->hasRenderProperties()) {
 
-			RenderProperties* properties = renderable->getRenderProperties();
-			
-			if (properties->hasTransformation()) {
-				glPopMatrix(); //Restore old transformation
-			}
-
-			revertRenderMaterial(properties);
-	
-			revertRenderShader(properties);
-
+		RenderProperties* properties = renderable->getRenderProperties();
+		
+		if (properties->hasTransformation()) {
+			glPopMatrix(); //Restore old transformation
 		}
+
+		revertRenderMaterial(properties);
+
+		revertRenderShader(properties);
+
+		//}
 
 	}
 
@@ -152,36 +171,64 @@ namespace Render {
 					materialStack.top()->glApply();
 				}
 			}
-
-			if (properties->getMaterialOverride())
-				numMaterialOverrides--;
-
 		}
+
+		if (properties->getMaterialOverride())
+			numMaterialOverrides--;
 	}
 	void RenderManager::revertRenderShader(RenderProperties* properties) {
+
+		if (properties->hasShaderParams()) {
+			shaderParams.pop_back();
+		}
+
 		if (properties->hasShader()) {
 
 			if (!shadersOverridden()) {
-				//Disable the shader and reenable the old one
-				disableShader(properties->getShaderIndex());
 				shaderStack.pop();
-				if (!shaderStack.empty()) {
+				if (shaderStack.empty())
+					disableShader(enabledShaderIndex);
+				else if (shaderStack.top() != enabledShaderIndex) {
+					//Disable the shader and reenable the old one
+					disableShader(properties->getShaderIndex());
 					enableShader(shaderStack.top());
 				}
 			}
-
-			if (properties->getShaderOverride())
-				numShaderOverrides--;
 		}
+
+		if (properties->getShaderOverride())
+			numShaderOverrides--;
 	}
 
 	void RenderManager::revertRenderTexture(RenderProperties* properties) {
 		glDisable(GL_TEXTURE_2D);
+		if (properties->getTextureOverride())
+			numTextureOverrides--;
 	}
 	ShaderParamSetter RenderManager::getShaderParamSetter() {
 		return paramSetter;
 	}
 
+	void RenderManager::loadShadersFile(string filename) {
+
+		string directory = DirectoryFunctions::extractDirectory(filename);
+
+		ifstream in_file;
+		in_file.open(filename.c_str());
+		while (!in_file.eof()) {
+			string shader_name;
+			in_file >> shader_name;
+			if (shader_name.length() > 0) {
+				string frag_file;
+				string vert_file;
+				in_file >> frag_file;
+				in_file >> vert_file;
+				loadShader(shader_name, string(directory).append(frag_file), string(directory).append(vert_file));
+			}
+		}
+		in_file.close();
+		
+	}
 	void RenderManager::loadShader(string name, string fragment_file, string vertex_file) {
 		if (name.length() > 0) {
 			Shader* new_shader = new Shader((GLchar*) fragment_file.c_str(),(GLchar*) vertex_file.c_str());
@@ -200,6 +247,7 @@ namespace Render {
 			if (loc > -1)
 				attributes.push_back(ShaderAttributeLocation("bitangent", loc));
 
+			LOG(OPENGL, "Shader loaded: " << name);
 			shaderAttributeLocation.push_back(attributes);
 		}
 		else {
@@ -219,15 +267,12 @@ namespace Render {
 		return (numShaderOverrides > 0);
 	}
 
-	void RenderManager::bindTexture(Texture* texture) {
-
-	}
-
 	void RenderManager::enableShader(int shader_index) {
 		if (shader_index < 0 || static_cast<unsigned int>(shader_index) > shader.size())
 			return;
 		enabledShaderIndex = shader_index;
 		shader[shader_index]->turnShaderOn();
+		setShaderParameters();
 	}
 
 	void RenderManager::disableShader(int shader_index) {
@@ -254,6 +299,7 @@ namespace Render {
 		return -1;
 
 	}
+
 	void RenderManager::setUniformInt(const char *name, GLint value) {
 		int loc = getShaderUniformLocation(enabledShaderIndex, name);
 		if (loc >= 0)
@@ -309,11 +355,15 @@ namespace Render {
 			return -1;
 		return (shader[shader_index]->getUniLoc(name));
 	}
-	int RenderManager::boolToInt(bool b) {
-		if (b)
-			return 1;
-		else
-			return 0;
+	void RenderManager::setShaderParameters() {
+		ShaderParamSetter setter = getShaderParamSetter();
+		for (unsigned int i = 0; i < shaderParams.size(); i++) {
+			for (unsigned int j = 0; j < shaderParams[i].size(); j++) {
+				shaderParams[i][j]->setShaderParameters(setter);
+			}
+		}
+		//Set standard parameters
+		setUniformInt(SHADER_NUMLIGHTS_UNIFORM_NAME, lightManager->getActiveLights());
 	}
 	
 

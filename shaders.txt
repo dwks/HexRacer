@@ -1,0 +1,2 @@
+genericShader shaders/genericShader.frag shaders/genericShader.vert
+playerGlow shaders/playerGlow.frag shaders/playerGlow.vert

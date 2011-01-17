@@ -7,6 +7,8 @@
 namespace Project {
 namespace Math {
 
+/** A 2D triangle
+*/
 class BoundingTriangle2D
 	: public BoundingObject2D {
 private:

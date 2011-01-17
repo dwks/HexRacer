@@ -9,6 +9,8 @@ namespace Render {
 
 class RenderManager;
 
+/** An accessor for setting shader parameters
+*/
 class ShaderParamSetter {
 public:
 

@@ -1,5 +1,3 @@
-//#if(0)
-
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -138,5 +136,3 @@ int Shader::getAttrLoc(const char *name) {
 
 	return loc;
 }
-
-//#endif

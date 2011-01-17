@@ -9,6 +9,8 @@
 namespace Project {
 namespace OpenGL {
 
+/** Functions for drawing spatial objects
+*/
 class GeometryDrawing
 {
 public:
