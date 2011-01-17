@@ -5,6 +5,7 @@
 #include <string>
 #include "CompositeRenderable.h"
 #include "Mesh.h"
+#include "math/BoundingBox3D.h"
 using namespace std;
 
 namespace Project {
@@ -19,14 +20,16 @@ private:
 	string name;
 	vector<RenderableObject*> meshes;
 	vector<MeshVertex*> vertices;
+	Project::Math::BoundingBox3D boundingBox;
 
 public:
 
-	MeshGroup(string name, vector<Mesh*> meshes, vector<MeshVertex*> vertices);
+	MeshGroup(string _name, vector<Mesh*> meshes, vector<MeshVertex*> _vertices);
 	~MeshGroup();
 	string getName() { return name; }
 	vector<RenderableObject*> getChildren();
 	vector<Project::Math::Triangle3D> getTriangles();
+	Project::Math::BoundingBox3D getBoundingBox() { return boundingBox; }
 
 };
 

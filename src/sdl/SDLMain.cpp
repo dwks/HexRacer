@@ -113,6 +113,7 @@ void SDLMain::run() {
 	Render::MeshGroup* player_cube_mesh = meshLoader->getModelByName("playerCube");
 
 	//Make two player renderables
+	/*
 	Render::RenderList* player1_renderable = new Render::RenderList();
 	Render::RenderList* player2_renderable = new Render::RenderList();
 
@@ -132,6 +133,7 @@ void SDLMain::run() {
 	//Add the player renderables to the root renderable
 	rootRenderable->addRenderable(player1_renderable);
 	rootRenderable->addRenderable(player2_renderable);
+	*/
 
 	//rootRenderable->getRenderProperties()->setTextureOverride(true);
 	//rootRenderable->getRenderProperties()->setShaderOverride(true);
@@ -145,7 +147,7 @@ void SDLMain::run() {
 	light->setStrength(100.0f);
 	lightManager->addLight(light);
 
-	light = new Render::Light(Math::Point(16.0f, 3.5f, 9.0f));
+	light = new Render::Light(Math::Point(7.0f, 2.5f, 3.0f));
 	light->setDiffuse(OpenGL::Color::INDIGO);
 	light->setSpecular(OpenGL::Color::INDIGO);
 	light->setStrength(40.0f);

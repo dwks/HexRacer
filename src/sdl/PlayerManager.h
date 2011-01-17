@@ -8,6 +8,8 @@
 #include "event/PlayerMovement.h"
 #include "event/UpdatePlayerList.h"
 
+#include "opengl/Color.h"
+
 namespace Project {
 namespace SDL {
 
@@ -40,6 +42,7 @@ public:
     ~PlayerManager();
     
     void render(Render::RenderManager *renderManager);
+	OpenGL::Color getPlayerColor(int id);
 protected:
     void usePlayerList(Object::PlayerList *playerList);
     Object::Player *getPlayer();

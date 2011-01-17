@@ -29,7 +29,7 @@ void PhysicsWorld::stepWorld(float microseconds) {
 
 void PhysicsWorld::createTestScene(){
     //The "Plane"
-    createRigidStaticPlane(Math::Point(0.0,1.0,0.0), Math::Point(0.0,-2.0,0.0));
+    createRigidStaticPlane(Math::Point(0.0,1.0,0.0), Math::Point(0.0,-1.0,0.0));
     
     //A player
     //createPlayer(10);
@@ -117,7 +117,7 @@ btRigidBody* PhysicsWorld::createRigidBox(float width, float height, float depth
     LOG2(PHYSICS, CREATE,
         "Creating BoxShape: W: " << width << " H: " << height << " D: " << depth
         << " Origin: " << origin << " Mass: " << mass);
-    btCollisionShape* boxShape = new btBoxShape ( btVector3 (width,height,depth) );
+    btCollisionShape* boxShape = new btBoxShape ( btVector3 (width/2.0,height/2.0,depth/2.0) );
     
     btDefaultMotionState* fallMotionState
         = new btDefaultMotionState(

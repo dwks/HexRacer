@@ -60,8 +60,7 @@ void PlayerManager::render(Render::RenderManager *renderManager) {
             renderList->addRenderable(player_cube_mesh);
             
             renderList->getRenderProperties()->addShaderParameter(
-                new Render::ShaderUniformVector4("playerColor",
-                    OpenGL::Color(OpenGL::Color::BLUE)));
+				new Render::ShaderUniformVector4("playerColor", getPlayerColor(player->getID())));
         }
         
         if(renderable) {   // will always be true
@@ -107,6 +106,16 @@ void PlayerManager::usePlayerList(Object::PlayerList *playerList) {
 
 Object::Player *PlayerManager::getPlayer() {
     return playerList->getPlayer(id);
+}
+
+OpenGL::Color PlayerManager::getPlayerColor(int id) {
+	switch (id % 4) {
+		case 0: return OpenGL::Color::RED;
+		case 1: return OpenGL::Color::GREEN;
+		case 2: return OpenGL::Color::BLUE;
+		case 3: return OpenGL::Color::YELLOW;
+	}
+	return OpenGL::Color::WHITE;
 }
 
 }  // namespace SDL

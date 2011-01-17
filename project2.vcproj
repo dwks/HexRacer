@@ -265,6 +265,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\physics\PhysicsSerializer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\PhysicsWorld.cpp"
 				>
 			</File>
@@ -716,6 +720,10 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\PhysicalPlayer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicsSerializer.h"
 				>
 			</File>
 			<File

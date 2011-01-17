@@ -6,13 +6,20 @@ using namespace std;
 namespace Project {
 namespace Render {
 
-	MeshGroup::MeshGroup(string name, vector<Mesh*> meshes, vector<MeshVertex*> vertices) {
+	MeshGroup::MeshGroup(string _name, vector<Mesh*> meshes, vector<MeshVertex*> _vertices) {
 
-		this->name = name;
+		this->name = _name;
 		for (unsigned int i = 0; i < meshes.size(); i++) {
 			this->meshes.push_back(meshes[i]);
 		}
-		this->vertices = vertices;
+		this->vertices = _vertices;
+		if (vertices.size() > 0) {
+			boundingBox.setToObject(*vertices[0]);
+			for (unsigned int i = 1; i < vertices.size(); i++) {
+				boundingBox.expandToInclude(*vertices[i]);
+			}
+		}
+		int b = 5;
 
 	}
 

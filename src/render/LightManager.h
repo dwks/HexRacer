@@ -5,7 +5,7 @@
 #include "opengl/OpenGL.h"
 #include <vector>
 
-#define LIGHT_MANAGER_DRAW_LIGHT_SCALE 0.25f
+#define LIGHT_MANAGER_DRAW_LIGHT_SCALE 0.1f
 
 namespace Project {
 namespace Render {
