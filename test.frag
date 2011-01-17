@@ -31,10 +31,10 @@ void main() {
 	kspec = pow(kspec, gl_FrontMaterial.shininess);
 	//kspec = pow(kspec, modifier);
 	
-	//vec4 diffuse_color = gl_FrontMaterial.diffuse*gl_LightSource[0].diffuse*kdiff / pow(light_dist, 0.5f);
-	vec4 diffuse_color = texture2D(color_map, gl_TexCoord[0].st)*gl_LightSource[0].diffuse*kdiff / pow(light_dist, 0.5f);
+	//vec4 diffuse_color = gl_FrontMaterial.diffuse*gl_LightSource[0].diffuse*kdiff / pow(light_dist, 0.5);
+	vec4 diffuse_color = texture2D(color_map, gl_TexCoord[0].st)*gl_LightSource[0].diffuse*kdiff / pow(light_dist, 0.5);
 	
-	vec4 specular_color = gl_FrontMaterial.specular*gl_LightSource[0].specular*kspec / pow(light_dist, 1.0f);
+	vec4 specular_color = gl_FrontMaterial.specular*gl_LightSource[0].specular*kspec / pow(light_dist, 1.0);
 	
 	gl_FragColor = diffuse_color + specular_color;
 	gl_FragColor.x = max(gl_FragColor.x, gl_FrontMaterial.ambient.x);
