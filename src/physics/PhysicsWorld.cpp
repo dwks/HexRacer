@@ -9,8 +9,6 @@
 #include "event/ObserverList.h"
 #include "PhysicsSerializer.h"
 
-#include "render/RenderableBox.h"
-
 namespace Project {
 namespace Physics {
 

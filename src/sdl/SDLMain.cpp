@@ -83,7 +83,7 @@ void SDLMain::run() {
     resizeGL(WIDTH, HEIGHT);
     
     joystick = new JoystickManager();
-    //joystick->open();
+    joystick->open();
 
 	glewInit();
 	glEnable(GL_DEPTH_TEST);
@@ -241,11 +241,13 @@ void SDLMain::run() {
 void SDLMain::handleJoystick() {
     double x = joystick->getNormalizedAxisValue(0);
     double y = joystick->getNormalizedAxisValue(1);
-
-	double u = joystick->getNormalizedAxisValue(4, 0.5f);
-    double v = joystick->getNormalizedAxisValue(3, 0.5f);
     
-    if(std::fabs(x) > 1e-3 || std::fabs(y) > 1e-3) {
+	double u = joystick->getNormalizedAxisValue(4, 0.0);
+    double v = joystick->getNormalizedAxisValue(3, 0.0);
+    
+    const double DEADZONE = 0.2;
+    
+    if(std::fabs(x) > DEADZONE || std::fabs(y) > DEADZONE) {
         //LOG(SDL, "Move joystick by " << x << "," << y);
         //trackball->setMouseStartAt(Math::Point(0.0, 0.0));
         
@@ -258,8 +260,8 @@ void SDLMain::handleJoystick() {
         //trackball->setMouseCurrentAt(translation);
     }
 
-	if(std::fabs(u) > 1e-3 || std::fabs(v) > 1e-3) {
-		simpleTrackball->setMouseStartAt(Math::Point(0.0, 0.0));       
+	if(std::fabs(u) > DEADZONE || std::fabs(v) > DEADZONE) {
+		simpleTrackball->setMouseStartAt(Math::Point(0.0, 0.0));
 
 		//Look around with the camera
         Math::Point translation;
