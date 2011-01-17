@@ -7,6 +7,8 @@
 namespace Project {
 namespace Render {
 
+/** Represents a texture made up of multiple images
+*/
 class Texture {
 
 private:
@@ -26,6 +28,9 @@ public:
 	bool hasNormalMap() const;
 	GLuint getNormalMap() const;
 
+	/** Load a texture into openGL from the file @a filename
+		Returns the texture id of the loaded texture, 0 if unsuccessful
+	*/
 	static GLuint loadTexture(std::string filename,
 		GLint wrap_s = GL_REPEAT, GLint wrap_t = GL_REPEAT,
 		GLint filter_s = GL_LINEAR, GLint filter_t = GL_LINEAR);

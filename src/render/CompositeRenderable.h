@@ -7,6 +7,8 @@
 namespace Project {
 namespace Render {
 
+/** A collection of several renderable objects
+*/
 class CompositeRenderable
 	: public RenderableObject {
 

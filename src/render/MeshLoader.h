@@ -10,19 +10,30 @@ using namespace std;
 namespace Project {
 namespace Render {
 
+/** Loads and stores groups of meshes
+*/
 class MeshLoader {
 public:
 
+	/** Load a Wavefront OBJ file to a model with name @a model_name from
+		the file @a filename
+		Returns true if model was loaded successfully
+	*/
 	bool loadOBJ(string model_name, string filename);
+	
 	MeshGroup* getModelByName(string model_name);
-	Material* getMaterialByName(string name);
-	Texture* getTextureByName(string name);
 
+	/** Delete a loaded model with the name @a model_name
+		Returns true if successful
+	*/
+	bool deleteModelByName(string model_name);
+	//Material* getMaterialByName(string name);
+	Texture* getTextureByName(string name);
 
 private:
 
 	vector< MeshGroup* > models;
-	vector< Material* > materials;
+	//vector< Material* > materials;
 	vector< Texture* > textures;
 
 };

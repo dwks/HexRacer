@@ -4,6 +4,8 @@
 namespace Project {
 namespace Math {
 
+/** A binary partition tree of spatial objects
+*/
 class BSPTree :
 	public SpatialContainer
 {
@@ -15,12 +17,12 @@ public:
 	bool remove(ObjectSpatial* object);
 	bool contains(ObjectSpatial* object) const;
 	void add(vector<ObjectSpatial*> objects);
-	vector<ObjectSpatial*> query(BoundingObject& bounding_object, QueryType query_type) const;
+	vector<ObjectSpatial*> query(const BoundingObject& bounding_object, QueryType query_type) const;
 	vector<ObjectSpatial*> all() const;
 	int size() const;
 	void clear();
 
-	void appendQuery(vector<ObjectSpatial*>* result_list, BoundingObject& bounding_object, QueryType query_type) const;
+	void appendQuery(vector<ObjectSpatial*>* result_list, const BoundingObject& bounding_object, QueryType query_type) const;
 
 protected:
 
@@ -32,6 +34,8 @@ protected:
 	SpatialList list;
 
 	virtual bool allowSplit() const = 0;
+	/** Split the tree based on the insertion of objects @a objects
+	*/
 	virtual void split(vector<ObjectSpatial*>* objects = NULL) = 0;
 	virtual const BoundingObject& getBoundingObject() const = 0;
 

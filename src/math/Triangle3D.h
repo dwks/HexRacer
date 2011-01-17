@@ -5,6 +5,8 @@
 namespace Project {
 namespace Math {
 
+/** A 3D triangle
+*/
 class Triangle3D
 	: public Object3D
 {
@@ -13,6 +15,7 @@ private:
 public:
 	Triangle3D(void);
 	Triangle3D(Point vertex1, Point vertex2, Point vertex3);
+	//Triangle3D(Triangle3D& triangle);
 	~Triangle3D(void);
 
 	//Abstract method implementations

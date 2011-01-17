@@ -17,6 +17,14 @@ namespace Math {
 		vertex[2] = vertex3;
 	}
 
+	/*
+	Triangle3D::Triangle3D(Triangle3D& triangle) {
+		vertex[0] = triangle.getVertex(0);
+		vertex[1] = triangle.getVertex(1);
+		vertex[2] = triangle.getVertex(2);
+	}
+	*/
+
 	Triangle3D::~Triangle3D(void)
 	{
 	}

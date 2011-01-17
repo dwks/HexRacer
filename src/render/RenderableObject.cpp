@@ -10,38 +10,51 @@ using namespace Math;
 namespace Project {
 namespace Render {
 
-	RenderableObject::RenderableObject() {
+	RenderableObject::RenderableObject(bool has_properties) {
+
 		renderProperties = new RenderProperties();
-		originalRenderProperties = renderProperties;
+		//createdRenderProperties = renderProperties;
+		renderingEnabled = true;
 	}
 
 	RenderableObject::~RenderableObject() {
-		delete(originalRenderProperties);
+		//if (createdRenderProperties != NULL)
+		delete(renderProperties);
 	}
 
 	void RenderableObject::render(RenderManager* manager) {
-		manager->setRenderProperties(this);
-		setShaderParams(manager->getShaderParamSetter());
 
+		if (!getRenderingEnabled())
+			return;
+
+		manager->setRenderProperties(this);
 		subRender(manager);
-	
 		manager->revertRenderProperties(this);
 	}
 
+	/*
 	bool RenderableObject::hasRenderProperties() const {
 		return (renderProperties != NULL);
 	}
+	*/
 
 	RenderProperties* RenderableObject::getRenderProperties() const {
 		return renderProperties;
 	}
-	
+	/*
 	void RenderableObject::setRenderProperties(RenderProperties* properties) {
 		renderProperties = properties;
 	}
+	*/
 
 	void RenderableObject::clearRenderProperties() {
+		/*
+		if (renderProperties == createdRenderProperties
+			&& createdRenderProperties != NULL) {
+			delete(createdRenderProperties);
+		}
 		renderProperties = NULL;
+		*/
 	}
 
 }  // namespace Render

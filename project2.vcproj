@@ -185,6 +185,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\opengl\Camera.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\CompositeRenderable.cpp"
 				>
 			</File>
@@ -198,6 +202,14 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\InputManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Light.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\LightManager.cpp"
 				>
 			</File>
 			<File
@@ -257,11 +269,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\RenderableBox.cpp"
+				RelativePath=".\src\render\RenderableObject.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\RenderableObject.cpp"
+				RelativePath=".\src\render\RenderList.cpp"
 				>
 			</File>
 			<File
@@ -277,7 +289,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\ShaderAttributeLocation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ShaderParameter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\ShaderParamSetter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ShaderUniformVector4.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\opengl\SimpleTrackball.cpp"
 				>
 			</File>
 			<File
@@ -615,6 +643,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\opengl\Camera.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\CompositeRenderable.h"
 				>
 			</File>
@@ -632,6 +664,14 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\InputManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Light.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\LightManager.h"
 				>
 			</File>
 			<File
@@ -683,11 +723,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\RenderableBox.h"
+				RelativePath=".\src\render\RenderableObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\RenderableObject.h"
+				RelativePath=".\src\render\RenderList.h"
 				>
 			</File>
 			<File
@@ -703,7 +743,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\ShaderAttributeLocation.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ShaderParameter.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\ShaderParamSetter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ShaderUniformVector4.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\opengl\SimpleTrackball.h"
 				>
 			</File>
 			<File

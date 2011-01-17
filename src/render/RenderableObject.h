@@ -9,25 +9,30 @@ namespace Render {
 
 class RenderManager;
 
+/** An object that can be rendered with given properties
+*/
 class RenderableObject {
+
+private:
+	RenderProperties* renderProperties;
+	RenderProperties* createdRenderProperties;
+	bool renderingEnabled;
 
 public:
 
-	RenderableObject();
+	RenderableObject(bool has_properties = true);
 	virtual ~RenderableObject();
 
 	void render(RenderManager* manager);
 	virtual void subRender(RenderManager* manager) = 0;
-	virtual void setShaderParams(ShaderParamSetter setter) {}
 
-	bool hasRenderProperties() const;
+	//bool hasRenderProperties() const;
 	RenderProperties* getRenderProperties() const;
-	void setRenderProperties(RenderProperties* properties);
+	//void setRenderProperties(RenderProperties* properties);
 	void clearRenderProperties();
 
-private:
-	RenderProperties* renderProperties;
-	RenderProperties* originalRenderProperties;
+	void setRenderingEnabled(bool enabled) { renderingEnabled = enabled; }
+	bool getRenderingEnabled() const { return renderingEnabled; }
 	
 };
 

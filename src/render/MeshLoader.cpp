@@ -1,6 +1,7 @@
 #include "MeshLoader.h"
 #include "model_obj.h"
 #include "misc/DirectoryFunctions.h"
+#include "log/Logger.h"
 using namespace Project;
 using namespace Math;
 using namespace OpenGL;
@@ -46,7 +47,8 @@ namespace Render {
 			ModelOBJ::Material obj_mat = *mesh.pMaterial;
 
 			//Look for a pre-loaded material with the same name
-			Material* mat = getMaterialByName(obj_mat.name);
+			//Material* mat = getMaterialByName(obj_mat.name);
+			Material* mat = NULL;
 			if (mat == NULL && obj_mat.name.length() > 0) {
 				//Create a new material
 				mat = new Material(obj_mat.name);
@@ -62,12 +64,12 @@ namespace Render {
 				);
 				mat->setShininess(obj_mat.shininess*12.0f+1.0f);
 
-				materials.push_back(mat);
+				//materials.push_back(mat);
 			}
 
 			//Look for a pre-loaded texture with the same name
 			Texture* tex = getTextureByName(obj_mat.colorMapFilename);
-			if (tex == NULL && obj_mat.colorMapFilename.length() > 0) {
+			if (tex == NULL && mat != NULL && obj_mat.colorMapFilename.length() > 0) {
 				//Create a new texture
 				string color_map_name = string(directory).append(obj_mat.colorMapFilename);
 				string normal_map_name = string(directory).append(obj_mat.bumpMapFilename);
@@ -88,11 +90,14 @@ namespace Render {
 				vert_index += 3;
 			}
 
-			Mesh* sub_mesh = new Mesh(face_list);
-			RenderProperties* properties = new RenderProperties();
-			sub_mesh->setRenderProperties(properties);
-			if (mat)
+			Mesh* sub_mesh = new Mesh(face_list, mat);
+			//RenderProperties* properties = new RenderProperties();
+			//sub_mesh->setRenderProperties(properties);
+			RenderProperties* properties = sub_mesh->getRenderProperties();
+			if (mat) {
 				properties->setMaterial(mat);
+				properties->setWantsShaderName(obj_mat.shaderName);
+			}
 			if (tex)
 				properties->setTexture(tex);
 
@@ -106,8 +111,10 @@ namespace Render {
 		obj_file.destroy();
 		*/
 
-		MeshGroup* new_group = new MeshGroup(model_name, mesh_list);
+		MeshGroup* new_group = new MeshGroup(model_name, mesh_list, vert_list);
 		models.push_back(new_group);
+
+		obj_file.destroy(); //Unload the obj file content
 
 		return true;
 		
@@ -119,8 +126,10 @@ namespace Render {
 				return models[i];
 			}
 		}
+		LOG(OPENGL, model_name.append(": Model Not Found"));
 		return NULL;
 	}
+	/*
 	Material* MeshLoader::getMaterialByName(string name) {
 		for (unsigned int i = 0; i < materials.size(); i++) {
 			if (materials[i]->getName() == name) {
@@ -129,6 +138,7 @@ namespace Render {
 		}
 		return NULL;
 	}
+	*/
 
 	Texture* MeshLoader::getTextureByName(string name) {
 		for (unsigned int i = 0; i < textures.size(); i++) {

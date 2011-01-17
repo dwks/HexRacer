@@ -6,6 +6,8 @@
 namespace Project {
 namespace Math {
 
+/** A 3D point
+*/
 class Vertex3D
 	: public Object3D {
 private:

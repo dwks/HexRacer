@@ -17,6 +17,8 @@
 #include "math/BoundingBox3D.h"
 #include "opengl/GeometryDrawing.h"
 
+#include "render/ShaderUniformVector4.h"
+
 #include "SDL_image.h"
 
 #include "config.h"
@@ -48,8 +50,10 @@ void SDLMain::resizeGL(int width, int height) {
     glLoadIdentity();
     
     // use perspective projection
-    double aspect_ratio = static_cast<double>(width) / height;
-    gluPerspective(FIELD_OF_VIEW, aspect_ratio, 0.01, 100.0);
+    //double aspect_ratio = static_cast<double>(width) / height;
+    //gluPerspective(FIELD_OF_VIEW, aspect_ratio, 0.01, 100.0);
+	camera->setAspect(static_cast<double>(width)/static_cast<double>(height));
+	camera->glProjection();
     
     glMatrixMode(GL_MODELVIEW);
 }
@@ -65,35 +69,88 @@ void SDLMain::run() {
     SDL_SetVideoMode(WIDTH, HEIGHT, 0, SDL_INIT_FLAGS);
     
     projector.setCurrentDimensions(Point2D(WIDTH, HEIGHT));
+
+	//trackball = new OpenGL::Trackball();
+	simpleTrackball = new OpenGL::SimpleTrackball();
+
+	//Initialize the camera
+	camera = new OpenGL::Camera();
+	camera->setFieldOfViewDegrees(60.0f);
+	camera->setPosition(Point(0.0f, 2.0f, -4.0f));
+	camera->setFarPlane(80.0f);
+	updateCamera();
+
     resizeGL(WIDTH, HEIGHT);
-    
-    trackball = new OpenGL::Trackball();
     
     joystick = new JoystickManager();
     //joystick->open();
-
-	//Initialize a light
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, white);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, white);
 
 	glewInit();
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_RESCALE_NORMAL);
 	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	
+
+	quadric = gluNewQuadric();
+
+	//Instantiate the rendering objects
 	meshLoader = new Render::MeshLoader();
 	renderer = new Render::RenderManager();
+	lightManager = renderer->getLightManager();
+	rootRenderable = new Render::RenderList();
+
+	renderer->loadShadersFile("shaders.txt");
 
 	//Load the test shader
-	renderer->loadShader("testShader", "test.frag", "test.vert");
+	//renderer->loadShader("genericShader", "shaders/genericShader.frag", "shaders/genericShader.vert");
+	//renderer->loadShader("playerGlow", "shaders/playerGlow.frag", "shaders/playerGlow.vert");
 	//Load the model
-	meshLoader->loadOBJ("glassdagger", "glassdagger.obj");
-	testMesh = meshLoader->getModelByName("glassdagger");
-	testMesh->getRenderProperties()->setWantsShaderName("testShader");
+	meshLoader->loadOBJ("testTerrain", "models/testterrain.obj");
+	meshLoader->loadOBJ("playerCube", "models/playercube.obj");
+	//Add the test terrain
+	rootRenderable->addRenderable(meshLoader->getModelByName("testTerrain"));
+
+	//Get the Player Cube Mesh
+	Render::MeshGroup* player_cube_mesh = meshLoader->getModelByName("playerCube");
+
+	//Make two player renderables
+	Render::RenderList* player1_renderable = new Render::RenderList();
+	Render::RenderList* player2_renderable = new Render::RenderList();
+
+	//Set the same player mesh as a child for both player renderables
+	player1_renderable->addRenderable(player_cube_mesh);
+	player2_renderable->addRenderable(player_cube_mesh);
+
+	//Translate the player 2 renderable
+	Math::Matrix translation;
+	translation.set(0, 3, 2.5f);
+	player2_renderable->getRenderProperties()->setTransformation(translation);
+
+	//Set the player color to a different color for each player renderable
+	player1_renderable->getRenderProperties()->addShaderParameter(new Render::ShaderUniformVector4("playerColor", OpenGL::Color(OpenGL::Color::GREEN)));
+	player2_renderable->getRenderProperties()->addShaderParameter(new Render::ShaderUniformVector4("playerColor", OpenGL::Color(OpenGL::Color::RED)));
+
+	//Add the player renderables to the root renderable
+	rootRenderable->addRenderable(player1_renderable);
+	rootRenderable->addRenderable(player2_renderable);
+
+	//rootRenderable->getRenderProperties()->setTextureOverride(true);
+	//rootRenderable->getRenderProperties()->setShaderOverride(true);
+
+	//Create a test bounding box for culling the mesh
+	//Math::BoundingBox3D* box = new Math::BoundingBox3D(9.0f, 3.0f, 3.0f);
+	//((Render::Mesh*) testMesh)->setCullingObject(box);
+
+	//Create some lights
+	Render::Light* light = new Render::Light(Math::Point(1.0f, 2.0f, -1.0f));
+	light->setStrength(100.0f);
+	lightManager->addLight(light);
+
+	light = new Render::Light(Math::Point(16.0f, 3.5f, 9.0f));
+	light->setDiffuse(OpenGL::Color::INDIGO);
+	light->setSpecular(OpenGL::Color::INDIGO);
+	light->setStrength(40.0f);
+	lightManager->addLight(light);
+
 
     inputManager = new InputManager();
     
@@ -131,14 +188,19 @@ void SDLMain::run() {
             case SDL_MOUSEBUTTONDOWN:
                 /*LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " pressed "
                     << "at " << event.button.x << "," << event.button.y);*/
-                trackball->setMouseStartAt(projector.screenToGL(
+                /*trackball->setMouseStartAt(projector.screenToGL(
+                    Point2D(event.button.x, event.button.y)));*/
+				simpleTrackball->setMouseStartAt(projector.screenToGL(
                     Point2D(event.button.x, event.button.y)));
                 break;
             case SDL_MOUSEMOTION:
                 if(event.motion.state & SDL_BUTTON(1)) {
                     //LOG2(SDL, INPUT, "Mouse moved to " << event.motion.x << "," << event.motion.y);
-                    trackball->setMouseCurrentAt(projector.screenToGL(
-                        Point2D(event.motion.x, event.motion.y)));
+                    /*trackball->setMouseCurrentAt(projector.screenToGL(
+                        Point2D(event.motion.x, event.motion.y)));*/
+					simpleTrackball->setMouseCurrentAt(projector.screenToGL(
+                    Point2D(event.button.x, event.button.y)));
+					updateCamera();
                 }
                 break;
             case SDL_MOUSEBUTTONUP:
@@ -171,7 +233,6 @@ void SDLMain::run() {
     
     LOG2(GLOBAL, PROGRESS, "Exiting main game loop");
     
-    delete trackball;
     delete joystick;
     delete inputManager;
     delete network;
@@ -180,17 +241,38 @@ void SDLMain::run() {
 void SDLMain::handleJoystick() {
     double x = joystick->getNormalizedAxisValue(0);
     double y = joystick->getNormalizedAxisValue(1);
+
+	double u = joystick->getNormalizedAxisValue(4, 0.5f);
+    double v = joystick->getNormalizedAxisValue(3, 0.5f);
     
     if(std::fabs(x) > 1e-3 || std::fabs(y) > 1e-3) {
         //LOG(SDL, "Move joystick by " << x << "," << y);
-        trackball->setMouseStartAt(Math::Point(0.0, 0.0));
+        //trackball->setMouseStartAt(Math::Point(0.0, 0.0));
         
-        Math::Point translation;
-        translation.setX(x * 0.1);
-        translation.setY(-y * 0.1);
+		//Camera movement
+		Math::Point translation = camera->getLookDirection()*(-y * 0.25f)
+			+ camera->getRightDirection() * (x * 0.25f);
+
+		camera->translate(translation);
         
-        trackball->setMouseCurrentAt(translation);
+        //trackball->setMouseCurrentAt(translation);
     }
+
+	if(std::fabs(u) > 1e-3 || std::fabs(v) > 1e-3) {
+		simpleTrackball->setMouseStartAt(Math::Point(0.0, 0.0));       
+
+		//Look around with the camera
+        Math::Point translation;
+        translation.setX(u * 0.1);
+        translation.setY(-v * 0.1);
+
+		simpleTrackball->setMouseCurrentAt(translation);    
+        updateCamera();
+    }
+}
+
+void SDLMain::updateCamera() {
+	camera->setLookDirection(simpleTrackball->getSpherePoint());
 }
 
 void SDLMain::render() {
@@ -198,24 +280,43 @@ void SDLMain::render() {
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+
+	OpenGL::Color::glColor(OpenGL::Color::WHITE);
     
-    glTranslated(0.0, 0.0, -10.0);
-    
-    trackball->applyTransform();
+	camera->glLookAt();
+    //glTranslated(0.0, 0.0, -10.0);
+    //trackball->applyTransform();
+
+	/*
+	Math::Point lightp(1.0f, 2.0f, -1.0f);
+	GLfloat light_pos[4] = {lightp.getX(), lightp.getY(), lightp.getZ(), 1.0f};
+	glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+	//Draw a sphere at the light position
+	glPushMatrix();
+	glTranslatef(lightp.getX(), lightp.getY(), lightp.getZ());
+	gluSphere(quadric, 0.1f, 8, 8);
+	glPopMatrix();
+	*/
+
+	lightManager->drawLightSpheres();
+	lightManager->applyAll();
+
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
 
 	glPushMatrix();
 	glScalef(3.0f, 3.0f, 3.0f);
 
-	Math::Point lightp(1.0f, 1.0f, -0.5f);
-	GLfloat light_pos[4] = {lightp.getX(), lightp.getY(), lightp.getZ(), 1.0f};
-	glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-
-	//Render the test mesh
-	glEnable(GL_TEXTURE_2D);
-	testMesh->render(renderer);
-	glDisable(GL_TEXTURE_2D);
+	//Render the scene
+	rootRenderable->render(renderer);
 
 	glPopMatrix();
+
+	//Revert the rendering state
+	glDisable(GL_COLOR_MATERIAL);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
     
     glFlush();
 }

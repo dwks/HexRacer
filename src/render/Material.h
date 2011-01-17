@@ -8,6 +8,8 @@
 namespace Project {
 namespace Render {
 
+/** Represents a renderable material
+*/
 class Material {
 private:
 
@@ -33,6 +35,8 @@ public:
 	void setAmbient(Project::OpenGL::Color color) { ambient = color; }
 	void setShininess(float amount) { shininess = amount; }
 
+	/** Apply this material to the specified polygon face @a face
+	*/
 	void glApply(GLenum face = GL_FRONT_AND_BACK);
 };
 

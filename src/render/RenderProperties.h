@@ -5,45 +5,16 @@
 #include "Material.h"
 #include "Texture.h"
 #include "Shader.h"
+#include "ShaderParameter.h"
 #include <string>
+#include <vector>
 
 namespace Project {
 namespace Render {
 
+/** Properties for rendering an object
+*/
 class RenderProperties {
-public:
-
-	RenderProperties();
-
-	bool hasTransformation() const;
-	void clearTransformation();
-	void setTransformation(Project::Math::Matrix _transform);
-	Project::Math::Matrix getTransformation() const;
-
-	bool hasMaterial() const;
-	void clearMaterial();
-	void setMaterial(Material* _material);
-	Material* getMaterial() const;
-	bool getMaterialOverride() const;
-	void setMaterialOverride(bool override_children);
-
-	bool hasTexture() const;
-	void clearTexture();
-	void setTexture(Texture* _texture);
-	Texture* getTexture() const;
-	//bool getTextureOverride() const;
-	//void setTextureOverride(bool override_children);
-
-	bool hasShader() const;
-	void clearShader();
-	void setShaderIndex(int _shader);
-	int getShaderIndex() const;
-	bool getShaderOverride() const;
-	void setShaderOverride(bool override_children);
-
-	bool wantsShader() const;
-	std::string getWantsShaderName();
-	void setWantsShaderName(std::string shader_name);
 
 private:
 
@@ -56,6 +27,49 @@ private:
 	int shader;
 	bool shaderOverrideChildren;
 	std::string wantsShaderName;
+	std::vector<ShaderParameter*> shaderParams;
+
+public:
+
+	RenderProperties();
+
+	bool hasTransformation() const { return (transformationSet); }
+	void clearTransformation() { transformationSet = false; }
+	void setTransformation(Project::Math::Matrix _transform) {
+		transformation = _transform;
+		transformationSet = true;
+	}
+	Project::Math::Matrix getTransformation() const { return transformation; }
+
+	bool hasMaterial() const { return (material != NULL); }
+	void clearMaterial() { material = NULL; }
+	void setMaterial(Material* _material) { material = _material; }
+	Material* getMaterial() const { return material; }
+	bool getMaterialOverride() const { return materialOverrideChildren; }
+	void setMaterialOverride(bool override_children) { materialOverrideChildren = override_children; }
+
+	bool hasTexture() const { return (texture != NULL); }
+	void clearTexture() { texture = NULL; }
+	void setTexture(Texture* _texture) { texture = _texture; }
+	Texture* getTexture() const { return texture; }
+	bool getTextureOverride() const { return textureOverrideChildren; }
+	void setTextureOverride(bool override_children) { textureOverrideChildren = override_children; }
+
+	bool hasShader() const { return (shader >= 0); }
+	void clearShader() { shader = -1; }
+	void setShaderIndex(int _shader) { shader = _shader; }
+	int getShaderIndex() const { return shader; }
+	bool getShaderOverride() const { return shaderOverrideChildren; }
+	void setShaderOverride(bool override_children) { shaderOverrideChildren = override_children; }
+
+	bool wantsShader() const;
+	std::string getWantsShaderName();
+	void setWantsShaderName(std::string shader_name);
+
+	bool hasShaderParams() const;
+	std::vector<ShaderParameter*> getShaderParams() const;
+	void setShaderParams(std::vector<ShaderParameter*> params);
+	void addShaderParameter(ShaderParameter* param);
 
 };
 

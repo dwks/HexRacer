@@ -15,6 +15,12 @@ namespace Render {
 		this->manager = manager;
 	}
 
+	void ShaderParamSetter::setUniformInt(const char *name, GLint value) {
+		manager->setUniformInt(name, value);
+	}
+	void ShaderParamSetter::setUniformIntArray(const char *name, GLint values[], int num_values) {
+		manager->setUniformIntArray(name, values, num_values);
+	}
 	void ShaderParamSetter::setUniformVector3(const char *name, Point point) {
 		manager->setUniformVector3(name, point);
 	}

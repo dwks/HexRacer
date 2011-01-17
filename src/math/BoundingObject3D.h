@@ -6,6 +6,8 @@
 namespace Project {
 namespace Math {
 
+/** A bounding object in 3D space
+*/
 class BoundingObject3D
 	: public BoundingObject, public Object3D
 {

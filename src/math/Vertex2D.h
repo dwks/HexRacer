@@ -6,6 +6,8 @@
 namespace Project {
 namespace Math {
 
+/** A 2D point
+*/
 class Vertex2D
 	: public BoundingObject2D {
 private:

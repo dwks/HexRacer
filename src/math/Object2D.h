@@ -8,6 +8,8 @@ namespace Math {
 
 class BoundingObject2D;
 
+/** Returns an object that exists on a two dimensional plane on the X,Y or Z axis
+*/
 class Object2D :
 	public ObjectSpatial
 {

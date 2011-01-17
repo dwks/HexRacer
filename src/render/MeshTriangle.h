@@ -7,6 +7,8 @@
 namespace Project {
 namespace Render {
 
+/** A triangle that is linked to mesh vertices
+*/
 class MeshTriangle
 	: public Project::Math::Triangle3D {
 private:

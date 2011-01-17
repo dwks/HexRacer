@@ -1,5 +1,3 @@
-//#if(0)
-
 #pragma once
 
 #include <GL/glew.h>
@@ -9,6 +7,8 @@ using namespace std;
 namespace Project {
 namespace Render {
 
+/** A GLSL Shader Program
+*/
 class Shader {
 public:
 	Shader(GLchar *fs, GLchar *vs);
@@ -28,5 +28,3 @@ private:
 
 }  // namespace Render
 }  // namespace Project
-
-//#endif

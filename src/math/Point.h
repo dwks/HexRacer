@@ -78,11 +78,25 @@ public:
     */
 	Point rotateZ(double angle) const;
 
+	/** Rotates this point about the axis @a axis by @a angle radians.
+	*/
 	Point rotateAxis(Axis axis, double angle) const;
+
+	/** Rotates this point about the axis @a axis by 90 degrees clockwise
+	*/
+	Point rotate90CW(Axis axis) const;
+
+	/** Rotates this point about the axis @a axis by 90 degrees counter-clockwise
+	*/
+	Point rotate90CCW(Axis axis) const;
     
     /** Returns the dot product of this vector with @a other.
     */
     double dotProduct(const Point &other) const;
+
+	 /** Returns the dot product of this vector with @a other scaled to the interval [-1, 1]
+    */
+    double unitDotProduct(const Point &other) const;
     
     /** Returns the cross product of this vector with @a other.
     */
