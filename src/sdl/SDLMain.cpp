@@ -310,6 +310,10 @@ void SDLMain::render() {
 	lightManager->drawLightSpheres();
 	lightManager->applyAll();
 
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
+
 	glPushMatrix();
 	glScalef(3.0f, 3.0f, 3.0f);
 
@@ -321,7 +325,6 @@ void SDLMain::render() {
 	//Revert the rendering state
 	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_LIGHTING);
-	glDisable(GL_LIGHT0);
 	glDisable(GL_TEXTURE_2D);
     
     glFlush();

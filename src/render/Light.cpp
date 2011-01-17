@@ -20,6 +20,8 @@ namespace Render {
 
 	void Light::glApply(GLenum light) const {
 
+		glEnable(light);
+
 		GLfloat values[4] = {diffuse.redf(), diffuse.greenf(), diffuse.bluef(), diffuse.alphaf()};
 		glLightfv(light, GL_DIFFUSE, values);
 
