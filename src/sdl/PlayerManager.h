@@ -39,7 +39,7 @@ public:
     PlayerManager(int id);
     ~PlayerManager();
     
-    void render();
+    void render(Render::RenderManager *renderManager);
 protected:
     void usePlayerList(Object::PlayerList *playerList);
     Object::Player *getPlayer();

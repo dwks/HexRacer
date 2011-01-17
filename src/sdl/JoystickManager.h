@@ -20,7 +20,7 @@ public:
     /** Returns the value of the joystick axis @a axis, normalized to the range
         [-1.0, 1.0]. This value will be 0.0 if the joystick was not detected.
     */
-    double getNormalizedAxisValue(int axis, double deadzone = 0.25f);
+    double getNormalizedAxisValue(int axis, double deadzone = 0.0);
 };
 
 }  // namespace SDL

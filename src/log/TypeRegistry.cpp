@@ -16,12 +16,6 @@ TypeRegistry::TypeRegistry() {
         registerType(Subsystem::GLOBAL, "PROGRESS", counter ++);
     }
     
-    // GUI log message types
-    {
-        int counter = 1;
-        registerType(Subsystem::GUI, "PROGRESS", counter ++);
-    }
-    
     // OPENGL log message types
     {
         int counter = 1;
@@ -46,7 +40,7 @@ TypeRegistry::TypeRegistry() {
     
     //PHYSICS log message types
     {
-	int counter = 1;
+        int counter = 1;
         registerType(Subsystem::PHYSICS, "INIT", counter++);
         registerType(Subsystem::PHYSICS, "CREATE", counter++);
         registerType(Subsystem::PHYSICS, "TIMESTEP", counter++);

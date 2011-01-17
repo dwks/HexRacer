@@ -3,7 +3,6 @@
 
 #include "ObjectBase.h"
 
-#include "boost/serialization/access.hpp"
 #include "boost/serialization/base_object.hpp"
 
 namespace Project {
@@ -17,6 +16,7 @@ private:
     
     template <typename Archive>
     void serialize(Archive &ar, const unsigned version) {
+        boost::serialization::base_object<ObjectBase>(*this);
         ar & id;
     }
 private:
@@ -29,6 +29,8 @@ public:
     virtual Physics::PhysicalObject *getPhysicalObject() = 0;
     virtual Render::RenderableObject *getRenderableObject() = 0;
 };
+
+BOOST_SERIALIZATION_ASSUME_ABSTRACT(::Project::Object::AbstractObject)
 
 }  // namespace Object
 }  // namespace Project

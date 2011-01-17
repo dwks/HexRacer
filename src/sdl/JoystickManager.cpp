@@ -4,6 +4,7 @@
 using namespace std;
 
 #include "JoystickManager.h"
+#include "log/Logger.h"
 
 namespace Project {
 namespace SDL {
@@ -20,8 +21,13 @@ JoystickManager::~JoystickManager() {
 
 void JoystickManager::open() {
     if(SDL_NumJoysticks() > 0) {
+        LOG2(SDL, INPUT, "Found " << SDL_NumJoysticks() << " joysticks, "
+            "using first one");
         //SDL_JoystickEventState(SDL_ENABLE);  // for generating events
         joystick = SDL_JoystickOpen(0);
+    }
+    else {
+        LOG2(SDL, INPUT, "No joystick found");
     }
 }
 

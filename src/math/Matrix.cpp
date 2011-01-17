@@ -19,6 +19,15 @@ Matrix::Matrix(const double data[WIDTH * HEIGHT]) {
     }
 }
 
+Matrix Matrix::getTranslationMatrix(const Math::Point &translation) {
+    Matrix m;  // identity by default
+    m.set(0, 3, translation.getX());
+    m.set(1, 3, translation.getY());
+    m.set(2, 3, translation.getZ());
+    
+    return m;
+}
+
 void Matrix::setToIdentity() {
     for(int col = 0; col < WIDTH; col ++) {
         for(int row = 0; row < HEIGHT; row ++) {

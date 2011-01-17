@@ -11,6 +11,8 @@ using namespace std;
 namespace Project {
 namespace Render {
 
+MeshLoader *MeshLoader::instance = 0;
+
 	bool MeshLoader::loadOBJ(string model_name, string filename) {
 
 		string directory = DirectoryFunctions::extractDirectory(filename);

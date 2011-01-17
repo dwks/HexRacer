@@ -2,7 +2,7 @@
 #define PROJECT_RENDER__LIGHT_H
 
 #include "math/Vertex3D.h"
-#include "openGL/Color.h"
+#include "opengl/Color.h"
 
 namespace Project {
 namespace Render {

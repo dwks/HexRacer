@@ -10,6 +10,9 @@
 namespace Project {
 namespace Object {
 
+/** Players added to this list are automatically freed when this PlayerList
+    is destroyed.
+*/
 class PlayerList {
     friend class boost::serialization::access;
     
@@ -32,6 +35,8 @@ public:
         bool hasNext() const { return it != end; }
     };
 public:
+    ~PlayerList();
+    
     void addPlayer(Player *player);
     
     Player *getPlayer(int p) { return player_list[p]; }

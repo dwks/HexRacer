@@ -13,6 +13,8 @@
 #include "event/UpdatePlayerList.h"
 #include "event/ObserverList.h"
 
+#include "physics/PhysicsWorld.h"
+
 #include "object/PlayerList.h"
 
 #include "log/Logger.h"
@@ -42,7 +44,7 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         Event::PlayerMovement *movement
             = dynamic_cast<Event::PlayerMovement *>(event);
         main->getPlayerList().getPlayer(main->getWhichSocket())
-            ->addPosition(movement->getMovement());
+            ->applyMovement(movement->getMovement());
         break;
     }
     default:
@@ -57,6 +59,9 @@ bool ServerMain::ServerObserver::interestedIn(Event::EventType::type_t type) {
 }
 
 void ServerMain::run() {
+    Physics::PhysicsWorld *physicsWorld = new Physics::PhysicsWorld();
+    physicsWorld->createTestScene();
+    
     Connection::ServerManager server;
     ClientManager clients;
     
@@ -65,6 +70,7 @@ void ServerMain::run() {
     ADD_OBSERVER(new ServerObserver(this));
     
     int loops = 0;
+    unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
     for(;;) {
         for(;;) {
             Connection::Socket *socket = server.checkForConnections();
@@ -93,8 +99,17 @@ void ServerMain::run() {
             }
         }
         
-        if(++loops == 200) {
+        unsigned long thisTime = Misc::Sleeper::getTimeMilliseconds();
+        physicsWorld->stepWorld((thisTime - lastTime) * 1000);
+        lastTime = thisTime;
+        
+        if(++loops == 10) {
             loops = 0;
+            
+            for(int p = 0; p < clientCount; p ++) {
+                LOG(PHYSICS, "Player " << p << " is at "
+                    << getPlayerList().getPlayer(p)->getPosition());
+            }
             
             Event::UpdatePlayerList *update
                 = new Event::UpdatePlayerList(&playerList);

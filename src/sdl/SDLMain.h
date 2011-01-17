@@ -28,19 +28,19 @@ private:
     //OpenGL::Trackball *trackball;
 	OpenGL::SimpleTrackball *simpleTrackball;
 	OpenGL::Camera  *camera;
-
+    
     Projector projector;
     JoystickManager *joystick;
     InputManager *inputManager;
     NetworkPortal *network;
     PlayerManager *playerManager;
     Physics::PhysicsWorld *physicsWorld;
-
+    
 	Render::MeshLoader *meshLoader;
 	Render::RenderManager *renderer;
 	Render::RenderList* rootRenderable;
 	Render::LightManager *lightManager;
-
+    
 	GLUquadric* quadric;
     
 public:

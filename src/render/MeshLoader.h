@@ -13,8 +13,13 @@ namespace Render {
 /** Loads and stores groups of meshes
 */
 class MeshLoader {
+private:
+    static MeshLoader *instance;
 public:
-
+    static MeshLoader *getInstance() { return instance; }
+public:
+    MeshLoader() { instance = this; }
+    
 	/** Load a Wavefront OBJ file to a model with name @a model_name from
 		the file @a filename
 		Returns true if model was loaded successfully

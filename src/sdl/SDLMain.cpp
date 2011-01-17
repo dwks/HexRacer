@@ -65,6 +65,7 @@ void SDLMain::run() {
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     
+    SDL_WM_SetCaption("The Project", NULL);
     SDL_SetVideoMode(WIDTH, HEIGHT, 0, SDL_INIT_FLAGS);
     
     projector.setCurrentDimensions(Point2D(WIDTH, HEIGHT));
@@ -153,6 +154,10 @@ void SDLMain::run() {
 
     inputManager = new InputManager();
     
+    // this must happen before Players are created
+    physicsWorld = new Physics::PhysicsWorld();
+    physicsWorld->createTestScene();
+    
     network = new NetworkPortal();
     if(network->connectTo("localhost", 1820)) {
         network->waitForWorld();
@@ -161,11 +166,11 @@ void SDLMain::run() {
     else {
         playerManager = new PlayerManager(0);
     }
-
-    physicsWorld = new Physics::PhysicsWorld();
-    physicsWorld->createTestScene();
-
+    
+    LOG2(GLOBAL, PROGRESS, "Entering main game loop");
+    
     bool quit = false;
+    Uint32 lastTime = SDL_GetTicks();
     while(!quit) {
         SDL_Event event;
         while(SDL_PollEvent(&event)) {
@@ -213,16 +218,20 @@ void SDLMain::run() {
         handleJoystick();
         inputManager->advanceToNextFrame();
         
+        Uint32 thisTime = SDL_GetTicks();
+        physicsWorld->stepWorld((thisTime - lastTime) * 1000);
+        lastTime = thisTime;
+        
         render();
-        playerManager->render();
-        physicsWorld->render();  // for debugging
+        physicsWorld->render();
         
         SDL_GL_SwapBuffers();
         
         SDL_Delay(10);
     }
     
-    //delete trackball;
+    LOG2(GLOBAL, PROGRESS, "Exiting main game loop");
+    
     delete joystick;
     delete inputManager;
     delete network;
@@ -231,25 +240,27 @@ void SDLMain::run() {
 void SDLMain::handleJoystick() {
     double x = joystick->getNormalizedAxisValue(0);
     double y = joystick->getNormalizedAxisValue(1);
-
-	double u = joystick->getNormalizedAxisValue(4, 0.5f);
-    double v = joystick->getNormalizedAxisValue(3, 0.5f);
     
-    if(std::fabs(x) > 1e-3 || std::fabs(y) > 1e-3) {
+	double u = joystick->getNormalizedAxisValue(4, 0.0);
+    double v = joystick->getNormalizedAxisValue(3, 0.0);
+    
+    const double DEADZONE = 0.2;
+    
+    if(std::fabs(x) > DEADZONE || std::fabs(y) > DEADZONE) {
         //LOG(SDL, "Move joystick by " << x << "," << y);
         //trackball->setMouseStartAt(Math::Point(0.0, 0.0));
         
 		//Camera movement
 		Math::Point translation = camera->getLookDirection()*(-y * 0.25f)
 			+ camera->getRightDirection() * (x * 0.25f);
-
+        
 		camera->translate(translation);
         
         //trackball->setMouseCurrentAt(translation);
     }
 
-	if(std::fabs(u) > 1e-3 || std::fabs(v) > 1e-3) {
-		simpleTrackball->setMouseStartAt(Math::Point(0.0, 0.0));       
+	if(std::fabs(u) > DEADZONE || std::fabs(v) > DEADZONE) {
+		simpleTrackball->setMouseStartAt(Math::Point(0.0, 0.0));
 
 		//Look around with the camera
         Math::Point translation;
@@ -264,25 +275,6 @@ void SDLMain::handleJoystick() {
 void SDLMain::updateCamera() {
 	camera->setLookDirection(simpleTrackball->getSpherePoint());
 }
-
-/*void SDLMain::handleKeyDown(SDL_Event *event) {
-    switch(event->key.keysym.sym) {
-    case SDLK_LEFT:
-        EMIT_EVENT(new Event::PlayerMovement(Math::Point(-0.1, 0.0)));
-        break;
-    case SDLK_RIGHT:
-        EMIT_EVENT(new Event::PlayerMovement(Math::Point(+0.1, 0.0)));
-        break;
-    case SDLK_UP:
-        EMIT_EVENT(new Event::PlayerMovement(Math::Point(0.0, +0.1)));
-        break;
-    case SDLK_DOWN:
-        EMIT_EVENT(new Event::PlayerMovement(Math::Point(0.0, -0.1)));
-        break;
-    default:
-        break;
-    }
-}*/
 
 void SDLMain::render() {
     glMatrixMode(GL_MODELVIEW);
@@ -315,10 +307,13 @@ void SDLMain::render() {
 	glEnable(GL_TEXTURE_2D);
 
 	glPushMatrix();
-	glScalef(3.0f, 3.0f, 3.0f);
+	//glScalef(3.0f, 3.0f, 3.0f);
 
 	//Render the scene
 	rootRenderable->render(renderer);
+    
+    // Render players
+    playerManager->render(renderer);
 
 	glPopMatrix();
 

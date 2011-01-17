@@ -12,7 +12,7 @@ class PhysicalObject {
 public:
     virtual ~PhysicalObject() {}
     
-    virtual Math::Point getOrigin() = 0;
+    virtual Math::Point getOrigin() const = 0;
     
 protected:
     btRigidBody* primaryRigidBody; 

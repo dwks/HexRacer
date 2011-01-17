@@ -38,8 +38,8 @@ void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
     case Event::EventType::PACKET_RECEIVED:
         break;
     default:
-        LOG2(NETWORK, PACKET, "EventPropagator: Not propagating "
-            << typeid(*event).name());
+        /*LOG2(NETWORK, PACKET, "EventPropagator: Not propagating "
+            << typeid(*event).name());*/
         break;
     }
 }

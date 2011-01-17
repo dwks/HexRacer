@@ -26,10 +26,10 @@ void InputManager::handleEvent(SDL_Event *event) {
 
 void InputManager::advanceToNextFrame() {
     if(keyDown[SDLK_LEFT]) {
-        EMIT_EVENT(new Event::PlayerMovement(Math::Point(-0.01, 0.0)));
+        EMIT_EVENT(new Event::PlayerMovement(Math::Point(+0.01, 0.0)));
     }
     if(keyDown[SDLK_RIGHT]) {
-        EMIT_EVENT(new Event::PlayerMovement(Math::Point(+0.01, 0.0)));
+        EMIT_EVENT(new Event::PlayerMovement(Math::Point(-0.01, 0.0)));
     }
     if(keyDown[SDLK_UP]) {
         EMIT_EVENT(new Event::PlayerMovement(Math::Point(0.0, +0.01)));

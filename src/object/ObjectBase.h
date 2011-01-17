@@ -1,6 +1,9 @@
 #ifndef PROJECT_OBJECT__OBJECT_BASE_H
 #define PROJECT_OBJECT__OBJECT_BASE_H
 
+#include "boost/serialization/access.hpp"
+#include "boost/serialization/assume_abstract.hpp"
+
 #include "physics/PhysicalObject.h"
 #include "render/RenderableObject.h"
 
@@ -10,6 +13,13 @@ namespace Object {
 /** Abstract interface specification for all objects in the game.
 */
 class ObjectBase {
+private:
+    friend class boost::serialization::access;
+    
+    template <typename Archive>
+    void serialize(Archive &ar, const unsigned version) {
+        // nothing to do
+    }
 public:
     virtual ~ObjectBase() {}
     
@@ -25,6 +35,8 @@ public:
     */
     virtual Render::RenderableObject *getRenderableObject() = 0;
 };
+
+BOOST_SERIALIZATION_ASSUME_ABSTRACT(::Project::Object::ObjectBase)
 
 }  // namespace Object
 }  // namespace Project

@@ -3,6 +3,14 @@
 
 #include "AbstractObject.h"
 #include "math/Point.h"
+#include "physics/PhysicalPlayer.h"
+//#include "render/RenderList.h"
+
+/*namespace Project {
+namespace Physics {
+class PhysicalPlayer;
+}  // namespace Physics
+}  // namespace Project*/
 
 namespace Project {
 namespace Object {
@@ -14,23 +22,24 @@ private:
     template <typename Archive>
     void serialize(Archive &ar, const unsigned version) {
         ar & boost::serialization::base_object<AbstractObject>(*this);
-        ar & position;
+        ar & physical;
     }
 private:
-    Math::Point position;
-    Physics::PhysicalObject *physical;
+    Physics::PhysicalPlayer *physical;
     Render::RenderableObject *renderable;
 public:
     Player();
     Player(int id);
+    virtual ~Player();
     
-    virtual Physics::PhysicalObject *getPhysicalObject()
-        { return physical; }
-    virtual Render::RenderableObject *getRenderableObject()
-        { return renderable; }
+    virtual Physics::PhysicalObject *getPhysicalObject();
     
-    Math::Point getPosition() const { return position; }
-    void addPosition(Math::Point add) { position += add; }
+    void setRenderableObject(Render::RenderableObject *renderable)
+        { this->renderable = renderable; }
+    virtual Render::RenderableObject *getRenderableObject();
+    
+    Math::Point getPosition() const;
+    void applyMovement(const Math::Point &movement);
 };
 
 }  // namespace Object

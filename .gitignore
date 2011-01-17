@@ -38,3 +38,6 @@ Makefile
 
 # Windows clutter
 *.db
+
+# Objects and meshes
+/models

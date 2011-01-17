@@ -10,11 +10,10 @@ class Subsystem {
 public:
     enum subsystem_t {
         GLOBAL,
-        GUI,
         OPENGL,
         SDL,
         NETWORK,
-	PHYSICS,
+        PHYSICS,
         SUBSYSTEMS
     };
 private:

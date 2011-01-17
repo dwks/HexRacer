@@ -1,3 +1,8 @@
 - Make server exit gracefully when it receives CTRL-C
 - Do something about sound...
 - Make Singleton work under Windows (MSVC)
+- Replace PhysicsWorld::collisionBodies with dynamicsWorld->getCollisionObjectArray()
+- Rename Sleeper, and make Sleeper::getTimeMilliseconds() work at midnight
+
+Notes
+- Player needs to #include "PhysicalPlayer.h" which is quite the dependency ...

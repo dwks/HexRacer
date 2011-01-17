@@ -2,17 +2,55 @@
 #define PROJECT_PHYSICS__PHYSICAL_PLAYER_H
 
 #include "PhysicalObject.h"
+#include "Converter.h"
+
+#include "boost/serialization/access.hpp"
+#include "boost/serialization/split_member.hpp"
+
+#include "log/Logger.h"
 
 namespace Project {
 namespace Physics {
 
 class PhysicalPlayer : public PhysicalObject {
-public:
-    PhysicalPlayer(btRigidBody* pRigidBody);
-    virtual Math::Point getOrigin();
+private:
+    friend class boost::serialization::access;
     
+    template <typename Archive>
+    void save(Archive &ar, const unsigned version) const {
+        Math::Point origin = getOrigin();
+        Math::Point linearVelocity
+            = Converter::toPoint(primaryRigidBody->getLinearVelocity());
+        Math::Point angularVelocity
+            = Converter::toPoint(primaryRigidBody->getAngularVelocity());
+        ar << origin << linearVelocity << angularVelocity;
+    }
+    
+    template <typename Archive>
+    void load(Archive &ar, const unsigned version) {
+        Math::Point origin, linearVelocity, angularVelocity;
+        ar >> origin >> linearVelocity >> angularVelocity;
+        constructRigidBody(origin);
+        
+        primaryRigidBody->setLinearVelocity(
+            Converter::toVector(linearVelocity));
+        primaryRigidBody->setAngularVelocity(
+            Converter::toVector(angularVelocity));
+    }
+    
+    BOOST_SERIALIZATION_SPLIT_MEMBER()
+public:
+    PhysicalPlayer() : primaryRigidBody(NULL) {}
+    PhysicalPlayer(const Math::Point &origin);
+    virtual ~PhysicalPlayer();
+    
+    void constructRigidBody(const Math::Point &origin);
+    
+    virtual Math::Point getOrigin() const;
+    
+    void applyMovement(const Math::Point &movement);
 protected:
-    btRigidBody* primaryRigidBody; 
+    btRigidBody* primaryRigidBody;
 };
 
 }  // namespace Physics

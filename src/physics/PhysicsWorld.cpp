@@ -6,6 +6,9 @@
 #include "opengl/GeometryDrawing.h"
 #include "opengl/OpenGL.h"
 
+#include "event/ObserverList.h"
+#include "PhysicsSerializer.h"
+
 namespace Project {
 namespace Physics {
 
@@ -29,7 +32,17 @@ void PhysicsWorld::createTestScene(){
     createRigidStaticPlane(Math::Point(0.0,1.0,0.0), Math::Point(0.0,-2.0,0.0));
     
     //A player
-    createPlayer(0);
+    //createPlayer(10);
+}
+
+void PhysicsWorld::destroyRigidBody(btRigidBody *body) {
+    dynamicsWorld->removeRigidBody(body);
+    
+    std::vector<btRigidBody*>::iterator found = std::find(
+        collisionBodies.begin(), collisionBodies.end(), body);
+    if(found != collisionBodies.end()) {
+        collisionBodies.erase(found);
+    }
 }
 
 void PhysicsWorld::setupPhysicsWorld() {
@@ -42,7 +55,7 @@ void PhysicsWorld::setupPhysicsWorld() {
     broadPhaseInterface = new btDbvtBroadphase();
     
     ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-    btSequentialImpulseConstraintSolver* sol = new btSequentialImpulseConstraintSolver;
+    btSequentialImpulseConstraintSolver* sol = new btSequentialImpulseConstraintSolver();
     constraintSolver = sol;
     
     dynamicsWorld = new btDiscreteDynamicsWorld ( collisionDispatcher,broadPhaseInterface,constraintSolver,collisionConfiguration );
@@ -55,11 +68,13 @@ void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
     dynamicsWorld->setGravity ( btVector3 ( xAccel,yAccel,zAccel ) );
 }
 
-void PhysicsWorld::createPlayer(int playerID){
+PhysicalPlayer* PhysicsWorld::createPlayer(int playerID, Math::Point origin) {
     LOG2(PHYSICS, CREATE, "Creating Player. ID: " << playerID);
-    Physics::PhysicalPlayer* player = new Physics::PhysicalPlayer(PhysicsWorld::createRigidBox(2.0,2.0,2.0,Math::Point(0.0,0.0,0.0),2.0));
+    Physics::PhysicalPlayer* player = new Physics::PhysicalPlayer(origin);
     
-    playerEntities.push_back(player);
+    //playerEntities.push_back(player);
+    
+    return player;
 }
 
 
@@ -98,7 +113,7 @@ btRigidBody* PhysicsWorld::createRigidSphere(float radius, Math::Point origin, f
     return rigidBody;
 }
 
-btRigidBody* PhysicsWorld::createRigidBox(float width, float height, float depth, Math::Point origin, float mass){
+btRigidBody* PhysicsWorld::createRigidBox(float width, float height, float depth, Math::Point origin, float mass) {
     LOG2(PHYSICS, CREATE,
         "Creating BoxShape: W: " << width << " H: " << height << " D: " << depth
         << " Origin: " << origin << " Mass: " << mass);
@@ -122,19 +137,31 @@ btRigidBody* PhysicsWorld::createRigidBox(float width, float height, float depth
 void PhysicsWorld::render() {
     //collisionBodies[1]->applyCentralForce(btVector3(2.0f, 0.0f, 0.0f));
     
+    static bool first = true;
+    if(first) {
+        first = false;
+        
+        PhysicsSerializer().serialize(collisionBodies[1]);
+    }
+    
     stepWorld(10 * 1000);  // step world by 10 ms
     
-    for(std::size_t x = 0; x < collisionBodies.size(); x ++) {
+#if 0
+    // hack: don't display plane
+    for(std::size_t x = 1; x < collisionBodies.size(); x ++) {
+        //if(!dynamic_cast<>(collisionBodies[x])) continue;
+        
         btTransform transform;
         collisionBodies[x]->getMotionState()->getWorldTransform(transform);
         
         /*LOG(PHYSICS, "body " << collisionBodies[x] << " at "
             << Converter::toPoint(transform.getOrigin()));*/
+        
+        Math::BoundingBox3D box(2.0, 2.0, 2.0,
+        Converter::toPoint(collisionBodies[x]->getCenterOfMassPosition()));
+        OpenGL::GeometryDrawing::drawObject(box, true);
     }
-    
-    Math::BoundingBox3D box(2.0, 2.0, 2.0,
-        Converter::toPoint(collisionBodies[1]->getCenterOfMassPosition()));
-    OpenGL::GeometryDrawing::drawObject(box, true);
+#endif
 }
 
 }  // namespace Physics
