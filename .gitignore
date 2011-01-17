@@ -40,7 +40,4 @@ Makefile
 *.db
 
 # Objects and meshes
-glass*.png
-glass*.mtl
-glass*.obj
-
+/models

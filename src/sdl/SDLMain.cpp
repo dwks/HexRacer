@@ -254,7 +254,7 @@ void SDLMain::handleJoystick() {
 		//Camera movement
 		Math::Point translation = camera->getLookDirection()*(-y * 0.25f)
 			+ camera->getRightDirection() * (x * 0.25f);
-
+        
 		camera->translate(translation);
         
         //trackball->setMouseCurrentAt(translation);
