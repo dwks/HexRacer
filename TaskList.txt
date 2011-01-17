@@ -1,19 +1,36 @@
 Week 1: to Friday 14
 
 	David
-		-event system
-		-client/server
+		-event system *done*
+		-client/server  *done*
 		
 	Alfred
-		-geometry framework
-		-basic renderer
+		-geometry framework *done*
+		-basic renderer *done*
 		
 	Andy
 		-camera
-		-physics engine (dropping object onto plane)
+		-physics engine (dropping object onto plane) *done*
 		
-	Misc
-		-Boost unit tests
-		-Boost serialization
-		-Boost smartpointers
-		-AgroUML
+Jan 17 onward:
+
+	David:
+		-Add terrain to physics
+		-No jitter in physics
+		-Better framerate system
+	
+	Alfred:
+		-Paint Prototype - Paint Cell System
+		-Camera Culling
+		
+	Andrew:
+		-Milestone 1 Writeup
+		
+	Later:
+		-Suspension/car model
+		-Player Disconnection
+		-Loading screen
+			-server
+			-port
+			-joystick config
+		
