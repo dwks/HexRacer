@@ -19,6 +19,8 @@ public:
     Matrix();
     Matrix(const double data[WIDTH * HEIGHT]);
     
+    static Matrix getTranslationMatrix(const Math::Point &translation);
+    
     void setToIdentity();
     
     const double *getData() const { return matrix; }

@@ -4,6 +4,7 @@
 #include "AbstractObject.h"
 #include "math/Point.h"
 #include "physics/PhysicalPlayer.h"
+//#include "render/RenderList.h"
 
 /*namespace Project {
 namespace Physics {
@@ -32,6 +33,9 @@ public:
     virtual ~Player();
     
     virtual Physics::PhysicalObject *getPhysicalObject();
+    
+    void setRenderableObject(Render::RenderableObject *renderable)
+        { this->renderable = renderable; }
     virtual Render::RenderableObject *getRenderableObject();
     
     Math::Point getPosition() const;

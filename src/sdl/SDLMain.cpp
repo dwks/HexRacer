@@ -223,7 +223,6 @@ void SDLMain::run() {
         lastTime = thisTime;
         
         render();
-        playerManager->render();
         physicsWorld->render();
         
         SDL_GL_SwapBuffers();
@@ -308,10 +307,13 @@ void SDLMain::render() {
 	glEnable(GL_TEXTURE_2D);
 
 	glPushMatrix();
-	glScalef(3.0f, 3.0f, 3.0f);
+	//glScalef(3.0f, 3.0f, 3.0f);
 
 	//Render the scene
 	rootRenderable->render(renderer);
+    
+    // Render players
+    playerManager->render(renderer);
 
 	glPopMatrix();
 

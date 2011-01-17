@@ -146,6 +146,7 @@ void PhysicsWorld::render() {
     
     stepWorld(10 * 1000);  // step world by 10 ms
     
+#if 0
     // hack: don't display plane
     for(std::size_t x = 1; x < collisionBodies.size(); x ++) {
         //if(!dynamic_cast<>(collisionBodies[x])) continue;
@@ -160,6 +161,7 @@ void PhysicsWorld::render() {
         Converter::toPoint(collisionBodies[x]->getCenterOfMassPosition()));
         OpenGL::GeometryDrawing::drawObject(box, true);
     }
+#endif
 }
 
 }  // namespace Physics

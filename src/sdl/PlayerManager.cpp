@@ -7,6 +7,12 @@
 
 #include "log/Logger.h"
 
+#include "render/RenderManager.h"
+#include "render/MeshGroup.h"
+#include "render/MeshLoader.h"
+#include "render/ShaderUniformVector4.h"
+#include "render/RenderList.h"
+
 namespace Project {
 namespace SDL {
 
@@ -39,8 +45,35 @@ PlayerManager::~PlayerManager() {
     delete playerList;
 }
 
-void PlayerManager::render() {
-    static struct {
+void PlayerManager::render(Render::RenderManager *renderManager) {
+    Object::PlayerList::IteratorType it = playerList->getIterator();
+    while(it.hasNext()) {
+        Object::Player *player = it.next();
+        
+        Render::RenderableObject *renderable = player->getRenderableObject();
+        if(!renderable) {
+            Render::RenderList *renderList = new Render::RenderList();
+            renderable = renderList;
+            
+            Render::MeshGroup* player_cube_mesh
+                = Render::MeshLoader::getInstance()->getModelByName("playerCube");
+            renderList->addRenderable(player_cube_mesh);
+            
+            renderList->getRenderProperties()->addShaderParameter(
+                new Render::ShaderUniformVector4("playerColor",
+                    OpenGL::Color(OpenGL::Color::BLUE)));
+        }
+        
+        if(renderable) {   // will always be true
+            Math::Point origin = player->getPosition();
+            Math::Matrix matrix = Math::Matrix::getTranslationMatrix(origin);
+            
+            renderable->getRenderProperties()->setTransformation(matrix);
+            renderable->render(renderManager);
+        }
+    }
+    
+    /*static struct {
         float r, g, b;
     } colours[] = {
         {1.0f, 0.0f, 0.0f},
@@ -64,7 +97,7 @@ void PlayerManager::render() {
         glPointSize(1.0f);
     }
     
-    glColor3f(1.0f, 1.0f, 1.0f);
+    glColor3f(1.0f, 1.0f, 1.0f);*/
 }
 
 void PlayerManager::usePlayerList(Object::PlayerList *playerList) {

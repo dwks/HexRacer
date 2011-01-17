@@ -1,6 +1,6 @@
 #include "Player.h"
+
 #include "physics/PhysicsWorld.h"
-#include "render/RenderablePlayer.h"
 
 namespace Project {
 namespace Object {
@@ -20,7 +20,17 @@ Player::Player(int id) : AbstractObject(id) {
         physical = NULL;
     }
     
-    renderable = NULL; //new Render::RenderablePlayer();
+    /*renderable = new Render::RenderList(); //new Render::RenderablePlayer();
+    
+    Render::MeshGroup* player_cube_mesh
+        = Render::MeshLoader::getInstance()->getModelByName("playerCube");
+    renderable->addRenderable(player_cube_mesh);
+    
+    renderable->getRenderProperties()->addShaderParameter(
+        new Render::ShaderUniformVector4("playerColor",
+            OpenGL::Color(OpenGL::Color::BLUE)));*/
+    
+    renderable = NULL;
 }
 
 Player::~Player() {
