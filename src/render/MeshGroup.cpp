@@ -19,8 +19,6 @@ namespace Render {
 				boundingBox.expandToInclude(*vertices[i]);
 			}
 		}
-		int b = 5;
-
 	}
 
 	MeshGroup::~MeshGroup() {

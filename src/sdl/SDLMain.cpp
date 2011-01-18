@@ -144,13 +144,13 @@ void SDLMain::run() {
 
 	//Create some lights
 	Render::Light* light = new Render::Light(Math::Point(1.0f, 2.0f, -1.0f));
-	light->setStrength(100.0f);
+	light->setStrength(50.0f);
 	lightManager->addLight(light);
 
 	light = new Render::Light(Math::Point(7.0f, 2.5f, 3.0f));
 	light->setDiffuse(OpenGL::Color::INDIGO);
 	light->setSpecular(OpenGL::Color::INDIGO);
-	light->setStrength(40.0f);
+	light->setStrength(20.0f);
 	lightManager->addLight(light);
 
 

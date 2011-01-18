@@ -1,7 +1,7 @@
 #include "PhysicalPlayer.h"
 #include "Converter.h"
 #include "PhysicsWorld.h"
-#include "render/MeshLoader.h"
+//#include "render/MeshLoader.h"
 
 #include "log/Logger.h"
 
@@ -25,15 +25,18 @@ void PhysicalPlayer::constructRigidBody(const Math::Point &origin) {
     
 	Math::BoundingBox3D box(1.0, 1.0, 1.0);
 	//Get the bounding box from the mesh loader
+	/*
 	Render::MeshGroup* player_model = Render::MeshLoader::getInstance()->getModelByName("playerCube");
 	if (player_model)
 		box = player_model->getBoundingBox();
 
 	primaryRigidBody = PhysicsWorld::getInstance()->createRigidBox(
 		box.widthX(), box.widthY(), box.widthZ(), origin, 2.0);
+
+	*/
 	
-    /*primaryRigidBody = PhysicsWorld::getInstance()->createRigidBox(
-        1.0, 1.0, 1.0, origin, 2.0);*/
+    primaryRigidBody = PhysicsWorld::getInstance()->createRigidBox(
+        1.0, 1.0, 1.0, origin, 2.0);
 }
 
 Math::Point PhysicalPlayer::getOrigin() const {
