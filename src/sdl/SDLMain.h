@@ -15,6 +15,10 @@
 #include "render/MeshLoader.h"
 #include "render/RenderList.h"
 
+#include "event/ObserverList.h"
+#include "event/TypedObserver.h"
+#include "event/CameraMovement.h"
+
 #define FIELD_OF_VIEW 60
 #define SDL_INIT_FLAGS (SDL_HWSURFACE | SDL_OPENGL | SDL_RESIZABLE)
 
@@ -42,7 +46,18 @@ private:
 	Render::LightManager *lightManager;
     
 	GLUquadric* quadric;
-    
+private:
+    class CameraObserver : public Event::TypedObserver<Event::CameraMovement> {
+    private:
+        OpenGL::SimpleTrackball *trackball;
+        OpenGL::Camera *camera;
+    public:
+        CameraObserver(OpenGL::SimpleTrackball *trackball, 
+            OpenGL::Camera *camera) : trackball(trackball), camera(camera) {}
+        
+        virtual void observe(Event::CameraMovement *event);
+    };
+
 public:
     SDLMain();
     ~SDLMain();

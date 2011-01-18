@@ -8,9 +8,6 @@
 #include "log/Logger.h"
 #include "PhysicalPlayer.h"
 
-#include "event/TypedObserver.h"
-#include "event/PlayerMovement.h"
-
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
 

@@ -26,6 +26,24 @@
 namespace Project {
 namespace SDL {
 
+void SDLMain::CameraObserver::observe(Event::CameraMovement *event) {
+    trackball->setMouseStartAt(Math::Point(0.0, 0.0));
+    
+    double x = event->getMovement().getX();
+    double y = event->getMovement().getY();
+    
+    Math::Point translation = camera->getLookDirection()*(-y * 0.25f)
+        + camera->getRightDirection() * (x * 0.25f);
+    
+    camera->translate(translation);
+    
+    LOG(SDL, "Move camera by " << translation);
+    
+    camera->setLookDirection(trackball->getSpherePoint());
+    
+    //trackball->setMouseCurrentAt(translation);
+}
+
 SDLMain::SDLMain() {
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0) {
         LOG2(SDL, ERROR, "Can't init SDL: " << SDL_GetError());
@@ -108,10 +126,10 @@ void SDLMain::run() {
 	meshLoader->loadOBJ("playerCube", "models/playercube.obj");
 	//Add the test terrain
 	rootRenderable->addRenderable(meshLoader->getModelByName("testTerrain"));
-
+    
 	//Get the Player Cube Mesh
-	Render::MeshGroup* player_cube_mesh = meshLoader->getModelByName("playerCube");
-
+	//Render::MeshGroup* player_cube_mesh = meshLoader->getModelByName("playerCube");
+    
 	//Make two player renderables
 	/*
 	Render::RenderList* player1_renderable = new Render::RenderList();
@@ -169,6 +187,8 @@ void SDLMain::run() {
         playerManager = new PlayerManager(0);
     }
     
+    ADD_OBSERVER(new CameraObserver(simpleTrackball, camera));
+    
     LOG2(GLOBAL, PROGRESS, "Entering main game loop");
     
     bool quit = false;
@@ -220,16 +240,26 @@ void SDLMain::run() {
         handleJoystick();
         inputManager->advanceToNextFrame();
         
-        Uint32 thisTime = SDL_GetTicks();
-        physicsWorld->stepWorld((thisTime - lastTime) * 1000);
-        lastTime = thisTime;
+        {
+            static Uint32 lastPhysicsTime = SDL_GetTicks();
+            Uint32 thisTime = SDL_GetTicks();
+            physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
+            lastPhysicsTime = thisTime;
+        }
         
         render();
         physicsWorld->render();
         
         SDL_GL_SwapBuffers();
         
-        SDL_Delay(10);
+        {
+            Uint32 thisTime = SDL_GetTicks();
+            int timeTakenSoFar = static_cast<int>(thisTime - lastTime);
+            if(timeTakenSoFar < 10) {
+                SDL_Delay(10 - timeTakenSoFar);
+            }
+            lastTime = thisTime;
+        }
     }
     
     LOG2(GLOBAL, PROGRESS, "Exiting main game loop");
@@ -260,7 +290,7 @@ void SDLMain::handleJoystick() {
         
         //trackball->setMouseCurrentAt(translation);
     }
-
+    
 	if(std::fabs(u) > DEADZONE || std::fabs(v) > DEADZONE) {
 		simpleTrackball->setMouseStartAt(Math::Point(0.0, 0.0));
 
@@ -269,7 +299,9 @@ void SDLMain::handleJoystick() {
         translation.setX(u * 0.1);
         translation.setY(-v * 0.1);
 
-		simpleTrackball->setMouseCurrentAt(translation);    
+		//LOG(SDL, "Joystick moving camera by " << translation);
+        
+        simpleTrackball->setMouseCurrentAt(translation);
         updateCamera();
     }
 }
@@ -283,7 +315,7 @@ void SDLMain::render() {
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-
+    
 	OpenGL::Color::glColor(OpenGL::Color::WHITE);
     
 	camera->glLookAt();
@@ -300,25 +332,25 @@ void SDLMain::render() {
 	gluSphere(quadric, 0.1f, 8, 8);
 	glPopMatrix();
 	*/
-
+    
 	lightManager->drawLightSpheres();
 	lightManager->applyAll();
-
+    
 	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 
 	glPushMatrix();
 	//glScalef(3.0f, 3.0f, 3.0f);
-
+    
 	//Render the scene
 	rootRenderable->render(renderer);
     
     // Render players
     playerManager->render(renderer);
-
+    
 	glPopMatrix();
-
+    
 	//Revert the rendering state
 	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_LIGHTING);

@@ -1,6 +1,8 @@
-#pragma once
+#ifndef PROJECT_OPENGL__CAMERA_H
+#define PROJECT_OPENGL__CAMERA_H
 
 #include "math/Point.h"
+
 using namespace Project;
 using namespace Math;
 
@@ -57,3 +59,5 @@ public:
 
 }  // namespace OpenGL
 }  // namespace Project
+
+#endif
