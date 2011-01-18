@@ -2,9 +2,11 @@
 #include "MathWrapper.h"
 #include "OpenGL.h"
 #include <typeinfo>
+#include <vector>
 using namespace Project;
 using namespace OpenGL;
 using namespace Math;
+using namespace std;
 
 GeometryDrawing::GeometryDrawing(void)
 {
@@ -32,6 +34,14 @@ void GeometryDrawing::drawObject(ObjectSpatial& object, bool wireframe) {
 	}
 	else if (object_type == typeid(Triangle3D&)) {
 		drawTriangle3D((Triangle3D&) object, wireframe);
+		return;
+	}
+	else if (object_type == typeid(BoundingPlane3D&)) {
+		drawBoundingPlane3D((BoundingPlane3D&) object, wireframe);
+		return;
+	}
+	else if (object_type == typeid(BoundingConvexHull3D&)) {
+		drawBoundingConvexHull3D((BoundingConvexHull3D&) object, wireframe);
 		return;
 	}
 
@@ -196,4 +206,51 @@ void GeometryDrawing::drawTriangle3D(Math::Triangle3D& object, bool wireframe) {
 	}
 	glEnd();
 
+}
+
+void GeometryDrawing::drawBoundingPlane3D(Math::BoundingPlane3D& object, bool wireframe) {
+	//Get the plane's tangent and bitangent vector
+	Point tangent;
+	Point bitangent;
+	if (object.getNormal().getX() == 0.0 && object.getNormal().getZ() == 0.0)
+		tangent = object.getNormal().rotate90CW(X_AXIS).normalized();
+	else
+		tangent = object.getNormal().rotate90CW(Y_AXIS).normalized();
+	bitangent = tangent.crossProduct(object.getNormal()).normalized();
+
+	float plane_size = 20.0f;
+	Point offset_u = tangent*plane_size;
+	Point offset_v = bitangent*plane_size;
+	Point origin = object.centroid();
+	if (wireframe) {
+		glBegin(GL_LINES);
+
+		MathWrapper::glVertex(origin);
+		MathWrapper::glVertex(origin+object.getNormal());
+
+		for (float u = -1.0f; u <= 1.0f; u += 0.1f) {
+			MathWrapper::glVertex(origin-offset_v+offset_u*u);
+			MathWrapper::glVertex(origin+offset_v+offset_u*u);
+		}
+		for (float v = -1.0f; v <= 1.0f; v += 0.1f) {
+			MathWrapper::glVertex(origin-offset_u+offset_v*v);
+			MathWrapper::glVertex(origin+offset_u+offset_v*v);
+		}
+		glEnd();
+	}
+	else {
+		glBegin(GL_QUADS);
+		MathWrapper::glNormal(object.getNormal());
+		MathWrapper::glVertex(origin-offset_u-offset_v);
+		MathWrapper::glVertex(origin-offset_u+offset_v);
+		MathWrapper::glVertex(origin+offset_u+offset_v);
+		MathWrapper::glVertex(origin+offset_u-offset_v);
+		glEnd();
+	}
+}
+
+void GeometryDrawing::drawBoundingConvexHull3D(Math::BoundingConvexHull3D& object, bool wireframe) {
+	vector<BoundingPlane3D> planes = object.getPlanes();
+	for (unsigned int i = 0; i < planes.size(); i++)
+		drawBoundingPlane3D(planes[i], wireframe);
 }

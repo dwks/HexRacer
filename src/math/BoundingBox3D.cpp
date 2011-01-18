@@ -1,4 +1,6 @@
 #include "BoundingBox3D.h"
+#include "BoundingPlane3D.h"
+#include "BoundingConvexHull3D.h"
 #include "Values.h"
 #include "BoundingBox2D.h"
 using namespace Project;
@@ -58,14 +60,35 @@ bool BoundingBox3D::pointInside(const Point& p) const {
 
 bool BoundingBox3D::intersects3D(const BoundingObject3D& bound_obj) const {
 
-	const BoundingBox3D* box_3D = dynamic_cast<const BoundingBox3D*>(&bound_obj);
-	if (box_3D) {
-		//3D Box-Box Intersection
-		return (
-			box_3D->minX() <= maxX() && box_3D->maxX() >= minX() &&
-			box_3D->minY() <= maxY() && box_3D->maxY() >= minY() &&
-			box_3D->minZ() <= maxZ() && box_3D->maxZ() >= minZ()
-			);
+	switch (bound_obj.getObjectType()) {
+
+		case BOX:
+			//3D Box-Box Intersection
+			return (
+				bound_obj.minX() <= maxX() && bound_obj.maxX() >= minX() &&
+				bound_obj.minY() <= maxY() && bound_obj.maxY() >= minY() &&
+				bound_obj.minZ() <= maxZ() && bound_obj.maxZ() >= minZ()
+				);
+
+		case PLANE:
+			//3D Box-Plane Intersection
+			for (int i = 0; i < 8; i++) {
+				if (bound_obj.pointInside(getCorner(i))) {
+					return true;
+				}
+			}
+			return false;
+
+	
+		case CONVEX_HULL:
+			//3D Box-Convex Hull Intersection
+			std::vector<BoundingPlane3D> planes = ((const BoundingConvexHull3D&)bound_obj).getPlanes();
+			for (unsigned int i = 0; i < planes.size(); i++) {
+				if (!intersects3D(planes[i])) {
+					return false;
+				}
+			}
+			return (planes.size() > 0);
 	}
 
 	//Defer to the other object's interesection tests

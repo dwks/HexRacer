@@ -51,29 +51,25 @@ double Object2D::maxV() const {
 	return 0.0f;
 }
 
-bool Object2D::intersects(const BoundingObject& bound_obj) const {
+bool Object2D::intersects(const BoundingObject& bounding_obj) const {
 	//Check if the bounding object is 3D
-	const BoundingObject3D* bound_3D = dynamic_cast<const BoundingObject3D*>(&bound_obj);
-
-	if (bound_3D) {
+	if (!bounding_obj.is2D()) {
 		//Convert the 3D bounding object to a 2D bounding object
-		BoundingObject2D* bound_2D = bound_3D->projectTo2D(getProjectAxis());
+		BoundingObject2D* bound_2D = ((const BoundingObject3D&)bounding_obj).projectTo2D(getProjectAxis());
 		//Perform the intersection test on the 2D bounding object
 		bool intersects = intersects2D(*bound_2D);
 		delete(bound_2D); //Delete the temporary 2D object
 		return intersects;
 	}
 	else
-		return intersects2D((BoundingObject2D&) bound_obj);
+		return intersects2D((BoundingObject2D&) bounding_obj);
 }
 
 bool Object2D::isInside(const BoundingObject& bounding_obj) const {
 	//Check if the bounding object is 3D
-	const BoundingObject3D* bound_3D = dynamic_cast<const BoundingObject3D*>(&bounding_obj);
-
-	if (bound_3D) {
+	if (!bounding_obj.is2D()) {
 		//Convert the 3D bounding object to a 2D bounding object
-		BoundingObject2D* bound_2D = bound_3D->projectTo2D(getProjectAxis());
+		BoundingObject2D* bound_2D = ((const BoundingObject3D&)bounding_obj).projectTo2D(getProjectAxis());
 		//Perform the intersection test on the 2D bounding object
 		bool inside = isInside2D(*bound_2D);
 		delete(bound_2D); //Delete the temporary 2D object

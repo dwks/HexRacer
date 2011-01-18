@@ -14,6 +14,7 @@ class BoundingObject3D
 public:
 	BoundingObject3D(void) {}
 	virtual ~BoundingObject3D(void) {}
+	bool is2D() const { return false; }
 };
 
 }  // namespace Math

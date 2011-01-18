@@ -151,14 +151,28 @@ bool Geometry::sameSideOfLine2D(Point line_a, Point line_b, Point point_1, Point
 	point_1 = Point::point2D(point_1, project_axis);
 	point_2 = Point::point2D(point_2, project_axis);
 
+	Point line_normal = (line_b-line_a).rotate90CW(project_axis);
+
+	return (frontOfPlane(line_a, line_normal, point_1) == frontOfPlane(line_a, line_normal, point_2));
+
+	/*
 	Point cp1 = (line_b - line_a).crossProduct(point_1 - line_a);
     Point cp2 = (line_b - line_a).crossProduct(point_2 - line_a);
 	return (cp1.dotProduct(cp2) >= 0.0f);
+	*/
 
 }
 
-bool Geometry::frontOfPlane(Point plane_p, Point plane_normal, Point point) {
-	return ((point-plane_p).dotProduct(plane_normal) >= 0.0f);
+bool Geometry::frontOfPlane(Point plane_point, Point plane_normal, Point point) {
+	return ((point-plane_point).dotProduct(plane_normal) >= 0.0f);
+}
+
+Point Geometry::triangleNormal(Point tri_a, Point tri_b, Point tri_c) {
+	Point u = tri_b-tri_a;
+	Point v = tri_c-tri_a;
+	Point normal = u.crossProduct(v);
+	normal.normalize();
+	return normal;
 }
 
 }  // namespace Math

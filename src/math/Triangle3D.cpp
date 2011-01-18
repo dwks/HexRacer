@@ -2,6 +2,8 @@
 #include "BoundingTriangle2D.h"
 #include "BoundingObject2D.h"
 #include "BoundingBox3D.h"
+#include "BoundingPlane3D.h"
+#include "BoundingConvexHull3D.h"
 #include "Values.h"
 
 namespace Project {
@@ -66,22 +68,48 @@ namespace Math {
 
 	bool Triangle3D::intersects3D(const BoundingObject3D& bound_obj) const {
 
-		const BoundingBox3D* box_3D = dynamic_cast<const BoundingBox3D*>(&bound_obj);
-		if (box_3D) {
-			//3D Triangle-Box Intersection
+		const BoundingBox3D* box_3D;
+		const BoundingPlane3D* plane_3D;
+		const BoundingConvexHull3D* ch_3D;
 
-			//Try the collision in 2D for all three axes, if it passes all three, the objects intersect
-			for (unsigned int i = 0; i < 3; i++) {
-				Axis axis = (Axis) i;
-				BoundingObject2D* this_2D = projectTo2D(axis);
-				BoundingObject2D* bound_2D = bound_obj.projectTo2D(axis);
-				bool intersects = this_2D->intersects2D(*bound_2D);
-				delete(this_2D);
-				delete(bound_2D);
-				if (!intersects)
-					return false;
-			}
-			return true;
+		switch (bound_obj.getObjectType()) {
+
+			case BOX:
+				box_3D = (const BoundingBox3D*) &bound_obj;
+				//Try the collision in 2D for all three axes, if it passes all three, the objects intersect
+				for (unsigned int i = 0; i < 3; i++) {
+					Axis axis = (Axis) i;
+					BoundingObject2D* this_2D = projectTo2D(axis);
+					BoundingObject2D* bound_2D = bound_obj.projectTo2D(axis);
+					bool intersects = this_2D->intersects2D(*bound_2D);
+					delete(this_2D);
+					delete(bound_2D);
+					if (!intersects)
+						return false;
+				}
+				return true;
+
+			case PLANE:
+				plane_3D = (const BoundingPlane3D*) (&bound_obj);
+				//3D Triangle-Plane Intersection
+				for (short i = 0; i < 3; i++) {
+					if (plane_3D->pointInside(getVertex(i))) {
+						return true;
+					}
+				}
+				return false;
+
+			case CONVEX_HULL:
+				ch_3D = (const BoundingConvexHull3D*) &bound_obj;
+				//3D Box-Convex Hull Intersection
+				std::vector<BoundingPlane3D> planes = ch_3D->getPlanes();
+				for (unsigned int i = 0; i < planes.size(); i++) {
+					if (!intersects3D(planes[i])) {
+						return false;
+					}
+				}
+				return (planes.size() > 0);
+
 		}
 
 		return false;

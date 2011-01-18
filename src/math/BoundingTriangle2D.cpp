@@ -60,66 +60,66 @@ namespace Math {
 		if (bound_obj.getProjectAxis() != projectAxis)
 			return false;
 
-		const BoundingTriangle2D* tri_2D = dynamic_cast<const BoundingTriangle2D*>(&bound_obj);
-		if (tri_2D) {
-			return false;
-		}
+		switch (bound_obj.getObjectType()) {
 
-		const BoundingBox2D* box_2D = dynamic_cast<const BoundingBox2D*>(&bound_obj);
-		if (box_2D) {
-			//2D Triangle-Box Intersection
+			case TRIANGLE:
+				return false;
 
-			//Check if any of the box's vertices is inside this triangle
-			for (short i = 0; i < 4; i++) {
-				if (pointInside(box_2D->getCorner(i))) {
-					return true;
-				}
-			}
-			//Check if any of this triangle's vertices is inside the box
-			for (short i = 0; i < 3; i++) {
-				if (box_2D->pointInside(getVertex(i))) {
-					return true;
-				}
-			}
+			case BOX:
+				const BoundingBox2D* box_2D = (const BoundingBox2D*) &bound_obj;
+				//2D Triangle-Box Intersection
 
-			//Check if any of this triangle's edges intersects any of the box's edges
-			for (short tri_edge = 0; tri_edge < 3; tri_edge++) {
-				Point line_a = getVertex(tri_edge);
-				Point line_b = getVertex((tri_edge+1) % 3);
-				
-				for (short box_edge = 0; box_edge < 4; box_edge++) {
-					switch (box_edge) {
-						case 0:
-							//Min horizonal edge
-							if (Geometry::lineHLineIntersects2D(line_a, line_b,
-								box_2D->minV(), box_2D->minU(), box_2D->maxU(), projectAxis))
-								return true;
-							;break;
-						case 1:
-							//Max horizonal edge
-							if (Geometry::lineHLineIntersects2D(line_a, line_b,
-								box_2D->maxV(), box_2D->minU(), box_2D->maxU(), projectAxis))
-								return true;
-							;break;
-						case 2:
-							//Min vertical edge
-							if (Geometry::lineVLineIntersects2D(line_a, line_b,
-								box_2D->minU(), box_2D->minV(), box_2D->maxV(), projectAxis))
-								return true;
-							;break;
-						case 3:
-							//Max vertical edge
-							if (Geometry::lineVLineIntersects2D(line_a, line_b,
-								box_2D->maxU(), box_2D->minV(), box_2D->maxV(), projectAxis))
-								return true;
-							;break;
+				//Check if any of the box's vertices is inside this triangle
+				for (short i = 0; i < 4; i++) {
+					if (pointInside(box_2D->getCorner(i))) {
+						return true;
 					}
 				}
+				//Check if any of this triangle's vertices is inside the box
+				for (short i = 0; i < 3; i++) {
+					if (box_2D->pointInside(getVertex(i))) {
+						return true;
+					}
+				}
+				//Check if any of this triangle's edges intersects any of the box's edges
+				for (short tri_edge = 0; tri_edge < 3; tri_edge++) {
+					Point line_a = getVertex(tri_edge);
+					Point line_b = getVertex((tri_edge+1) % 3);
+					
+					for (short box_edge = 0; box_edge < 4; box_edge++) {
+						switch (box_edge) {
+							case 0:
+								//Min horizonal edge
+								if (Geometry::lineHLineIntersects2D(line_a, line_b,
+									box_2D->minV(), box_2D->minU(), box_2D->maxU(), projectAxis))
+									return true;
+								;break;
+							case 1:
+								//Max horizonal edge
+								if (Geometry::lineHLineIntersects2D(line_a, line_b,
+									box_2D->maxV(), box_2D->minU(), box_2D->maxU(), projectAxis))
+									return true;
+								;break;
+							case 2:
+								//Min vertical edge
+								if (Geometry::lineVLineIntersects2D(line_a, line_b,
+									box_2D->minU(), box_2D->minV(), box_2D->maxV(), projectAxis))
+									return true;
+								;break;
+							case 3:
+								//Max vertical edge
+								if (Geometry::lineVLineIntersects2D(line_a, line_b,
+									box_2D->maxU(), box_2D->minV(), box_2D->maxV(), projectAxis))
+									return true;
+								;break;
+						}
+					}
 
-			}
+				}
 
-			//Intersection test failed
-			return false;
+				//Intersection test failed
+				return false;
+
 		}
 
 		//Defer to the other object's interesection tests

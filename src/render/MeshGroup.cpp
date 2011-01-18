@@ -46,5 +46,15 @@ namespace Render {
 		return return_list;
 	}
 
+	void MeshGroup::setCullingObject(const Project::Math::BoundingObject* culling_object) {
+		for (unsigned int i = 0; i < meshes.size(); i++)
+			((Mesh*)meshes[i])->setCullingObject(culling_object);
+	}
+
+	void MeshGroup::setCullingQueryType(Project::Math::SpatialContainer::QueryType type) {
+		for (unsigned int i = 0; i < meshes.size(); i++)
+			((Mesh*)meshes[i])->setCullingQueryType(type);
+	}
+
 }  // namespace Render
 }  // namespace Project

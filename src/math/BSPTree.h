@@ -23,6 +23,9 @@ public:
 	void clear();
 
 	void appendQuery(vector<ObjectSpatial*>* result_list, const BoundingObject& bounding_object, QueryType query_type) const;
+	void appendAll(vector<ObjectSpatial*>* result_list) const;
+
+	int getHeight() const;
 
 protected:
 
@@ -38,7 +41,6 @@ protected:
 	*/
 	virtual void split(vector<ObjectSpatial*>* objects = NULL) = 0;
 	virtual const BoundingObject& getBoundingObject() const = 0;
-
 };
 
 }  // namespace Math

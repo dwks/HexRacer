@@ -12,6 +12,9 @@ class BoundingObject;
 class ObjectSpatial
 {
 public:
+
+	enum ObjectType { VERTEX, BOX, TRIANGLE, PLANE, CONVEX_HULL };
+
 	virtual ~ObjectSpatial(void) {}
 
 	virtual double minX() const = 0;
@@ -38,6 +41,8 @@ public:
 	/** Returns true iff this object intersects @a bound_obj
 	*/
 	virtual bool intersects(const BoundingObject& bound_obj) const = 0;
+
+	virtual ObjectType getObjectType() const = 0;
 
 };
 

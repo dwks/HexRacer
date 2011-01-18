@@ -20,6 +20,7 @@ private:
 public:
 
 	Texture(std::string _name, std::string color_map_filename, std::string normal_map_filename);
+	~Texture();
 
 	std::string getName() const;
 

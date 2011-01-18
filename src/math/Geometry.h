@@ -48,6 +48,7 @@ public:
 	*/
 	static bool lineVLineIntersects2D(Point line_a, Point line_b, double hline_u, double vline_vmin, double vline_vmax, Axis project_axis = Z_AXIS);
 
+
 	/** Determines if two points are on the same side of a line
         
         @return True if @a point_1 and @a point_2 are on the same side of
@@ -56,9 +57,14 @@ public:
 	static bool sameSideOfLine2D(Point line_a, Point line_b, Point point_1, Point point_2, Axis project_axis = Z_AXIS);
 
 	/** Returns true iff the point @a is on the front-side of the plane represented
-		by the point @a plane_p and normal @a plane_normal
+		by the point @a plane_point and normal @a plane_normal
 	*/
-	static bool frontOfPlane(Point plane_p, Point plane_normal, Point point);
+	static bool frontOfPlane(Point plane_point, Point plane_normal, Point point);
+
+	/** Computes the normal of a triangle represented by three points in clockwise order
+	*/
+	static Point triangleNormal(Point tri_a, Point tri_b, Point tri_c);
+	
 };
 
 }  // namespace Math

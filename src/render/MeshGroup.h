@@ -30,6 +30,8 @@ public:
 	vector<RenderableObject*> getChildren();
 	vector<Project::Math::Triangle3D> getTriangles();
 	Project::Math::BoundingBox3D getBoundingBox() { return boundingBox; }
+	void setCullingObject(const Project::Math::BoundingObject* culling_object);
+	void setCullingQueryType(Project::Math::SpatialContainer::QueryType type);
 
 };
 

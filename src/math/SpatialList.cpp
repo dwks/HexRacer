@@ -81,6 +81,12 @@ void SpatialList::appendQuery(vector<ObjectSpatial*>* result_list, const Boundin
 	}
 }
 
+void SpatialList::appendAll(vector<ObjectSpatial*>* result_list) const {
+	for (unsigned int i = 0; i < objectList.size(); i++) {
+		result_list->push_back(objectList[i]);
+	}
+}
+
 vector<ObjectSpatial*> SpatialList::all() const {
 	return objectList;
 }

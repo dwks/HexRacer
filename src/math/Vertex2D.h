@@ -29,6 +29,7 @@ public:
 	bool pointInside(const Point& p) const;
 	bool intersects2D(const BoundingObject2D& bound_obj) const;
 	void translate(const Point& translation);
+	ObjectType getObjectType() const { return VERTEX; }
 
 	//Class specific
 	Point getPosition() const { return position; }

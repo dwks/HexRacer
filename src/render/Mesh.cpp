@@ -1,5 +1,6 @@
 #include "Mesh.h"
 #include "opengl/MathWrapper.h"
+#include "log/Logger.h"
 using namespace std;
 using namespace Project;
 using namespace OpenGL;
@@ -46,9 +47,9 @@ namespace Render {
 			}
 		}
 
-		triangleTree = new BSPTree3D(bounding_box, BSPTree3D::MIN_OVERLAP);
-
+		triangleTree = new BSPTree3D(bounding_box, BSPTree3D::MIN_OVERLAP, 8);
 		triangleTree->add(tri_obj);
+		LOG(OPENGL, "Generated BSP Tree with " << triangles.size() << " objects with height " << triangleTree->getHeight());
 
 	}
 
@@ -83,8 +84,8 @@ namespace Render {
 		}
 	}
 
-	void Mesh::setCullingObject(const BoundingObject* _cullingObject) {
-		cullingObject = _cullingObject;
+	void Mesh::setCullingObject(const BoundingObject* culling_object) {
+		cullingObject = culling_object;
 		if (cullingObject != NULL && triangleTree == NULL)
 			generateTriangleTree();
 	}
