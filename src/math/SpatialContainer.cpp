@@ -25,6 +25,9 @@ bool SpatialContainer::queryTypeFilter(ObjectSpatial* object, const BoundingObje
 
 		case NEARBY:
 			return true;
+        
+        default:
+            break;
 	}
 
 	return false;

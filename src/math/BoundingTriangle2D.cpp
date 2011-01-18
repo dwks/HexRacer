@@ -65,7 +65,7 @@ namespace Math {
 			case TRIANGLE:
 				return false;
 
-			case BOX:
+			case BOX: {
 				const BoundingBox2D* box_2D = (const BoundingBox2D*) &bound_obj;
 				//2D Triangle-Box Intersection
 
@@ -119,6 +119,10 @@ namespace Math {
 
 				//Intersection test failed
 				return false;
+            }
+            
+            default:
+                break;
 
 		}
 

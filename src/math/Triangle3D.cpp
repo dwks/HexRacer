@@ -99,7 +99,7 @@ namespace Math {
 				}
 				return false;
 
-			case CONVEX_HULL:
+			case CONVEX_HULL: {
 				ch_3D = (const BoundingConvexHull3D*) &bound_obj;
 				//3D Box-Convex Hull Intersection
 				std::vector<BoundingPlane3D> planes = ch_3D->getPlanes();
@@ -109,6 +109,10 @@ namespace Math {
 					}
 				}
 				return (planes.size() > 0);
+            }
+            
+            default:
+                break;
 
 		}
 

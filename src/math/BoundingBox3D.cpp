@@ -80,7 +80,7 @@ bool BoundingBox3D::intersects3D(const BoundingObject3D& bound_obj) const {
 			return false;
 
 	
-		case CONVEX_HULL:
+		case CONVEX_HULL: {
 			//3D Box-Convex Hull Intersection
 			std::vector<BoundingPlane3D> planes = ((const BoundingConvexHull3D&)bound_obj).getPlanes();
 			for (unsigned int i = 0; i < planes.size(); i++) {
@@ -89,6 +89,10 @@ bool BoundingBox3D::intersects3D(const BoundingObject3D& bound_obj) const {
 				}
 			}
 			return (planes.size() > 0);
+        }
+        
+        default:
+            break;
 	}
 
 	//Defer to the other object's interesection tests
