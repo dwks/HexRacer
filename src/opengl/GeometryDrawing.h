@@ -1,10 +1,12 @@
 #pragma once
 
-#include "../math/ObjectSpatial.h"
-#include "../math/BoundingBox3D.h"
-#include "../math/BoundingBox2D.h"
-#include "../math/BoundingTriangle2D.h"
-#include "../math/Triangle3D.h"
+#include "math/ObjectSpatial.h"
+#include "math/BoundingBox3D.h"
+#include "math/BoundingBox2D.h"
+#include "math/BoundingTriangle2D.h"
+#include "math/Triangle3D.h"
+#include "math/BoundingPlane3D.h"
+#include "math/BoundingConvexHull3D.h"
 
 namespace Project {
 namespace OpenGL {
@@ -23,6 +25,8 @@ public:
 	static void drawBoundingBox2D(Math::BoundingBox2D& object, bool wireframe = false);
 	static void drawBoundingTriangle2D(Math::BoundingTriangle2D& object, bool wireframe = false);
 	static void drawTriangle3D(Math::Triangle3D& object, bool wireframe = false);
+	static void drawBoundingPlane3D(Math::BoundingPlane3D& object, bool wireframe = false);
+	static void drawBoundingConvexHull3D(Math::BoundingConvexHull3D& object, bool wireframe = false);
 };
 
 }  // namespace OpenGL

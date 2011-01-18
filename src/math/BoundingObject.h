@@ -11,9 +11,11 @@ class BoundingObject2D;
 */
 class BoundingObject {
 public:
+
 	BoundingObject(void) {}
 	virtual ~BoundingObject(void) {}
 	virtual bool pointInside(const Point& p) const = 0;
+	virtual bool is2D() const = 0;
 };
 
 }  // namespace Math

@@ -32,7 +32,7 @@ public:
 	Mesh(vector< MeshTriangle* > _triangles, Material* _material = NULL);
 
 	void renderGeometry(ShaderParamSetter setter);
-	void setCullingObject(const Project::Math::BoundingObject* _cullingObject);
+	void setCullingObject(const Project::Math::BoundingObject* culling_object);
 	void setCullingQueryType(Project::Math::SpatialContainer::QueryType type);
 	vector<Project::Math::Triangle3D> getTriangles();
 };

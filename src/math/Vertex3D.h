@@ -31,6 +31,7 @@ public:
 	BoundingObject2D* projectTo2D(Axis project_axis) const;
 	bool intersects3D(const BoundingObject3D& bound_obj) const;
 	void translate(const Point& translation);
+	ObjectType getObjectType() const { return VERTEX; }
 
 	//Class specific
 	Point getPosition() const { return position; }

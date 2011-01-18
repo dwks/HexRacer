@@ -1,21 +1,23 @@
-#ifndef PROJECT_MATH__BOUNDING_PLANE3_D_H
-#define PROJECT_MATH__BOUNDING_PLANE3_D_H
+#ifndef PROJECT_MATH__BOUNDING_CONVEX_HULL3_D_H
+#define PROJECT_MATH__BOUNDING_CONVEX_HULL3_D_H
 
 #include "BoundingObject3D.h"
+#include "BoundingPlane3D.h"
+#include <vector>
 #include <float.h>
 
 namespace Project {
 namespace Math {
 
-class BoundingPlane3D 
+class BoundingConvexHull3D 
 	: public BoundingObject3D {
 private:
-	Point origin;
-	Point normal;
+	std::vector<BoundingPlane3D> planes;
+	Point centroidPoint;
+	
 public:
-
-	BoundingPlane3D(Point _origin = Point(), Point _normal = Point(0.0, 0.0, 1.0))
-		: origin(_origin), normal(_normal.normalized()) {}
+	BoundingConvexHull3D(int num_planes);
+	BoundingConvexHull3D(std::vector<BoundingPlane3D> _planes);
 
 	//Abstract method implementations
 	double minX() const { return FLT_MIN; }
@@ -24,18 +26,19 @@ public:
 	double maxX() const { return FLT_MAX; }
 	double maxY() const { return FLT_MAX; }
 	double maxZ() const { return FLT_MAX; }
-	Point centroid() const { return origin; }
+	Point centroid() const { return centroidPoint; }
 	bool isInside(const BoundingObject& bounding_obj) const;
 	BoundingObject2D* projectTo2D(Axis project_axis) const;
 	bool pointInside(const Point& p) const;
 	bool intersects3D(const BoundingObject3D& bound_obj) const;
 	void translate(const Point& translation);
-	ObjectType getObjectType() const { return PLANE; }
+	ObjectType getObjectType() const { return CONVEX_HULL; }
 
-	//Class specific
-	void setNormal(Point _normal) { normal = _normal.normalized(); }
-	Point getNormal() const { return normal; }
-
+	//Class Specific
+	void setPlaneNormal(int plane_index, Point normal);
+	void setPlaneOrigin(int plane_index, Point origin);
+	std::vector<BoundingPlane3D> getPlanes() const { return planes; }
+	int getNumPlanes() const { return planes.size(); }
 };
 
 }  // namespace Math

@@ -43,6 +43,7 @@ protected:
 	/** Append all results from a query to @a result_list
 	*/
 	virtual void appendQuery(vector<ObjectSpatial*>* result_list, const BoundingObject& bounding_object, QueryType query_type) const = 0;
+	virtual void appendAll(vector<ObjectSpatial*>* result_list) const = 0;
 
 };
 

@@ -84,9 +84,9 @@ void BSPTree3D::split(vector<ObjectSpatial*>* objects) {
 						min_overlap_num = overlap_num;
 						min_overlap_axis = axis;
 					}
-					next_split_method = MIN_OVERLAP;
-					split_axis = min_overlap_axis;
 				}
+				next_split_method = MIN_OVERLAP;
+				split_axis = min_overlap_axis;
 				
 			}
 			;break;

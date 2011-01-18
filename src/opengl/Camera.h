@@ -2,7 +2,7 @@
 #define PROJECT_OPENGL__CAMERA_H
 
 #include "math/Point.h"
-
+#include "math/BoundingConvexHull3D.h"
 using namespace Project;
 using namespace Math;
 
@@ -20,13 +20,22 @@ private:
 	Point cameraUpDirection;
 	Point cameraRightDirection;
 	Point cameraLookDirection;
+	Point actualCameraUpDirection;
+
+	Point topPlaneNormal;
+	Point leftPlaneNormal;
+	Point rightPlaneNormal;
+	Point bottomPlaneNormal;
 
 	double aspect;
 	double fieldOfView;
 	double nearPlane;
 	double farPlane;
 
+	BoundingConvexHull3D* frustrum;
+
 	void updateDirections();
+	void updateFrustrum();
 
 public:
 	Camera(void);
@@ -54,6 +63,8 @@ public:
 
 	void glLookAt();
 	void glProjection();
+
+	const BoundingConvexHull3D* getFrustrum() { return frustrum; }
 
 };
 

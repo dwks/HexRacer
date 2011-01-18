@@ -15,6 +15,7 @@ public:
 	BoundingObject2D(Axis projectAxis)
 		: Object2D(projectAxis) {}
 	virtual ~BoundingObject2D(void) {}
+	bool is2D() const { return true; }
 };
 
 

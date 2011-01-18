@@ -33,6 +33,7 @@ public:
 	bool pointInside(const Point& p) const;
 	bool intersects3D(const BoundingObject3D& bound_obj) const;
 	void translate(const Point& translation);
+	ObjectType getObjectType() const { return BOX; }
 
 	//Class specific
 

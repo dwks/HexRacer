@@ -24,6 +24,7 @@ public:
 	void clear();
 
 	void appendQuery(vector<ObjectSpatial*>* result_list, const BoundingObject& bounding_object, QueryType query_type) const;
+	void appendAll(vector<ObjectSpatial*>* result_list) const;
 
 private:
 

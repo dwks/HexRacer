@@ -181,6 +181,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\BoundingConvexHull3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\BoundingPlane3D.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingTriangle2D.cpp"
 				>
 			</File>
@@ -640,6 +648,14 @@
 			</File>
 			<File
 				RelativePath=".\src\render\BaseRenderable.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\BoundingConvexHull3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\BoundingPlane3D.h"
 				>
 			</File>
 			<File

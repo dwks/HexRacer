@@ -1,6 +1,7 @@
 #include "BSPTree.h"
 #include "BoundingObject3D.h"
 #include "BoundingObject2D.h"
+#include "Values.h"
 using namespace Project;
 using namespace Math;
 
@@ -39,6 +40,7 @@ bool BSPTree::add(ObjectSpatial* object) {
 	for (short i = 0; i < 2; i++) {
 		if (object->isInside(child[i]->getBoundingObject())) {
 			child[i]->add(object);
+			subtreeSize++;
 			return true;
 		}
 	}
@@ -81,6 +83,8 @@ void BSPTree::add(vector<ObjectSpatial*> objects) {
 
 		child[0]->add(add_to_child_0);
 		child[1]->add(add_to_child_1);
+		subtreeSize += add_to_child_0.size();
+		subtreeSize += add_to_child_1.size();
 		list.add(add_to_this);
 		
 	}
@@ -107,20 +111,7 @@ vector<ObjectSpatial*> BSPTree::query(const BoundingObject& bounding_object, Que
 
 vector<ObjectSpatial*> BSPTree::all() const {
 	vector<ObjectSpatial*> return_list;
-
-	vector<ObjectSpatial*> list_all = list.all();
-	for (unsigned int i = 0; i < list_all.size(); i++)
-		return_list.push_back(list_all[i]);
-
-	if (!leaf) {
-		for (short i = 0; i < 2; i++) {
-			vector<ObjectSpatial*> child_list = child[i]->all();
-			for (unsigned int j = 0; j < child_list.size(); j++) {
-				return_list.push_back(child_list[j]);
-			}
-		}
-	}
-
+	appendAll(&return_list);
 	return return_list;
 }
 
@@ -141,24 +132,46 @@ void BSPTree::appendQuery(vector<ObjectSpatial*>* result_list, const BoundingObj
 	if (!leaf) {
 		for (short i = 0; i < 2; i++) {
 
-			bool append_child = false;
+			bool inside = false;
+			bool intersects = false;
 
 			const BoundingObject& child_bound = child[i]->getBoundingObject();
-			const BoundingObject3D* bound_3D = dynamic_cast<const BoundingObject3D*>(&child_bound);
-			if (bound_3D) {
-				append_child = bound_3D->intersects(bounding_object);
+			if (!child_bound.is2D()) {
+				inside = ((BoundingObject3D&)child_bound).isInside(bounding_object);
+				if (!inside) {
+					intersects = ((BoundingObject3D&)child_bound).intersects(bounding_object);
+				}
 			}
 			else {
-				const BoundingObject2D* bound_2D = dynamic_cast<const BoundingObject2D*>(&child_bound);
-				if (bound_2D) {
-					append_child = bound_2D->intersects(bounding_object);
+				inside = ((BoundingObject2D&)child_bound).isInside(bounding_object);
+				if (!inside) {
+					intersects = ((BoundingObject2D&)child_bound).intersects(bounding_object);
 				}
 			}
 
-			if (append_child) {
+			//If the child is entirely inside the bounding object, append all objects in the child
+			//If the child only intersects, append the query result of the child
+			if (inside)
+				child[i]->appendAll(result_list);
+			else if (intersects)
 				child[i]->appendQuery(result_list, bounding_object, query_type);
-			}
 		}
 	}
 
+}
+
+void BSPTree::appendAll(vector<ObjectSpatial*>* result_list) const {
+	
+	list.appendAll(result_list);
+	if (!leaf) {
+		child[0]->appendAll(result_list);
+		child[1]->appendAll(result_list);
+	}
+}
+
+int BSPTree::getHeight() const {
+	if (leaf)
+		return 1;
+	else
+		return (maximum(child[0]->getHeight(), child[1]->getHeight())+1);
 }

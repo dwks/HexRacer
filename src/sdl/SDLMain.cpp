@@ -125,52 +125,25 @@ void SDLMain::run() {
 	meshLoader->loadOBJ("testTerrain", "models/testterrain.obj");
 	meshLoader->loadOBJ("playerCube", "models/playercube.obj");
 	//Add the test terrain
-	rootRenderable->addRenderable(meshLoader->getModelByName("testTerrain"));
+	Render::MeshGroup* test_terrain = meshLoader->getModelByName("testTerrain");
+
+	test_terrain->setCullingObject(camera->getFrustrum());
+	test_terrain->setCullingQueryType(Math::SpatialContainer::NEARBY);
+	rootRenderable->addRenderable(test_terrain);
     
 	//Get the Player Cube Mesh
 	//Render::MeshGroup* player_cube_mesh = meshLoader->getModelByName("playerCube");
     
-	//Make two player renderables
-	/*
-	Render::RenderList* player1_renderable = new Render::RenderList();
-	Render::RenderList* player2_renderable = new Render::RenderList();
-
-	//Set the same player mesh as a child for both player renderables
-	player1_renderable->addRenderable(player_cube_mesh);
-	player2_renderable->addRenderable(player_cube_mesh);
-
-	//Translate the player 2 renderable
-	Math::Matrix translation;
-	translation.set(0, 3, 2.5f);
-	player2_renderable->getRenderProperties()->setTransformation(translation);
-
-	//Set the player color to a different color for each player renderable
-	player1_renderable->getRenderProperties()->addShaderParameter(new Render::ShaderUniformVector4("playerColor", OpenGL::Color(OpenGL::Color::GREEN)));
-	player2_renderable->getRenderProperties()->addShaderParameter(new Render::ShaderUniformVector4("playerColor", OpenGL::Color(OpenGL::Color::RED)));
-
-	//Add the player renderables to the root renderable
-	rootRenderable->addRenderable(player1_renderable);
-	rootRenderable->addRenderable(player2_renderable);
-	*/
-
-	//rootRenderable->getRenderProperties()->setTextureOverride(true);
-	//rootRenderable->getRenderProperties()->setShaderOverride(true);
-
-	//Create a test bounding box for culling the mesh
-	//Math::BoundingBox3D* box = new Math::BoundingBox3D(9.0f, 3.0f, 3.0f);
-	//((Render::Mesh*) testMesh)->setCullingObject(box);
-
 	//Create some lights
 	Render::Light* light = new Render::Light(Math::Point(1.0f, 2.0f, -1.0f));
-	light->setStrength(50.0f);
+	light->setStrength(20.0f);
 	lightManager->addLight(light);
 
 	light = new Render::Light(Math::Point(7.0f, 2.5f, 3.0f));
 	light->setDiffuse(OpenGL::Color::INDIGO);
 	light->setSpecular(OpenGL::Color::INDIGO);
-	light->setStrength(20.0f);
+	light->setStrength(10.0f);
 	lightManager->addLight(light);
-
 
     inputManager = new InputManager();
     
@@ -319,29 +292,15 @@ void SDLMain::render() {
 	OpenGL::Color::glColor(OpenGL::Color::WHITE);
     
 	camera->glLookAt();
-    //glTranslated(0.0, 0.0, -10.0);
-    //trackball->applyTransform();
-
-	/*
-	Math::Point lightp(1.0f, 2.0f, -1.0f);
-	GLfloat light_pos[4] = {lightp.getX(), lightp.getY(), lightp.getZ(), 1.0f};
-	glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-	//Draw a sphere at the light position
-	glPushMatrix();
-	glTranslatef(lightp.getX(), lightp.getY(), lightp.getZ());
-	gluSphere(quadric, 0.1f, 8, 8);
-	glPopMatrix();
-	*/
     
 	lightManager->drawLightSpheres();
 	lightManager->applyAll();
     
-	glEnable(GL_COLOR_MATERIAL);
+	//glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 
 	glPushMatrix();
-	//glScalef(3.0f, 3.0f, 3.0f);
     
 	//Render the scene
 	rootRenderable->render(renderer);
@@ -352,7 +311,7 @@ void SDLMain::render() {
 	glPopMatrix();
     
 	//Revert the rendering state
-	glDisable(GL_COLOR_MATERIAL);
+	//glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
     

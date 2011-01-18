@@ -70,13 +70,15 @@ bool BoundingBox2D::intersects2D(const BoundingObject2D& bound_obj) const {
 	if (bound_obj.getProjectAxis() != projectAxis)
 		return false;
 
-	const BoundingBox2D* box_2D = dynamic_cast<const BoundingBox2D*>(&bound_obj);
-	if (box_2D) {
-		//2D Box-Box Intersection
-		return (
-			box_2D->minU() <= maxU() && box_2D->maxU() >= minU() &&
-			box_2D->minV() <= maxV() && box_2D->maxV() >= minV()
-			);
+	switch (bound_obj.getObjectType()) {
+
+		case BOX:
+			//2D Box-Box Intersection
+			return (
+				bound_obj.minU() <= maxU() && bound_obj.maxU() >= minU() &&
+				bound_obj.minV() <= maxV() && bound_obj.maxV() >= minV()
+				);
+
 	}
 
 	//Defer to the other object's interesection tests

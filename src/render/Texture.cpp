@@ -11,6 +11,11 @@ namespace Render {
 		normalMap = loadTexture(normal_map_filename);
 	}
 
+	Texture::~Texture() {
+		glDeleteTextures(1, &colorMap);
+		glDeleteTextures(1, &normalMap);
+	}
+
 	std::string Texture::getName() const {
 		return name;
 	}
