@@ -32,10 +32,13 @@ void InputManager::advanceToNextFrame() {
         EMIT_EVENT(new Event::PlayerMovement(Math::Point(-0.01, 0.0)));
     }
     if(keyDown[SDLK_UP]) {
-        EMIT_EVENT(new Event::PlayerMovement(Math::Point(0.0, +0.01)));
+        EMIT_EVENT(new Event::PlayerMovement(Math::Point(0.0, 0.0, +0.01)));
     }
     if(keyDown[SDLK_DOWN]) {
-        EMIT_EVENT(new Event::PlayerMovement(Math::Point(0.0, -0.01)));
+        EMIT_EVENT(new Event::PlayerMovement(Math::Point(0.0, 0.0, -0.01)));
+    }
+    if(keyDown[SDLK_SPACE]) {
+        EMIT_EVENT(new Event::PlayerMovement(Math::Point(0.0, +0.01)));
     }
 }
 
