@@ -16,6 +16,7 @@ using namespace std;
 #define SHADER_NORMALMAP_UNIFORM_NAME "normalMap"
 #define SHADER_HASTEXTURE_UNIFORM_NAME "hasTexture"
 #define SHADER_NUMLIGHTS_UNIFORM_NAME "numLights"
+#define RENDERER_NO_SHADER_NAME "none"
 
 namespace Project {
 namespace Render {
@@ -30,10 +31,15 @@ private:
 	static const int colorMapTextureNum = 0;
 	static const GLenum normalMapTexture = GL_TEXTURE1;
 	static const int normalMapTextureNum = 1;
+	static const short GRAPHICS_HIGH = 2;
+	static const short GRAPHICS_MED = 1;
+	static const short GRAPHICS_LOW = 0;
+	static const int noShaderIndex = 5000;
 	LightManager* lightManager;
+	short graphicsQuality;
 public:
 
-	RenderManager();
+	RenderManager(const char* config_file_name = "");
 	~RenderManager();
 
 	/** Set the render state to the properties of @a renderable

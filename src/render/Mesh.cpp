@@ -47,7 +47,7 @@ namespace Render {
 			}
 		}
 
-		triangleTree = new BSPTree3D(bounding_box, BSPTree3D::MIN_OVERLAP, 8);
+		triangleTree = new BSPTree3D(bounding_box, BSPTree3D::LARGEST_AXIS, 8);
 		triangleTree->add(tri_obj);
 		LOG(OPENGL, "Generated BSP Tree with " << triangles.size() << " objects with height " << triangleTree->getHeight());
 

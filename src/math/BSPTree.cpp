@@ -137,15 +137,15 @@ void BSPTree::appendQuery(vector<ObjectSpatial*>* result_list, const BoundingObj
 
 			const BoundingObject& child_bound = child[i]->getBoundingObject();
 			if (!child_bound.is2D()) {
-				inside = ((BoundingObject3D&)child_bound).isInside(bounding_object);
-				if (!inside) {
-					intersects = ((BoundingObject3D&)child_bound).intersects(bounding_object);
+				intersects = ((BoundingObject3D&)child_bound).intersects(bounding_object);
+				if (intersects) {
+					inside = ((BoundingObject3D&)child_bound).isInside(bounding_object);
 				}
 			}
 			else {
-				inside = ((BoundingObject2D&)child_bound).isInside(bounding_object);
-				if (!inside) {
-					intersects = ((BoundingObject2D&)child_bound).intersects(bounding_object);
+				intersects = ((BoundingObject2D&)child_bound).intersects(bounding_object);
+				if (intersects) {
+					inside = ((BoundingObject2D&)child_bound).isInside(bounding_object);
 				}
 			}
 

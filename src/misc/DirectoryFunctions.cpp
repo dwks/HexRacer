@@ -1,5 +1,6 @@
 #include "DirectoryFunctions.h"
 #include "math/Values.h"
+#include <fstream>
 using namespace Project;
 using namespace Math;
 using namespace std;
@@ -19,6 +20,13 @@ namespace Misc {
 	string DirectoryFunctions::extractDirectory(string str) {
 		return (str.substr(0,
 			maximum<std::string::size_type>(str.find_last_of('/')+1, 0)));
+	}
+
+	bool DirectoryFunctions::fileExists(const char *name) {
+		ifstream file(name);
+		bool exists = (bool)file;
+		file.close();
+		return exists;
 	}
 
 }  // namespace Misc

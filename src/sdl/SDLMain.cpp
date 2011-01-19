@@ -27,19 +27,19 @@ namespace Project {
 namespace SDL {
 
 void SDLMain::CameraObserver::observe(Event::CameraMovement *event) {
-    trackball->setMouseStartAt(Math::Point(0.0, 0.0));
+    //trackball->setMouseStartAt(Math::Point(0.0, 0.0));
     
     double x = event->getMovement().getX();
     double y = event->getMovement().getY();
     
-    Math::Point translation = camera->getLookDirection()*(-y * 0.25f)
+    Math::Point translation = camera->getLookDirection()*(y * 0.25f)
         + camera->getRightDirection() * (x * 0.25f);
     
     camera->translate(translation);
     
     LOG(SDL, "Move camera by " << translation);
     
-    camera->setLookDirection(trackball->getSpherePoint());
+    //camera->setLookDirection(trackball->getSpherePoint());
     
     //trackball->setMouseCurrentAt(translation);
 }
@@ -106,13 +106,16 @@ void SDLMain::run() {
 	glewInit();
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_RESCALE_NORMAL);
-	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	quadric = gluNewQuadric();
 
 	//Instantiate the rendering objects
 	meshLoader = new Render::MeshLoader();
-	renderer = new Render::RenderManager();
+	renderer = new Render::RenderManager("renderconfig.txt");
 	lightManager = renderer->getLightManager();
 	rootRenderable = new Render::RenderList();
 
@@ -301,12 +304,20 @@ void SDLMain::render() {
 	glEnable(GL_TEXTURE_2D);
 
 	glPushMatrix();
+
+	playerManager->render(renderer);
     
+	//glEnable(GL_BLEND);
+	//glDepthMask(GL_FALSE);
+	
 	//Render the scene
 	rootRenderable->render(renderer);
+
+	//glDisable(GL_BLEND);
+	//glDepthMask(GL_TRUE);
     
     // Render players
-    playerManager->render(renderer);
+
     
 	glPopMatrix();
     

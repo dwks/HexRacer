@@ -61,7 +61,8 @@ public:
 	*/
 	static bool frontOfPlane(Point plane_point, Point plane_normal, Point point);
 
-	/** Computes the normal of a triangle represented by three points in clockwise order
+	/** Computes the normal of a triangle represented by three points in counter-clockwise order
+		as seen facing the front face
 	*/
 	static Point triangleNormal(Point tri_a, Point tri_b, Point tri_c);
 	

@@ -12,6 +12,8 @@ public:
 
 	static string extractFilename(string str);
 	static string extractDirectory(string str);
+	static bool fileExists(const char *name);
+
 };
 
 }  // namespace Misc
