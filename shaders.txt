@@ -1,2 +1,3 @@
-genericShader shaders/genericShader.frag shaders/genericShader.vert
-playerGlow shaders/playerGlow.frag shaders/playerGlow.vert
+high genericShader shaders/genericShaderHigh.frag shaders/genericShaderHigh.vert
+med genericShader shaders/genericShaderMed.frag shaders/genericShaderMed.vert
+all playerGlow shaders/playerGlow.frag shaders/playerGlow.vert

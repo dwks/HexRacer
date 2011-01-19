@@ -41,3 +41,6 @@ Makefile
 
 # Objects and meshes
 /models
+
+# System Specific Config Files
+renderconfig.txt

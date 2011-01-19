@@ -14,7 +14,7 @@ using namespace std;
 namespace Project {
 namespace Render {
 
-	RenderManager::RenderManager() {
+	RenderManager::RenderManager(const char* config_file_name) {
 
 		paramSetter = ShaderParamSetter(this);
 		numMaterialOverrides = 0;
@@ -23,17 +23,36 @@ namespace Render {
 
 		enabledShaderIndex =-1;
 
+		graphicsQuality = 2;
+
 		lightManager = new LightManager();
 
 		LOG(OPENGL, "Renderer Initialized.");
-		LOG(OPENGL, "OpenGL System Information:");
+		LOG(OPENGL, "System Video Capabilities:");
 		GLint value;
 		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &value);
 		LOG(OPENGL, "	Max texture image units: " << value);
-		glGetIntegerv(GL_MAX_TEXTURE_COORDS, &value);
-		LOG(OPENGL, "	Max texture coords: " << value);
+		glGetIntegerv(GL_MAX_LIGHTS, &value);
+		LOG(OPENGL, "	Max lights: " << value);
 		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
 		LOG(OPENGL, "	Max texture size: " << value);
+		glGetIntegerv(GL_MAX_VARYING_FLOATS, &value);
+		LOG(OPENGL, "	Max varying floats: " << value);
+
+		ifstream in_file(config_file_name);
+		if ((bool)in_file) {
+			LOG(OPENGL, "Loading Render Config File: " << config_file_name);
+			while (!in_file.eof()) {
+				string var_name;
+				in_file >> var_name;
+				if (var_name == "graphicsQuality") {
+					in_file.ignore(100, '=');
+					in_file >> graphicsQuality;
+					LOG(OPENGL, "	Setting Graphics Quality to " << graphicsQuality);
+				}
+			}
+		}
+		in_file.close();
 
 	}
 
@@ -81,9 +100,9 @@ namespace Render {
 
 		if (!properties->hasShader() && properties->wantsShader()) {
 			int wanted_shader_index = getShaderIndexByName(properties->getWantsShaderName());
-			if (wanted_shader_index >= 0) {
-				properties->setShaderIndex(wanted_shader_index);
-			}
+			if (wanted_shader_index < 0)
+				wanted_shader_index = noShaderIndex;
+			properties->setShaderIndex(wanted_shader_index);
 		}
 
 		if (properties->hasShaderParams()) {
@@ -223,18 +242,26 @@ namespace Render {
 	void RenderManager::loadShadersFile(string filename) {
 
 		string directory = DirectoryFunctions::extractDirectory(filename);
+		LOG(OPENGL, "Loading Shader File " << filename);
 
 		ifstream in_file;
 		in_file.open(filename.c_str());
 		while (!in_file.eof()) {
-			string shader_name;
-			in_file >> shader_name;
-			if (shader_name.length() > 0) {
-				string frag_file;
-				string vert_file;
-				in_file >> frag_file;
-				in_file >> vert_file;
-				loadShader(shader_name, string(directory).append(frag_file), string(directory).append(vert_file));
+			string shader_type;
+			in_file >> shader_type;
+			if (shader_type == "all"
+				|| (shader_type == "high" && graphicsQuality >= GRAPHICS_HIGH)
+				|| (shader_type == "med" && graphicsQuality == GRAPHICS_MED)
+				|| (shader_type == "low" && graphicsQuality <= GRAPHICS_LOW)) {
+				string shader_name;
+				in_file >> shader_name;
+				if (shader_name.length() > 0) {
+					string frag_file;
+					string vert_file;
+					in_file >> frag_file;
+					in_file >> vert_file;
+					loadShader(shader_name, string(directory).append(frag_file), string(directory).append(vert_file));
+				}
 			}
 		}
 		in_file.close();
@@ -259,6 +286,8 @@ namespace Render {
 				attributes.push_back(ShaderAttributeLocation("bitangent", loc));
 
 			LOG(OPENGL, "Shader loaded: " << name);
+			LOG(OPENGL, "	Fragment Shader: " << fragment_file);
+			LOG(OPENGL, "	Vertex Shader: " << vertex_file);
 			shaderAttributeLocation.push_back(attributes);
 		}
 		else {
@@ -302,6 +331,9 @@ namespace Render {
 	}
 
 	int RenderManager::getShaderIndexByName(string name) {
+
+		if (name == RENDERER_NO_SHADER_NAME)
+			return noShaderIndex;
 
 		for (unsigned int i = 0; i < shaderName.size(); i++) {
 			if (shaderName[i] == name)

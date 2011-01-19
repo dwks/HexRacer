@@ -31,6 +31,11 @@ void main() {
 	vec4 specular_color = vec4(0.0, 0.0, 0.0, 1.0);
 	vec4 ambient_color = vec4(0.0, 0.0, 0.0, 1.0);
 	
+	float specular_factor = 1.0;
+	if (hasTexture[1] == 1) {
+		specular_factor = texture2D(normalMap, gl_TexCoord[0].st).w;
+	}
+	
 	//Lighting calculations----------------------------------------------------------------------------------------
 	
 	for (int i = 0; i < numLights; i++) {
@@ -49,13 +54,11 @@ void main() {
 			float kspec =-dot(reflection,light);
 			kspec = max(kspec, 0.0);
 			kspec = pow(kspec, gl_FrontMaterial.shininess);
-			if (hasTexture[1] == 1) {
-				kspec *= texture2D(normalMap, gl_TexCoord[0].st).w;
-			}
+			kspec *= specular_factor;
 			
 			diffuse_color += gl_LightSource[i].diffuse*kdiff*attenuation;
 			specular_color += gl_LightSource[i].specular*kspec*attenuation;
-			ambient_color = gl_LightSource[i].ambient*attenuation;
+			ambient_color += gl_LightSource[i].ambient*attenuation;
 		}
 		
 	}
@@ -69,15 +72,19 @@ void main() {
 		diffuse_base = texture2D(colorMap, gl_TexCoord[0].st);
 	else
 		diffuse_base = gl_FrontMaterial.diffuse;
-		
+	
 	diffuse_color *= diffuse_base;
 	specular_color *= gl_FrontMaterial.specular;
 	ambient_color *= diffuse_base;
 	
+	vec4 ambient_base;
+	ambient_base = gl_FrontMaterial.ambient;
 	
 	gl_FragColor = diffuse_color + specular_color + ambient_color;
-	gl_FragColor.x = max(gl_FragColor.x, gl_FrontMaterial.ambient.x);
-	gl_FragColor.y = max(gl_FragColor.y, gl_FrontMaterial.ambient.y);
-	gl_FragColor.z = max(gl_FragColor.z, gl_FrontMaterial.ambient.z);
-	
+	if (gl_FragColor.x < ambient_base.x)
+		gl_FragColor.x += (1.0-gl_FragColor.x)*ambient_base.x;
+	if (gl_FragColor.y < ambient_base.y)
+		gl_FragColor.y += (1.0-gl_FragColor.y)*ambient_base.y;
+	if (gl_FragColor.z < ambient_base.z)
+		gl_FragColor.z += (1.0-gl_FragColor.z)*ambient_base.z;
 }
