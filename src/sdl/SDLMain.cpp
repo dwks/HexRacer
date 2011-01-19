@@ -231,7 +231,7 @@ void SDLMain::run() {
             if(timeTakenSoFar < 10) {
                 SDL_Delay(10 - timeTakenSoFar);
             }
-            lastTime = thisTime;
+            while(lastTime < thisTime) lastTime += 10;
         }
     }
     
