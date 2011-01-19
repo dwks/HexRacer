@@ -34,11 +34,6 @@ void main() {
 	vec4 specular_color = vec4(0.0, 0.0, 0.0, 0.0);
 	vec4 ambient_color = ambientColor;
 	
-	float specular_factor = 1.0;
-	if (hasTexture[1] == 1) {
-		specular_factor = texture2D(normalMap, gl_TexCoord[0].st).w;
-	}
-	
 	//Specular calculations----------------------------------------------------------------------------------------
 	
 	if (numLights > 0) {
@@ -54,7 +49,7 @@ void main() {
 			kspec = max(kspec, 0.0);
 			kspec = pow(kspec, gl_FrontMaterial.shininess);
 			
-			specular_color += gl_LightSource[0].specular*kspec*attenuation*specular_factor;
+			specular_color += gl_LightSource[0].specular*kspec*attenuation;
 		}
 	}
 	
@@ -71,7 +66,7 @@ void main() {
 			kspec = max(kspec, 0.0);
 			kspec = pow(kspec, gl_FrontMaterial.shininess);
 			
-			specular_color += gl_LightSource[1].specular*kspec*attenuation*specular_factor;
+			specular_color += gl_LightSource[1].specular*kspec*attenuation;
 		}
 	}
 
@@ -89,6 +84,10 @@ void main() {
 	diffuse_color *= diffuse_base;
 	specular_color *= gl_FrontMaterial.specular;
 	ambient_color *= diffuse_base;
+	
+	if (hasTexture[1] == 1) {
+		specular_color *= texture2D(normalMap, gl_TexCoord[0].st).w;
+	}
 	
 	vec4 ambient_base;
 	ambient_base = gl_FrontMaterial.ambient;

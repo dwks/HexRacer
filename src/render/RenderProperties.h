@@ -20,12 +20,20 @@ private:
 
 	bool transformationSet;
 	Project::Math::Matrix transformation;
+
 	Material* material;
 	bool materialOverrideChildren;
+
 	Texture* texture;
 	bool textureOverrideChildren;
+
 	int shader;
 	bool shaderOverrideChildren;
+
+	bool colorSet;
+	Project::OpenGL::Color color;
+	bool colorOverrideChildren;
+
 	std::string wantsShaderName;
 	std::vector<ShaderParameter*> shaderParams;
 
@@ -33,13 +41,23 @@ public:
 
 	RenderProperties();
 
-	bool hasTransformation() const { return (transformationSet); }
+	bool hasTransformation() const { return transformationSet; }
 	void clearTransformation() { transformationSet = false; }
 	void setTransformation(Project::Math::Matrix _transform) {
 		transformation = _transform;
 		transformationSet = true;
 	}
 	Project::Math::Matrix getTransformation() const { return transformation; }
+
+	bool hasColor() const { return colorSet; }
+	void clearColor() { colorSet = false; }
+	void setColor(Project::OpenGL::Color _color) {
+		color = _color;
+		colorSet = true;
+	}
+	Project::OpenGL::Color getColor() const { return color; }
+	bool getColorOverride() const { return colorOverrideChildren; }
+	void setColorOverride(bool override_children) { colorOverrideChildren = override_children; }
 
 	bool hasMaterial() const { return (material != NULL); }
 	void clearMaterial() { material = NULL; }
