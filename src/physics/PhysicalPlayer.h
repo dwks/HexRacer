@@ -8,7 +8,7 @@ namespace Physics {
 
 class PhysicalPlayer : public PhysicalObject {
 public:
-    PhysicalPlayer(btRigidBody* pRigidBody);
+    PhysicalPlayer(Math::Point position, float mass);
     virtual Math::Point getOrigin();
     
 protected:

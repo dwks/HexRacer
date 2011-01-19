@@ -24,12 +24,9 @@ public:
   void stepWorld(float microseconds);
   void setGravity(float xAccel, float yAccel, float zAccel);
   
-  void createPlayer(int playerID);
+  //void createPlayer(int playerID);
   
-  btRigidBody* createRigidStaticPlane(Math::Point planeNormal, Math::Point origin);
-  btRigidBody* createRigidSphere(float radius, Math::Point origin, float mass);
-  btRigidBody* createRigidBox(float width, float height, float depth, Math::Point origin, float mass);
-  void createTestScene();
+  //void createTestScene();
   
   void render();
 private:

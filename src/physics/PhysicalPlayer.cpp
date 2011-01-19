@@ -1,11 +1,13 @@
 #include "PhysicalPlayer.h"
 #include "Converter.h"
+#include "PhysicsFactory.h"
 
 namespace Project {
 namespace Physics {
 
-PhysicalPlayer::PhysicalPlayer(btRigidBody* pRigidBody){
-    primaryRigidBody=pRigidBody;
+PhysicalPlayer::PhysicalPlayer(Math::Point position, float mass){
+    primaryRigidBody = Physics::PhysicsFactory::createRigidBox(2.0,2.0,2.0,position,mass);
+    
 }
 
 Math::Point PhysicalPlayer::getOrigin() {
@@ -15,6 +17,5 @@ Math::Point PhysicalPlayer::getOrigin() {
     return Converter::toPoint(trans.getOrigin());
 }
 
-    
 }  // namespace Physics
 }  // namespace Project

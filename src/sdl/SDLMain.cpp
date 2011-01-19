@@ -90,9 +90,9 @@ void SDLMain::run() {
 	//Load the test shader
 	renderer->loadShader("testShader", "test.frag", "test.vert");
 	//Load the model
-	meshLoader->loadOBJ("glassdagger", "glassdagger.obj");
-	testMesh = meshLoader->getModelByName("glassdagger");
-	testMesh->getRenderProperties()->setWantsShaderName("testShader");
+	//meshLoader->loadOBJ("glassdagger", "glassdagger.obj");
+	//testMesh = meshLoader->getModelByName("glassdagger");
+	//testMesh->getRenderProperties()->setWantsShaderName("testShader");
 
     inputManager = new InputManager();
     
@@ -106,7 +106,6 @@ void SDLMain::run() {
     }
     
     physicsWorld = new Physics::PhysicsWorld();
-    physicsWorld->createTestScene();
     
     bool quit = false;
     Uint32 lastTime = 0;

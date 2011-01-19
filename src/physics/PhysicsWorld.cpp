@@ -24,13 +24,13 @@ void PhysicsWorld::stepWorld(float microseconds) {
     }
 }
 
-void PhysicsWorld::createTestScene(){
+//void PhysicsWorld::createTestScene(){
     //The "Plane"
-    createRigidStaticPlane(Math::Point(0.0,1.0,0.0), Math::Point(0.0,-2.0,0.0));
+    //createRigidStaticPlane(Math::Point(0.0,1.0,0.0), Math::Point(0.0,-2.0,0.0));
     
     //A player
-    createPlayer(0);
-}
+    //createPlayer(0);
+//}
 
 void PhysicsWorld::setupPhysicsWorld() {
     LOG2 ( PHYSICS, INIT, "Physics Setup Initialized..." );
@@ -55,69 +55,12 @@ void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
     dynamicsWorld->setGravity ( btVector3 ( xAccel,yAccel,zAccel ) );
 }
 
-void PhysicsWorld::createPlayer(int playerID){
-    LOG2(PHYSICS, CREATE, "Creating Player. ID: " << playerID);
-    Physics::PhysicalPlayer* player = new Physics::PhysicalPlayer(PhysicsWorld::createRigidBox(2.0,2.0,2.0,Math::Point(0.0,0.0,0.0),2.0));
+//void PhysicsWorld::createPlayer(int playerID){
+    //LOG2(PHYSICS, CREATE, "Creating Player. ID: " << playerID);
+    //Physics::PhysicalPlayer* player = new Physics::PhysicalPlayer(PhysicsWorld::createRigidBox(2.0,2.0,2.0,Math::Point(0.0,0.0,0.0),2.0));
     
-    playerEntities.push_back(player);
-}
-
-
-btRigidBody* PhysicsWorld::createRigidStaticPlane(Math::Point planeNormal, Math::Point origin){
-    LOG2(PHYSICS, CREATE,
-        "Creating Static Plane: Normal: " << planeNormal
-        << " Location: " << origin.getX() << " " << origin.getY()<< " " << origin.getZ());
-    btCollisionShape* groundShape = new btStaticPlaneShape(Converter::toVector(planeNormal), 1);
-
-    btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(origin.getX(),origin.getY(),origin.getZ())));
-    btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
-    btRigidBody* rigidBody = new btRigidBody(groundRigidBodyCI);
-    
-    collisionBodies.push_back(rigidBody);
-    dynamicsWorld->addRigidBody(rigidBody);
-    
-    return rigidBody;
-}
-
-btRigidBody* PhysicsWorld::createRigidSphere(float radius, Math::Point origin, float mass){
-    LOG2(PHYSICS, CREATE, "Creating Sphere: Radius: " << radius << " Origin: " << origin.getX() << ", " << origin.getY() << ", " << origin.getZ() << " Mass: " << mass);
-    btCollisionShape* sphereShape = new btSphereShape ( radius );
-    
-    btDefaultMotionState* fallMotionState
-        = new btDefaultMotionState(
-            btTransform(btQuaternion(0,0,0,1),
-                Converter::toVector(origin)));
-    btVector3 fallInertia(0,0,0);
-    sphereShape->calculateLocalInertia(mass,fallInertia);
-    btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass,fallMotionState,sphereShape,fallInertia);
-    btRigidBody* rigidBody = new btRigidBody(fallRigidBodyCI);
-    
-    collisionBodies.push_back(rigidBody);
-    dynamicsWorld->addRigidBody(rigidBody);
-    
-    return rigidBody;
-}
-
-btRigidBody* PhysicsWorld::createRigidBox(float width, float height, float depth, Math::Point origin, float mass){
-    LOG2(PHYSICS, CREATE,
-        "Creating BoxShape: W: " << width << " H: " << height << " D: " << depth
-        << " Origin: " << origin << " Mass: " << mass);
-    btCollisionShape* boxShape = new btBoxShape ( btVector3 (width,height,depth) );
-    
-    btDefaultMotionState* fallMotionState
-        = new btDefaultMotionState(
-            btTransform(btQuaternion(0,0,0,1),
-                Converter::toVector(origin)));
-    btVector3 fallInertia(0,0,0);
-    boxShape->calculateLocalInertia(mass,fallInertia);
-    btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass,fallMotionState,boxShape,fallInertia);
-    btRigidBody* rigidBody = new btRigidBody(fallRigidBodyCI);
-    
-    collisionBodies.push_back(rigidBody);
-    dynamicsWorld->addRigidBody(rigidBody);
-    
-    return rigidBody;
-}
+    //playerEntities.push_back(player);
+//}
 
 void PhysicsWorld::render() {
     //collisionBodies[1]->applyCentralForce(btVector3(2.0f, 0.0f, 0.0f));
