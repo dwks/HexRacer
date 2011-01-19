@@ -27,19 +27,19 @@ namespace Project {
 namespace SDL {
 
 void SDLMain::CameraObserver::observe(Event::CameraMovement *event) {
-    trackball->setMouseStartAt(Math::Point(0.0, 0.0));
+    //trackball->setMouseStartAt(Math::Point(0.0, 0.0));
     
     double x = event->getMovement().getX();
     double y = event->getMovement().getY();
     
-    Math::Point translation = camera->getLookDirection()*(-y * 0.25f)
+    Math::Point translation = camera->getLookDirection()*(y * 0.25f)
         + camera->getRightDirection() * (x * 0.25f);
     
     camera->translate(translation);
     
     LOG(SDL, "Move camera by " << translation);
     
-    camera->setLookDirection(trackball->getSpherePoint());
+    //camera->setLookDirection(trackball->getSpherePoint());
     
     //trackball->setMouseCurrentAt(translation);
 }

@@ -20,23 +20,15 @@ Camera::~Camera(void)
 {
 }
 
-void Camera::setPosition(Point pos, bool keep_focus) {
+void Camera::setPosition(Point pos) {
 	cameraPosition = pos;
-	if (keep_focus)
-		updateDirections();
-	else {
-		cameraLookPosition = cameraPosition+cameraLookDirection;
-		updateFrustrum();
-	}
+	cameraLookPosition = cameraPosition+cameraLookDirection;
+	updateFrustrum();
 		
 }
 
-void Camera::translate(Point translation, bool keep_focus) {
-	cameraPosition += translation;
-	if (keep_focus)
-		updateDirections();
-	else
-		setPosition(cameraLookPosition + translation);
+void Camera::translate(Point translation) {
+	setPosition(cameraPosition + translation);
 }
 
 void Camera::setLookPosition(Point pos) {
@@ -54,9 +46,10 @@ void Camera::setUpDirection(Point dir) {
 }
 
 void Camera::updateDirections() {
+
 	cameraLookDirection = (cameraLookPosition-cameraPosition).normalized();
-	cameraRightDirection = cameraUpDirection.crossProduct(cameraLookDirection).normalized();
-	actualCameraUpDirection = cameraLookDirection.crossProduct(cameraRightDirection);
+	cameraRightDirection = cameraLookDirection.crossProduct(cameraUpDirection).normalized();
+	actualCameraUpDirection = cameraRightDirection.crossProduct(cameraLookDirection);
 
 	//Update the plane normals
 	float angle = fieldOfView/360.0f*PI;
@@ -69,10 +62,10 @@ void Camera::updateDirections() {
 	Point bottom_left = center-(cameraRightDirection*half_plane_width)-(actualCameraUpDirection*half_plane_height);
 	Point bottom_right = center+(cameraRightDirection*half_plane_width)-(actualCameraUpDirection*half_plane_height);
 
-	topPlaneNormal = Geometry::triangleNormal(cameraPosition, top_right, top_left);
-	bottomPlaneNormal = Geometry::triangleNormal(cameraPosition, bottom_left, bottom_right);
-	leftPlaneNormal = Geometry::triangleNormal(cameraPosition, top_left, bottom_left);
-	rightPlaneNormal = Geometry::triangleNormal(cameraPosition, bottom_right, top_right);
+	leftPlaneNormal = Geometry::triangleNormal(cameraPosition, bottom_left, top_left);
+	rightPlaneNormal = Geometry::triangleNormal(cameraPosition, top_right, bottom_right);
+	topPlaneNormal = Geometry::triangleNormal(cameraPosition, top_left, top_right);
+	bottomPlaneNormal = Geometry::triangleNormal(cameraPosition, bottom_right, bottom_left);
 
 	updateFrustrum();
 }
@@ -114,11 +107,11 @@ void Camera::glProjection() {
 
 void Camera::updateFrustrum() {
 	frustrum->setPlaneOrigin(0, cameraPosition);
-	frustrum->setPlaneNormal(0, topPlaneNormal);
+	frustrum->setPlaneNormal(0, rightPlaneNormal);
 	frustrum->setPlaneOrigin(1, cameraPosition);
-	frustrum->setPlaneNormal(1, rightPlaneNormal);
+	frustrum->setPlaneNormal(1, leftPlaneNormal);
 	frustrum->setPlaneOrigin(2, cameraPosition);
-	frustrum->setPlaneNormal(2, bottomPlaneNormal);
+	frustrum->setPlaneNormal(2, topPlaneNormal);
 	frustrum->setPlaneOrigin(3, cameraPosition);
-	frustrum->setPlaneNormal(3, leftPlaneNormal);
+	frustrum->setPlaneNormal(3, bottomPlaneNormal);
 }

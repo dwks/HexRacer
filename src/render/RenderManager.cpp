@@ -2,6 +2,7 @@
 #include "RenderableObject.h"
 #include "opengl/MathWrapper.h"
 #include "misc/DirectoryFunctions.h"
+#include "opengl/OpenGl.h"
 #include "log/Logger.h"
 #include <fstream>
 using namespace Project;
@@ -23,6 +24,16 @@ namespace Render {
 		enabledShaderIndex =-1;
 
 		lightManager = new LightManager();
+
+		LOG(OPENGL, "Renderer Initialized.");
+		LOG(OPENGL, "OpenGL System Information:");
+		GLint value;
+		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &value);
+		LOG(OPENGL, "	Max texture image units: " << value);
+		glGetIntegerv(GL_MAX_TEXTURE_COORDS, &value);
+		LOG(OPENGL, "	Max texture coords: " << value);
+		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
+		LOG(OPENGL, "	Max texture size: " << value);
 
 	}
 

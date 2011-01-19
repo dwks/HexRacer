@@ -41,8 +41,8 @@ public:
 	Camera(void);
 	~Camera(void);
 
-	void setPosition(Point pos, bool keep_focus = false);
-	void translate(Point translation, bool keep_focus = false);
+	void setPosition(Point pos);
+	void translate(Point translation);
 	void setLookPosition(Point pos);
 	void setLookDirection(Point dir);
 	void setUpDirection(Point dir);
@@ -54,7 +54,7 @@ public:
 	Point getPosition() { return cameraPosition; }
 	Point getLookPosition() { return cameraLookPosition; }
 	Point getLookDirection() { return cameraLookDirection; }
-	Point getUpDirection() { return cameraUpDirection; }
+	Point getUpDirection() { return actualCameraUpDirection; }
 	Point getRightDirection() { return cameraRightDirection; }
 	double getAspect() { return aspect; }
 	double getFieldOfViewDegrees() { return fieldOfView; }

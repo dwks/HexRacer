@@ -52,7 +52,7 @@ void InputManager::advanceToNextFrame() {
     
     if(keyDown[SDLK_w]) {
         EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
-            * Math::Point(0.0, -1.0)));
+            * Math::Point(0.0, 1.0)));
     }
     if(keyDown[SDLK_a]) {
         EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
@@ -60,7 +60,7 @@ void InputManager::advanceToNextFrame() {
     }
     if(keyDown[SDLK_s]) {
         EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
-            * Math::Point(0.0, +1.0)));
+            * Math::Point(0.0, -1.0)));
     }
     if(keyDown[SDLK_d]) {
         EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
