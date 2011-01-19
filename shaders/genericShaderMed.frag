@@ -31,7 +31,7 @@ void main() {
 	vec3 reflection = normalize(reflect(view, normal));
 	
 	vec4 diffuse_color = diffuseColor;
-	vec4 specular_color = vec4(0.0, 0.0, 0.0, 1.0);
+	vec4 specular_color = vec4(0.0, 0.0, 0.0, 0.0);
 	vec4 ambient_color = ambientColor;
 	
 	float specular_factor = 1.0;

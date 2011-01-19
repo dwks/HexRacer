@@ -28,7 +28,7 @@ void main()
 	eyeBitangent = normalize(gl_NormalMatrix * bitangent);
 	
 	//Calculate Diffuse and Ambient Lighting-------------------------------------------------------===
-	diffuseColor = vec4(0.0, 0.0, 0.0, 0.0);
+	diffuseColor = vec4(0.0, 0.0, 0.0, 1.0);
 	ambientColor = vec4(0.0, 0.0, 0.0, 0.0);
 	
 	if (numLights > 0) {

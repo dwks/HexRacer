@@ -106,7 +106,10 @@ void SDLMain::run() {
 	glewInit();
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_RESCALE_NORMAL);
-	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	quadric = gluNewQuadric();
 
@@ -301,12 +304,20 @@ void SDLMain::render() {
 	glEnable(GL_TEXTURE_2D);
 
 	glPushMatrix();
+
+	playerManager->render(renderer);
     
+	//glEnable(GL_BLEND);
+	//glDepthMask(GL_FALSE);
+	
 	//Render the scene
 	rootRenderable->render(renderer);
+
+	//glDisable(GL_BLEND);
+	//glDepthMask(GL_TRUE);
     
     // Render players
-    playerManager->render(renderer);
+
     
 	glPopMatrix();
     
