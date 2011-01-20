@@ -71,37 +71,20 @@ void PlayerManager::render(Render::RenderManager *renderManager) {
             renderable->render(renderManager);
         }
     }
-    
-    /*static struct {
-        float r, g, b;
-    } colours[] = {
-        {1.0f, 0.0f, 0.0f},
-        {0.0f, 1.0f, 0.0f},
-        {0.0f, 0.0f, 1.0f}
-    };
-    
+}
+
+void PlayerManager::usePlayerList(Object::PlayerList *playerList) {
+#if 1
+    delete this->playerList;
+    this->playerList = playerList;
+#else
     Object::PlayerList::IteratorType it = playerList->getIterator();
     while(it.hasNext()) {
         Object::Player *player = it.next();
         
-        int c = player->getID() % (sizeof(colours) / sizeof(*colours));
-        glColor3f(colours[c].r, colours[c].g, colours[c].b);
-        
-        //LOG(GLOBAL, "Player " << c << " at " << player->getPosition());
-        
-        glPointSize(10.0f);
-        glBegin(GL_POINTS);
-        OpenGL::MathWrapper::glVertex(player->getPosition());
-        glEnd();
-        glPointSize(1.0f);
+        //player->getPhysicalObject()->
     }
-    
-    glColor3f(1.0f, 1.0f, 1.0f);*/
-}
-
-void PlayerManager::usePlayerList(Object::PlayerList *playerList) {
-    delete this->playerList;
-    this->playerList = playerList;
+#endif
 }
 
 Object::Player *PlayerManager::getPlayer() {

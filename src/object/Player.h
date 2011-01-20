@@ -32,6 +32,8 @@ public:
     Player(int id);
     virtual ~Player();
     
+    void setPhysicalObject(Physics::PhysicalPlayer *physical)
+        { this->physical = physical; }
     virtual Physics::PhysicalObject *getPhysicalObject();
     
     void setRenderableObject(Render::RenderableObject *renderable)
