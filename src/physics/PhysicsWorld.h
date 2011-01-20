@@ -7,6 +7,7 @@
 #include "math/BoundingBox3D.h"
 #include "log/Logger.h"
 #include "PhysicalPlayer.h"
+#include "DebugDrawer.h"
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
@@ -40,6 +41,8 @@ private:
   btDefaultCollisionConfiguration *collisionConfiguration;
   btConstraintSolver *constraintSolver;
   btDiscreteDynamicsWorld *dynamicsWorld;
+  
+  DebugDrawer debug;
   
   std::vector<btRigidBody*> collisionBodies;
   std::vector<PhysicalPlayer*> playerEntities;

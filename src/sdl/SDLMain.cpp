@@ -14,6 +14,9 @@
 #include "event/ObserverList.h"
 #include "event/PlayerMovement.h"
 
+#include "physics/PhysicsFactory.h"
+#include "physics/PhysicsWorld.h"
+
 #include "math/BoundingBox3D.h"
 #include "opengl/GeometryDrawing.h"
 
@@ -125,7 +128,7 @@ void SDLMain::run() {
 	test_terrain->setCullingObject(camera->getFrustrum());
 	test_terrain->setCullingQueryType(Math::SpatialContainer::NEARBY);
 	rootRenderable->addRenderable(test_terrain);
-
+    
 	/*
 	rootRenderable->getRenderProperties()->setColor(OpenGL::Color::VIOLET);
 	rootRenderable->getRenderProperties()->setColorOverride(true);
@@ -163,6 +166,10 @@ void SDLMain::run() {
     }
     
     ADD_OBSERVER(new CameraObserver(simpleTrackball, camera));
+    
+    Physics::PhysicsWorld::getInstance()->registerRigidBody(
+        Physics::PhysicsFactory::createRigidTriMesh(
+            test_terrain->getTriangles()));
     
     LOG2(GLOBAL, PROGRESS, "Entering main game loop");
     

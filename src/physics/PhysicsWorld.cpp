@@ -72,6 +72,10 @@ void PhysicsWorld::setupPhysicsWorld() {
     dynamicsWorld = new btDiscreteDynamicsWorld ( collisionDispatcher,broadPhaseInterface,constraintSolver,collisionConfiguration );
     
     dynamicsWorld->setGravity ( btVector3 ( 0.0,-9.81,0.0 ) );
+    
+    debug.setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+    dynamicsWorld->setDebugDrawer(&debug);
+    
     LOG2 ( PHYSICS, INIT, "Physics Setup Completed!" );
 }
 
@@ -90,6 +94,8 @@ void PhysicsWorld::render() {
     }
     
     stepWorld(10 * 1000);  // step world by 10 ms
+    
+    dynamicsWorld->debugDrawWorld();
 }
 
 }  // namespace Physics
