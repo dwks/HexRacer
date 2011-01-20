@@ -118,7 +118,15 @@ void ServerMain::run() {
             delete packet;
         }
         
-        Misc::Sleeper::sleep(10 * 1000);
+        {
+            unsigned long currentTime = Misc::Sleeper::getTimeMilliseconds();
+            unsigned long elapsed = currentTime - lastTime;
+            if(elapsed < 10) {
+                Misc::Sleeper::sleep(10 - elapsed);
+            }
+            
+            while(lastTime < currentTime) lastTime += 10;
+        }
     }
 }
 

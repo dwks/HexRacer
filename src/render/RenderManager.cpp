@@ -2,7 +2,7 @@
 #include "RenderableObject.h"
 #include "opengl/MathWrapper.h"
 #include "misc/DirectoryFunctions.h"
-#include "opengl/OpenGl.h"
+#include "opengl/OpenGL.h"
 #include "log/Logger.h"
 #include "RenderSettings.h"
 #include <fstream>
