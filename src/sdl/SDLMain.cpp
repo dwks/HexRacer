@@ -24,7 +24,7 @@
 
 #include "SDL_image.h"
 
-#include "config.h"
+#include "settings/SettingsManager.h"
 
 namespace Project {
 namespace SDL {
@@ -82,10 +82,18 @@ void SDLMain::run() {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     
     SDL_WM_SetCaption("The Project", NULL);
-    SDL_SetVideoMode(WIDTH, HEIGHT, 0, SDL_INIT_FLAGS);
     
-    projector.setCurrentDimensions(Point2D(WIDTH, HEIGHT));
-
+    int width = GET_SETTING("display.width", 0);
+    int height = GET_SETTING("display.height", 0);
+    int flags = SDL_INIT_FLAGS;
+    if(GET_SETTING("display.fullscreen", 0)) flags |= SDL_FULLSCREEN;
+    
+    int bpp = GET_SETTING("display.bpp", 0);
+    
+    SDL_SetVideoMode(width, height, bpp, flags);
+    
+    projector.setCurrentDimensions(Point2D(width, height));
+    
 	//trackball = new OpenGL::Trackball();
 	simpleTrackball = new OpenGL::SimpleTrackball();
 
@@ -95,12 +103,12 @@ void SDLMain::run() {
 	camera->setPosition(Point(0.0f, 2.0f, -4.0f));
 	camera->setFarPlane(80.0f);
 	updateCamera();
-
-    resizeGL(WIDTH, HEIGHT);
+    
+    resizeGL(width, height);
     
     joystick = new JoystickManager();
     joystick->open();
-
+    
 	glewInit();
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_RESCALE_NORMAL);
@@ -108,23 +116,23 @@ void SDLMain::run() {
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-
+    
 	quadric = gluNewQuadric();
-
+    
 	//Instantiate the rendering objects
 	meshLoader = new Render::MeshLoader();
 	renderer = new Render::RenderManager("renderconfig.txt");
 	lightManager = renderer->getLightManager();
 	rootRenderable = new Render::RenderList();
-
+    
 	renderer->loadShadersFile("shaders.txt");
-
+    
 	//Load the model
 	meshLoader->loadOBJ("testTerrain", "models/testterrain.obj");
 	meshLoader->loadOBJ("playerCube", "models/playercube.obj");
 	//Add the test terrain
 	Render::MeshGroup* test_terrain = meshLoader->getModelByName("testTerrain");
-
+    
 	test_terrain->setCullingObject(camera->getFrustrum());
 	test_terrain->setCullingQueryType(Math::SpatialContainer::NEARBY);
 	rootRenderable->addRenderable(test_terrain);

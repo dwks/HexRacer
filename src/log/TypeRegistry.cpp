@@ -14,6 +14,7 @@ TypeRegistry::TypeRegistry() {
         registerType(Subsystem::GLOBAL, "ERROR", counter ++);
         registerType(Subsystem::GLOBAL, "WARNING", counter ++);
         registerType(Subsystem::GLOBAL, "PROGRESS", counter ++);
+        registerType(Subsystem::GLOBAL, "SETTING", counter ++);
     }
     
     // OPENGL log message types
