@@ -13,6 +13,7 @@ std::string Subsystem::getDescription() const {
     static const char *descriptions[] = {
         "GLOBAL",
         "OPENGL",
+        "PAINT",
         "SDL",
         "NETWORK",
         "PHYSICS",
