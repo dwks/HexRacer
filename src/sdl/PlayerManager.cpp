@@ -66,6 +66,8 @@ void PlayerManager::render(Render::RenderManager *renderManager) {
         if(renderable) {   // will always be true
             Math::Point origin = player->getPosition();
             Math::Matrix matrix = Math::Matrix::getTranslationMatrix(origin);
+			//btRigidBody* body = player->getPhysicalObject()->getPrimaryRigidBody();
+			//btQuaternion quat = body->getOrientation();
             
             renderable->getRenderProperties()->setTransformation(matrix);
             renderable->render(renderManager);

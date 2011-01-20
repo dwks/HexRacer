@@ -60,7 +60,7 @@ btRigidBody* PhysicsFactory::createRigidBox(float width, float height, float dep
 btRigidBody* PhysicsFactory::createRigidTriMesh(std::vector<Math::Point> tri_array){
     btTriangleMesh *mTriMesh = new btTriangleMesh();
 
-    for(u_int i=0;i<tri_array.size();i+=3) {
+    for(unsigned int i=0;i<tri_array.size();i+=3) {
         btVector3 v0(tri_array[i].getX(),tri_array[i].getY(),tri_array[i].getZ());
         btVector3 v1(tri_array[i+1].getX(),tri_array[i+1].getY(),tri_array[i+1].getZ());
         btVector3 v2(tri_array[i+2].getX(),tri_array[i+2].getY(),tri_array[i+2].getZ());
