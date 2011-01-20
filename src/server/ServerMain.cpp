@@ -112,7 +112,8 @@ void ServerMain::run() {
             }
             
             Event::UpdatePlayerList *update
-                = new Event::UpdatePlayerList(&playerList);
+                = new Event::UpdatePlayerList(
+                    Misc::Sleeper::getTimeMilliseconds(), &playerList);
             Network::Packet *packet = new Network::EventPacket(update);
             clients.sendPacket(packet);
             delete packet;

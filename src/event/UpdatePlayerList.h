@@ -16,14 +16,18 @@ private:
     template <typename Archive>
     void serialize(Archive &ar, const unsigned version) {
         ar & boost::serialization::base_object<EventBase>(*this);
+        ar & timestamp;
         ar & playerList;
     }
 private:
+    unsigned long timestamp;
     Object::PlayerList *playerList;
 public:
     UpdatePlayerList() {}
-    UpdatePlayerList(Object::PlayerList *playerList) : playerList(playerList) {}
+    UpdatePlayerList(unsigned long timestamp, Object::PlayerList *playerList)
+        : timestamp(timestamp), playerList(playerList) {}
     
+    unsigned long getTimestamp() const { return timestamp; }
     Object::PlayerList *getPlayerList() const { return playerList; }
     
     virtual EventType::type_t getType() const
