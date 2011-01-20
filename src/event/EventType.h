@@ -19,6 +19,7 @@ public:
         PLAYER_MOVEMENT,
         UPDATE_PLAYER_LIST,
         CAMERA_MOVEMENT,
+        SET_DEBUG_DRAWING,
         TYPES
     };
 };

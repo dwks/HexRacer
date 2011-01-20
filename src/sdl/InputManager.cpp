@@ -4,6 +4,7 @@
 #include "event/ObserverList.h"
 #include "event/PlayerMovement.h"
 #include "event/CameraMovement.h"
+#include "event/SetDebugDrawing.h"
 
 namespace Project {
 namespace SDL {
@@ -65,6 +66,14 @@ void InputManager::advanceToNextFrame() {
     if(keyDown[SDLK_d]) {
         EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
             * Math::Point(+1.0, 0.0)));
+    }
+    
+    if(keyDown[SDLK_RETURN]) {
+        keyDown[SDLK_RETURN] = false;
+        
+        static bool debug = false;
+        debug = !debug;
+        EMIT_EVENT(new Event::SetDebugDrawing(debug));
     }
 }
 

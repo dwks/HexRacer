@@ -9,6 +9,9 @@
 #include "PhysicalPlayer.h"
 #include "DebugDrawer.h"
 
+#include "event/TypedObserver.h"
+#include "event/SetDebugDrawing.h"
+
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
 
@@ -20,6 +23,14 @@ private:
   static PhysicsWorld *instance;
 public:
   static PhysicsWorld *getInstance() { return instance; }
+public:
+    class DebugDrawingObserver
+        : public Event::TypedObserver<Event::SetDebugDrawing> {
+    public:
+        virtual void observe(Event::SetDebugDrawing *event);
+    };
+    
+    friend class DebugDrawingObserver;
 public:
   PhysicsWorld();
   void setupPhysicsWorld();
@@ -36,6 +47,8 @@ public:
   
   void render();
 private:
+    void setDebug(bool on);
+private:
   btBroadphaseInterface *broadPhaseInterface;
   btCollisionDispatcher *collisionDispatcher;
   btDefaultCollisionConfiguration *collisionConfiguration;
@@ -43,6 +56,7 @@ private:
   btDiscreteDynamicsWorld *dynamicsWorld;
   
   DebugDrawer debug;
+  bool debugging;
   
   std::vector<btRigidBody*> collisionBodies;
   std::vector<PhysicalPlayer*> playerEntities;

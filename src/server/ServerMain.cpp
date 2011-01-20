@@ -99,9 +99,13 @@ void ServerMain::run() {
             }
         }
         
-        unsigned long thisTime = Misc::Sleeper::getTimeMilliseconds();
-        physicsWorld->stepWorld((thisTime - lastTime) * 1000);
-        lastTime = thisTime;
+        {
+            static unsigned long lastPhysicsTime
+                = Misc::Sleeper::getTimeMilliseconds();
+            unsigned long thisTime = Misc::Sleeper::getTimeMilliseconds();
+            physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
+            lastPhysicsTime = thisTime;
+        }
         
         if(++loops == 10) {
             loops = 0;
@@ -122,11 +126,13 @@ void ServerMain::run() {
         {
             unsigned long currentTime = Misc::Sleeper::getTimeMilliseconds();
             unsigned long elapsed = currentTime - lastTime;
-            if(elapsed < 10) {
-                Misc::Sleeper::sleep(10 - elapsed);
+            long tosleep = 10 - elapsed;
+            if(tosleep > 0) {
+                Misc::Sleeper::sleep(tosleep);
             }
             
-            while(lastTime < currentTime) lastTime += 10;
+            //while(lastTime < currentTime) lastTime += 10;
+            while(lastTime < currentTime + tosleep) lastTime += 10;
         }
     }
 }

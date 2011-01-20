@@ -15,8 +15,13 @@ namespace Physics {
 
 PhysicsWorld *PhysicsWorld::instance;
 
+void PhysicsWorld::DebugDrawingObserver::observe(Event::SetDebugDrawing *event) {
+    PhysicsWorld::getInstance()->setDebug(event->getOn());
+}
+
 PhysicsWorld::PhysicsWorld() {
     instance = this;
+    debugging = false;
     setupPhysicsWorld();
 }
 
@@ -73,14 +78,25 @@ void PhysicsWorld::setupPhysicsWorld() {
     
     dynamicsWorld->setGravity ( btVector3 ( 0.0,-9.81,0.0 ) );
     
-    debug.setDebugMode(btIDebugDraw::DBG_DrawWireframe);
-    dynamicsWorld->setDebugDrawer(&debug);
-    
     LOG2 ( PHYSICS, INIT, "Physics Setup Completed!" );
+    
+    ADD_OBSERVER(new DebugDrawingObserver());
 }
 
 void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
     dynamicsWorld->setGravity ( btVector3 ( xAccel,yAccel,zAccel ) );
+}
+
+void PhysicsWorld::setDebug(bool on) {
+    if(on) {
+        debug.setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+        dynamicsWorld->setDebugDrawer(&debug);
+    }
+    else {
+        dynamicsWorld->setDebugDrawer(NULL);
+    }
+    
+    debugging = on;
 }
 
 void PhysicsWorld::render() {
@@ -93,9 +109,11 @@ void PhysicsWorld::render() {
         PhysicsSerializer().serialize(collisionBodies[1]);
     }
     
-    stepWorld(10 * 1000);  // step world by 10 ms
+    //stepWorld(10 * 1000);  // step world by 10 ms
     
-    dynamicsWorld->debugDrawWorld();
+    if(debugging) {
+        dynamicsWorld->debugDrawWorld();
+    }
 }
 
 }  // namespace Physics
