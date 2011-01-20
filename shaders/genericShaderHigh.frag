@@ -31,11 +31,6 @@ void main() {
 	vec4 specular_color = vec4(0.0, 0.0, 0.0, 0.0);
 	vec4 ambient_color = vec4(0.0, 0.0, 0.0, 0.0);
 	
-	float specular_factor = 1.0;
-	if (hasTexture[1] == 1) {
-		specular_factor = texture2D(normalMap, gl_TexCoord[0].st).w;
-	}
-	
 	//Lighting calculations----------------------------------------------------------------------------------------
 	
 	for (int i = 0; i < numLights; i++) {
@@ -65,7 +60,6 @@ void main() {
 	
 	//Apply Material----------------------------------------------------------------------------------------
 
-	
 	vec4 diffuse_base;
 	//Use the texture color as diffuse base if it exists
 	if (hasTexture[0] == 1)
@@ -76,6 +70,10 @@ void main() {
 	diffuse_color *= diffuse_base;
 	specular_color *= gl_FrontMaterial.specular;
 	ambient_color *= diffuse_base;
+	
+	if (hasTexture[1] == 1) {
+		specular_color *= texture2D(normalMap, gl_TexCoord[0].st).w;
+	}
 	
 	vec4 ambient_base;
 	ambient_base = gl_FrontMaterial.ambient;

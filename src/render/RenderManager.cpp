@@ -4,6 +4,7 @@
 #include "misc/DirectoryFunctions.h"
 #include "opengl/OpenGL.h"
 #include "log/Logger.h"
+#include "RenderSettings.h"
 #include <fstream>
 using namespace Project;
 using namespace OpenGL;
@@ -23,8 +24,6 @@ namespace Render {
 
 		enabledShaderIndex =-1;
 
-		graphicsQuality = 2;
-
 		lightManager = new LightManager();
 
 		LOG(OPENGL, "Renderer Initialized.");
@@ -39,20 +38,7 @@ namespace Render {
 		glGetIntegerv(GL_MAX_VARYING_FLOATS, &value);
 		LOG(OPENGL, "	Max varying floats: " << value);
 
-		ifstream in_file(config_file_name);
-		if ((bool)in_file) {
-			LOG(OPENGL, "Loading Render Config File: " << config_file_name);
-			while (!in_file.eof()) {
-				string var_name;
-				in_file >> var_name;
-				if (var_name == "graphicsQuality") {
-					in_file.ignore(100, '=');
-					in_file >> graphicsQuality;
-					LOG(OPENGL, "	Setting Graphics Quality to " << graphicsQuality);
-				}
-			}
-		}
-		in_file.close();
+		settings = new RenderSettings(config_file_name);
 
 	}
 
@@ -72,6 +58,8 @@ namespace Render {
 			MathWrapper::glMultMatrix(properties->getTransformation());
 		}
 
+		setRenderColor(properties);
+
 		setRenderMaterial(properties);
 
 		setRenderShader(properties);
@@ -82,6 +70,18 @@ namespace Render {
 
 	}
 
+	void RenderManager::setRenderColor(RenderProperties* properties) {
+		if (properties->hasColor()) {
+
+			if (!colorsOverridden()) {
+				colorStack.push(properties->getColor());
+				Color::glColor(properties->getColor());
+			}
+		}
+
+		if (properties->getColorOverride())
+			numColorOverrides++;
+	}
 	void RenderManager::setRenderMaterial(RenderProperties* properties) {
 		if (properties->hasMaterial()) {
 
@@ -183,6 +183,8 @@ namespace Render {
 			glPopMatrix(); //Restore old transformation
 		}
 
+		revertRenderColor(properties);
+
 		revertRenderMaterial(properties);
 
 		revertRenderShader(properties);
@@ -191,6 +193,24 @@ namespace Render {
 
 	}
 
+	void RenderManager::revertRenderColor(RenderProperties* properties) {
+		if (properties->hasColor()) {
+
+			if (!colorsOverridden()) {
+				colorStack.pop();
+				//Reapply the previous color
+				if (!colorStack.empty()) {
+					Color::glColor(colorStack.top());
+				}
+				else {
+					Color::glColor(Color::WHITE);
+				}
+			}
+		}
+
+		if (properties->getColorOverride())
+			numColorOverrides--;
+	}
 	void RenderManager::revertRenderMaterial(RenderProperties* properties) {
 		if (properties->hasMaterial()) {
 
@@ -250,9 +270,9 @@ namespace Render {
 			string shader_type;
 			in_file >> shader_type;
 			if (shader_type == "all"
-				|| (shader_type == "high" && graphicsQuality >= GRAPHICS_HIGH)
-				|| (shader_type == "med" && graphicsQuality == GRAPHICS_MED)
-				|| (shader_type == "low" && graphicsQuality <= GRAPHICS_LOW)) {
+				|| (shader_type == "high" && settings->getGraphicsQuality() >= GRAPHICS_HIGH)
+				|| (shader_type == "med" && settings->getGraphicsQuality() == GRAPHICS_MED)
+				|| (shader_type == "low" && settings->getGraphicsQuality() <= GRAPHICS_LOW)) {
 				string shader_name;
 				in_file >> shader_name;
 				if (shader_name.length() > 0) {
@@ -295,17 +315,6 @@ namespace Render {
 		}
 	}
 
-	bool RenderManager::materialsOverridden() {
-		return (numMaterialOverrides > 0);
-	}
-
-	bool RenderManager::texturesOverridden() {
-		return (numTextureOverrides > 0);
-	}
-
-	bool RenderManager::shadersOverridden() {
-		return (numShaderOverrides > 0);
-	}
 
 	void RenderManager::enableShader(int shader_index) {
 		if (shader_index < 0 || static_cast<unsigned int>(shader_index) > shader.size())

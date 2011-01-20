@@ -7,6 +7,7 @@
 #include "ShaderAttributeLocation.h"
 #include "LightManager.h"
 #include "opengl/OpenGL.h"
+#include "RenderSettings.h"
 #include <string>
 #include <vector>
 #include <stack>
@@ -36,7 +37,8 @@ private:
 	static const short GRAPHICS_LOW = 0;
 	static const int noShaderIndex = 5000;
 	LightManager* lightManager;
-	short graphicsQuality;
+	RenderSettings* settings;
+	
 public:
 
 	RenderManager(const char* config_file_name = "");
@@ -75,25 +77,30 @@ private:
 	stack<int> shaderStack;
 	stack<Material*> materialStack;
 	stack<Texture*> textureStack;
+	stack<Project::OpenGL::Color> colorStack;
 	vector< vector<ShaderParameter*> > shaderParams;
 
+	int numColorOverrides;
 	int numMaterialOverrides;
 	int numShaderOverrides;
 	int numTextureOverrides;
 
-	bool materialsOverridden();
-	bool texturesOverridden();
-	bool shadersOverridden();
+	bool colorsOverridden() { return (numColorOverrides > 0); }
+	bool materialsOverridden() { return (numMaterialOverrides > 0); }
+	bool texturesOverridden() { return (numTextureOverrides > 0); }
+	bool shadersOverridden() { return (numShaderOverrides > 0); }
 
 	void enableShader(int shader_index);
 	void disableShader(int shader_index);
 	Shader* getShaderByIndex(int shader_index);
 	int getShaderIndexByName(string name);
 
+	void setRenderColor(RenderProperties* properties);
 	void setRenderMaterial(RenderProperties* properties);
 	void setRenderShader(RenderProperties* properties);
 	void setRenderTexture(RenderProperties* properties);
 
+	void revertRenderColor(RenderProperties* properties);
 	void revertRenderMaterial(RenderProperties* properties);
 	void revertRenderShader(RenderProperties* properties);
 	void revertRenderTexture(RenderProperties* properties);

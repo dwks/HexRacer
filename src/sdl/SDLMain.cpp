@@ -27,8 +27,7 @@ namespace Project {
 namespace SDL {
 
 void SDLMain::CameraObserver::observe(Event::CameraMovement *event) {
-    //trackball->setMouseStartAt(Math::Point(0.0, 0.0));
-    
+
     double x = event->getMovement().getX();
     double y = event->getMovement().getY();
     
@@ -37,11 +36,7 @@ void SDLMain::CameraObserver::observe(Event::CameraMovement *event) {
     
     camera->translate(translation);
     
-    LOG(SDL, "Move camera by " << translation);
-    
-    //camera->setLookDirection(trackball->getSpherePoint());
-    
-    //trackball->setMouseCurrentAt(translation);
+    //LOG(SDL, "Move camera by " << translation);
 }
 
 SDLMain::SDLMain() {
@@ -121,9 +116,6 @@ void SDLMain::run() {
 
 	renderer->loadShadersFile("shaders.txt");
 
-	//Load the test shader
-	//renderer->loadShader("genericShader", "shaders/genericShader.frag", "shaders/genericShader.vert");
-	//renderer->loadShader("playerGlow", "shaders/playerGlow.frag", "shaders/playerGlow.vert");
 	//Load the model
 	meshLoader->loadOBJ("testTerrain", "models/testterrain.obj");
 	meshLoader->loadOBJ("playerCube", "models/playercube.obj");
@@ -133,6 +125,13 @@ void SDLMain::run() {
 	test_terrain->setCullingObject(camera->getFrustrum());
 	test_terrain->setCullingQueryType(Math::SpatialContainer::NEARBY);
 	rootRenderable->addRenderable(test_terrain);
+
+	/*
+	rootRenderable->getRenderProperties()->setColor(OpenGL::Color::VIOLET);
+	rootRenderable->getRenderProperties()->setColorOverride(true);
+	rootRenderable->getRenderProperties()->setShaderOverride(true);
+	rootRenderable->getRenderProperties()->setTextureOverride(true);
+	*/
     
 	//Get the Player Cube Mesh
 	//Render::MeshGroup* player_cube_mesh = meshLoader->getModelByName("playerCube");
@@ -305,20 +304,12 @@ void SDLMain::render() {
 
 	glPushMatrix();
 
+	 // Render players
 	playerManager->render(renderer);
-    
-	//glEnable(GL_BLEND);
-	//glDepthMask(GL_FALSE);
 	
 	//Render the scene
 	rootRenderable->render(renderer);
 
-	//glDisable(GL_BLEND);
-	//glDepthMask(GL_TRUE);
-    
-    // Render players
-
-    
 	glPopMatrix();
     
 	//Revert the rendering state

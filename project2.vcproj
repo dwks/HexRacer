@@ -197,6 +197,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\CameraMovement.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\CompositeRenderable.cpp"
 				>
 			</File>
@@ -294,6 +298,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderProperties.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderSettings.cpp"
 				>
 			</File>
 			<File
@@ -667,6 +675,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\CameraMovement.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\CompositeRenderable.h"
 				>
 			</File>
@@ -760,6 +772,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderProperties.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderSettings.h"
 				>
 			</File>
 			<File

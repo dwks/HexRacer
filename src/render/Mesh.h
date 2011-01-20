@@ -5,6 +5,7 @@
 #include "MeshTriangle.h"
 #include "math/BSPTree3D.h"
 #include "opengl/OpenGL.h"
+#include "math/Cullable.h"
 #include <vector>
 
 namespace Project {
@@ -13,7 +14,7 @@ namespace Render {
 /** A triangle-mesh
 */
 class Mesh
-	: public BaseRenderable {
+	: public BaseRenderable, public Math::Cullable {
 private:
 
 	std::vector< MeshTriangle* > triangles;
@@ -32,8 +33,8 @@ public:
 	Mesh(vector< MeshTriangle* > _triangles, Material* _material = NULL);
 
 	void renderGeometry(ShaderParamSetter setter);
-	void setCullingObject(const Project::Math::BoundingObject* culling_object);
-	void setCullingQueryType(Project::Math::SpatialContainer::QueryType type);
+	void setCullingObject(const Math::BoundingObject* culling_object);
+	void setCullingQueryType(Math::SpatialContainer::QueryType type);
 	vector<Project::Math::Triangle3D> getTriangles();
 };
 

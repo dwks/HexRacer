@@ -7,6 +7,8 @@ namespace Render {
 
 	RenderProperties::RenderProperties() {
 		transformationSet = false;
+		colorSet = false;
+		colorOverrideChildren = false;
 		material = NULL;
 		materialOverrideChildren = false;
 		texture = NULL;
