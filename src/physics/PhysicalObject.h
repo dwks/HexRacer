@@ -2,6 +2,7 @@
 #define PROJECT_PHYSICS__PHYSICAL_OBJECT_H
 
 #include "math/Point.h"
+#include "math/Matrix.h"
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
 
@@ -15,7 +16,8 @@ public:
     virtual ~PhysicalObject() {}
     
     virtual Math::Point getOrigin() const = 0;
-
+    virtual Math::Matrix getTransformation() const = 0;
+    
 	virtual btRigidBody* getPrimaryRigidBody() { return primaryRigidBody; }
 };
 

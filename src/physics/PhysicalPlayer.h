@@ -18,20 +18,21 @@ private:
     
     template <typename Archive>
     void save(Archive &ar, const unsigned version) const {
-        Math::Point origin = getOrigin();
+        Math::Matrix transformation = getTransformation();
         Math::Point linearVelocity
             = Converter::toPoint(primaryRigidBody->getLinearVelocity());
         Math::Point angularVelocity
             = Converter::toPoint(primaryRigidBody->getAngularVelocity());
         
-        ar << origin << linearVelocity << angularVelocity;
+        ar << transformation << linearVelocity << angularVelocity;
     }
     
     template <typename Archive>
     void load(Archive &ar, const unsigned version) {
-        Math::Point origin, linearVelocity, angularVelocity;
-        ar >> origin >> linearVelocity >> angularVelocity;
-        constructRigidBody(origin);
+        Math::Matrix transformation;
+        Math::Point linearVelocity, angularVelocity;
+        ar >> transformation >> linearVelocity >> angularVelocity;
+        constructRigidBody(transformation);
         
         primaryRigidBody->setLinearVelocity(
             Converter::toVector(linearVelocity));
@@ -47,8 +48,10 @@ public:
     
     void destroyRigidBody();
     void constructRigidBody(const Math::Point &position);
+    void constructRigidBody(const Math::Matrix &transformation);
     
     virtual Math::Point getOrigin() const;
+    virtual Math::Matrix getTransformation() const;
     
     void applyMovement(const Math::Point &movement);
 protected:

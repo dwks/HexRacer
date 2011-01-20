@@ -46,11 +46,28 @@ void PhysicalPlayer::constructRigidBody(const Math::Point &position) {
     PhysicsWorld::getInstance()->registerRigidBody(primaryRigidBody);
 }
 
+void PhysicalPlayer::constructRigidBody(const Math::Matrix &transformation) {
+    destroyRigidBody();
+    
+    primaryRigidBody = Physics::PhysicsFactory
+        ::createRigidBox(0.2,0.2,0.2,Math::Point(),2.0);
+    primaryRigidBody->setWorldTransform(
+        Converter::toTransform(transformation));
+    PhysicsWorld::getInstance()->registerRigidBody(primaryRigidBody);
+}
+
 Math::Point PhysicalPlayer::getOrigin() const {
     btTransform trans;
     primaryRigidBody->getMotionState()->getWorldTransform(trans);
     
     return Converter::toPoint(trans.getOrigin());
+}
+
+Math::Matrix PhysicalPlayer::getTransformation() const {
+    btTransform trans;
+    primaryRigidBody->getMotionState()->getWorldTransform(trans);
+    
+    return Converter::toMatrix(trans);
 }
 
 void PhysicalPlayer::applyMovement(const Math::Point &movement) {

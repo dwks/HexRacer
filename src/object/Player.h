@@ -41,6 +41,7 @@ public:
     virtual Render::RenderableObject *getRenderableObject();
     
     Math::Point getPosition() const;
+    Math::Matrix getTransformation() const;
     void applyMovement(const Math::Point &movement);
 };
 

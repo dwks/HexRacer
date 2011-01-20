@@ -4,6 +4,7 @@
 #include "boost/serialization/split_free.hpp"
 
 #include "math/Point.h"
+#include "math/Matrix.h"
 
 namespace boost {
 namespace serialization {
@@ -33,9 +34,32 @@ void load(Archive &ar, Project::Math::Point &point, const unsigned version) {
     point.setW(w);
 }
 
+template <typename Archive>
+void save(Archive &ar, const Project::Math::Matrix &matrix,
+    const unsigned version) {
+    
+    const double *data = matrix.getData();
+    
+    for(int i = 0; i < 16; i ++) {
+        ar << data[i];
+    }
+}
+
+template <typename Archive>
+void load(Archive &ar, Project::Math::Matrix &matrix, const unsigned version) {
+    double data[16];
+    
+    for(int i = 0; i < 16; i ++) {
+        ar >> data[i];
+    }
+    
+    matrix = Project::Math::Matrix(data);
+}
+
 }  // namespace serialization
 }  // namespace boost
 
 BOOST_SERIALIZATION_SPLIT_FREE(Project::Math::Point)
+BOOST_SERIALIZATION_SPLIT_FREE(Project::Math::Matrix)
 
 #endif

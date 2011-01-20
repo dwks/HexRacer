@@ -57,6 +57,10 @@ Math::Point Player::getPosition() const {
     return physical->getOrigin();
 }
 
+Math::Matrix Player::getTransformation() const {
+    return physical->getTransformation();
+}
+
 void Player::applyMovement(const Math::Point &movement) {
     physical->applyMovement(movement);
 }
