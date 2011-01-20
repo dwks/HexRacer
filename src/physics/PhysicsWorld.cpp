@@ -32,8 +32,9 @@ void PhysicsWorld::createTestScene(){
     //The "Plane"
     //createRigidStaticPlane(Math::Point(0.0,1.0,0.0), Math::Point(0.0,-1.0,0.0));
     
+    LOG2(PHYSICS, CREATE, "Creating test scene");
     registerRigidBody(PhysicsFactory::createRigidStaticPlane(
-        Math::Point(0.0,1.0,0.0), Math::Point(0.0,-1.0,0.0)));
+        Math::Point(0.0,1.0,0.0), Math::Point(0.0,-3.0,0.0)));
     
     //A player
     //createPlayer(10);

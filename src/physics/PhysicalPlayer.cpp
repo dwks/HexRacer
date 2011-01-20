@@ -15,9 +15,7 @@ PhysicalPlayer::PhysicalPlayer(const Math::Point &position) {
 }
 
 PhysicalPlayer::~PhysicalPlayer() {
-    
-    
-    delete primaryRigidBody;
+    destroyRigidBody();
 }
 
 void PhysicalPlayer::destroyRigidBody() {

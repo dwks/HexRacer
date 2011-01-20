@@ -5,14 +5,19 @@ namespace Physics {
 
 btRigidBody* PhysicsFactory::createRigidStaticPlane(Math::Point planeNormal, Math::Point origin){
     LOG2(PHYSICS, CREATE,
-        "Creating Static Plane: Normal: " << planeNormal
-        << " Location: " << origin.getX() << " " << origin.getY()<< " " << origin.getZ());
-    btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0.0,0.0,0.0), 1);
-
-    btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),
-                                                                                    btVector3(origin.getX(),origin.getY(),origin.getZ())));
-    btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
+    "Creating Static Plane: Normal: " << planeNormal
+        << " Location: " << origin);
+    btCollisionShape* groundShape = new btStaticPlaneShape(Converter::toVector(planeNormal), 1);
+    
+    btDefaultMotionState* groundMotionState
+        = new btDefaultMotionState(btTransform(
+            btQuaternion(0,0,0,1),Converter::toVector(origin)));
+    btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(
+        0,groundMotionState,groundShape,btVector3(0,0,0));
     btRigidBody* rigidBody = new btRigidBody(groundRigidBodyCI);
+    
+    //collisionBodies.push_back(rigidBody);
+    //dynamicsWorld->addRigidBody(rigidBody);
     
     return rigidBody;
 }
