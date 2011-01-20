@@ -8,6 +8,7 @@
 
 #include "event/ObserverList.h"
 #include "PhysicsSerializer.h"
+#include "PhysicsFactory.h"
 
 namespace Project {
 namespace Physics {
@@ -29,10 +30,19 @@ void PhysicsWorld::stepWorld(float microseconds) {
 
 void PhysicsWorld::createTestScene(){
     //The "Plane"
-    createRigidStaticPlane(Math::Point(0.0,1.0,0.0), Math::Point(0.0,-1.0,0.0));
+    //createRigidStaticPlane(Math::Point(0.0,1.0,0.0), Math::Point(0.0,-1.0,0.0));
+    
+    registerRigidBody(PhysicsFactory::createRigidStaticPlane(
+        Math::Point(0.0,1.0,0.0), Math::Point(0.0,-1.0,0.0)));
     
     //A player
     //createPlayer(10);
+}
+
+void PhysicsWorld::registerRigidBody(btRigidBody *body) {
+    dynamicsWorld->addRigidBody(body);
+    
+    collisionBodies.push_back(body);
 }
 
 void PhysicsWorld::destroyRigidBody(btRigidBody *body) {
@@ -68,72 +78,6 @@ void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
     dynamicsWorld->setGravity ( btVector3 ( xAccel,yAccel,zAccel ) );
 }
 
-PhysicalPlayer* PhysicsWorld::createPlayer(int playerID, Math::Point origin) {
-    LOG2(PHYSICS, CREATE, "Creating Player. ID: " << playerID);
-    Physics::PhysicalPlayer* player = new Physics::PhysicalPlayer(origin);
-    
-    //playerEntities.push_back(player);
-    
-    return player;
-}
-
-
-btRigidBody* PhysicsWorld::createRigidStaticPlane(Math::Point planeNormal, Math::Point origin){
-    LOG2(PHYSICS, CREATE,
-        "Creating Static Plane: Normal: " << planeNormal
-        << " Location: " << origin.getX() << " " << origin.getY()<< " " << origin.getZ());
-    btCollisionShape* groundShape = new btStaticPlaneShape(Converter::toVector(planeNormal), 1);
-
-    btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(origin.getX(),origin.getY(),origin.getZ())));
-    btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
-    btRigidBody* rigidBody = new btRigidBody(groundRigidBodyCI);
-    
-    collisionBodies.push_back(rigidBody);
-    dynamicsWorld->addRigidBody(rigidBody);
-    
-    return rigidBody;
-}
-
-btRigidBody* PhysicsWorld::createRigidSphere(float radius, Math::Point origin, float mass){
-    LOG2(PHYSICS, CREATE, "Creating Sphere: Radius: " << radius << " Origin: " << origin.getX() << ", " << origin.getY() << ", " << origin.getZ() << " Mass: " << mass);
-    btCollisionShape* sphereShape = new btSphereShape ( radius );
-    
-    btDefaultMotionState* fallMotionState
-        = new btDefaultMotionState(
-            btTransform(btQuaternion(0,0,0,1),
-                Converter::toVector(origin)));
-    btVector3 fallInertia(0,0,0);
-    sphereShape->calculateLocalInertia(mass,fallInertia);
-    btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass,fallMotionState,sphereShape,fallInertia);
-    btRigidBody* rigidBody = new btRigidBody(fallRigidBodyCI);
-    
-    collisionBodies.push_back(rigidBody);
-    dynamicsWorld->addRigidBody(rigidBody);
-    
-    return rigidBody;
-}
-
-btRigidBody* PhysicsWorld::createRigidBox(float width, float height, float depth, Math::Point origin, float mass) {
-    LOG2(PHYSICS, CREATE,
-        "Creating BoxShape: W: " << width << " H: " << height << " D: " << depth
-        << " Origin: " << origin << " Mass: " << mass);
-    btCollisionShape* boxShape = new btBoxShape ( btVector3 (width/2.0,height/2.0,depth/2.0) );
-    
-    btDefaultMotionState* fallMotionState
-        = new btDefaultMotionState(
-            btTransform(btQuaternion(0,0,0,1),
-                Converter::toVector(origin)));
-    btVector3 fallInertia(0,0,0);
-    boxShape->calculateLocalInertia(mass,fallInertia);
-    btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass,fallMotionState,boxShape,fallInertia);
-    btRigidBody* rigidBody = new btRigidBody(fallRigidBodyCI);
-    
-    collisionBodies.push_back(rigidBody);
-    dynamicsWorld->addRigidBody(rigidBody);
-    
-    return rigidBody;
-}
-
 void PhysicsWorld::render() {
     //collisionBodies[1]->applyCentralForce(btVector3(2.0f, 0.0f, 0.0f));
     
@@ -145,23 +89,6 @@ void PhysicsWorld::render() {
     }
     
     stepWorld(10 * 1000);  // step world by 10 ms
-    
-#if 0
-    // hack: don't display plane
-    for(std::size_t x = 1; x < collisionBodies.size(); x ++) {
-        //if(!dynamic_cast<>(collisionBodies[x])) continue;
-        
-        btTransform transform;
-        collisionBodies[x]->getMotionState()->getWorldTransform(transform);
-        
-        /*LOG(PHYSICS, "body " << collisionBodies[x] << " at "
-            << Converter::toPoint(transform.getOrigin()));*/
-        
-        Math::BoundingBox3D box(2.0, 2.0, 2.0,
-        Converter::toPoint(collisionBodies[x]->getCenterOfMassPosition()));
-        OpenGL::GeometryDrawing::drawObject(box, true);
-    }
-#endif
 }
 
 }  // namespace Physics

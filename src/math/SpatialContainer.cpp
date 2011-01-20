@@ -1,12 +1,14 @@
 #include "SpatialContainer.h"
 #include "BoundingBox2D.h"
 #include "BoundingBox3D.h"
+#include "log/Logger.h"
 using namespace Project;
 using namespace Math;
 
 bool SpatialContainer::queryTypeFilter(ObjectSpatial* object, const BoundingObject& bounding_object, QueryType query_type) const {
 
-	Object2D* obj_2D;
+	Object2D* obj_2D = NULL;
+    
 	switch (query_type) {
 
 		case INSIDE:
@@ -18,6 +20,10 @@ bool SpatialContainer::queryTypeFilter(ObjectSpatial* object, const BoundingObje
 		case BOX_INTERSECT:
 			//Check if the object is 2D
 			//Create a 2D or 3D bounding box based on the object for the intersection test
+            
+            // !!!
+            return true;
+            
 			if (obj_2D)
 				return BoundingBox2D(*object, obj_2D->getProjectAxis()).intersects(bounding_object);
 			else

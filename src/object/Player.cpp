@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include "physics/PhysicsWorld.h"
+#include "physics/PhysicsFactory.h"
 
 namespace Project {
 namespace Object {
@@ -14,7 +15,8 @@ Player::Player(int id) : AbstractObject(id) {
     Physics::PhysicsWorld *world = Physics::PhysicsWorld::getInstance();
     
     if(world) {
-		physical = world->createPlayer(id, Math::Point(0.0, 1.0, 0.0));
+		physical = Physics::PhysicsFactory
+            ::createPhysicalPlayer(Math::Point(0.0, 1.0, 0.0));
     }
     else {
         physical = NULL;

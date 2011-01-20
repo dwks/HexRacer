@@ -25,13 +25,9 @@ public:
   void stepWorld(float microseconds);
   void setGravity(float xAccel, float yAccel, float zAccel);
   
-  PhysicalPlayer* createPlayer(int playerID,
-	  Math::Point origin = Math::Point());
-  
-  btRigidBody* createRigidStaticPlane(Math::Point planeNormal, Math::Point origin);
-  btRigidBody* createRigidSphere(float radius, Math::Point origin, float mass);
-  btRigidBody* createRigidBox(float width, float height, float depth, Math::Point origin, float mass);
   void createTestScene();
+  
+  void registerRigidBody(btRigidBody *body);
   
   /** This does not automatically free the memory for @a body.
   */

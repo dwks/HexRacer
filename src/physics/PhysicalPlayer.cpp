@@ -1,30 +1,38 @@
 #include "PhysicalPlayer.h"
 #include "Converter.h"
 #include "PhysicsWorld.h"
-//#include "render/MeshLoader.h"
+#include "PhysicsFactory.h"
 
 #include "log/Logger.h"
 
 namespace Project {
 namespace Physics {
 
-PhysicalPlayer::PhysicalPlayer(const Math::Point &origin)
-    : primaryRigidBody(NULL) {
+PhysicalPlayer::PhysicalPlayer(const Math::Point &position) {
+    primaryRigidBody = NULL;  // essential, constructRigidBody tries to delete
     
-    constructRigidBody(origin);
+    constructRigidBody(position);
 }
 
 PhysicalPlayer::~PhysicalPlayer() {
-    PhysicsWorld::getInstance()->destroyRigidBody(primaryRigidBody);
+    
     
     delete primaryRigidBody;
 }
 
-void PhysicalPlayer::constructRigidBody(const Math::Point &origin) {
-    delete primaryRigidBody;  // works even if NULL
+void PhysicalPlayer::destroyRigidBody() {
+    if(primaryRigidBody) {
+        PhysicsWorld::getInstance()->destroyRigidBody(primaryRigidBody);
+        
+        delete primaryRigidBody;  // works even if NULL
+    }
+}
+
+void PhysicalPlayer::constructRigidBody(const Math::Point &position) {
+    destroyRigidBody();
     
-	Math::BoundingBox3D box(1.0, 1.0, 1.0);
-	//Get the bounding box from the mesh loader
+    //Get the bounding box from the mesh loader
+	//Math::BoundingBox3D box(1.0, 1.0, 1.0);
 	/*
 	Render::MeshGroup* player_model = Render::MeshLoader::getInstance()->getModelByName("playerCube");
 	if (player_model)
@@ -35,8 +43,9 @@ void PhysicalPlayer::constructRigidBody(const Math::Point &origin) {
 
 	*/
 	
-    primaryRigidBody = PhysicsWorld::getInstance()->createRigidBox(
-        1.0, 1.0, 1.0, origin, 2.0);
+    primaryRigidBody = Physics::PhysicsFactory
+        ::createRigidBox(2.0,2.0,2.0,position,2.0);
+    PhysicsWorld::getInstance()->registerRigidBody(primaryRigidBody);
 }
 
 Math::Point PhysicalPlayer::getOrigin() const {

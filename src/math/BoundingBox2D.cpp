@@ -78,6 +78,8 @@ bool BoundingBox2D::intersects2D(const BoundingObject2D& bound_obj) const {
 				bound_obj.minU() <= maxU() && bound_obj.maxU() >= minU() &&
 				bound_obj.minV() <= maxV() && bound_obj.maxV() >= minV()
 				);
+		default:
+			break;
 
 	}
 

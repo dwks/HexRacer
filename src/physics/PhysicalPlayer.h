@@ -23,6 +23,7 @@ private:
             = Converter::toPoint(primaryRigidBody->getLinearVelocity());
         Math::Point angularVelocity
             = Converter::toPoint(primaryRigidBody->getAngularVelocity());
+        
         ar << origin << linearVelocity << angularVelocity;
     }
     
@@ -41,10 +42,11 @@ private:
     BOOST_SERIALIZATION_SPLIT_MEMBER()
 public:
     PhysicalPlayer() : primaryRigidBody(NULL) {}
-    PhysicalPlayer(const Math::Point &origin);
+    PhysicalPlayer(const Math::Point &position);
     virtual ~PhysicalPlayer();
     
-    void constructRigidBody(const Math::Point &origin);
+    void destroyRigidBody();
+    void constructRigidBody(const Math::Point &position);
     
     virtual Math::Point getOrigin() const;
     
