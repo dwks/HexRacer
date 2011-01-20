@@ -44,6 +44,13 @@ void GeometryDrawing::drawObject(ObjectSpatial& object, bool wireframe) {
 		drawBoundingConvexHull3D((BoundingConvexHull3D&) object, wireframe);
 		return;
 	}
+	else if (object_type == typeid(Vertex2D&)) {
+		glBegin(GL_POINTS);
+		MathWrapper::glVertex(((Vertex2D&)object).getPosition());
+		glEnd();
+		return;
+	}
+
 
 
 	/*

@@ -49,7 +49,6 @@ void main() {
 			float kspec =-dot(reflection,light);
 			kspec = max(kspec, 0.0);
 			kspec = pow(kspec, gl_FrontMaterial.shininess);
-			kspec *= specular_factor;
 			
 			diffuse_color += gl_LightSource[i].diffuse*kdiff*attenuation;
 			specular_color += gl_LightSource[i].specular*kspec*attenuation;

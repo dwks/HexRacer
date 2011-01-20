@@ -55,6 +55,8 @@ public:
 	/** Expand the dimensions of this box to include the spatial object @a object
 	*/
 	void expandToInclude(const ObjectSpatial& object);
+
+	void expand(double expansion);
 };
 
 }  // namespace Math

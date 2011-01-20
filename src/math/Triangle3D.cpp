@@ -5,6 +5,7 @@
 #include "BoundingPlane3D.h"
 #include "BoundingConvexHull3D.h"
 #include "Values.h"
+#include "Geometry.h"
 
 namespace Project {
 namespace Math {
@@ -17,6 +18,7 @@ namespace Math {
 		vertex[0] = vertex1;
 		vertex[1] = vertex2;
 		vertex[2] = vertex3;
+		normal = Geometry::triangleNormal(vertex1, vertex2, vertex3);
 	}
 
 	/*
@@ -129,6 +131,42 @@ namespace Math {
 	Point Triangle3D::getVertex(short vert_index) const {
 		return vertex[vert_index];
 	}
+
+	/*
+	RayIntersection Triangle3D::getRayIntersection(Ray ray) const {
+
+		double d = normal.dotProduct(ray.direction);
+
+		if (d != 0.0) {
+
+			Point v = ray.origin-getVertex(0);
+			float t = -(v.dotProduct(normal))/d;
+
+			//Fail if the intersection is not within the ray's range
+			if (!ray.insideRange(t))
+				return RayIntersection();
+			else
+				return RayIntersection(t);
+
+			//Calculate barycentric coordinates, return if point is outside of triangle
+			float S0 = Vector3::dotProduct(Vector3::crossProduct(vertex[2]->position-vertex[1]->position, rp-vertex[1]->position), normal);
+			if (S0 < 0.0f)
+				return Intersection();
+
+			float S1 = Vector3::dotProduct(Vector3::crossProduct(vertex[0]->position-vertex[2]->position, rp-vertex[2]->position), normal);
+			if (S1 < 0.0f)
+				return Intersection();
+
+			float S2 = Vector3::dotProduct(Vector3::crossProduct(vertex[1]->position-vertex[0]->position, rp-vertex[0]->position), normal);
+			if (S2 < 0.0f)
+				return Intersection();
+
+		}
+
+		return RayIntersection();
+
+	}
+	*/
 
 }  // namespace Math
 }  // namespace Project

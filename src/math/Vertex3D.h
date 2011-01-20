@@ -18,6 +18,8 @@ public:
 		: position() {}
 	Vertex3D(Point point)
 		: position(point) {}
+	Vertex3D(double x, double y, double z)
+		: position(x, y, z) {}
 
 	//Abstract method implementations
 	double minX() const;

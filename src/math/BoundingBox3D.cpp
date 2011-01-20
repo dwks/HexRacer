@@ -5,6 +5,7 @@
 #include "BoundingBox2D.h"
 using namespace Project;
 using namespace Math;
+using namespace std;
 
 BoundingBox3D::BoundingBox3D(Point corner1, Point corner2) {
 	setCorners(corner1, corner2);
@@ -160,4 +161,11 @@ void BoundingBox3D::setToObject(const ObjectSpatial& object) {
 		Point(object.minX(), object.minY(), object.minZ()),
 		Point(object.maxX(), object.maxY(), object.maxZ())
 		);
+}
+
+void BoundingBox3D::expand(double expansion) {
+	expansion = fabs(expansion);
+	Point exp_p(expansion, expansion, expansion);
+	minCorner -= exp_p;
+	maxCorner += exp_p;
 }

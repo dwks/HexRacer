@@ -3,6 +3,11 @@
 namespace Project {
 namespace Math {
 
+	Vertex2D::Vertex2D(double u, double v, Axis project_axis)
+		: BoundingObject2D(project_axis) {
+		position = Point::point2D(u, v, project_axis);
+	}
+
 	Vertex2D::Vertex2D(Point point, Axis project_axis)
 		: BoundingObject2D(project_axis) {
 		position = Point::point2D(point, project_axis);

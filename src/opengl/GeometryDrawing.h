@@ -7,6 +7,7 @@
 #include "math/Triangle3D.h"
 #include "math/BoundingPlane3D.h"
 #include "math/BoundingConvexHull3D.h"
+#include "math/Vertex2D.h"
 
 namespace Project {
 namespace OpenGL {

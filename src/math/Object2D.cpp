@@ -61,8 +61,13 @@ bool Object2D::intersects(const BoundingObject& bounding_obj) const {
 		delete(bound_2D); //Delete the temporary 2D object
 		return intersects;
 	}
-	else
-		return intersects2D((BoundingObject2D&) bounding_obj);
+	else {
+		const BoundingObject2D& obj_2D = (const BoundingObject2D&) bounding_obj;
+		if (obj_2D.getProjectAxis() != getProjectAxis())
+			return false;
+		else
+			return intersects2D(obj_2D);
+	}
 }
 
 bool Object2D::isInside(const BoundingObject& bounding_obj) const {
@@ -75,8 +80,13 @@ bool Object2D::isInside(const BoundingObject& bounding_obj) const {
 		delete(bound_2D); //Delete the temporary 2D object
 		return inside;
 	}
-	else
-		return isInside2D((BoundingObject2D&) bounding_obj);
+	else {
+		const BoundingObject2D& obj_2D = (const BoundingObject2D&) bounding_obj;
+		if (obj_2D.getProjectAxis() != getProjectAxis())
+			return false;
+		else
+			return isInside2D(obj_2D);
+	}
 }
 
 void Object2D::moveCentroid(const Point& position) {

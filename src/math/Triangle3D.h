@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Object3D.h"
+#include "RayIntersection.h"
+#include "Ray.h"
 
 namespace Project {
 namespace Math {
@@ -12,6 +14,7 @@ class Triangle3D
 {
 private:
 	Point vertex[3];
+	Point normal;
 public:
 	Triangle3D(void);
 	Triangle3D(Point vertex1, Point vertex2, Point vertex3);
@@ -34,6 +37,9 @@ public:
 
 	//Class specific
 	virtual Point getVertex(short vert_index) const;
+	Point getNormal() const { return normal; }
+
+	//RayIntersection getRayIntersection(Ray ray) const;
 };
 
 }  // namespace Math

@@ -39,7 +39,7 @@ double JoystickManager::getNormalizedAxisValue(int axis, double deadzone) {
     double normalized = (double(value) - SHRT_MIN) / (SHRT_MAX - SHRT_MIN);
     normalized = (normalized - 0.5) * 2;
 
-	if (abs(normalized) < deadzone)
+	if (fabs(normalized) < deadzone)
 		return 0.0f;
 	else
 		return normalized;

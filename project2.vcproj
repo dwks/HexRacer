@@ -269,6 +269,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\paint\PaintCell.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintVertex.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\PhysicalObject.cpp"
 				>
 			</File>
@@ -282,6 +298,14 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\PhysicsWorld.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\Ray.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\RayIntersection.cpp"
 				>
 			</File>
 			<File
@@ -743,6 +767,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\paint\PaintCell.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintVertex.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\PhysicalObject.h"
 				>
 			</File>
@@ -756,6 +796,14 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\PhysicsWorld.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\Ray.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\RayIntersection.h"
 				>
 			</File>
 			<File
