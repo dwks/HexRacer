@@ -42,7 +42,14 @@ void SDLMain::CameraObserver::observe(Event::CameraMovement *event) {
     //LOG(SDL, "Move camera by " << translation);
 }
 
+void SDLMain::QuitObserver::observe(Event::QuitEvent *event) {
+    LOG2(GLOBAL, PROGESS, "Quit requested");
+    sdlMain->doQuit();
+}
+
 SDLMain::SDLMain() {
+    quit = false;
+    
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0) {
         LOG2(SDL, ERROR, "Can't init SDL: " << SDL_GetError());
     }
@@ -94,9 +101,8 @@ void SDLMain::run() {
     
     projector.setCurrentDimensions(Point2D(width, height));
     
-	//trackball = new OpenGL::Trackball();
 	simpleTrackball = new OpenGL::SimpleTrackball();
-
+    
 	//Initialize the camera
 	camera = new OpenGL::Camera();
 	camera->setFieldOfViewDegrees(60.0f);
@@ -177,6 +183,7 @@ void SDLMain::run() {
     }
     
     ADD_OBSERVER(new CameraObserver(simpleTrackball, camera));
+    ADD_OBSERVER(new QuitObserver(this));
     
     Physics::PhysicsWorld::getInstance()->registerRigidBody(
         Physics::PhysicsFactory::createRigidTriMesh(
@@ -184,7 +191,6 @@ void SDLMain::run() {
     
     LOG2(GLOBAL, PROGRESS, "Entering main game loop");
     
-    bool quit = false;
     Uint32 lastTime = SDL_GetTicks();
     while(!quit) {
         SDL_Event event;

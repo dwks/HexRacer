@@ -20,6 +20,7 @@
 #include "event/ObserverList.h"
 #include "event/TypedObserver.h"
 #include "event/CameraMovement.h"
+#include "event/QuitEvent.h"
 
 #define FIELD_OF_VIEW 60
 #define SDL_INIT_FLAGS (SDL_HWSURFACE | SDL_OPENGL | SDL_RESIZABLE)
@@ -34,6 +35,8 @@ private:
     //OpenGL::Trackball *trackball;
 	OpenGL::SimpleTrackball *simpleTrackball;
 	OpenGL::Camera  *camera;
+    
+    bool quit;
     
     Projector projector;
     JoystickManager *joystick;
@@ -61,12 +64,22 @@ private:
         
         virtual void observe(Event::CameraMovement *event);
     };
-
+    
+    class QuitObserver : public Event::TypedObserver<Event::QuitEvent> {
+    private:
+        SDLMain *sdlMain;
+    public:
+        QuitObserver(SDLMain *sdlMain) : sdlMain(sdlMain) {}
+        
+        virtual void observe(Event::QuitEvent *event);
+    };
 public:
     SDLMain();
     ~SDLMain();
     
     void run();
+    
+    void doQuit() { quit = true; }
 private:
     void resizeGL(int width, int height);
     void handleJoystick();

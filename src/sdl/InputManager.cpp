@@ -5,6 +5,7 @@
 #include "event/PlayerMovement.h"
 #include "event/CameraMovement.h"
 #include "event/SetDebugDrawing.h"
+#include "event/QuitEvent.h"
 
 namespace Project {
 namespace SDL {
@@ -66,6 +67,10 @@ void InputManager::advanceToNextFrame() {
     if(keyDown[SDLK_d]) {
         EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
             * Math::Point(+1.0, 0.0)));
+    }
+    
+    if(keyDown[SDLK_ESCAPE]) {
+        EMIT_EVENT(new Event::QuitEvent());
     }
     
     if(keyDown[SDLK_RETURN]) {
