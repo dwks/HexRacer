@@ -5,7 +5,8 @@ using namespace Math;
 namespace Project {
 namespace Render {
 
-	MeshTriangle::MeshTriangle(MeshVertex* v1, MeshVertex* v2, MeshVertex* v3) {
+	MeshTriangle::MeshTriangle(MeshVertex* v1, MeshVertex* v2, MeshVertex* v3) 
+		: Triangle3D(v1->getPosition(), v2->getPosition(), v3->getPosition()) {
 		vertex[0] = v1;
 		vertex[1] = v2;
 		vertex[2] = v3;

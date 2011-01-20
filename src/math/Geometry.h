@@ -2,6 +2,8 @@
 #define PROJECT_MATH__GEOMETRY_H
 
 #include "Point.h"
+#include "Ray.h"
+#include "RayIntersection.h"
 
 namespace Project {
 namespace Math {
@@ -65,6 +67,8 @@ public:
 		as seen facing the front face
 	*/
 	static Point triangleNormal(Point tri_a, Point tri_b, Point tri_c);
+
+	static RayIntersection rayPlaneIntersection(Ray ray, Point plane_point, Point plane_normal);
 	
 };
 

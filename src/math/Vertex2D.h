@@ -15,6 +15,7 @@ private:
 public:
 
 	Vertex2D(Axis project_axis = Z_AXIS) : BoundingObject2D(project_axis) {}
+	Vertex2D(double u, double v, Axis project_axis = Z_AXIS);
 	Vertex2D(Point point, Axis project_axis = Z_AXIS);
 
 	//Abstract method implementations

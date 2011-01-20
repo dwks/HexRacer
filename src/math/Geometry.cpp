@@ -151,15 +151,14 @@ bool Geometry::sameSideOfLine2D(Point line_a, Point line_b, Point point_1, Point
 	point_1 = Point::point2D(point_1, project_axis);
 	point_2 = Point::point2D(point_2, project_axis);
 
-	Point line_normal = (line_b-line_a).rotate90CW(project_axis);
-
-	return (frontOfPlane(line_a, line_normal, point_1) == frontOfPlane(line_a, line_normal, point_2));
-
 	/*
+	Point line_normal = (line_b-line_a).rotate90CW(project_axis);
+	return (frontOfPlane(line_a, line_normal, point_1) == frontOfPlane(line_a, line_normal, point_2));
+	*/
+
 	Point cp1 = (line_b - line_a).crossProduct(point_1 - line_a);
     Point cp2 = (line_b - line_a).crossProduct(point_2 - line_a);
 	return (cp1.dotProduct(cp2) >= 0.0f);
-	*/
 
 }
 
@@ -173,6 +172,25 @@ Point Geometry::triangleNormal(Point tri_a, Point tri_b, Point tri_c) {
 	Point normal = u.crossProduct(v);
 	normal.normalize();
 	return normal;
+}
+
+RayIntersection Geometry::rayPlaneIntersection(Ray ray, Point plane_point, Point plane_normal) {
+
+	double d = plane_normal.dotProduct(ray.direction);
+	if (d != 0.0) {
+
+		Point v = ray.origin-plane_point;
+		float t = -(v.dotProduct(plane_normal))/d;
+		//Fail if the intersection is not within the ray's range
+		if (!ray.insideRange(t))
+			return RayIntersection();
+		else
+			return RayIntersection(t);
+
+	}
+
+	return RayIntersection();
+
 }
 
 }  // namespace Math

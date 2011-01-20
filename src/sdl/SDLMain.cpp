@@ -114,8 +114,8 @@ void SDLMain::run() {
 	glEnable(GL_RESCALE_NORMAL);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
     
 	quadric = gluNewQuadric();
     
@@ -133,6 +133,9 @@ void SDLMain::run() {
 	//Add the test terrain
 	Render::MeshGroup* test_terrain = meshLoader->getModelByName("testTerrain");
     
+	//Paint::PaintGenerator paint_gen(test_terrain->getTriangles());
+	//paintCells = paint_gen.getPaintCells();
+
 	test_terrain->setCullingObject(camera->getFrustrum());
 	test_terrain->setCullingQueryType(Math::SpatialContainer::NEARBY);
 	rootRenderable->addRenderable(test_terrain);
@@ -331,6 +334,19 @@ void SDLMain::render() {
 	//glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
+
+	//Draw paint cells
+	glColor3f(1.0f, 1.0f, 0.0f);
+	for (unsigned int i = 0; i < paintCells.size(); i++) {
+		glBegin(GL_TRIANGLE_FAN);
+		OpenGL::MathWrapper::glVertex(paintCells[i]->center);
+		for (int j = 0; j < Paint::PaintCell::CELL_VERTICES; j++) {
+			OpenGL::MathWrapper::glVertex(paintCells[i]->vertex[j]);
+		}
+		OpenGL::MathWrapper::glVertex(paintCells[i]->vertex[0]);
+		glEnd();
+	}
+	
     
     glFlush();
 }

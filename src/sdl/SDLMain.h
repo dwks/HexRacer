@@ -15,6 +15,8 @@
 #include "render/MeshLoader.h"
 #include "render/RenderList.h"
 
+#include "paint/PaintGenerator.h"
+
 #include "event/ObserverList.h"
 #include "event/TypedObserver.h"
 #include "event/CameraMovement.h"
@@ -44,6 +46,8 @@ private:
 	Render::RenderManager *renderer;
 	Render::RenderList* rootRenderable;
 	Render::LightManager *lightManager;
+
+	vector<Paint::PaintCell*> paintCells;
     
 	GLUquadric* quadric;
 private:
