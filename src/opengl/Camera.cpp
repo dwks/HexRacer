@@ -1,5 +1,4 @@
 #include "Camera.h"
-#include "OpenGL.h"
 #include "math/Values.h"
 #include "math/Geometry.h"
 using namespace Project;
@@ -8,6 +7,12 @@ using namespace Math;
 
 Camera::Camera(void)
 {
+
+	cameraMatrix[3] = 0.0f;
+	cameraMatrix[7] = 0.0f;
+	cameraMatrix[11] = 0.0f;
+	cameraMatrix[15] = 0.0f;
+
 	frustrum = new BoundingConvexHull3D(4);
 	setAspect(1.0f);
 	setFieldOfViewDegrees(90.0f);
@@ -24,7 +29,7 @@ void Camera::setPosition(Point pos) {
 	cameraPosition = pos;
 	cameraLookPosition = cameraPosition+cameraLookDirection;
 	updateFrustrum();
-		
+	
 }
 
 void Camera::translate(Point translation) {
@@ -51,10 +56,24 @@ void Camera::updateDirections() {
 	cameraRightDirection = cameraLookDirection.crossProduct(cameraUpDirection).normalized();
 	actualCameraUpDirection = cameraRightDirection.crossProduct(cameraLookDirection);
 
+	//Update the camera matrix
+
+	cameraMatrix[0] = static_cast<GLfloat>(cameraRightDirection.getX());
+	cameraMatrix[1] = static_cast<GLfloat>(cameraRightDirection.getY());
+	cameraMatrix[2] = static_cast<GLfloat>(cameraRightDirection.getZ());
+	
+	cameraMatrix[4] = static_cast<GLfloat>(actualCameraUpDirection.getX());
+	cameraMatrix[5] = static_cast<GLfloat>(actualCameraUpDirection.getY());
+	cameraMatrix[6] = static_cast<GLfloat>(actualCameraUpDirection.getZ());
+
+	cameraMatrix[8] = static_cast<GLfloat>(cameraLookDirection.getX());
+	cameraMatrix[9] = static_cast<GLfloat>(cameraLookDirection.getY());
+	cameraMatrix[10] = static_cast<GLfloat>(cameraLookDirection.getZ());
+
 	//Update the plane normals
-	float angle = fieldOfView/360.0f*PI;
-	float half_plane_height = tan(angle);//*2.0f;
-	float half_plane_width = half_plane_height*aspect;
+	double angle = fieldOfView/360.0*PI;
+	double half_plane_height = tan(angle);//*2.0f;
+	double half_plane_width = half_plane_height*aspect;
 
 	Point center = cameraPosition+cameraLookDirection;
 	Point top_left = center-(cameraRightDirection*half_plane_width)+(actualCameraUpDirection*half_plane_height);
@@ -106,6 +125,7 @@ void Camera::glProjection() {
 }
 
 void Camera::updateFrustrum() {
+
 	frustrum->setPlaneOrigin(0, cameraPosition);
 	frustrum->setPlaneNormal(0, rightPlaneNormal);
 	frustrum->setPlaneOrigin(1, cameraPosition);
@@ -114,4 +134,9 @@ void Camera::updateFrustrum() {
 	frustrum->setPlaneNormal(2, topPlaneNormal);
 	frustrum->setPlaneOrigin(3, cameraPosition);
 	frustrum->setPlaneNormal(3, bottomPlaneNormal);
+
+	cameraMatrix[12] = static_cast<GLfloat>(cameraPosition.getX());
+	cameraMatrix[13] = static_cast<GLfloat>(cameraPosition.getY());
+	cameraMatrix[14] = static_cast<GLfloat>(cameraPosition.getZ());
+
 }

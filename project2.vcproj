@@ -369,6 +369,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\TextureCube.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Triangle3D.cpp"
 				>
 			</File>
@@ -876,6 +880,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\Texture.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TextureCube.h"
 				>
 			</File>
 			<File

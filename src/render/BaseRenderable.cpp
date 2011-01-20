@@ -5,7 +5,7 @@ namespace Project {
 namespace Render {
 
 	void BaseRenderable::subRender(RenderManager* manager) {
-		renderGeometry(manager->getShaderParamSetter());
+		renderGeometry(manager->getShaderParamSetter(), manager->getBoundingObject());
 	}
 
 }  // namespace Render

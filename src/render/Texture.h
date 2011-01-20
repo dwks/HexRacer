@@ -28,13 +28,27 @@ public:
 	GLuint getColorMap() const;
 	bool hasNormalMap() const;
 	GLuint getNormalMap() const;
+	//virtual GLenum targetTexture() { return GL_TEXTURE_2D; }
 
 	/** Load a texture into openGL from the file @a filename
 		Returns the texture id of the loaded texture, 0 if unsuccessful
 	*/
-	static GLuint loadTexture(std::string filename,
+	static GLuint loadTexture2D(std::string filename,
 		GLint wrap_s = GL_REPEAT, GLint wrap_t = GL_REPEAT,
-		GLint filter_s = GL_LINEAR, GLint filter_t = GL_LINEAR);
+		GLint filter_min = GL_LINEAR, GLint filter_mag = GL_LINEAR);
+
+	//static void loadSurfaceToTexture(SDLSurface* surface, GLenum target);
+
+	static GLuint loadTextureCube(
+		std::string positive_x_file,
+		std::string negative_x_file,
+		std::string positive_y_file,
+		std::string negative_y_file,
+		std::string positive_z_file,
+		std::string negative_z_file,
+		GLint filter_min = GL_LINEAR, GLint filter_mag = GL_LINEAR);
+
+	static GLint toGLFormat(int bytes_per_pixel);
 
 
 };

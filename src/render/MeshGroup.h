@@ -6,7 +6,6 @@
 #include "CompositeRenderable.h"
 #include "Mesh.h"
 #include "math/BoundingBox3D.h"
-#include "math/Cullable.h"
 
 namespace Project {
 namespace Render {
@@ -14,7 +13,7 @@ namespace Render {
 /** A group of triangle-meshes
 */
 class MeshGroup
-	: public CompositeRenderable, public Math::Cullable {
+	: public CompositeRenderable {
 private:
 
 	std::string name;
@@ -30,8 +29,6 @@ public:
 	std::vector<RenderableObject*> getChildren();
 	std::vector<Math::Triangle3D> getTriangles();
 	Math::BoundingBox3D getBoundingBox() { return boundingBox; }
-	void setCullingObject(const Math::BoundingObject* culling_object);
-	void setCullingQueryType(Math::SpatialContainer::QueryType type);
 
 };
 

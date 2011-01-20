@@ -10,6 +10,7 @@
 
 #include "math/Point.h"
 #include "opengl/MathWrapper.h"
+#include "render/TextureCube.h"
 
 #include "event/ObserverList.h"
 #include "event/PlayerMovement.h"
@@ -142,8 +143,6 @@ void SDLMain::run() {
 	//Paint::PaintGenerator paint_gen(test_terrain->getTriangles());
 	//paintCells = paint_gen.getPaintCells();
 
-	test_terrain->setCullingObject(camera->getFrustrum());
-	test_terrain->setCullingQueryType(Math::SpatialContainer::NEARBY);
 	rootRenderable->addRenderable(test_terrain);
     
 	/*
@@ -153,8 +152,15 @@ void SDLMain::run() {
 	rootRenderable->getRenderProperties()->setTextureOverride(true);
 	*/
     
-	//Get the Player Cube Mesh
-	//Render::MeshGroup* player_cube_mesh = meshLoader->getModelByName("playerCube");
+	Render::TextureCube* background_texture = new Render::TextureCube(
+		"models/starfield.png",
+		"models/starfield.png",
+		"models/starfield.png",
+		"models/starfield.png",
+		"models/starfield.png",
+		"models/starfield.png");
+
+	//renderer->setCubeMap(background_texture);
     
 	//Create some lights
 	Render::Light* light = new Render::Light(Math::Point(1.0f, 2.0f, -1.0f));
@@ -328,7 +334,10 @@ void SDLMain::render() {
 
 	glPushMatrix();
 
-	 // Render players
+	//Pass the camera to the renderer for culling
+	renderer->setCamera(camera);
+
+	 //Render players
 	playerManager->render(renderer);
 	
 	//Render the scene

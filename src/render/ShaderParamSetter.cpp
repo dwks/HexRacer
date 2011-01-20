@@ -29,6 +29,10 @@ namespace Render {
 		manager->setUniformVector4(name, color);
 	}
 
+	void ShaderParamSetter::setUniformMatrix4(const char *name, GLboolean transpose, const GLfloat* matrix) {
+		manager->setUniformMatrix4(name, transpose, matrix);
+	}
+
 	void ShaderParamSetter::setAttributeVector3(const char *name, Point point) {
 		manager->setAttributeVector3(name, point);
 	}

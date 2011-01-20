@@ -24,7 +24,9 @@ namespace Render {
 
 	void RenderableObject::render(RenderManager* manager) {
 
-		if (!getRenderingEnabled())
+		//Don't draw if rendering is disabled or not in the bounding object
+		if (!getRenderingEnabled() ||
+			(manager->getBoundingObject() != NULL && !intersects(*manager->getBoundingObject())) )
 			return;
 
 		manager->setRenderProperties(this);

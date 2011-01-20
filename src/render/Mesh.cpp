@@ -10,6 +10,7 @@ namespace Project {
 namespace Render {
 
 	Mesh::Mesh() {
+
 		triangleTree = NULL;
 		cullingObject = NULL;
 		material = NULL;
@@ -23,6 +24,8 @@ namespace Render {
 		triangleTree = NULL;
 		cullingObject = NULL;
 		queryType = SpatialContainer::BOX_INTERSECT;
+
+		generateTriangleTree();
 	}
 
 	Mesh::~Mesh() {
@@ -47,23 +50,23 @@ namespace Render {
 			}
 		}
 
-		triangleTree = new BSPTree3D(bounding_box, BSPTree3D::LARGEST_AXIS, 8);
+		triangleTree = new BSPTree3D(bounding_box, TREE_SPLIT_METHOD, TREE_SPLIT_SIZE);
 		triangleTree->add(tri_obj);
 		LOG(OPENGL, "Generated BSP Tree with " << triangles.size() << " objects with height " << triangleTree->getHeight());
 
 	}
 
-	void Mesh::renderGeometry(ShaderParamSetter setter) {
+	void Mesh::renderGeometry(ShaderParamSetter setter, const BoundingObject* bounding_object) {
 
 		glBegin(GL_TRIANGLES);
 
-		if (cullingObject == NULL) {
+		if (bounding_object == NULL || triangleTree == NULL) {
 			for (unsigned int i = 0; i < triangles.size(); i++) {
 				drawTriangle(triangles[i], setter);
 			}
 		}
 		else {
-			vector<ObjectSpatial*> culled_triangles = triangleTree->query(*cullingObject, queryType);
+			vector<ObjectSpatial*> culled_triangles = triangleTree->query(*bounding_object, CULLING_QUERY_TYPE);
 			for (unsigned int i = 0; i < culled_triangles.size(); i++) {
 				drawTriangle((MeshTriangle*) culled_triangles[i], setter);
 			}
@@ -84,15 +87,6 @@ namespace Render {
 		}
 	}
 
-	void Mesh::setCullingObject(const BoundingObject* culling_object) {
-		cullingObject = culling_object;
-		if (cullingObject != NULL && triangleTree == NULL)
-			generateTriangleTree();
-	}
-
-	void Mesh::setCullingQueryType(SpatialContainer::QueryType type) {
-		queryType = type;
-	}
 
 	vector<Triangle3D> Mesh::getTriangles() {
 		vector<Triangle3D> return_list;

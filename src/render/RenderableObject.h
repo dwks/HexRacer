@@ -3,6 +3,7 @@
 
 #include "RenderProperties.h"
 #include "ShaderParamSetter.h"
+#include "math/BoundingObject.h"
 
 namespace Project {
 namespace Render {
@@ -25,6 +26,8 @@ public:
 
 	void render(RenderManager* manager);
 	virtual void subRender(RenderManager* manager) = 0;
+
+	virtual bool intersects( const Math::BoundingObject& bound_obj ) { return true; }
 
 	//bool hasRenderProperties() const;
 	RenderProperties* getRenderProperties() const;

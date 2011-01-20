@@ -22,6 +22,9 @@ namespace Render {
 		numShaderOverrides = 0;
 		numTextureOverrides = 0;
 
+		camera = NULL;
+		cubeMap = NULL;
+
 		enabledShaderIndex =-1;
 
 		lightManager = new LightManager();
@@ -357,7 +360,7 @@ namespace Render {
 		if (loc >= 0)
 			glUniform1i(loc, value);
 	}
-	void RenderManager::setUniformIntArray(const char *name, int values[], int num_values) {
+	void RenderManager::setUniformIntArray(const char *name, const int values[], int num_values) {
 		int loc = getShaderUniformLocation(enabledShaderIndex, name);
 		if (loc >= 0) {
 			glUniform1iv(loc, num_values, values);
@@ -374,6 +377,13 @@ namespace Render {
 		int loc = getShaderUniformLocation(enabledShaderIndex, name);
 		if (loc >= 0) {
 			glUniform4f(loc, color.redf(), color.greenf(), color.bluef(), color.alphaf());
+		}
+	}
+
+	void RenderManager::setUniformMatrix4(const char *name, GLboolean transpose, const GLfloat* matrix) {
+		int loc = getShaderUniformLocation(enabledShaderIndex, name);
+		if (loc >= 0) {
+			glUniformMatrix4fv(loc, 1, transpose, matrix);
 		}
 	}
 
@@ -416,6 +426,26 @@ namespace Render {
 		}
 		//Set standard parameters
 		setUniformInt(SHADER_NUMLIGHTS_UNIFORM_NAME, lightManager->getActiveLights());
+		if (cubeMap && camera) {
+			glActiveTexture(cubeMapTexture);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->getCubeMap());
+			//glActiveTexture(colorMapTexture);
+			setUniformInt(SHADER_CUBEMAP_UNIFORM_NAME, cubeMapTextureNum);
+			setUniformMatrix4(SHADER_CAMERA_MATRIX_UNIFORM_NAME, GL_FALSE, camera->getCameraMatrix());
+		}
+	}
+	const BoundingObject* RenderManager::getBoundingObject() const {
+		if (camera)
+			return camera->getFrustrum();
+		else
+			return NULL;
+	}
+
+	void RenderManager::setCubeMap(TextureCube* cube_map) {
+		cubeMap = cube_map;
+		if (cubeMap && cubeMap->getCubeMap() > 0) {
+			
+		}
 	}
 	
 

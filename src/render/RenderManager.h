@@ -7,7 +7,9 @@
 #include "ShaderAttributeLocation.h"
 #include "LightManager.h"
 #include "opengl/OpenGL.h"
+#include "opengl/Camera.h"
 #include "RenderSettings.h"
+#include "TextureCube.h"
 #include <string>
 #include <vector>
 #include <stack>
@@ -15,6 +17,8 @@ using namespace std;
 
 #define SHADER_COLORMAP_UNIFORM_NAME "colorMap"
 #define SHADER_NORMALMAP_UNIFORM_NAME "normalMap"
+#define SHADER_CUBEMAP_UNIFORM_NAME "cubeMap"
+#define SHADER_CAMERA_MATRIX_UNIFORM_NAME "cameraMatrix"
 #define SHADER_HASTEXTURE_UNIFORM_NAME "hasTexture"
 #define SHADER_NUMLIGHTS_UNIFORM_NAME "numLights"
 #define RENDERER_NO_SHADER_NAME "none"
@@ -32,12 +36,16 @@ private:
 	static const int colorMapTextureNum = 0;
 	static const GLenum normalMapTexture = GL_TEXTURE1;
 	static const int normalMapTextureNum = 1;
+	static const GLenum cubeMapTexture = GL_TEXTURE3;
+	static const int cubeMapTextureNum = 3;
 	static const short GRAPHICS_HIGH = 2;
 	static const short GRAPHICS_MED = 1;
 	static const short GRAPHICS_LOW = 0;
 	static const int noShaderIndex = 5000;
 	LightManager* lightManager;
 	RenderSettings* settings;
+	OpenGL::Camera* camera;
+	TextureCube* cubeMap;
 	
 public:
 
@@ -56,13 +64,19 @@ public:
 	void loadShader(string name, string fragment_file, string vertex_file);
 
 	void setUniformInt(const char *name, GLint value);
-	void setUniformIntArray(const char *name, int values[], int num_values);
-	void setUniformVector3(const char *name, Project::Math::Point point);
-	void setUniformVector4(const char *name, Project::OpenGL::Color color);
-	void setAttributeVector3(const char *name, Project::Math::Point point);
-	void setAttributeVector4(const char *name, Project::OpenGL::Color color);
+	void setUniformIntArray(const char *name, const int values[], int num_values);
+	void setUniformVector3(const char *name, Math::Point point);
+	void setUniformVector4(const char *name, OpenGL::Color color);
+	void setUniformMatrix4(const char *name, GLboolean transpose, const GLfloat* matrix);
+	void setAttributeVector3(const char *name, Math::Point point);
+	void setAttributeVector4(const char *name, OpenGL::Color color);
 
 	LightManager* getLightManager() const { return lightManager; }
+
+	void setCamera(OpenGL::Camera* _camera) { camera = _camera; }
+	const Math::BoundingObject* getBoundingObject() const;
+
+	void setCubeMap(TextureCube* cube_map);
 
 private:
 
@@ -77,7 +91,7 @@ private:
 	stack<int> shaderStack;
 	stack<Material*> materialStack;
 	stack<Texture*> textureStack;
-	stack<Project::OpenGL::Color> colorStack;
+	stack<OpenGL::Color> colorStack;
 	vector< vector<ShaderParameter*> > shaderParams;
 
 	int numColorOverrides;

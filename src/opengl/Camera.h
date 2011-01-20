@@ -3,6 +3,7 @@
 
 #include "math/Point.h"
 #include "math/BoundingConvexHull3D.h"
+#include "OpenGL.h"
 using namespace Project;
 using namespace Math;
 
@@ -33,6 +34,7 @@ private:
 	double farPlane;
 
 	BoundingConvexHull3D* frustrum;
+	GLfloat cameraMatrix [16];
 
 	void updateDirections();
 	void updateFrustrum();
@@ -64,7 +66,8 @@ public:
 	void glLookAt();
 	void glProjection();
 
-	const BoundingConvexHull3D* getFrustrum() { return frustrum; }
+	const BoundingConvexHull3D* getFrustrum() const { return frustrum; }
+	const GLfloat* getCameraMatrix() const { return cameraMatrix; }
 
 };
 

@@ -5,7 +5,6 @@
 #include "MeshTriangle.h"
 #include "math/BSPTree3D.h"
 #include "opengl/OpenGL.h"
-#include "math/Cullable.h"
 #include <vector>
 
 namespace Project {
@@ -14,7 +13,7 @@ namespace Render {
 /** A triangle-mesh
 */
 class Mesh
-	: public BaseRenderable, public Math::Cullable {
+	: public BaseRenderable {
 private:
 
 	std::vector< MeshTriangle* > triangles;
@@ -26,15 +25,17 @@ private:
 	void generateTriangleTree();
 	void drawTriangle(MeshTriangle* triangle, ShaderParamSetter setter);
 
+	static const int TREE_SPLIT_SIZE = 12;
+	static const Math::SpatialContainer::QueryType CULLING_QUERY_TYPE = Math::SpatialContainer::NEARBY;
+	static const Math::BSPTree3D::SplitMethod TREE_SPLIT_METHOD = Math::BSPTree3D::FAIR_XSTART;
+
 public:
 
 	Mesh();
 	~Mesh();
 	Mesh(vector< MeshTriangle* > _triangles, Material* _material = NULL);
 
-	void renderGeometry(ShaderParamSetter setter);
-	void setCullingObject(const Math::BoundingObject* culling_object);
-	void setCullingQueryType(Math::SpatialContainer::QueryType type);
+	void renderGeometry(ShaderParamSetter setter, const  Math::BoundingObject* bounding_object = NULL);
 	vector<Project::Math::Triangle3D> getTriangles();
 };
 
