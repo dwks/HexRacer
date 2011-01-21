@@ -94,6 +94,8 @@ private:
 	stack<OpenGL::Color> colorStack;
 	vector< vector<ShaderParameter*> > shaderParams;
 
+	int numTransformations;
+
 	int numColorOverrides;
 	int numMaterialOverrides;
 	int numShaderOverrides;

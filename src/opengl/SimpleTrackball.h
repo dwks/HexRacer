@@ -10,17 +10,17 @@ namespace OpenGL {
 class SimpleTrackball
 {
 private:
-	float xScale;
-	float yScale;
-	float longitude;
-	float latitude;
+	double xScale;
+	double yScale;
+	double longitude;
+	double latitude;
 	Math::Point lastPoint;
 	Math::Point spherePoint;
 
 	void updateSpherePoint();
 
 public:
-	SimpleTrackball(float x_scale = 1.0f, float y_scale = 1.0f);
+	SimpleTrackball(double x_scale = 1.0f, double y_scale = 1.0f);
 	~SimpleTrackball(void);
 
 	void setMouseStartAt(Point point);

@@ -57,8 +57,8 @@ namespace Render {
 		
 		if (properties->hasTransformation()) {
 			glPushMatrix(); //Save previous transformation
-			//Apply new transformation
-			MathWrapper::glMultMatrix(properties->getTransformation());
+			MathWrapper::glMultMatrix(properties->getTransformation());//Apply new transformation
+			numTransformations++;
 		}
 
 		setRenderColor(properties);
@@ -184,6 +184,7 @@ namespace Render {
 		
 		if (properties->hasTransformation()) {
 			glPopMatrix(); //Restore old transformation
+			numTransformations--;
 		}
 
 		revertRenderColor(properties);
@@ -429,13 +430,13 @@ namespace Render {
 		if (cubeMap && camera) {
 			glActiveTexture(cubeMapTexture);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->getCubeMap());
-			//glActiveTexture(colorMapTexture);
+			glActiveTexture(colorMapTexture);
 			setUniformInt(SHADER_CUBEMAP_UNIFORM_NAME, cubeMapTextureNum);
 			setUniformMatrix4(SHADER_CAMERA_MATRIX_UNIFORM_NAME, GL_FALSE, camera->getCameraMatrix());
 		}
 	}
 	const BoundingObject* RenderManager::getBoundingObject() const {
-		if (camera)
+		if (camera && numTransformations == 0)
 			return camera->getFrustrum();
 		else
 			return NULL;
@@ -443,9 +444,11 @@ namespace Render {
 
 	void RenderManager::setCubeMap(TextureCube* cube_map) {
 		cubeMap = cube_map;
+		/*
 		if (cubeMap && cubeMap->getCubeMap() > 0) {
 			
 		}
+		*/
 	}
 	
 

@@ -6,11 +6,11 @@ using namespace Project;
 using namespace Math;
 using namespace OpenGL;
 
-SimpleTrackball::SimpleTrackball(float x_scale, float y_scale)
+SimpleTrackball::SimpleTrackball(double x_scale, double y_scale)
 {
 	xScale = x_scale;
 	yScale = y_scale;
-	longitude = PI*0.5f;
+	longitude = PI*0.5;
 	latitude = 0.0f;
 
 	updateSpherePoint();
@@ -28,9 +28,9 @@ void SimpleTrackball::setMouseStartAt(Point point) {
 void SimpleTrackball::setMouseCurrentAt(Point point) {
 
 	longitude += (point.getU()-lastPoint.getU())*xScale;
-	longitude = smartMod(longitude, (float) PI*2.0f);
+	longitude = smartMod(longitude, PI*2.0);
 	latitude += (point.getV()-lastPoint.getV())*yScale;
-	latitude = bound(latitude, (float) -PI*0.45f, (float) PI*0.45f);
+	latitude = bound(latitude, -PI*0.45, PI*0.45);
 
 	updateSpherePoint();
 

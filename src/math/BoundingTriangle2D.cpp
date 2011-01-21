@@ -55,21 +55,29 @@ namespace Math {
 		return (Geometry::sameSideOfLine2D(getVertex(0), getVertex(1), getVertex(2), p, projectAxis) &&
 			Geometry::sameSideOfLine2D(getVertex(1), getVertex(2), getVertex(0), p, projectAxis) &&
 			Geometry::sameSideOfLine2D(getVertex(2), getVertex(0), getVertex(1), p, projectAxis));
+
+		/*
         
-        /*Point p2D = Point::point2D(p, projectAxis);
+        Point p2D = Point::point2D(p, projectAxis);
         
-        Point v1 = getVertex(0) - getVertex(1);
+        Point v1 = getVertex(0) *- getVertex(1);
         Point v2 = getVertex(1) - getVertex(2);
         Point v3 = getVertex(2) - getVertex(0);
+
+		Point w1 = p2D - getVertex(1);
+		Point w2 = p2D - getVertex(2);
+		Point w3 = p2D - getVertex(0);
         
-        double d1 = p2D.dotProduct(v1);
-        double d2 = p2D.dotProduct(v2);
-        double d3 = p2D.dotProduct(v3);
+        double d1 = w1.dotProduct(v1);
+        double d2 = w2.dotProduct(v2);
+        double d3 = w3.dotProduct(v3);
         
         if(d1 <= 0.0 && d2 <= 0.0 && d3 <= 0.0) return true;
         if(d1 >= 0.0 && d2 >= 0.0 && d3 >= 0.0) return true;
         
-        return false;*/
+        return false;
+
+		*/
 	}
 
 	bool BoundingTriangle2D::intersects2D(const BoundingObject2D& bound_obj) const {
