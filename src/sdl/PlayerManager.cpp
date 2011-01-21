@@ -68,29 +68,85 @@ void PlayerManager::applySuspension(Render::RenderManager *renderManager) {
         
         for(int wheel = 0; wheel < 4; wheel ++) {
             Math::Matrix matrix = player->getTransformation();
-            matrix = Math::Matrix::getTranslationMatrix(
-                suspensionPoint[wheel]) * matrix;
             
+            //LOG(OPENGL, "Centre of mass: " << matrix * Math::Point(0.0, 0.0, 0.0, 1.0));
+            
+            /*matrix = Math::Matrix::getTranslationMatrix(
+                suspensionPoint[wheel]) * matrix;*/
+            
+            // uses 4D points
             Math::Point axis = matrix * Math::Point(0.0, -1.0, 0.0, 0.0);
-            Math::Point point = matrix * Math::Point(0.0, 0.0, 0.0, 1.0);
+            //Math::Point point = matrix * Math::Point(0.0, 0.0, 0.0, 1.0);
+            Math::Point point = matrix * suspensionPoint[wheel];
             
-            //LOG(OPENGL, "Suspension point: " << point);
+            //LOG(OPENGL, "Wheel " << wheel << ": " << point);
+            
+            Physics::PhysicsWorld::getInstance()->getDebug()
+                .drawLine(Physics::Converter::toVector(point),
+                    Physics::Converter::toVector(point + axis), btVector3(1.0, 0.0, 0.0));
             
             static const double REST_LENGTH = 1.0;
+            static const double STRETCH_LENGTH = 1.0;
             
             double length = Physics::PhysicsWorld::getInstance()
                 ->raycastLength(point, point + axis);
             
-            length = REST_LENGTH - length;
-            if(length < -1.0) length = -1.0;
-            if(length > +1.0) length = +1.0;
+            length = length - REST_LENGTH;
+            if(length < -STRETCH_LENGTH) length = -STRETCH_LENGTH;
+            if(length > +STRETCH_LENGTH) length = 0.0; //length = +STRETCH_LENGTH;
             
-            static const double K = 10.0;
-            double factor = -K * length;
+            static const double K = 20.0; //(9.81 * 1.0) / (REST_LENGTH * 4);
+            double factor = K * length;
+            
+            //player->applyForce(Math::Point(0.0, 1.0, 0.0) * K, suspensionPoint[wheel]);
+            //player->applyForce(axis * factor, suspensionPoint[wheel]);
+            
+            Physics::PhysicsWorld::getInstance()->getDebug()
+                .drawLine(Physics::Converter::toVector(point),
+                    Physics::Converter::toVector(point + axis), btVector3(1.0, 0.0, 0.0));
             
             //factor = (factor + 4.5) * 0.5 - 4.5;
             
-            //LOG(PHYSICS, "crazy force: " << factor);
+            LOG(PHYSICS, "crazy force: " << factor << " * " << axis);
+            player->applyForce(axis * factor, suspensionPoint[wheel]);
+        }
+#if 0
+        for(int wheel = 0; wheel < 4; wheel ++) {
+            Math::Matrix matrix = player->getTransformation();
+            matrix = Math::Matrix::getTranslationMatrix(
+                suspensionPoint[wheel]) * matrix;
+            
+            // uses 4D points
+            Math::Point axis = matrix * Math::Point(0.0, -1.0, 0.0, 0.0);
+            Math::Point point = matrix * Math::Point(0.0, 0.0, 0.0, 1.0);
+            
+            //axis.normalize();
+            
+            //LOG(OPENGL, "Suspension point: " << point);
+            
+            static const double REST_LENGTH = 1.0;
+            static const double STRETCH_LENGTH = 1.0;
+            
+            double length = Physics::PhysicsWorld::getInstance()
+                ->raycastLength(point, point + axis);
+            
+            length = length - REST_LENGTH;
+            if(length < -STRETCH_LENGTH) length = -STRETCH_LENGTH;
+            if(length > +STRETCH_LENGTH) length = +STRETCH_LENGTH;
+            
+            static const double K = 20.0; //(9.81 * 1.0) / (REST_LENGTH * 4);
+            double factor = K * length;
+            
+            //player->applyForce(Math::Point(0.0, 1.0, 0.0) * K, suspensionPoint[wheel]);
+            //player->applyForce(axis * factor, suspensionPoint[wheel]);
+            
+            Physics::PhysicsWorld::getInstance()->getDebug()
+                .drawLine(Physics::Converter::toVector(point),
+                    Physics::Converter::toVector(point + axis), btVector3(1.0, 0.0, 0.0));
+            
+            //factor = (factor + 4.5) * 0.5 - 4.5;
+            
+            LOG(PHYSICS, "crazy force: " << factor << " * " << axis);
             player->applyForce(axis * factor, suspensionPoint[wheel]);
             
             if(0) {
@@ -108,6 +164,7 @@ void PlayerManager::applySuspension(Render::RenderManager *renderManager) {
                 renderList->render(renderManager);
             }
         }
+#endif
     }
 }
 
