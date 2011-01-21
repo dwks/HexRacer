@@ -13,6 +13,8 @@
 #include "render/ShaderUniformVector4.h"
 #include "render/RenderList.h"
 
+#include "config.h"
+
 namespace Project {
 namespace SDL {
 
@@ -31,7 +33,7 @@ void PlayerManager::UpdatePlayerListHandler::observe(
 }
 
 PlayerManager::PlayerManager(int id) : id(id) {
-    Object::Player *player = new Object::Player(id);
+    Object::Player *player = new Object::Player(id, INITIAL_CAR_LOCATION);
     
     playerList = new Object::PlayerList();
     playerList->addPlayer(player);

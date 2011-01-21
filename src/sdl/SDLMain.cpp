@@ -26,6 +26,7 @@
 #include "SDL_image.h"
 
 #include "settings/SettingsManager.h"
+#include "config.h"
 
 namespace Project {
 namespace SDL {
@@ -140,8 +141,10 @@ void SDLMain::run() {
 	//Add the test terrain
 	Render::MeshGroup* test_terrain = meshLoader->getModelByName("testTerrain");
     
-	Paint::PaintGenerator paint_gen(test_terrain->getTriangles());
+#ifdef GENERATE_PAINT_CELLS
+    Paint::PaintGenerator paint_gen(test_terrain->getTriangles());
 	paintCells = paint_gen.getPaintCells();
+#endif
 
 	rootRenderable->addRenderable(test_terrain);
     

@@ -24,6 +24,8 @@
 #include "log/Logger.h"
 #include "misc/Sleeper.h"
 
+#include "config.h"
+
 namespace Project {
 namespace Server {
 
@@ -96,7 +98,8 @@ void ServerMain::run() {
                 packetSerializer.packetToString(packet));
             
             clients.addClient(socket);
-            playerList.addPlayer(new Object::Player(clientCount));
+            playerList.addPlayer(
+                new Object::Player(clientCount, INITIAL_CAR_LOCATION));
             
             clientCount ++;
         }

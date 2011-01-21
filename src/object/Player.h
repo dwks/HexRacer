@@ -29,7 +29,7 @@ private:
     Render::RenderableObject *renderable;
 public:
     Player();
-    Player(int id);
+    Player(int id, const Math::Point &origin);
     virtual ~Player();
     
     void setPhysicalObject(Physics::PhysicalPlayer *physical)

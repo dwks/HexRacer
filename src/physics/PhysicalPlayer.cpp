@@ -73,8 +73,21 @@ Math::Matrix PhysicalPlayer::getTransformation() const {
 void PhysicalPlayer::applyMovement(const Math::Point &movement) {
     primaryRigidBody->activate();
     
-    primaryRigidBody->applyCentralForce(Converter::toVector(
-        movement * 5000.0f));
+    double turn = movement.getX();
+    primaryRigidBody->applyTorque(
+        Converter::toVector(Math::Point(0.0, 1.0, 0.0)
+            * turn * 400.0f));
+    
+    btTransform transform = primaryRigidBody->getWorldTransform();
+    btMatrix3x3 matrix(transform.getRotation());
+    Math::Point orientation
+        = Converter::toPoint(matrix
+            * Converter::toVector(Math::Point(0.0, 0.0, 1.0)));
+    
+    double accel = movement.getZ();
+    primaryRigidBody->applyCentralForce(
+        Converter::toVector(orientation
+            * accel * 5000.0f));
 }
 
 }  // namespace Physics
