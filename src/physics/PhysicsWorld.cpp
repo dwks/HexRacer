@@ -1,5 +1,5 @@
 #include <cstddef>  // for std::size_t
-#include <limits>
+#include <cfloat>
 #include "PhysicsWorld.h"
 #include "Converter.h"
 
@@ -131,8 +131,8 @@ double PhysicsWorld::raycastLength(const Math::Point &from,
         return (from - Converter::toPoint(ray.m_hitPointWorld)).length();
     }
 
-	return 9999999999.0;
-    //return std::numeric_limits<double>::max();
+	//return 9999999999.0;
+	return DBL_MAX;
 }
 
 }  // namespace Physics
