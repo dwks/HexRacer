@@ -3,6 +3,8 @@
 #include "Values.h"
 #include "Geometry.h"
 
+#include "log/Logger.h"
+
 namespace Project {
 namespace Math {
 
@@ -50,9 +52,33 @@ namespace Math {
 	}
 
 	bool BoundingTriangle2D::pointInside(const Point& p) const {
-		return (Geometry::sameSideOfLine2D(getVertex(0), getVertex(1), getVertex(2), p, projectAxis) &&
+		/*return (Geometry::sameSideOfLine2D(getVertex(0), getVertex(1), getVertex(2), p, projectAxis) &&
 			Geometry::sameSideOfLine2D(getVertex(1), getVertex(2), getVertex(0), p, projectAxis) &&
-			Geometry::sameSideOfLine2D(getVertex(2), getVertex(0), getVertex(1), p, projectAxis));
+			Geometry::sameSideOfLine2D(getVertex(2), getVertex(0), getVertex(1), p, projectAxis));*/
+        
+        /*bool oldValue = (Geometry::sameSideOfLine2D(getVertex(0), getVertex(1), getVertex(2), p, projectAxis) &&
+            Geometry::sameSideOfLine2D(getVertex(1), getVertex(2), getVertex(0), p, projectAxis) &&
+            Geometry::sameSideOfLine2D(getVertex(2), getVertex(0), getVertex(1), p, projectAxis));*/
+        
+        Point p2D = Point::point2D(p, projectAxis);
+        
+        Point v1 = getVertex(0) - getVertex(1);
+        Point v2 = getVertex(1) - getVertex(2);
+        Point v3 = getVertex(2) - getVertex(0);
+        
+        int s1 = sign(p2D.dotProduct(v1));
+        int s2 = sign(p2D.dotProduct(v2));
+        int s3 = sign(p2D.dotProduct(v3));
+        
+        bool newValue = (s1 == s2 && s2 == s3);
+        
+        /*if(oldValue != newValue) {
+            LOG(OPENGL, "ERROR: dot product version thinks " << newValue
+                << " for " << p2D << " with "
+                << getVertex(0) << "," << getVertex(1) << "," << getVertex(2));
+        }*/
+        
+        return newValue;
 	}
 
 	bool BoundingTriangle2D::intersects2D(const BoundingObject2D& bound_obj) const {

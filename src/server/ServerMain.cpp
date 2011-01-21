@@ -14,8 +14,12 @@
 #include "event/ObserverList.h"
 
 #include "physics/PhysicsWorld.h"
+#include "physics/PhysicsFactory.h"
 
 #include "object/PlayerList.h"
+
+#include "render/MeshGroup.h"
+#include "render/MeshLoader.h"
 
 #include "log/Logger.h"
 #include "misc/Sleeper.h"
@@ -66,6 +70,14 @@ void ServerMain::run() {
     ClientManager clients;
     
     server.addServer(1820);
+    
+    Render::MeshLoader *meshLoader = new Render::MeshLoader();
+    meshLoader->loadOBJ("testTerrain", "models/testterrain.obj");
+    Render::MeshGroup *test_terrain = meshLoader->getModelByName("testTerrain");
+    
+    Physics::PhysicsWorld::getInstance()->registerRigidBody(
+        Physics::PhysicsFactory::createRigidTriMesh(
+            test_terrain->getTriangles()));
     
     ADD_OBSERVER(new ServerObserver(this));
     

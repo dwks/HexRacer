@@ -12,6 +12,7 @@ aux_source_directory(misc MISC_SOURCES)
 aux_source_directory(network NETWORK_SOURCES)
 aux_source_directory(object OBJECT_SOURCES)
 aux_source_directory(opengl OPENGL_SOURCES)
+aux_source_directory(paint PAINT_SOURCES)
 aux_source_directory(physics PHYSICS_SOURCES)
 aux_source_directory(render RENDER_SOURCES)
 aux_source_directory(server SERVER_DIR_SOURCES)
@@ -28,11 +29,12 @@ set(SOURCES
     ${NETWORK_SOURCES}
     ${PHYSICS_SOURCES}
     ${OPENGL_SOURCES}
-    ${SETTINGS_SOURCES})
+    ${SETTINGS_SOURCES}
+    ${RENDER_SOURCES}
+    ${PAINT_SOURCES})
 
 set(SDL_SOURCES
-    ${SDL_DIR_SOURCES}
-    ${RENDER_SOURCES})
+    ${SDL_DIR_SOURCES})
 
 set(SERVER_SOURCES
     ${SERVER_DIR_SOURCES})
@@ -84,6 +86,6 @@ target_link_libraries(sdl
     ${CORE_LIBRARY} ${Boost_LIBRARIES} ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${OPENGL_LIBRARIES}
     BulletDynamics BulletCollision LinearMath)
 target_link_libraries(server
-    ${CORE_LIBRARY} ${Boost_LIBRARIES} ${OPENGL_LIBRARIES}
+    ${CORE_LIBRARY} ${Boost_LIBRARIES} ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${OPENGL_LIBRARIES}
     BulletDynamics BulletCollision LinearMath)
 

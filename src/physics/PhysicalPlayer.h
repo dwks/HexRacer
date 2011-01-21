@@ -32,6 +32,9 @@ private:
         Math::Matrix transformation;
         Math::Point linearVelocity, angularVelocity;
         ar >> transformation >> linearVelocity >> angularVelocity;
+        
+        LOG(OPENGL, transformation);
+        
         constructRigidBody(transformation);
         
         primaryRigidBody->setLinearVelocity(

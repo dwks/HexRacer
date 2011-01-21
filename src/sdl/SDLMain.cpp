@@ -140,8 +140,8 @@ void SDLMain::run() {
 	//Add the test terrain
 	Render::MeshGroup* test_terrain = meshLoader->getModelByName("testTerrain");
     
-	//Paint::PaintGenerator paint_gen(test_terrain->getTriangles());
-	//paintCells = paint_gen.getPaintCells();
+	Paint::PaintGenerator paint_gen(test_terrain->getTriangles());
+	paintCells = paint_gen.getPaintCells();
 
 	rootRenderable->addRenderable(test_terrain);
     
