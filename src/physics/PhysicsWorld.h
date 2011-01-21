@@ -20,9 +20,9 @@ namespace Physics {
 
 class PhysicsWorld {
 private:
-  static PhysicsWorld *instance;
+    static PhysicsWorld *instance;
 public:
-  static PhysicsWorld *getInstance() { return instance; }
+    static PhysicsWorld *getInstance() { return instance; }
 public:
     class DebugDrawingObserver
         : public Event::TypedObserver<Event::SetDebugDrawing> {
@@ -32,34 +32,36 @@ public:
     
     friend class DebugDrawingObserver;
 public:
-  PhysicsWorld();
-  void setupPhysicsWorld();
-  void stepWorld(float microseconds);
-  void setGravity(float xAccel, float yAccel, float zAccel);
-  
-  void createTestScene();
-  
-  void registerRigidBody(btRigidBody *body);
-  
-  /** This does not automatically free the memory for @a body.
-  */
-  void destroyRigidBody(btRigidBody *body);
-  
-  void render();
+    PhysicsWorld();
+    void setupPhysicsWorld();
+    void stepWorld(float microseconds);
+    void setGravity(float xAccel, float yAccel, float zAccel);
+    
+    void createTestScene();
+    
+    void registerRigidBody(btRigidBody *body);
+    
+    /** This does not automatically free the memory for @a body.
+    */
+    void destroyRigidBody(btRigidBody *body);
+    
+    void render();
+    
+    double raycastLength(const Math::Point &from, const Math::Point &to);
 private:
     void setDebug(bool on);
 private:
-  btBroadphaseInterface *broadPhaseInterface;
-  btCollisionDispatcher *collisionDispatcher;
-  btDefaultCollisionConfiguration *collisionConfiguration;
-  btConstraintSolver *constraintSolver;
-  btDiscreteDynamicsWorld *dynamicsWorld;
-  
-  DebugDrawer debug;
-  bool debugging;
-  
-  std::vector<btRigidBody*> collisionBodies;
-  std::vector<PhysicalPlayer*> playerEntities;
+    btBroadphaseInterface *broadPhaseInterface;
+    btCollisionDispatcher *collisionDispatcher;
+    btDefaultCollisionConfiguration *collisionConfiguration;
+    btConstraintSolver *constraintSolver;
+    btDiscreteDynamicsWorld *dynamicsWorld;
+    
+    DebugDrawer debug;
+    bool debugging;
+    
+    std::vector<btRigidBody*> collisionBodies;
+    std::vector<PhysicalPlayer*> playerEntities;
 };
 
 }  // namespace Physics

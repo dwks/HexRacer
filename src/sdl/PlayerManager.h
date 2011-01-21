@@ -41,6 +41,8 @@ public:
     PlayerManager(int id);
     ~PlayerManager();
     
+    void applySuspension(Render::RenderManager *renderManager);
+    
     void render(Render::RenderManager *renderManager);
 	OpenGL::Color getPlayerColor(int id);
 protected:

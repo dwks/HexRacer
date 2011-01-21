@@ -90,5 +90,13 @@ void PhysicalPlayer::applyMovement(const Math::Point &movement) {
             * accel * 5000.0f));
 }
 
+void PhysicalPlayer::applyForce(const Math::Point &movement,
+    const Math::Point &at) {
+    
+    primaryRigidBody->applyForce(
+        Converter::toVector(movement),
+        Converter::toVector(at));
+}
+
 }  // namespace Physics
 }  // namespace Project
