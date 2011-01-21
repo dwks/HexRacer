@@ -66,9 +66,9 @@ void Camera::updateDirections() {
 	cameraMatrix[5] = static_cast<GLfloat>(actualCameraUpDirection.getY());
 	cameraMatrix[6] = static_cast<GLfloat>(actualCameraUpDirection.getZ());
 
-	cameraMatrix[8] = static_cast<GLfloat>(cameraLookDirection.getX());
-	cameraMatrix[9] = static_cast<GLfloat>(cameraLookDirection.getY());
-	cameraMatrix[10] = static_cast<GLfloat>(cameraLookDirection.getZ());
+	cameraMatrix[8] = static_cast<GLfloat>(-cameraLookDirection.getX());
+	cameraMatrix[9] = static_cast<GLfloat>(-cameraLookDirection.getY());
+	cameraMatrix[10] = static_cast<GLfloat>(-cameraLookDirection.getZ());
 
 	//Update the plane normals
 	double angle = fieldOfView/360.0*PI;

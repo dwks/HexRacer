@@ -28,21 +28,9 @@ void PhysicalPlayer::destroyRigidBody() {
 
 void PhysicalPlayer::constructRigidBody(const Math::Point &position) {
     destroyRigidBody();
-    
-    //Get the bounding box from the mesh loader
-	//Math::BoundingBox3D box(1.0, 1.0, 1.0);
-	/*
-	Render::MeshGroup* player_model = Render::MeshLoader::getInstance()->getModelByName("playerCube");
-	if (player_model)
-		box = player_model->getBoundingBox();
-
-	primaryRigidBody = PhysicsWorld::getInstance()->createRigidBox(
-		box.widthX(), box.widthY(), box.widthZ(), origin, 2.0);
-
-	*/
 	
     primaryRigidBody = Physics::PhysicsFactory
-        ::createRigidBox(0.5,0.2,1.0,position,2.0);
+        ::createRigidBox(0.4,0.2,0.8,position,2.0);
     PhysicsWorld::getInstance()->registerRigidBody(primaryRigidBody);
 }
 

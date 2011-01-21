@@ -317,6 +317,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\RenderableBox.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\RenderableObject.cpp"
 				>
 			</File>
@@ -828,6 +832,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\RayIntersection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderableBox.h"
 				>
 			</File>
 			<File

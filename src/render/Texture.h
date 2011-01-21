@@ -35,7 +35,7 @@ public:
 	*/
 	static GLuint loadTexture2D(std::string filename,
 		GLint wrap_s = GL_REPEAT, GLint wrap_t = GL_REPEAT,
-		GLint filter_min = GL_LINEAR, GLint filter_mag = GL_LINEAR);
+		GLint filter_min = GL_LINEAR_MIPMAP_LINEAR, GLint filter_mag = GL_LINEAR);
 
 	//static void loadSurfaceToTexture(SDLSurface* surface, GLenum target);
 
@@ -46,7 +46,7 @@ public:
 		std::string negative_y_file,
 		std::string positive_z_file,
 		std::string negative_z_file,
-		GLint filter_min = GL_LINEAR, GLint filter_mag = GL_LINEAR);
+		GLint filter_min = GL_LINEAR_MIPMAP_LINEAR, GLint filter_mag = GL_LINEAR);
 
 	static GLint toGLFormat(int bytes_per_pixel);
 

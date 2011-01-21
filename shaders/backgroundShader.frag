@@ -1,4 +1,4 @@
-//basic fragment shader
+//Static view independent cube map
 
 varying vec3 eyeNormal;
 varying vec3 objectNormal;
@@ -22,11 +22,7 @@ void main() {
 	cameraNormalMatrix[1][2] = cameraMatrix[1][2];
 	cameraNormalMatrix[2][2] = cameraMatrix[2][2];
 	//vec3 cameraPos = vec3(cameraMatrix[3][0], cameraMatrix[3][1], cameraMatrix[3][2]);
-	vec3 worldView = cameraNormalMatrix * view;
-	
-	//vec3 worldView = normalize(camNormalMatrix * view);
+	vec3 worldView = normalize(cameraNormalMatrix * view);
 	
 	gl_FragColor = textureCube(cubeMap, worldView);
-	
-	//gl_FragColor = vec4(objectNormal.x, objectNormal.y, objectNormal.z, 1.0);
 }

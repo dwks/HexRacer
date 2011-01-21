@@ -1,4 +1,4 @@
-// basic vertex shader
+// Color map, normal map and glow map with phong shading
 
 varying vec3 eyeNormal;
 varying vec3 objectNormal;

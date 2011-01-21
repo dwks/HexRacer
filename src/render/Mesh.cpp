@@ -25,7 +25,9 @@ namespace Render {
 		cullingObject = NULL;
 		queryType = SpatialContainer::BOX_INTERSECT;
 
-		generateTriangleTree();
+		if (triangles.size() >= MIN_TREE_SIZE) {
+			generateTriangleTree();
+		}
 	}
 
 	Mesh::~Mesh() {

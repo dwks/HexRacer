@@ -1,4 +1,4 @@
-//basic fragment shader
+// Color map, normal map and glow map with phong shading
 
 varying vec3 eyeNormal;
 varying vec3 objectNormal;
@@ -9,6 +9,7 @@ varying vec3 eyeBitangent;
 
 uniform sampler2D colorMap;
 uniform sampler2D normalMap;
+uniform sampler2D glowMap;
 uniform int hasTexture [3];
 uniform int numLights;
 
@@ -75,7 +76,10 @@ void main() {
 	}
 	
 	vec4 ambient_base;
-	ambient_base = gl_FrontMaterial.ambient;
+	if (hasTexture[2] == 1)
+		ambient_base = texture2D(glowMap, gl_TexCoord[0].st);
+	else
+		ambient_base = gl_FrontMaterial.ambient;
 	
 	gl_FragColor = diffuse_color + specular_color + ambient_color;
 	if (gl_FragColor.x < ambient_base.x)

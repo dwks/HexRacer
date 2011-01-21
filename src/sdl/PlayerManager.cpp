@@ -85,8 +85,8 @@ void PlayerManager::applySuspension(Render::RenderManager *renderManager) {
                 .drawLine(Physics::Converter::toVector(point),
                     Physics::Converter::toVector(point + axis), btVector3(1.0, 0.0, 0.0));
             
-            static const double REST_LENGTH = 1.0;
-            static const double STRETCH_LENGTH = 1.0;
+            static const double REST_LENGTH = 0.5;
+            static const double STRETCH_LENGTH = 0.5;
             
             double length = Physics::PhysicsWorld::getInstance()
                 ->raycastLength(point, point + axis);
@@ -194,8 +194,10 @@ void PlayerManager::render(Render::RenderManager *renderManager) {
             Math::Matrix matrix = player->getTransformation();
             
             // original size of model is 2x2, scale appropriately
+			
             matrix = matrix
-                * Math::Matrix::getScalingMatrix(Math::Point(5.0, 2.0, 10.0) / 2.0);
+                * Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0));
+			
             
 			//btRigidBody* body = player->getPhysicalObject()->getPrimaryRigidBody();
 			//btQuaternion quat = body->getOrientation();

@@ -171,7 +171,7 @@ namespace Render {
 		}
 
 		//Tell the shader which textures exist
-		int has_tex_values[3] = {(int) hasColorMap, (int) hasNormalMap, 0};
+		int has_tex_values[3] = {(int) hasColorMap, (int) hasNormalMap, 1};
 		setUniformIntArray(SHADER_HASTEXTURE_UNIFORM_NAME, has_tex_values, 3);
 		
 	}

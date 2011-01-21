@@ -26,9 +26,8 @@ namespace Render {
 
 		//Don't draw if rendering is disabled or not in the renderer's bounding object
 		if (!getRenderingEnabled() ||
-			(!getRenderProperties()->hasTransformation() &&
-			manager->getBoundingObject() != NULL &&
-			!intersects(*manager->getBoundingObject()))
+			(manager->getBoundingObject() != NULL &&
+			!shouldDraw(*manager->getBoundingObject()))
 			)
 			return;
 

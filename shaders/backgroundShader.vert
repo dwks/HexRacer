@@ -1,4 +1,4 @@
-// basic vertex shader
+//Static view independent cube map
 
 varying vec3 eyeNormal;
 varying vec3 objectNormal;

@@ -130,8 +130,9 @@ double PhysicsWorld::raycastLength(const Math::Point &from,
     if(ray.hasHit()) {
         return (from - Converter::toPoint(ray.m_hitPointWorld)).length();
     }
-    
-    return std::numeric_limits<double>::max();
+
+	return 9999999999.0;
+    //return std::numeric_limits<double>::max();
 }
 
 }  // namespace Physics

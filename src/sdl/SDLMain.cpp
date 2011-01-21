@@ -109,7 +109,7 @@ void SDLMain::run() {
 	camera = new OpenGL::Camera();
 	camera->setFieldOfViewDegrees(60.0f);
 	camera->setPosition(Point(0.0f, 2.0f, -4.0f));
-	camera->setFarPlane(80.0f);
+	camera->setFarPlane(200.0f);
 	updateCamera();
     
     resizeGL(width, height);
@@ -138,15 +138,19 @@ void SDLMain::run() {
 	//Load the model
 	meshLoader->loadOBJ("testTerrain", "models/testterrain.obj");
 	meshLoader->loadOBJ("playerCube", "models/playercube.obj");
+	meshLoader->loadOBJ("backgroundCube", "models/backgroundCube.obj");
 	//Add the test terrain
 	Render::MeshGroup* test_terrain = meshLoader->getModelByName("testTerrain");
     
+	/*
     if(GET_SETTING("render.paint.enabled", 1)) {
         Paint::PaintGenerator paint_gen(test_terrain->getTriangles());
         paintCells = paint_gen.getPaintCells();
     }
+	*/
 
 	rootRenderable->addRenderable(test_terrain);
+	rootRenderable->addRenderable(meshLoader->getModelByName("backgroundCube"));
     
 	/*
 	rootRenderable->getRenderProperties()->setColor(OpenGL::Color::VIOLET);
@@ -163,7 +167,7 @@ void SDLMain::run() {
 		"models/starfield.png",
 		"models/starfield.png");
 
-	//renderer->setCubeMap(background_texture);
+	renderer->setCubeMap(background_texture);
     
 	//Create some lights
 	Render::Light* light = new Render::Light(Math::Point(1.0f, 2.0f, -1.0f));
@@ -336,8 +340,6 @@ void SDLMain::render() {
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 
-	glPushMatrix();
-
 	//Pass the camera to the renderer for culling
 	renderer->setCamera(camera);
 
@@ -346,14 +348,13 @@ void SDLMain::render() {
 	
 	//Render the scene
 	rootRenderable->render(renderer);
-
-	glPopMatrix();
     
 	//Revert the rendering state
 	//glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
 
+	/*
 	//Draw paint cells
 	glColor3f(1.0f, 1.0f, 0.0f);
 	for (unsigned int i = 0; i < paintCells.size(); i++) {
@@ -365,7 +366,7 @@ void SDLMain::render() {
 		OpenGL::MathWrapper::glVertex(paintCells[i]->vertex[0]);
 		glEnd();
 	}
-	
+	*/
     
     glFlush();
 }
