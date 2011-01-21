@@ -10,3 +10,5 @@ display.fullscreen = 0
 display.bpp        = 0
 
 physics.driving.dosuspension = 1
+
+render.paint.enabled = 1

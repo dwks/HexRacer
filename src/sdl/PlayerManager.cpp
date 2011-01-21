@@ -107,7 +107,7 @@ void PlayerManager::applySuspension(Render::RenderManager *renderManager) {
             
             //factor = (factor + 4.5) * 0.5 - 4.5;
             
-            LOG(PHYSICS, "crazy force: " << factor << " * " << axis);
+            //LOG(PHYSICS, "crazy force: " << factor << " * " << axis);
             player->applyForce(axis * factor, suspensionPoint[wheel]);
         }
 #if 0
