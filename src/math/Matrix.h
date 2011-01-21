@@ -20,6 +20,7 @@ public:
     Matrix(const double data[WIDTH * HEIGHT]);
     
     static Matrix getTranslationMatrix(const Math::Point &translation);
+    static Matrix getScalingMatrix(const Math::Point &scale);
     
     void setToIdentity();
     

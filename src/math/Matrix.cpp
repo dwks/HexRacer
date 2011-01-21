@@ -28,6 +28,15 @@ Matrix Matrix::getTranslationMatrix(const Math::Point &translation) {
     return m;
 }
 
+Matrix Matrix::getScalingMatrix(const Math::Point &scale) {
+    Matrix m;  // identity by default
+    m.set(0, 0, scale.getX());
+    m.set(1, 1, scale.getY());
+    m.set(2, 2, scale.getZ());
+    
+    return m;
+}
+
 void Matrix::setToIdentity() {
     for(int col = 0; col < WIDTH; col ++) {
         for(int row = 0; row < HEIGHT; row ++) {

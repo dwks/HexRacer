@@ -42,7 +42,7 @@ void PhysicalPlayer::constructRigidBody(const Math::Point &position) {
 	*/
 	
     primaryRigidBody = Physics::PhysicsFactory
-        ::createRigidBox(0.2,0.2,0.2,position,2.0);
+        ::createRigidBox(0.5,0.2,1.0,position,2.0);
     PhysicsWorld::getInstance()->registerRigidBody(primaryRigidBody);
 }
 

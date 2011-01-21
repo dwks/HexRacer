@@ -65,10 +65,16 @@ void PlayerManager::render(Render::RenderManager *renderManager) {
 				new Render::ShaderUniformVector4("playerColor", getPlayerColor(player->getID())));
         }
         
-        if(renderable) {   // will always be true
+        // first if, then second if
+        
+        if(renderable) {
             //Math::Point origin = player->getPosition();
             //Math::Matrix matrix = Math::Matrix::getTranslationMatrix(origin);
             Math::Matrix matrix = player->getTransformation();
+            
+            // original size of model is 2x2, scale appropriately
+            matrix = matrix
+                * Math::Matrix::getScalingMatrix(Math::Point(5.0, 2.0, 10.0) / 2.0);
             
 			//btRigidBody* body = player->getPhysicalObject()->getPrimaryRigidBody();
 			//btQuaternion quat = body->getOrientation();
