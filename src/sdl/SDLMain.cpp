@@ -256,6 +256,7 @@ void SDLMain::run() {
         }
         
         render();
+        playerManager->applySuspension(renderer);
         physicsWorld->render();
         
         SDL_GL_SwapBuffers();

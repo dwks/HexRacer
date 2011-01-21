@@ -13,6 +13,9 @@
 #include "render/ShaderUniformVector4.h"
 #include "render/RenderList.h"
 
+#include "physics/PhysicsWorld.h"
+
+#include "settings/SettingsManager.h"
 #include "config.h"
 
 namespace Project {
@@ -47,6 +50,67 @@ PlayerManager::~PlayerManager() {
     delete playerList;
 }
 
+void PlayerManager::applySuspension(Render::RenderManager *renderManager) {
+    if(!GET_SETTING("physics.driving.dosuspension", 0)) {
+        return;
+    }
+    
+    Object::PlayerList::IteratorType it = playerList->getIterator();
+    while(it.hasNext()) {
+        Object::Player *player = it.next();
+        
+        static const Math::Point suspensionPoint[] = {
+            Math::Point(5.0, -2.0, 10.0) / 20.0,
+            Math::Point(-5.0, -2.0, 10.0) / 20.0,
+            Math::Point(-5.0, -2.0, -10.0) / 20.0,
+            Math::Point(5.0, -2.0, -10.0) / 20.0
+        };
+        
+        for(int wheel = 0; wheel < 4; wheel ++) {
+            Math::Matrix matrix = player->getTransformation();
+            matrix = Math::Matrix::getTranslationMatrix(
+                suspensionPoint[wheel]) * matrix;
+            
+            Math::Point axis = matrix * Math::Point(0.0, -1.0, 0.0, 0.0);
+            Math::Point point = matrix * Math::Point(0.0, 0.0, 0.0, 1.0);
+            
+            //LOG(OPENGL, "Suspension point: " << point);
+            
+            static const double REST_LENGTH = 1.0;
+            
+            double length = Physics::PhysicsWorld::getInstance()
+                ->raycastLength(point, point + axis);
+            
+            length = REST_LENGTH - length;
+            if(length < -1.0) length = -1.0;
+            if(length > +1.0) length = +1.0;
+            
+            static const double K = 10.0;
+            double factor = -K * length;
+            
+            //factor = (factor + 4.5) * 0.5 - 4.5;
+            
+            //LOG(PHYSICS, "crazy force: " << factor);
+            player->applyForce(axis * factor, suspensionPoint[wheel]);
+            
+            if(0) {
+                Render::MeshGroup* player_cube_mesh
+                    = Render::MeshLoader::getInstance()->getModelByName("playerCube");
+                Render::RenderList *renderList = new Render::RenderList();
+                renderList->addRenderable(player_cube_mesh);
+                
+                renderList->getRenderProperties()->addShaderParameter(
+                    new Render::ShaderUniformVector4(
+                        "playerColor", getPlayerColor(player->getID())));
+                
+                renderList->getRenderProperties()->setTransformation(
+                    Math::Matrix::getTranslationMatrix(point));
+                renderList->render(renderManager);
+            }
+        }
+    }
+}
+
 void PlayerManager::render(Render::RenderManager *renderManager) {
     Object::PlayerList::IteratorType it = playerList->getIterator();
     while(it.hasNext()) {
@@ -65,10 +129,16 @@ void PlayerManager::render(Render::RenderManager *renderManager) {
 				new Render::ShaderUniformVector4("playerColor", getPlayerColor(player->getID())));
         }
         
-        if(renderable) {   // will always be true
+        // first if, then second if
+        
+        if(renderable) {
             //Math::Point origin = player->getPosition();
             //Math::Matrix matrix = Math::Matrix::getTranslationMatrix(origin);
             Math::Matrix matrix = player->getTransformation();
+            
+            // original size of model is 2x2, scale appropriately
+            matrix = matrix
+                * Math::Matrix::getScalingMatrix(Math::Point(5.0, 2.0, 10.0) / 2.0);
             
 			//btRigidBody* body = player->getPhysicalObject()->getPrimaryRigidBody();
 			//btQuaternion quat = body->getOrientation();

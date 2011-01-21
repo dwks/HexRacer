@@ -43,6 +43,7 @@ public:
     Math::Point getPosition() const;
     Math::Matrix getTransformation() const;
     void applyMovement(const Math::Point &movement);
+    void applyForce(const Math::Point &movement, const Math::Point &at);
 };
 
 }  // namespace Object

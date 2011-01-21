@@ -1,4 +1,5 @@
 #include <cstddef>  // for std::size_t
+#include <limits>
 #include "PhysicsWorld.h"
 #include "Converter.h"
 
@@ -114,6 +115,23 @@ void PhysicsWorld::render() {
     if(debugging) {
         dynamicsWorld->debugDrawWorld();
     }
+}
+
+double PhysicsWorld::raycastLength(const Math::Point &from,
+    const Math::Point &to) {
+    
+    btVector3 fromv = Converter::toVector(from);
+    btVector3 tov = Converter::toVector(to);
+    
+    btCollisionWorld::ClosestRayResultCallback ray(fromv, tov);
+    
+    dynamicsWorld->rayTest(fromv, tov, ray);
+    
+    if(ray.hasHit()) {
+        return (from - Converter::toPoint(ray.m_hitPointWorld)).length();
+    }
+    
+    return std::numeric_limits<double>::max();
 }
 
 }  // namespace Physics

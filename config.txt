@@ -8,3 +8,5 @@ display.width      = 800
 display.height     = 600
 display.fullscreen = 0
 display.bpp        = 0
+
+physics.driving.dosuspension = 1

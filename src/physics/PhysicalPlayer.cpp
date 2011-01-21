@@ -42,7 +42,7 @@ void PhysicalPlayer::constructRigidBody(const Math::Point &position) {
 	*/
 	
     primaryRigidBody = Physics::PhysicsFactory
-        ::createRigidBox(0.2,0.2,0.2,position,2.0);
+        ::createRigidBox(0.5,0.2,1.0,position,2.0);
     PhysicsWorld::getInstance()->registerRigidBody(primaryRigidBody);
 }
 
@@ -88,6 +88,14 @@ void PhysicalPlayer::applyMovement(const Math::Point &movement) {
     primaryRigidBody->applyCentralForce(
         Converter::toVector(orientation
             * accel * 5000.0f));
+}
+
+void PhysicalPlayer::applyForce(const Math::Point &movement,
+    const Math::Point &at) {
+    
+    primaryRigidBody->applyForce(
+        Converter::toVector(movement),
+        Converter::toVector(at));
 }
 
 }  // namespace Physics

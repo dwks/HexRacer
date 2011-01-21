@@ -9,6 +9,6 @@
 #define PAINT_CELL_LIFT_AMOUNT 0.1
 #define PAINT_CELL_CONTRACTION 0.1
 
-#define INITIAL_CAR_LOCATION Math::Point(0.0, 2.0, 0.0)
+#define INITIAL_CAR_LOCATION Math::Point(0.0, 1.0, 0.0)
 
 #endif
