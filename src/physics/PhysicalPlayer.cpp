@@ -49,15 +49,13 @@ void PhysicalPlayer::constructRigidBody(const Math::Matrix &transformation) {
 }
 
 Math::Point PhysicalPlayer::getOrigin() const {
-    btTransform trans;
-    primaryRigidBody->getMotionState()->getWorldTransform(trans);
+    btTransform trans = primaryRigidBody->getWorldTransform();
     
     return Converter::toPoint(trans.getOrigin());
 }
 
 Math::Matrix PhysicalPlayer::getTransformation() const {
-    btTransform trans;
-    primaryRigidBody->getMotionState()->getWorldTransform(trans);
+    btTransform trans = primaryRigidBody->getWorldTransform();
     
     return Converter::toMatrix(trans);
 }

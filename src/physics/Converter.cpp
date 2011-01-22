@@ -1,5 +1,7 @@
 #include "Converter.h"
 
+#include "log/Logger.h"
+
 namespace Project {
 namespace Physics {
 

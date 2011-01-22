@@ -81,7 +81,6 @@ void PlayerManager::render(Render::RenderManager *renderManager) {
             Math::Matrix matrix = player->getTransformation();
             
             // original size of model is 2x2, scale appropriately
-			
             matrix = matrix
                 * Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0));
 			
