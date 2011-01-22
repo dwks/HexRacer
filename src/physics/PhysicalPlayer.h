@@ -33,7 +33,7 @@ private:
         Math::Point linearVelocity, angularVelocity;
         ar >> transformation >> linearVelocity >> angularVelocity;
         
-        LOG(OPENGL, transformation);
+        //LOG(OPENGL, transformation);
         
         constructRigidBody(transformation);
         

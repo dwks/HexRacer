@@ -28,6 +28,7 @@
 #include "misc/Sleeper.h"
 
 #include "config.h"
+#include "settings/SettingsManager.h"
 
 namespace Project {
 namespace Server {
@@ -74,7 +75,7 @@ void ServerMain::run() {
     Connection::ServerManager server;
     ClientManager clients;
     
-    server.addServer(1820);
+    server.addServer(GET_SETTING("network.port", 1820));
     
     Render::MeshLoader *meshLoader = new Render::MeshLoader();
     meshLoader->loadOBJ("testTerrain", "models/testterrain.obj");
@@ -127,7 +128,7 @@ void ServerMain::run() {
         
         Physics::Suspension().applySuspension(&playerList, NULL);
         
-        if(++loops == 10) {
+        if(++loops == 5) {
             loops = 0;
             
             for(int p = 0; p < clientCount; p ++) {

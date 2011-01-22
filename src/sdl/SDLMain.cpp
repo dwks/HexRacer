@@ -188,7 +188,10 @@ void SDLMain::run() {
     physicsWorld->createTestScene();
     
     network = new NetworkPortal();
-    if(network->connectTo("localhost", 1820)) {
+    if(network->connectTo(
+        GET_SETTING("network.host", "localhost").c_str(),
+        GET_SETTING("network.port", 1820))) {
+        
         network->waitForWorld();
         playerManager = new PlayerManager(network->getID());
     }
