@@ -12,3 +12,4 @@ display.bpp        = 0
 physics.driving.dosuspension = 0
 
 render.paint.enabled = 1
+render.quality = 2

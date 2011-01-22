@@ -1,6 +1,8 @@
 #ifndef PROJECT_RENDER__RENDER_SETTINGS_H
 #define PROJECT_RENDER__RENDER_SETTINGS_H
 
+#include "settings/SettingsManager.h"
+
 namespace Project {
 namespace Render {
 
@@ -11,8 +13,7 @@ private:
 public:
 
 	static RenderSettings *getInstance() { return instance; }
-	RenderSettings(const char* config_file_name);
-	short getGraphicsQuality() { return graphicsQuality; }
+	short getGraphicsQuality() { return GET_SETTING("render.quality", 2); }
 };
 
 }  // namespace Render

@@ -49,7 +49,7 @@ private:
 	
 public:
 
-	RenderManager(const char* config_file_name = "");
+	RenderManager();
 	~RenderManager();
 
 	/** Set the render state to the properties of @a renderable

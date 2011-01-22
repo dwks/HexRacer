@@ -129,7 +129,7 @@ void SDLMain::run() {
     
 	//Instantiate the rendering objects
 	meshLoader = new Render::MeshLoader();
-	renderer = new Render::RenderManager("renderconfig.txt");
+	renderer = new Render::RenderManager();
 	lightManager = renderer->getLightManager();
 	rootRenderable = new Render::RenderList();
     

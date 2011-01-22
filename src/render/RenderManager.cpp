@@ -15,7 +15,7 @@ using namespace std;
 namespace Project {
 namespace Render {
 
-	RenderManager::RenderManager(const char* config_file_name) {
+	RenderManager::RenderManager() {
 
 		paramSetter = ShaderParamSetter(this);
 		numMaterialOverrides = 0;
@@ -41,7 +41,7 @@ namespace Render {
 		glGetIntegerv(GL_MAX_VARYING_FLOATS, &value);
 		LOG(OPENGL, "	Max varying floats: " << value);
 
-		settings = new RenderSettings(config_file_name);
+		settings = new RenderSettings();
 
 	}
 
