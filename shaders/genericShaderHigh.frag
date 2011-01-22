@@ -76,16 +76,13 @@ void main() {
 	}
 	
 	vec4 ambient_base;
-	if (hasTexture[2] == 1)
-		ambient_base = texture2D(glowMap, gl_TexCoord[0].st);
-	else
+	//if (hasTexture[2] == 1)
+	//	ambient_base = texture2D(glowMap, gl_TexCoord[0].st);
+	//else
 		ambient_base = gl_FrontMaterial.ambient;
 	
 	gl_FragColor = diffuse_color + specular_color + ambient_color;
-	if (gl_FragColor.x < ambient_base.x)
-		gl_FragColor.x += (1.0-gl_FragColor.x)*ambient_base.x;
-	if (gl_FragColor.y < ambient_base.y)
-		gl_FragColor.y += (1.0-gl_FragColor.y)*ambient_base.y;
-	if (gl_FragColor.z < ambient_base.z)
-		gl_FragColor.z += (1.0-gl_FragColor.z)*ambient_base.z;
+	gl_FragColor.x += (1.0-gl_FragColor.x)*ambient_base.x;
+	gl_FragColor.y += (1.0-gl_FragColor.y)*ambient_base.y;
+	gl_FragColor.z += (1.0-gl_FragColor.z)*ambient_base.z;
 }
