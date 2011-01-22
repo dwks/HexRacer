@@ -69,15 +69,22 @@ MeshLoader *MeshLoader::instance = 0;
 				//materials.push_back(mat);
 			}
 
-			//Look for a pre-loaded texture with the same name
-			Texture* tex = getTextureByName(obj_mat.colorMapFilename);
-			if (tex == NULL && mat != NULL && obj_mat.colorMapFilename.length() > 0) {
-				//Create a new texture
-				string color_map_name = string(directory).append(obj_mat.colorMapFilename);
-				string normal_map_name = string(directory).append(obj_mat.bumpMapFilename);
+			bool hasColorMap = (obj_mat.colorMapFilename.length() > 0);
+			bool hasNormalMap = (obj_mat.bumpMapFilename.length() > 0);
+			Texture* tex = NULL;
 
-				tex = new Texture(color_map_name, color_map_name, normal_map_name);
-				textures.push_back(tex);
+			if (hasColorMap || hasNormalMap) {
+
+				//Look for a pre-loaded texture with the same name
+				tex = getTextureByName(obj_mat.colorMapFilename);
+				if (tex == NULL && mat != NULL) {
+					//Create a new texture
+					string color_map_name = string(directory).append(obj_mat.colorMapFilename);
+					string normal_map_name = string(directory).append(obj_mat.bumpMapFilename);
+
+					tex = new Texture(color_map_name, color_map_name, normal_map_name);
+					textures.push_back(tex);
+				}
 			}
 
 			vector<MeshTriangle*> face_list;

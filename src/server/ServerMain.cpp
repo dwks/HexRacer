@@ -1,3 +1,5 @@
+#include "boost/asio.hpp"
+
 #include "ServerMain.h"
 #include "ClientManager.h"
 

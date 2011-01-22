@@ -22,5 +22,4 @@ void main()
 	eyeTangent = normalize(gl_NormalMatrix * tangent);
 	eyeBitangent = normalize(gl_NormalMatrix * bitangent);
 
-
 }

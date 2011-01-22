@@ -60,6 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="glew32.lib SDL.lib SDLmain.lib SDL_image.lib opengl.lib glu32.lib glu.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -171,6 +172,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\src\object\AbstractObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\log\AbstractStream.cpp"
 				>
 			</File>
@@ -183,11 +188,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\BaseRenderable.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingBox2D.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\math\BoundingBox3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\BoundingConvexHull3D.cpp"
 				>
 			</File>
 			<File
@@ -203,6 +216,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\BoundingPlane3D.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingTriangle2D.cpp"
 				>
 			</File>
@@ -215,7 +232,35 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\opengl\Camera.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\CameraMovement.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\opengl\Color.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\CompositeRenderable.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\connection\ConstructedTCPSocket.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\Converter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\DebugDrawer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc\DirectoryFunctions.cpp"
 				>
 			</File>
 			<File
@@ -243,7 +288,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\opengl\GeometryDrawing.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\network\HandshakePacket.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Light.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\LightManager.cpp"
 				>
 			</File>
 			<File
@@ -255,7 +312,35 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\Material.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\opengl\MathWrapper.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Matrix.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Mesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshGroup.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshLoader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshTriangle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshVertex.cpp"
 				>
 			</File>
 			<File
@@ -264,6 +349,10 @@
 			</File>
 			<File
 				RelativePath=".\src\log\MessageType.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\model_obj.cpp"
 				>
 			</File>
 			<File
@@ -276,6 +365,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\Object3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\object\ObjectBase.cpp"
 				>
 			</File>
 			<File
@@ -307,6 +400,26 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\physics\PhysicalObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicalPlayer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicsFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicsSerializer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicsWorld.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\object\Player.cpp"
 				>
 			</File>
@@ -331,7 +444,47 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\Ray.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\RayIntersection.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\connection\ReferencingTCPSocket.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderableBox.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderableObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderablePlayer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderableWorld.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderList.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderProperties.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderSettings.cpp"
 				>
 			</File>
 			<File
@@ -340,6 +493,38 @@
 			</File>
 			<File
 				RelativePath=".\src\connection\ServerManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetDebugDrawing.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\settings\SettingsManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Shader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ShaderAttributeLocation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ShaderParameter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ShaderParamSetter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ShaderUniformVector4.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\opengl\SimpleTrackball.cpp"
 				>
 			</File>
 			<File
@@ -375,6 +560,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\Texture.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TextureCube.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\opengl\Trackball.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\Triangle3D.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\TypedObserver.cpp"
 				>
 			</File>
@@ -392,6 +593,18 @@
 			</File>
 			<File
 				RelativePath=".\src\log\VerbosityLevel.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\Vertex2D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\Vertex3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\object\World.cpp"
 				>
 			</File>
 			<Filter
@@ -449,6 +662,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\src\object\AbstractObject.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\log\AbstractStream.h"
 				>
 			</File>
@@ -461,11 +678,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\BaseRenderable.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingBox2D.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\math\BoundingBox3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\BoundingConvexHull3D.h"
 				>
 			</File>
 			<File
@@ -481,6 +706,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\BoundingPlane3D.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingTriangle2D.h"
 				>
 			</File>
@@ -493,7 +722,35 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\opengl\Camera.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\CameraMovement.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\opengl\Color.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\CompositeRenderable.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\connection\ConstructedTCPSocket.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\Converter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\DebugDrawer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc\DirectoryFunctions.h"
 				>
 			</File>
 			<File
@@ -521,7 +778,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\opengl\GeometryDrawing.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\network\HandshakePacket.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Light.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\LightManager.h"
 				>
 			</File>
 			<File
@@ -533,7 +802,35 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\Material.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\opengl\MathWrapper.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Matrix.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Mesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshGroup.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshTriangle.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshVertex.h"
 				>
 			</File>
 			<File
@@ -542,6 +839,10 @@
 			</File>
 			<File
 				RelativePath=".\src\log\MessageType.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\model_obj.h"
 				>
 			</File>
 			<File
@@ -557,6 +858,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\object\ObjectBase.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\ObjectSpatial.h"
 				>
 			</File>
@@ -566,6 +871,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\ObserverList.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\opengl\OpenGL.h"
 				>
 			</File>
 			<File
@@ -582,6 +891,26 @@
 			</File>
 			<File
 				RelativePath=".\src\network\PacketVisitor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicalObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicalPlayer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicsFactory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicsSerializer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicsWorld.h"
 				>
 			</File>
 			<File
@@ -609,7 +938,47 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\Ray.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\RayIntersection.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\connection\ReferencingTCPSocket.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderableBox.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderableObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderablePlayer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderableWorld.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderList.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderProperties.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderSettings.h"
 				>
 			</File>
 			<File
@@ -618,6 +987,38 @@
 			</File>
 			<File
 				RelativePath=".\src\connection\ServerManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetDebugDrawing.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\settings\SettingsManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\Shader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ShaderAttributeLocation.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ShaderParameter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ShaderParamSetter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ShaderUniformVector4.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\opengl\SimpleTrackball.h"
 				>
 			</File>
 			<File
@@ -653,6 +1054,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\Texture.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TextureCube.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\opengl\Trackball.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\Triangle3D.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\TypedObserver.h"
 				>
 			</File>
@@ -670,6 +1087,18 @@
 			</File>
 			<File
 				RelativePath=".\src\log\VerbosityLevel.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\Vertex2D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\Vertex3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\object\World.h"
 				>
 			</File>
 			<Filter
