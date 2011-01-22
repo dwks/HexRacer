@@ -18,8 +18,6 @@ namespace Render {
 						positive_z_file,
 						negative_z_file);
 
-					int b = 5;
-
 
 	}
 

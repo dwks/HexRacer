@@ -1,6 +1,9 @@
 ################
 # Settings for the project
 
+map = models/testterrain.obj
+#map = models/terrain2.obj
+
 ########
 ### Display settings
 

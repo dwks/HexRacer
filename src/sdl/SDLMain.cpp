@@ -135,7 +135,7 @@ void SDLMain::run() {
 	renderer->loadShadersFile("shaders.txt");
     
 	//Load the model
-	meshLoader->loadOBJ("testTerrain", "models/testterrain.obj");
+	meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
 	meshLoader->loadOBJ("playerCube", "models/playercube.obj");
 	meshLoader->loadOBJ("backgroundCube", "models/backgroundcube.obj");
 	//Add the test terrain

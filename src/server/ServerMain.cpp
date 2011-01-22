@@ -91,7 +91,7 @@ void ServerMain::run() {
     server.addServer(GET_SETTING("network.port", 1820));
     
     Render::MeshLoader *meshLoader = new Render::MeshLoader();
-    meshLoader->loadOBJ("testTerrain", "models/testterrain.obj");
+    meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
     Render::MeshGroup *test_terrain = meshLoader->getModelByName("testTerrain");
     
     Physics::PhysicsWorld::getInstance()->registerRigidBody(
