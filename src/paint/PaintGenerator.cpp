@@ -124,7 +124,7 @@ namespace Paint {
 		for (unsigned int i = 0; i < paintCells.size(); i++) {
 			//paintCells[i]->fillEmptyVertices();
 			paintCells[i]->setBoundingDimensions();
-			//paintCells[i]->calculateNormal();
+			paintCells[i]->calculateNormal();
 			paintCells[i]->center += translation;
 			for (int v = 0; v < PaintCell::CELL_VERTICES; v++) {
 				paintCells[i]->vertex[v] += translation;

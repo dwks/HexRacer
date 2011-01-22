@@ -369,6 +369,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\physics\Suspension.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\Texture.cpp"
 				>
 			</File>
@@ -884,6 +888,10 @@
 			</File>
 			<File
 				RelativePath=".\src\opengl\SimpleTrackball.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\Suspension.h"
 				>
 			</File>
 			<File

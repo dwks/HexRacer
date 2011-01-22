@@ -77,7 +77,7 @@ void main() {
 	specular_color *= gl_FrontMaterial.specular;
 	ambient_color *= diffuse_base;
 	
-	float rdiff = gl_FrontMaterial.shininess/13.0;
+	float krefl = gl_FrontMaterial.shininess/13.0;
 	
-	gl_FragColor = (diffuse_color + ambient_color)*(1.0-rdiff) + textureCube(cubeMap, worldReflect)*rdiff + specular_color;
+	gl_FragColor = (diffuse_color + ambient_color)*(1.0-krefl) + textureCube(cubeMap, worldReflect)*krefl + specular_color;
 }

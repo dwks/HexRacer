@@ -123,7 +123,13 @@ int BSPTree::size() const {
 }
 
 void BSPTree::clear() {
-
+	list.clear();
+	if (!leaf) {
+		delete(child[0]);
+		delete(child[1]);
+		subtreeSize = 0;
+		leaf = true;
+	}
 }
 
 void BSPTree::appendQuery(vector<ObjectSpatial*>* result_list, const BoundingObject& bounding_object, QueryType query_type) const {

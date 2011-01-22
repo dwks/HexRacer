@@ -3,3 +3,4 @@ med genericShader shaders/genericShaderMed.frag shaders/genericShaderMed.vert
 all playerGlow shaders/playerGlow.frag shaders/playerGlow.vert
 all backgroundShader shaders/backgroundShader.frag shaders/backgroundShader.vert
 all bgReflectShader shaders/backgroundReflectMed.frag shaders/genericShaderMed.vert
+all paintShader shaders/paintShader.frag shaders/paintShader.vert

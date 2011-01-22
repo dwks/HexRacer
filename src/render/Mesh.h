@@ -23,7 +23,7 @@ private:
 	Project::Math::BSPTree3D::QueryType queryType;
 
 	void generateTriangleTree();
-	void drawTriangle(MeshTriangle* triangle, ShaderParamSetter setter);
+	void drawTriangle(MeshTriangle* triangle, ShaderParamSetter& setter);
 
 	static const int TREE_SPLIT_SIZE = 12;
 	static const unsigned int MIN_TREE_SIZE = 300;
@@ -36,7 +36,7 @@ public:
 	~Mesh();
 	Mesh(vector< MeshTriangle* > _triangles, Material* _material = NULL);
 
-	void renderGeometry(ShaderParamSetter setter, const  Math::BoundingObject* bounding_object = NULL);
+	void renderGeometry(ShaderParamSetter& setter, const  Math::BoundingObject* bounding_object = NULL);
 	vector<Project::Math::Triangle3D> getTriangles();
 };
 

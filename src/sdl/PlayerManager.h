@@ -44,7 +44,9 @@ public:
     void applySuspension(Render::RenderManager *renderManager);
     
     void render(Render::RenderManager *renderManager);
-	OpenGL::Color getPlayerColor(int id);
+
+	static OpenGL::Color getPlayerColor(int id);
+
 protected:
     void usePlayerList(Object::PlayerList *playerList);
     Object::Player *getPlayer();

@@ -4,7 +4,7 @@
 namespace Project {
 namespace Render {
 
-	void RenderableBox::renderGeometry(ShaderParamSetter setter, const Math::BoundingObject* bounding_object) {
+	void RenderableBox::renderGeometry(ShaderParamSetter& setter, const Math::BoundingObject* bounding_object) {
 		OpenGL::GeometryDrawing::drawBoundingBox3D(*this);
 	}
 

@@ -15,6 +15,7 @@
 #include "render/MeshLoader.h"
 #include "render/RenderList.h"
 
+#include "paint/PaintManager.h"
 #include "paint/PaintGenerator.h"
 
 #include "event/ObserverList.h"
@@ -50,6 +51,7 @@ private:
 	Render::RenderList* rootRenderable;
 	Render::LightManager *lightManager;
 
+	Paint::PaintManager *paintManager;
 	vector<Paint::PaintCell*> paintCells;
     
 	GLUquadric* quadric;

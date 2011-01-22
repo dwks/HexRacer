@@ -14,7 +14,7 @@ class BaseRenderable
 public:
 
 	void subRender(RenderManager* manager);
-	virtual void renderGeometry(ShaderParamSetter setter, const Math::BoundingObject* bounding_object = NULL) = 0;
+	virtual void renderGeometry(ShaderParamSetter& setter, const Math::BoundingObject* bounding_object = NULL) = 0;
 
 };
 

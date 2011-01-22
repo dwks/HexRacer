@@ -8,7 +8,7 @@ namespace Render {
 
 class ShaderParameter {
 public:
-	virtual void setShaderParameters(ShaderParamSetter setter) = 0;
+	virtual void setShaderParameters(ShaderParamSetter& setter) = 0;
 protected:
 	const char * name;
 };

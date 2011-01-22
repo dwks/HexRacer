@@ -142,9 +142,12 @@ void SDLMain::run() {
 	//Add the test terrain
 	Render::MeshGroup* test_terrain = meshLoader->getModelByName("testTerrain");
     
+	paintManager = new Paint::PaintManager();
+
     if(GET_SETTING("render.paint.enabled", 1)) {
         Paint::PaintGenerator paint_gen(test_terrain->getTriangles());
         paintCells = paint_gen.getPaintCells();
+		paintManager->setPaintCells(paintCells);
     }
 
 	rootRenderable->addRenderable(test_terrain);
@@ -346,25 +349,14 @@ void SDLMain::render() {
 	
 	//Render the scene
 	rootRenderable->render(renderer);
+
+	//Render the paint
+	paintManager->render(renderer);
     
 	//Revert the rendering state
 	//glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
-
-    if(GET_SETTING("render.paint.enabled", 1)) {
-        //Draw paint cells
-        glColor3f(1.0f, 1.0f, 0.0f);
-        for (unsigned int i = 0; i < paintCells.size(); i++) {
-            glBegin(GL_TRIANGLE_FAN);
-            OpenGL::MathWrapper::glVertex(paintCells[i]->center);
-            for (int j = 0; j < Paint::PaintCell::CELL_VERTICES; j++) {
-                OpenGL::MathWrapper::glVertex(paintCells[i]->vertex[j]);
-            }
-            OpenGL::MathWrapper::glVertex(paintCells[i]->vertex[0]);
-            glEnd();
-        }
-    }
     
     glFlush();
 }

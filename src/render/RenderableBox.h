@@ -13,7 +13,7 @@ public:
 	RenderableBox(double width, double height, double depth, Math::Point centroid = Math::Point())
 		: Math::BoundingBox3D(width, height, depth, centroid) {}
 
-	void renderGeometry(ShaderParamSetter setter, const Math::BoundingObject* bounding_object = NULL);
+	void renderGeometry(ShaderParamSetter& setter, const Math::BoundingObject* bounding_object = NULL);
 	bool shouldDraw( const Math::BoundingObject& bound_obj );
 	
 };

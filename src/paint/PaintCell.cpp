@@ -8,6 +8,7 @@ namespace Project {
 namespace Paint {
 
 	PaintCell::PaintCell(Point _center) {
+		playerColor = 2;
 		center = _center;
 		for (int i = 0; i < CELL_VERTICES; i++) {
 			vertexSet[i] = false;

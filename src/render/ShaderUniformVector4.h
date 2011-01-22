@@ -15,7 +15,7 @@ public:
 
 	ShaderUniformVector4(const char *_name, Project::OpenGL::Color _color);
 
-	void setShaderParameters(ShaderParamSetter setter);
+	void setShaderParameters(ShaderParamSetter& setter);
 };
 
 }  // namespace Render

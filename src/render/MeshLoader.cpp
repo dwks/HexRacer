@@ -67,8 +67,6 @@ MeshLoader *MeshLoader::instance = 0;
 					Color(obj_mat.ambient[0], obj_mat.ambient[1], obj_mat.ambient[2], obj_mat.ambient[3])
 				);
 				mat->setShininess(obj_mat.shininess*12.0f+1.0f);
-
-				//materials.push_back(mat);
 			}
 
 			bool hasColorMap = (obj_mat.colorMapFilename.length() > 0);

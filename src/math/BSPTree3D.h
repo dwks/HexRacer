@@ -27,6 +27,7 @@ public:
 
 	bool allowSplit() const;
 	void split(vector<ObjectSpatial*>* objects = NULL);
+	void resize(BoundingBox3D bounding_box);
 	const BoundingObject& getBoundingObject() const;
 
 private:

@@ -8,7 +8,7 @@ namespace Render {
 		color = _color;
 	}
 
-	void ShaderUniformVector4::setShaderParameters(ShaderParamSetter setter) {
+	void ShaderUniformVector4::setShaderParameters(ShaderParamSetter& setter) {
 		setter.setUniformVector4(name, color);
 	}
 

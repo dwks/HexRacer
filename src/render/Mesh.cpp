@@ -58,7 +58,7 @@ namespace Render {
 
 	}
 
-	void Mesh::renderGeometry(ShaderParamSetter setter, const BoundingObject* bounding_object) {
+	void Mesh::renderGeometry(ShaderParamSetter& setter, const BoundingObject* bounding_object) {
 
 		glBegin(GL_TRIANGLES);
 
@@ -78,7 +78,7 @@ namespace Render {
 
 	}
 
-	void Mesh::drawTriangle(MeshTriangle* triangle, ShaderParamSetter setter) {
+	void Mesh::drawTriangle(MeshTriangle* triangle, ShaderParamSetter& setter) {
 		for (short j = 0; j < 3; j++) {
 			MeshVertex* vert = triangle->getMeshVertex(j);
 			MathWrapper::glNormal(vert->getNormal());

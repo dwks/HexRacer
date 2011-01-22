@@ -133,3 +133,10 @@ void BSPTree3D::split(vector<ObjectSpatial*>* objects) {
 const BoundingObject& BSPTree3D::getBoundingObject() const {
 	return boundingBox;
 }
+
+void BSPTree3D::resize(BoundingBox3D bounding_box) {
+	vector<ObjectSpatial*> all_objects = all();
+	clear();
+	boundingBox = bounding_box;
+	add(all_objects);
+}

@@ -22,6 +22,8 @@ namespace Render {
 		numShaderOverrides = 0;
 		numTextureOverrides = 0;
 
+		numTransformations = 0;
+
 		camera = NULL;
 		cubeMap = NULL;
 
@@ -30,6 +32,7 @@ namespace Render {
 		lightManager = new LightManager();
 
 		LOG(OPENGL, "Renderer Initialized.");
+		/*
 		LOG(OPENGL, "System Video Capabilities:");
 		GLint value;
 		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &value);
@@ -40,6 +43,7 @@ namespace Render {
 		LOG(OPENGL, "	Max texture size: " << value);
 		glGetIntegerv(GL_MAX_VARYING_FLOATS, &value);
 		LOG(OPENGL, "	Max varying floats: " << value);
+		*/
 
 		settings = new RenderSettings();
 
@@ -171,7 +175,7 @@ namespace Render {
 		}
 
 		//Tell the shader which textures exist
-		int has_tex_values[3] = {(int) hasColorMap, (int) hasNormalMap, 1};
+		int has_tex_values[3] = {(int) hasColorMap, (int) hasNormalMap, 0};
 		setUniformIntArray(SHADER_HASTEXTURE_UNIFORM_NAME, has_tex_values, 3);
 		
 	}
@@ -419,7 +423,7 @@ namespace Render {
 		return (shader[shader_index]->getUniLoc(name));
 	}
 	void RenderManager::setShaderParameters() {
-		ShaderParamSetter setter = getShaderParamSetter();
+		ShaderParamSetter& setter = getShaderParamSetter();
 		for (unsigned int i = 0; i < shaderParams.size(); i++) {
 			for (unsigned int j = 0; j < shaderParams[i].size(); j++) {
 				shaderParams[i][j]->setShaderParameters(setter);
