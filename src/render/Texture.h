@@ -16,10 +16,14 @@ private:
 	std::string name;
 	GLuint colorMap;
 	GLuint normalMap;
+	GLuint glowMap;
 
 public:
 
-	Texture(std::string _name, std::string color_map_filename, std::string normal_map_filename);
+	Texture(std::string _name,
+		std::string color_map_filename,
+		std::string normal_map_filename,
+		std::string glow_map_filename);
 	~Texture();
 
 	std::string getName() const;
@@ -28,6 +32,8 @@ public:
 	GLuint getColorMap() const;
 	bool hasNormalMap() const;
 	GLuint getNormalMap() const;
+	bool hasGlowMap() const;
+	GLuint getGlowMap() const;
 	//virtual GLenum targetTexture() { return GL_TEXTURE_2D; }
 
 	/** Load a texture into openGL from the file @a filename

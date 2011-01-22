@@ -136,6 +136,7 @@ namespace Render {
 
 		bool hasColorMap = false;
 		bool hasNormalMap = false;
+		bool hasGlowMap = false;
 
 		if (properties->hasTexture()) {
 
@@ -145,8 +146,17 @@ namespace Render {
 				Texture* texture = properties->getTexture();
 				//textureStack.push(texture);
 
-				glActiveTexture(normalMapTexture);
+				if (texture->hasGlowMap()) {
+					glActiveTexture(glowMapTexture);
+					glEnable(GL_TEXTURE_2D);
+					glBindTexture(GL_TEXTURE_2D, texture->getGlowMap());
+					setUniformInt(SHADER_GLOWMAP_UNIFORM_NAME, glowMapTextureNum);
+					glDisable(GL_TEXTURE_2D);
+					hasGlowMap = true;
+				}
+
 				if (texture->hasNormalMap()) {
+					glActiveTexture(normalMapTexture);
 					glEnable(GL_TEXTURE_2D);
 					glBindTexture(GL_TEXTURE_2D, texture->getNormalMap());
 					setUniformInt(SHADER_NORMALMAP_UNIFORM_NAME, normalMapTextureNum);
@@ -177,7 +187,7 @@ namespace Render {
 		}
 
 		//Tell the shader which textures exist
-		int has_tex_values[3] = {(int) hasColorMap, (int) hasNormalMap, 0};
+		int has_tex_values[3] = {(int) hasColorMap, (int) hasNormalMap, (int) hasGlowMap};
 		setUniformIntArray(SHADER_HASTEXTURE_UNIFORM_NAME, has_tex_values, 3);
 		
 	}

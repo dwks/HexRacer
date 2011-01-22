@@ -25,37 +25,20 @@ namespace Render {
 	}
 
 	void LightManager::addLight(Light* light, bool high_priorty, bool dynamic) {
-		if (dynamic) {
-			if (high_priorty)
-				priorityDynamicLights.push_back(new LightManagerNode(light));
-			else
-				dynamicLights.push_back(new LightManagerNode(light));
-		}
-		else {
-			if (high_priorty)
-				priorityStaticLightTree->add(new LightManagerNode(light));
-			else
-				staticLightTree->add(new LightManagerNode(light));
-		}
-	}
 
-	bool LightManager::removeLight(Light* light, bool high_priorty, bool dynamic) {
-		/*
+		LightManagerNode* new_node = new LightManagerNode(light);
 		if (dynamic) {
 			if (high_priorty)
-				return Misc::vectorRemoveOneElement(priorityDynamicLights, light);
-			else {
-				return Misc::vectorRemoveOneElement(dynamicLights, light);
-			}
+				priorityDynamicLights.push_back(new_node);
+			else
+				dynamicLights.push_back(new_node);
 		}
 		else {
 			if (high_priorty)
-				return priorityStaticLightTree->remove(light);
+				priorityStaticLightTree->add(new_node);
 			else
-				return staticLightTree->remove(light);
+				staticLightTree->add(new_node);
 		}
-		*/
-		return false;
 	}
 
 	void LightManager::drawActiveLightSpheres() {
@@ -139,6 +122,28 @@ namespace Render {
 			glDisable(GL_LIGHT0+i);
 		}
 		activeLights.clear();
+	}
+
+	void LightManager::clear() {
+
+		resetLights();
+		
+		for (unsigned int i = 0; i < priorityDynamicLights.size(); i++)
+			delete(priorityDynamicLights[i]);
+		for (unsigned int i = 0; i < dynamicLights.size(); i++)
+			delete(dynamicLights[i]);
+		vector<ObjectSpatial*> static_list = priorityStaticLightTree->all();
+		for (unsigned int i = 0; i < static_list.size(); i++)
+			delete(static_list[i]);
+		static_list = staticLightTree->all();
+		for (unsigned int i = 0; i < static_list.size(); i++)
+			delete(static_list[i]);
+	
+		priorityDynamicLights.clear();
+		dynamicLights.clear();
+		priorityStaticLightTree->clear();
+		staticLightTree->clear();
+
 	}
 
 }  // namespace Render

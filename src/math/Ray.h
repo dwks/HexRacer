@@ -9,7 +9,9 @@ namespace Math {
 
 class Ray {
 public:
-	Ray(Point _origin, Point _direction, bool _bounded = false, double min_t = 0.0, double max_t = FLT_MAX);
+	Ray(Point _origin, Point _direction);
+	Ray(Point _origin, Point _direction, double min_t);
+	Ray(Point _origin, Point _direction, double min_t, double max_t);
 	bool insideRange(double t);
 	Point atT(double t);
 
@@ -17,7 +19,8 @@ public:
 	Point direction;
 	double minT;
 	double maxT;
-	bool bounded;
+	bool minBounded;
+	bool maxBounded;
 };
 
 }  // namespace Math

@@ -17,6 +17,7 @@ using namespace std;
 
 #define SHADER_COLORMAP_UNIFORM_NAME "colorMap"
 #define SHADER_NORMALMAP_UNIFORM_NAME "normalMap"
+#define SHADER_GLOWMAP_UNIFORM_NAME "glowMap"
 #define SHADER_CUBEMAP_UNIFORM_NAME "cubeMap"
 #define SHADER_CAMERA_MATRIX_UNIFORM_NAME "cameraMatrix"
 #define SHADER_HASTEXTURE_UNIFORM_NAME "hasTexture"
@@ -36,6 +37,8 @@ private:
 	static const int colorMapTextureNum = 0;
 	static const GLenum normalMapTexture = GL_TEXTURE1;
 	static const int normalMapTextureNum = 1;
+	static const GLenum glowMapTexture = GL_TEXTURE2;
+	static const int glowMapTextureNum = 2;
 	static const GLenum cubeMapTexture = GL_TEXTURE3;
 	static const int cubeMapTextureNum = 3;
 	static const short GRAPHICS_HIGH = 2;

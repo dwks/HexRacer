@@ -60,6 +60,7 @@ public:
         std::string name;
         std::string colorMapFilename;
         std::string bumpMapFilename;
+		std::string glowMapFilename;
 		std::string shaderName;
     };
 

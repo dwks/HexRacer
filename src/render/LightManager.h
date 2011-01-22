@@ -31,13 +31,13 @@ private:
 public:
 	LightManager(int max_active_lights = 8);
 
-	void addLight(Light* light, bool high_priorty = false, bool dynamic = false);
-	bool removeLight(Light* light, bool high_priorty = false, bool dynamic = false);
+	void addLight(Light* light, bool high_priorty = false, bool dynamic = true);
 	void drawActiveLightSpheres();
 	void setSceneBoundingBox(Math::BoundingBox3D bounding_box);
 	void activateNearFocalPoint(Math::Point focal_point, double radius = 0.0);
 	void activateIntersectingLights(const Math::BoundingObject& bounding_obj);
 	void resetLights();
+	void clear();
 
 	int getNumActiveLights() const { return activeLights.size(); }
 };

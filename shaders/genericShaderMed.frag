@@ -1,4 +1,4 @@
-//basic fragment shader
+// Color map, normal map and glow map with gouraud shading + phong shading specularity
 
 varying vec3 eyeNormal;
 varying vec3 objectNormal;
@@ -40,7 +40,7 @@ void main() {
 		float light_dist = length((position-gl_LightSource[0].position).xyz);
 		
 		float attenuation = 1.0/(1.0 + gl_LightSource[0].quadraticAttenuation*light_dist*light_dist);
-		if (attenuation >= 0.001) {
+		if (attenuation >= 0.004) {
 		
 			attenuation = min(attenuation, 1.0);
 			vec3 light = normalize((position-gl_LightSource[0].position).xyz);
@@ -57,7 +57,7 @@ void main() {
 		float light_dist = length((position-gl_LightSource[1].position).xyz);
 		
 		float attenuation = 1.0/(1.0 + gl_LightSource[1].quadraticAttenuation*light_dist*light_dist);
-		if (attenuation >= 0.001) {
+		if (attenuation >= 0.004) {
 		
 			attenuation = min(attenuation, 1.0);
 			vec3 light = normalize((position-gl_LightSource[1].position).xyz);

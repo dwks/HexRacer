@@ -9,11 +9,13 @@ varying vec3 eyeBitangent;
 
 varying vec4 diffuseColor;
 varying vec4 ambientColor;
+varying mat3 cameraNormalMatrix;
 
 attribute vec3 tangent;
 attribute vec3 bitangent;
 
 uniform int numLights;
+uniform mat4 cameraMatrix;
 
 void main()
 {	
@@ -61,8 +63,15 @@ void main()
 			ambientColor += gl_LightSource[1].ambient*attenuation;
 		}
 	}
-
 	
-
-
+	cameraNormalMatrix[0][0] = cameraMatrix[0][0];
+	cameraNormalMatrix[1][0] = cameraMatrix[1][0];
+	cameraNormalMatrix[2][0] = cameraMatrix[2][0];
+	cameraNormalMatrix[0][1] = cameraMatrix[0][1];
+	cameraNormalMatrix[1][1] = cameraMatrix[1][1];
+	cameraNormalMatrix[2][1] = cameraMatrix[2][1];
+	cameraNormalMatrix[0][2] = cameraMatrix[0][2];
+	cameraNormalMatrix[1][2] = cameraMatrix[1][2];
+	cameraNormalMatrix[2][2] = cameraMatrix[2][2];
+	
 }

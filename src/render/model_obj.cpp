@@ -1238,7 +1238,7 @@ bool ModelOBJ::importMaterials(const char *pszFilename)
             }
             break;
 
-        case 'm': // map_Kd, map_bump
+        case 'm': // map_Kd, map_bump, map_glow
             if (strstr(buffer, "map_Kd") != 0)
             {
                 fgets(buffer, sizeof(buffer), pFile);
@@ -1250,6 +1250,12 @@ bool ModelOBJ::importMaterials(const char *pszFilename)
                 fgets(buffer, sizeof(buffer), pFile);
                 sscanf(buffer, "%s %s", buffer, buffer);
                 pMaterial->bumpMapFilename = buffer;
+            }
+			else if (strstr(buffer, "map_glow") != 0)
+            {
+                fgets(buffer, sizeof(buffer), pFile);
+                sscanf(buffer, "%s %s", buffer, buffer);
+                pMaterial->glowMapFilename = buffer;
             }
             else
             {
@@ -1279,6 +1285,7 @@ bool ModelOBJ::importMaterials(const char *pszFilename)
             pMaterial->name = buffer;
             pMaterial->colorMapFilename.clear();
             pMaterial->bumpMapFilename.clear();
+			pMaterial->glowMapFilename.clear();
 			pMaterial->shaderName.clear();
 
             m_materialCache[pMaterial->name] = numMaterials;

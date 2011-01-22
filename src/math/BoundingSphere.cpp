@@ -39,10 +39,7 @@ namespace Math {
 
 				case PLANE:
 					plane_3D = (const BoundingPlane3D*) (&bound_3D);
-					return (
-						plane_3D->pointInside(position) &&
-						plane_3D->pointInside(position-plane_3D->getNormal()*radius)
-						);
+					return plane_3D->pointInside(position-plane_3D->getNormal()*radius);
 
 				case CONVEX_HULL:
 					ch_3D = (const BoundingConvexHull3D*) &bound_3D;
@@ -100,10 +97,7 @@ namespace Math {
 
 			case PLANE:
 				plane_3D = (const BoundingPlane3D*) (&bounding_obj);
-				return (
-					plane_3D->pointInside(position) ||
-					plane_3D->pointInside(position+plane_3D->getNormal()*radius)
-					);
+				return plane_3D->pointInside(position+plane_3D->getNormal()*radius);
 
 			case CONVEX_HULL:
 				ch_3D = (const BoundingConvexHull3D*) &bounding_obj;
