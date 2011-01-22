@@ -19,8 +19,10 @@ MeshLoader *MeshLoader::instance = 0;
 
 		ModelOBJ obj_file;
 
-		if (!obj_file.import(filename.c_str(), true))
+		if (!obj_file.import(filename.c_str(), true)) {
+            LOG(OPENGL, "Can't open .OBJ file \"" << filename << "\"");
 			return false;
+        }
 
 		vector<MeshVertex*> vert_list;
 		vector<Mesh*> mesh_list;
