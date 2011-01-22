@@ -24,10 +24,13 @@ namespace Render {
 
 	void RenderableObject::render(RenderManager* manager) {
 
+		const BoundingObject* draw_bounding_obj = manager->getBoundingObject();
+
 		//Don't draw if rendering is disabled or not in the renderer's bounding object
 		if (!getRenderingEnabled() ||
-			(manager->getBoundingObject() != NULL &&
-			!shouldDraw(*manager->getBoundingObject()))
+			(!manager->hasTransformation() &&
+			draw_bounding_obj != NULL &&
+			!shouldDraw(*draw_bounding_obj))
 			)
 			return;
 

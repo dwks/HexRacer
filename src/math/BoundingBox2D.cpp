@@ -65,18 +65,18 @@ bool BoundingBox2D::pointInside(const Point& p) const {
 		);
 }
 
-bool BoundingBox2D::intersects2D(const BoundingObject2D& bound_obj) const {
+bool BoundingBox2D::intersects2D(const BoundingObject2D& bounding_obj) const {
 
-	if (bound_obj.getProjectAxis() != projectAxis)
+	if (bounding_obj.getProjectAxis() != projectAxis)
 		return false;
 
-	switch (bound_obj.getObjectType()) {
+	switch (bounding_obj.getObjectType()) {
 
 		case BOX:
 			//2D Box-Box Intersection
 			return (
-				bound_obj.minU() <= maxU() && bound_obj.maxU() >= minU() &&
-				bound_obj.minV() <= maxV() && bound_obj.maxV() >= minV()
+				bounding_obj.minU() <= maxU() && bounding_obj.maxU() >= minU() &&
+				bounding_obj.minV() <= maxV() && bounding_obj.maxV() >= minV()
 				);
 		default:
 			break;
@@ -84,7 +84,7 @@ bool BoundingBox2D::intersects2D(const BoundingObject2D& bound_obj) const {
 	}
 
 	//Defer to the other object's interesection tests
-	return bound_obj.intersects2D(*this);
+	return bounding_obj.intersects2D(*this);
 }
 
 void BoundingBox2D::translate(const Point& translation) {

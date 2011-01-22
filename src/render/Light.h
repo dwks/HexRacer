@@ -15,6 +15,10 @@ private:
 	Project::OpenGL::Color specular;
 	Project::OpenGL::Color ambient;
 	float strength;
+	float quadAttenuation;
+	bool hasAttenuation;
+
+	void updateAttenuation();
 
 public:
 	
@@ -24,13 +28,16 @@ public:
 	Project::OpenGL::Color getSpecular() const { return specular; }
 	Project::OpenGL::Color getAmbient() const { return ambient; }
 	float getStrength() const { return strength; }
+	bool getHasAttenuation() const { return hasAttenuation; }
+	float getQuadraticAttenuation() const { return quadAttenuation; }
+
 	void setDiffuse(Project::OpenGL::Color _diffuse) { diffuse = _diffuse; }
 	void setSpecular(Project::OpenGL::Color _specular) { diffuse = _specular; }
 	void setAmbient(Project::OpenGL::Color _ambient) { diffuse = _ambient; }
 	void setStrength(float _strength);
+	void setHasAttenuation(bool has_attenuation);
 
 	void glApply(GLenum light) const;
-
 
 };
 

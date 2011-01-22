@@ -8,8 +8,8 @@ namespace Render {
 		OpenGL::GeometryDrawing::drawBoundingBox3D(*this);
 	}
 
-	bool RenderableBox::shouldDraw( const Math::BoundingObject& bound_obj ) {
-		return intersects(bound_obj);
+	bool RenderableBox::shouldDraw( const Math::BoundingObject& bounding_obj ) {
+		return intersects(bounding_obj);
 	}
 
 }  // namespace Render

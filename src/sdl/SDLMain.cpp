@@ -334,10 +334,14 @@ void SDLMain::render() {
     
 	camera->glLookAt();
     
-	lightManager->drawLightSpheres();
-	lightManager->applyAll();
+	//Activate all lights near the camera's focal point
+	lightManager->activateNearFocalPoint(camera->getLookPosition());
+	//Activate all lights visible to the camera
+	lightManager->activateIntersectingLights(*camera->getFrustrum());
+
+	//Render the active lights
+	lightManager->drawActiveLightSpheres();
     
-	//glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 
@@ -352,9 +356,12 @@ void SDLMain::render() {
 
 	//Render the paint
 	paintManager->render(renderer);
+
+	//Reset the lights
+	lightManager->resetLights();
     
 	//Revert the rendering state
-	//glDisable(GL_COLOR_MATERIAL);
+	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
     

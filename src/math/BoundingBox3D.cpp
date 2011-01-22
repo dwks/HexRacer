@@ -36,7 +36,25 @@ void BoundingBox3D::setCorners(Point corner1, Point corner2) {
 Point BoundingBox3D::centroid() const {
 	return (minCorner + maxCorner)*0.5f;
 }
+
 bool BoundingBox3D::isInside(const BoundingObject& bounding_obj) const {
+
+	if (!bounding_obj.is2D()) {
+	
+		const BoundingObject3D& bound_3D = (BoundingObject3D&) bounding_obj;
+
+		switch (bound_3D.getObjectType()) {
+
+			case BOX:
+				return (
+					bound_3D.minX() <= minX() && bound_3D.maxX() >= maxX() &&
+					bound_3D.minY() <= minX() && bound_3D.maxY() >= maxY() &&
+					bound_3D.minZ() <= minX() && bound_3D.maxZ() >= maxZ()
+					);
+
+			default: break;
+		}
+	}
 
 	for (unsigned int i = 0; i < 8; i++) {
 		if (!bounding_obj.pointInside( getCorner(i) )) {
@@ -59,22 +77,22 @@ bool BoundingBox3D::pointInside(const Point& p) const {
 		);
 }
 
-bool BoundingBox3D::intersects3D(const BoundingObject3D& bound_obj) const {
+bool BoundingBox3D::intersects3D(const BoundingObject3D& bounding_obj) const {
 
-	switch (bound_obj.getObjectType()) {
+	switch (bounding_obj.getObjectType()) {
 
 		case BOX:
 			//3D Box-Box Intersection
 			return (
-				bound_obj.minX() <= maxX() && bound_obj.maxX() >= minX() &&
-				bound_obj.minY() <= maxY() && bound_obj.maxY() >= minY() &&
-				bound_obj.minZ() <= maxZ() && bound_obj.maxZ() >= minZ()
+				bounding_obj.minX() <= maxX() && bounding_obj.maxX() >= minX() &&
+				bounding_obj.minY() <= maxY() && bounding_obj.maxY() >= minY() &&
+				bounding_obj.minZ() <= maxZ() && bounding_obj.maxZ() >= minZ()
 				);
 
 		case PLANE:
 			//3D Box-Plane Intersection
 			for (int i = 0; i < 8; i++) {
-				if (bound_obj.pointInside(getCorner(i))) {
+				if (bounding_obj.pointInside(getCorner(i))) {
 					return true;
 				}
 			}
@@ -83,7 +101,7 @@ bool BoundingBox3D::intersects3D(const BoundingObject3D& bound_obj) const {
 	
 		case CONVEX_HULL: {
 			//3D Box-Convex Hull Intersection
-			std::vector<BoundingPlane3D> planes = ((const BoundingConvexHull3D&)bound_obj).getPlanes();
+			std::vector<BoundingPlane3D> planes = ((const BoundingConvexHull3D&)bounding_obj).getPlanes();
 			for (unsigned int i = 0; i < planes.size(); i++) {
 				if (!intersects3D(planes[i])) {
 					return false;
@@ -97,7 +115,7 @@ bool BoundingBox3D::intersects3D(const BoundingObject3D& bound_obj) const {
 	}
 
 	//Defer to the other object's interesection tests
-	return bound_obj.intersects3D(*this);
+	return bounding_obj.intersects3D(*this);
 }
 
 void BoundingBox3D::translate(const Point& translation) {

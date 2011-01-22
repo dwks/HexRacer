@@ -40,10 +40,14 @@ public:
     /** Returns the length of this Point (as if it were a vector).
     */
     double length() const;
+
+	double lengthSquared() const;
     
     /** Returns the euclidean distance between this Point and @a other.
     */
     double distance(const Point &other) const;
+
+	double distanceSquared(const Point &other) const;
     
     /** Returns a normalized vector (a vector of length 1) with the same
         direction as this one.

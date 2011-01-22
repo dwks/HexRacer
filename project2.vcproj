@@ -189,6 +189,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\BoundingSphere.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingTriangle2D.cpp"
 				>
 			</File>
@@ -226,6 +230,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\LightManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\LightManagerNode.cpp"
 				>
 			</File>
 			<File
@@ -715,6 +723,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\BoundingSphere.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingTriangle2D.h"
 				>
 			</File>
@@ -756,6 +768,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\LightManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\LightManagerNode.h"
 				>
 			</File>
 			<File
@@ -888,6 +904,10 @@
 			</File>
 			<File
 				RelativePath=".\src\opengl\SimpleTrackball.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc\StdVectorFunctions.h"
 				>
 			</File>
 			<File

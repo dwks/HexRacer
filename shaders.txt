@@ -2,5 +2,6 @@ high genericShader shaders/genericShaderHigh.frag shaders/genericShaderHigh.vert
 med genericShader shaders/genericShaderMed.frag shaders/genericShaderMed.vert
 all playerGlow shaders/playerGlow.frag shaders/playerGlow.vert
 all backgroundShader shaders/backgroundShader.frag shaders/backgroundShader.vert
-all bgReflectShader shaders/backgroundReflectMed.frag shaders/genericShaderMed.vert
+med bgReflectShader shaders/backgroundReflectMed.frag shaders/genericShaderMed.vert
+high bgReflectShader shaders/backgroundReflectHigh.frag shaders/genericShaderHigh.vert
 all paintShader shaders/paintShader.frag shaders/paintShader.vert

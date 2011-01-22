@@ -31,7 +31,7 @@ public:
 	Point centroid() const;
 	bool isInside2D(const BoundingObject2D& bounding_obj) const;
 	bool pointInside(const Point& p) const;
-	bool intersects2D(const BoundingObject2D& bound_obj) const;
+	bool intersects2D(const BoundingObject2D& bounding_obj) const;
 	void translate(const Point& translation);
 	ObjectType getObjectType() const { return BOX; }
 

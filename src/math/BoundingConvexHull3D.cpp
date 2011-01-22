@@ -32,8 +32,8 @@ namespace Math {
 		return (planes.size() > 0);
 	}
 
-	bool BoundingConvexHull3D::intersects3D(const BoundingObject3D& bound_obj) const {
-		return bound_obj.intersects3D(*this);
+	bool BoundingConvexHull3D::intersects3D(const BoundingObject3D& bounding_obj) const {
+		return bounding_obj.intersects3D(*this);
 	}
 
 	void BoundingConvexHull3D::translate(const Point& translation) {

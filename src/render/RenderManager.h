@@ -74,6 +74,7 @@ public:
 	LightManager* getLightManager() const { return lightManager; }
 
 	void setCamera(OpenGL::Camera* _camera) { camera = _camera; }
+	bool hasTransformation() const;
 	const Math::BoundingObject* getBoundingObject() const;
 
 	void setCubeMap(TextureCube* cube_map);

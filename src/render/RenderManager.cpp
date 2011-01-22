@@ -160,6 +160,7 @@ namespace Render {
 					glBindTexture(GL_TEXTURE_2D, texture->getColorMap());
 					setUniformInt(SHADER_COLORMAP_UNIFORM_NAME, colorMapTextureNum);
 					hasColorMap = true;
+					glDisable(GL_COLOR_MATERIAL);
 				}
 
 			}
@@ -172,6 +173,7 @@ namespace Render {
 		if (!hasColorMap) {
 			glActiveTexture(colorMapTexture);
 			glDisable(GL_TEXTURE_2D);
+			//glEnable(GL_COLOR_MATERIAL);
 		}
 
 		//Tell the shader which textures exist
@@ -260,6 +262,7 @@ namespace Render {
 
 	void RenderManager::revertRenderTexture(RenderProperties* properties) {
 		glDisable(GL_TEXTURE_2D);
+		//glEnable(GL_COLOR_MATERIAL);
 		if (properties->getTextureOverride())
 			numTextureOverrides--;
 	}
@@ -430,7 +433,7 @@ namespace Render {
 			}
 		}
 		//Set standard parameters
-		setUniformInt(SHADER_NUMLIGHTS_UNIFORM_NAME, lightManager->getActiveLights());
+		setUniformInt(SHADER_NUMLIGHTS_UNIFORM_NAME, lightManager->getNumActiveLights());
 		if (cubeMap && camera) {
 			glActiveTexture(cubeMapTexture);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->getCubeMap());
@@ -440,7 +443,7 @@ namespace Render {
 		}
 	}
 	const BoundingObject* RenderManager::getBoundingObject() const {
-		if (camera && numTransformations == 0)
+		if (camera)
 			return camera->getFrustrum();
 		else
 			return NULL;
@@ -448,11 +451,10 @@ namespace Render {
 
 	void RenderManager::setCubeMap(TextureCube* cube_map) {
 		cubeMap = cube_map;
-		/*
-		if (cubeMap && cubeMap->getCubeMap() > 0) {
-			
-		}
-		*/
+	}
+
+	bool RenderManager::hasTransformation() const {
+		return (numTransformations > 0);
 	}
 	
 

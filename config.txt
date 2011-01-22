@@ -13,10 +13,10 @@ display.bpp        = 0
 physics.driving.dosuspension = 1
 
 # Testing: generate paint cells (takes some time)
-render.paint.enabled = 1
+render.paint.enabled = 0
 
 # Rendering quality
 #    0 = low
 #    1 = medium
 #    2 = high
-render.quality = 1
+render.quality = 2

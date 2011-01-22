@@ -13,7 +13,7 @@ class ObjectSpatial
 {
 public:
 
-	enum ObjectType { VERTEX, BOX, TRIANGLE, PLANE, CONVEX_HULL };
+	enum ObjectType { VERTEX, BOX, TRIANGLE, PLANE, CONVEX_HULL, CIRCLE };
 
 	virtual ~ObjectSpatial(void) {}
 
@@ -38,9 +38,9 @@ public:
 	/** Returns true iff this object is entirely contained inside @a bounding obj
 	*/
 	virtual bool isInside(const BoundingObject& bounding_obj) const = 0;
-	/** Returns true iff this object intersects @a bound_obj
+	/** Returns true iff this object intersects @a bounding_obj
 	*/
-	virtual bool intersects(const BoundingObject& bound_obj) const = 0;
+	virtual bool intersects(const BoundingObject& bounding_obj) const = 0;
 
 	virtual ObjectType getObjectType() const = 0;
 
