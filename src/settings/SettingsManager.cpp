@@ -144,7 +144,7 @@ void SettingsManager::dump() {
         Setting &setting = (*i).second;
         Misc::StreamAsString stream;
         stream << "    "
-            << std::left << std::setw(20) << (*i).first
+            << std::left << std::setw(30) << (*i).first
             << " = " << setting.getString();
         
         if(setting.getIntData() != INT_UNSET) {

@@ -46,8 +46,10 @@ void Suspension::applySuspension(Object::PlayerList *playerList,
                 .drawLine(Physics::Converter::toVector(point),
                     Physics::Converter::toVector(point + axis), btVector3(1.0, 0.0, 0.0));
             
-            static const double REST_LENGTH = 1.0;
-            static const double STRETCH_LENGTH = 1.0;
+            const double REST_LENGTH
+                = GET_SETTING("physics.driving.restlength", 1.0);
+            const double STRETCH_LENGTH
+                = GET_SETTING("physics.driving.stretchlength", 1.0);
             
             double length = Physics::PhysicsWorld::getInstance()
                 ->raycastLength(point, point + axis);
@@ -58,6 +60,10 @@ void Suspension::applySuspension(Object::PlayerList *playerList,
             
             static const double K = 20.0; //(9.81 * 1.0) / (REST_LENGTH * 4);
             double factor = K * length;
+            
+            //if(factor > -4.5) factor = (factor + 4.5) * 2.0 - 4.5;
+            
+            if(factor < -5.0) factor = -5.0;
             
             //player->applyForce(Math::Point(0.0, 1.0, 0.0) * K, suspensionPoint[wheel]);
             //player->applyForce(axis * factor, suspensionPoint[wheel]);
@@ -70,7 +76,7 @@ void Suspension::applySuspension(Object::PlayerList *playerList,
             
             //factor = (factor + 4.5) * 0.5 - 4.5;
             
-            //LOG(PHYSICS, "crazy force: " << factor << " * " << axis);
+            //LOG(PHYSICS, "force: " << factor << " * " << axis);
             player->applyForce(axis * factor, suspensionPoint[wheel]);
         }
     }
