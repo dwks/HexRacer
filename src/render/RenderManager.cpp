@@ -423,7 +423,7 @@ namespace Render {
 		return (shader[shader_index]->getUniLoc(name));
 	}
 	void RenderManager::setShaderParameters() {
-		ShaderParamSetter& setter = getShaderParamSetter();
+		ShaderParamSetter setter = getShaderParamSetter();
 		for (unsigned int i = 0; i < shaderParams.size(); i++) {
 			for (unsigned int j = 0; j < shaderParams[i].size(); j++) {
 				shaderParams[i][j]->setShaderParameters(setter);

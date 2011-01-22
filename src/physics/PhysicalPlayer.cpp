@@ -31,6 +31,10 @@ void PhysicalPlayer::constructRigidBody(const Math::Point &position) {
 	
     primaryRigidBody = Physics::PhysicsFactory
         ::createRigidBox(0.4,0.2,0.8,position,2.0);
+    
+    /*primaryRigidBody->setCenterOfMassTransform(Converter::toTransform(
+        Math::Matrix::getTranslationMatrix(Math::Point(0.0, +1.0, 0.0))));*/
+    
     PhysicsWorld::getInstance()->registerRigidBody(primaryRigidBody);
 }
 
