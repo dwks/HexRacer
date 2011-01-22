@@ -13,7 +13,6 @@
 #include "render/TextureCube.h"
 
 #include "event/ObserverList.h"
-#include "event/PlayerMovement.h"
 
 #include "physics/PhysicsFactory.h"
 #include "physics/PhysicsWorld.h"

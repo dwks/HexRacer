@@ -11,7 +11,7 @@
 #include "network/HandshakePacket.h"
 #include "network/EventPacket.h"
 
-#include "event/PlayerMovement.h"
+#include "event/PlayerAction.h"
 #include "event/UpdatePlayerList.h"
 #include "event/ObserverList.h"
 
@@ -50,11 +50,24 @@ void ServerMain::ServerVisitor::visit(Network::EventPacket &packet) {
 
 void ServerMain::ServerObserver::observe(Event::EventBase *event) {
     switch(event->getType()) {
-    case Event::EventType::PLAYER_MOVEMENT: {
-        Event::PlayerMovement *movement
-            = dynamic_cast<Event::PlayerMovement *>(event);
-        main->getPlayerList().getPlayer(main->getWhichSocket())
-            ->applyMovement(movement->getMovement());
+    case Event::EventType::PLAYER_ACTION: {
+        Event::PlayerAction *action
+            = dynamic_cast<Event::PlayerAction *>(event);
+        Object::Player *player = main->getPlayerList()
+            .getPlayer(main->getWhichSocket());
+        
+        switch(action->getMovementType()) {
+        case Event::PlayerAction::ACCELERATE:
+            player->applyAcceleration(action->getValue());
+            break;
+        case Event::PlayerAction::TURN:
+            player->applyTurning(action->getValue());
+            break;
+        case Event::PlayerAction::JUMP:
+            player->doJump();
+            break;
+        }
+        
         break;
     }
     default:

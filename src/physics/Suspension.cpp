@@ -110,7 +110,7 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
 void Suspension::applySuspension(Object::PlayerList *playerList,
     Render::RenderManager *renderManager) {
     
-    if(!GET_SETTING("physics.driving.dosuspension", 0)) {
+    if(!GET_SETTING("physics.driving.enablesuspension", 0)) {
         return;
     }
     
@@ -118,58 +118,29 @@ void Suspension::applySuspension(Object::PlayerList *playerList,
     while(it.hasNext()) {
         Object::Player *player = it.next();
         
+        applyDragForce(player);
         calculateSuspensionForPlayer(player);
-#if 0
-        for(int wheel = 0; wheel < 4; wheel ++) {
-            Math::Matrix matrix = player->getTransformation();
-            
-            //LOG(OPENGL, "Centre of mass: " << matrix * Math::Point(0.0, 0.0, 0.0, 1.0));
-            
-            // uses 4D points
-            Math::Point axis = matrix * Math::Point(0.0, -1.0, 0.0, 0.0);
-            Math::Point point = matrix * suspensionPoint[wheel];
-            
-            //LOG(OPENGL, "Wheel " << wheel << ": " << point);
-            
-            Physics::PhysicsWorld::getInstance()->getDebug()
-                .drawLine(Physics::Converter::toVector(point),
-                    Physics::Converter::toVector(point + axis), btVector3(1.0, 0.0, 0.0));
-            
-            const double REST_LENGTH
-                = GET_SETTING("physics.driving.restlength", 1.0);
-            const double STRETCH_LENGTH
-                = GET_SETTING("physics.driving.stretchlength", 1.0);
-            
-            double length = Physics::PhysicsWorld::getInstance()
-                ->raycastLength(point, point + axis);
-            
-            length = length - REST_LENGTH;
-            if(length < -STRETCH_LENGTH) length = -STRETCH_LENGTH;
-            if(length > +STRETCH_LENGTH) length = 0.0; //length = +STRETCH_LENGTH;
-            
-            static const double K = 20.0; //(9.81 * 1.0) / (REST_LENGTH * 4);
-            double factor = K * length;
-            
-            //if(factor > -4.5) factor = (factor + 4.5) * 2.0 - 4.5;
-            
-            if(factor < -5.0) factor = -5.0;
-            
-            //player->applyForce(Math::Point(0.0, 1.0, 0.0) * K, suspensionPoint[wheel]);
-            //player->applyForce(axis * factor, suspensionPoint[wheel]);
-            
-            if(renderManager) {
-                Physics::PhysicsWorld::getInstance()->getDebug()
-                    .drawLine(Physics::Converter::toVector(point),
-                        Physics::Converter::toVector(point + axis), btVector3(1.0, 0.0, 0.0));
-            }
-            
-            //factor = (factor + 4.5) * 0.5 - 4.5;
-            
-            //LOG(PHYSICS, "force: " << factor << " * " << axis);
-            player->applyForce(axis * factor, suspensionPoint[wheel]);
-        }
-#endif
+        applyTurningForce(player);
     }
+}
+
+void Suspension::applyTurningForce(Object::Player *player) {
+    
+}
+
+void Suspension::applyDragForce(Object::Player *player) {
+    Physics::PhysicalPlayer *physicalPlayer
+        = dynamic_cast<Physics::PhysicalPlayer *>(player->getPhysicalObject());
+    Math::Point linearVelocity = physicalPlayer->getLinearVelocity();
+    Math::Point angularVelocity = physicalPlayer->getAngularVelocity();
+    
+    double linear = GET_SETTING("physics.driving.lineardrag", 0.1);
+    double angular = GET_SETTING("physics.driving.angulardrag", 0.1);
+    Math::Point linearDrag = -linear * linearVelocity;
+    Math::Point angularDrag = -angular * angularVelocity;
+    
+    physicalPlayer->applyForce(linearDrag);
+    physicalPlayer->applyTorque(angularDrag);
 }
 
 }  // namespace Physics

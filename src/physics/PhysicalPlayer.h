@@ -20,9 +20,9 @@ private:
     void save(Archive &ar, const unsigned version) const {
         Math::Matrix transformation = getTransformation();
         Math::Point linearVelocity
-            = Converter::toPoint(primaryRigidBody->getLinearVelocity());
+            = Converter::toPoint(rigidBody->getLinearVelocity());
         Math::Point angularVelocity
-            = Converter::toPoint(primaryRigidBody->getAngularVelocity());
+            = Converter::toPoint(rigidBody->getAngularVelocity());
         
         ar << transformation << linearVelocity << angularVelocity;
     }
@@ -37,15 +37,17 @@ private:
         
         constructRigidBody(transformation);
         
-        primaryRigidBody->setLinearVelocity(
+        rigidBody->setLinearVelocity(
             Converter::toVector(linearVelocity));
-        primaryRigidBody->setAngularVelocity(
+        rigidBody->setAngularVelocity(
             Converter::toVector(angularVelocity));
     }
     
     BOOST_SERIALIZATION_SPLIT_MEMBER()
+private:
+    btRigidBody *rigidBody;
 public:
-    PhysicalPlayer() : primaryRigidBody(NULL) {}
+    PhysicalPlayer() : rigidBody(NULL) {}
     PhysicalPlayer(const Math::Point &position);
     virtual ~PhysicalPlayer();
     
@@ -56,10 +58,26 @@ public:
     virtual Math::Point getOrigin() const;
     virtual Math::Matrix getTransformation() const;
     
-    void applyMovement(const Math::Point &movement);
-    void applyForce(const Math::Point &movement, const Math::Point &at);
-private:
-    btRigidBody* primaryRigidBody;
+    Math::Point getLinearVelocity() const;
+    Math::Point getAngularVelocity() const;
+    
+    /** Applies acceleration in the range [-1.0,+1.0], where +1.0 is full
+        throttle forwards and -1.0 is backwards.
+    */
+    void applyAcceleration(double acceleration);
+    
+    /** Turns by a value @a amount in the range [-1.0,+1.0], where -1.0
+        means turn fully left, and +1.0 means turn fully right.
+    */
+    void applyTurning(double amount);
+    
+    /** Applies jumping force.
+    */
+    void doJump();
+    
+    void applyForce(const Math::Point &force);
+    void applyForce(const Math::Point &force, const Math::Point &at);
+    void applyTorque(const Math::Point &torque);
 };
 
 }  // namespace Physics

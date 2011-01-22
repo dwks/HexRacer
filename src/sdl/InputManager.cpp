@@ -2,7 +2,7 @@
 #include "InputManager.h"
 
 #include "event/ObserverList.h"
-#include "event/PlayerMovement.h"
+#include "event/PlayerAction.h"
 #include "event/CameraMovement.h"
 #include "event/SetDebugDrawing.h"
 #include "event/QuitEvent.h"
@@ -28,28 +28,24 @@ void InputManager::handleEvent(SDL_Event *event) {
 }
 
 void InputManager::advanceToNextFrame() {
-    static const double MOVEMENT_FACTOR = 0.003;
     static const double CAMERA_FACTOR = 0.8;
     
     if(keyDown[SDLK_LEFT]) {
-        EMIT_EVENT(new Event::PlayerMovement(MOVEMENT_FACTOR
-            * Math::Point(+1.0, 0.0)));
+        EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::TURN, -1.0));
     }
     if(keyDown[SDLK_RIGHT]) {
-        EMIT_EVENT(new Event::PlayerMovement(MOVEMENT_FACTOR
-            * Math::Point(-1.0, 0.0)));
+        EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::TURN, +1.0));
     }
     if(keyDown[SDLK_UP]) {
-        EMIT_EVENT(new Event::PlayerMovement(MOVEMENT_FACTOR
-            * Math::Point(0.0, 0.0, +1.0)));
+        EMIT_EVENT(new Event::PlayerAction(
+            Event::PlayerAction::ACCELERATE, +1.0));
     }
     if(keyDown[SDLK_DOWN]) {
-        EMIT_EVENT(new Event::PlayerMovement(MOVEMENT_FACTOR
-            * Math::Point(0.0, 0.0, -1.0)));
+        EMIT_EVENT(new Event::PlayerAction(
+            Event::PlayerAction::ACCELERATE, -1.0));
     }
     if(keyDown[SDLK_SPACE]) {
-        EMIT_EVENT(new Event::PlayerMovement(MOVEMENT_FACTOR
-            * Math::Point(0.0, +1.0, 0.0)));
+        EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::JUMP, 0.0));
     }
     
     if(keyDown[SDLK_w]) {

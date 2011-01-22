@@ -40,9 +40,14 @@ public:
         { this->renderable = renderable; }
     virtual Render::RenderableObject *getRenderableObject();
     
+    void applyAcceleration(double acceleration)
+        { physical->applyAcceleration(acceleration); }
+    void applyTurning(double amount)
+        { physical->applyTurning(amount); }
+    void doJump() { physical->doJump(); }
+    
     Math::Point getPosition() const;
     Math::Matrix getTransformation() const;
-    void applyMovement(const Math::Point &movement);
     void applyForce(const Math::Point &movement, const Math::Point &at);
 };
 
