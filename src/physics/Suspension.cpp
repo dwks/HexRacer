@@ -141,6 +141,21 @@ void Suspension::applyDragForce(Object::Player *player) {
     
     physicalPlayer->applyForce(linearDrag);
     physicalPlayer->applyTorque(angularDrag);
+    
+    // sideways drag (prevent slipping)
+    
+    Math::Matrix matrix = physicalPlayer->getTransformation();
+    Math::Point sidewaysAxis = matrix * Math::Point(1.0, 0.0, 0.0, 0.0);
+    
+    if(linearVelocity.lengthSquared()) {
+        double sidewaysSpeed = linearVelocity.dotProduct(sidewaysAxis)
+            / linearVelocity.length();
+        
+        double sideways = GET_SETTING("physics.driving.sidewaysdrag", 0.1);
+        Math::Point sidewaysDrag = -sideways * sidewaysSpeed * sidewaysAxis;
+        
+        physicalPlayer->applyForce(sidewaysDrag);
+    }
 }
 
 }  // namespace Physics

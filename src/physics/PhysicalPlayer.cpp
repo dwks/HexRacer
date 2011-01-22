@@ -1,7 +1,11 @@
+#include <cmath>
+
 #include "PhysicalPlayer.h"
 #include "Converter.h"
 #include "PhysicsWorld.h"
 #include "PhysicsFactory.h"
+
+#include "math/Values.h"
 
 #include "log/Logger.h"
 #include "settings/SettingsManager.h"
@@ -83,8 +87,24 @@ void PhysicalPlayer::applyTurning(double amount) {
     rigidBody->activate();
     
     double constant = GET_SETTING("physics.constant.turn", 1.0);
+    double centripetalConstant
+        = GET_SETTING("physics.constant.centripetal", 1.0);
     
-    applyTorque(Math::Point(0.0, -1.0, 0.0) * constant * amount);
+    Math::Matrix matrix = getTransformation();
+    Math::Point forwardAxis = matrix * Math::Point(0.0, 0.0, 1.0, 0.0);
+    Math::Point centripetalAxis = matrix * Math::Point(-1.0, 0.0, 0.0, 0.0);
+    
+    forwardAxis.normalize();
+    centripetalAxis.normalize();
+    
+    double speed = getLinearVelocity().length();
+    /*double centripetalSpeed = getLinearVelocity().dotProduct(forwardAxis)
+        / getLinearVelocity().length();*/
+    
+    //LOG(PHYSICS, "centripetal: " << centripetalSpeed);
+    
+    applyForce(centripetalAxis * centripetalConstant * speed * amount);
+    applyTorque(Math::Point(0.0, -1.0, 0.0) * constant * speed * amount);
 }
 
 void PhysicalPlayer::doJump() {

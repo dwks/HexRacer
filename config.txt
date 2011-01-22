@@ -15,8 +15,9 @@ display.bpp        = 0
 ### Physics settings
 
 # Acceleration and responsiveness of input
-physics.constant.turn             = 2.0
+physics.constant.turn             = 1.0
 physics.constant.accel            = 3.0
+physics.constant.centripetal      = 2.0
 
 # Vehicle suspension
 physics.driving.enablesuspension  = 1
@@ -28,6 +29,7 @@ physics.driving.constant.c        = 10.0
 # Drag forces
 physics.driving.lineardrag        = 0.4
 physics.driving.angulardrag       = 0.5
+physics.driving.sidewaysdrag      = 0.8
 
 ########
 ### Rendering settings
