@@ -49,7 +49,7 @@ void InputManager::advanceToNextFrame() {
     }
     if(keyDown[SDLK_SPACE]) {
         EMIT_EVENT(new Event::PlayerMovement(MOVEMENT_FACTOR
-            * Math::Point(0.0, +3.0, 0.0)));
+            * Math::Point(0.0, +1.0, 0.0)));
     }
     
     if(keyDown[SDLK_w]) {

@@ -5,10 +5,11 @@ namespace Project {
 namespace Render {
 
 	void BaseRenderable::subRender(RenderManager* manager) {
+        ShaderParamSetter param = manager->getShaderParamSetter();
 		if (manager->hasTransformation())
-			renderGeometry(manager->getShaderParamSetter(), NULL);
+			renderGeometry(param, NULL);
 		else
-			renderGeometry(manager->getShaderParamSetter(), manager->getBoundingObject());
+			renderGeometry(param, manager->getBoundingObject());
 	}
 
 }  // namespace Render

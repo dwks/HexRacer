@@ -156,9 +156,6 @@ namespace Paint {
 			if (intersect.intersects) {
 				heights.push_back(r.atT(intersect.t).getCoord(PaintCell::PAINT_AXIS));
 			}
-			else {
-				int b = 5;
-			}
 		}
 
 		return heights;

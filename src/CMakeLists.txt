@@ -18,6 +18,7 @@ aux_source_directory(render RENDER_SOURCES)
 aux_source_directory(server SERVER_DIR_SOURCES)
 aux_source_directory(settings SETTINGS_SOURCES)
 aux_source_directory(sdl SDL_DIR_SOURCES)
+aux_source_directory(timing TIMING_SOURCES)
 
 set(SOURCES
     ${LOG_SOURCES}
@@ -31,7 +32,8 @@ set(SOURCES
     ${OPENGL_SOURCES}
     ${SETTINGS_SOURCES}
     ${RENDER_SOURCES}
-    ${PAINT_SOURCES})
+    ${PAINT_SOURCES}
+    ${TIMING_SOURCES})
 
 set(SDL_SOURCES
     ${SDL_DIR_SOURCES})

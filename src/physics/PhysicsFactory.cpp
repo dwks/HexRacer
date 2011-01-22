@@ -40,9 +40,9 @@ btRigidBody* PhysicsFactory::createRigidSphere(float radius, Math::Point origin,
 }
 
 btRigidBody* PhysicsFactory::createRigidBox(float width, float height, float depth, Math::Point origin, float mass){
-    LOG2(PHYSICS, CREATE,
+    /*LOG2(PHYSICS, CREATE,
         "Creating BoxShape: W: " << width << " H: " << height << " D: " << depth
-        << " Origin: " << origin << " Mass: " << mass);
+        << " Origin: " << origin << " Mass: " << mass);*/
     btCollisionShape* boxShape = new btBoxShape ( btVector3 (width,height,depth) );
     
     btDefaultMotionState* fallMotionState

@@ -86,6 +86,7 @@ private:
     void resizeGL(int width, int height);
     void handleJoystick();
     void render();
+    void renderGrid();
 
 	void updateCamera();
 

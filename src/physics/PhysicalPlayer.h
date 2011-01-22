@@ -33,7 +33,7 @@ private:
         Math::Point linearVelocity, angularVelocity;
         ar >> transformation >> linearVelocity >> angularVelocity;
         
-        LOG(OPENGL, transformation);
+        //LOG(OPENGL, transformation);
         
         constructRigidBody(transformation);
         
@@ -58,7 +58,7 @@ public:
     
     void applyMovement(const Math::Point &movement);
     void applyForce(const Math::Point &movement, const Math::Point &at);
-protected:
+private:
     btRigidBody* primaryRigidBody;
 };
 

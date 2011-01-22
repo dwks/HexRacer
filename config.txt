@@ -1,5 +1,6 @@
 # Settings for the project
 
+########
 ### Display settings
 
 # Setting width and height to 0 uses the current resolution
@@ -9,8 +10,18 @@ display.height     = 600
 display.fullscreen = 0
 display.bpp        = 0
 
+########
+### Physics settings
+
 # Enables suspension (very much in the testing stage)
-physics.driving.dosuspension = 1
+physics.driving.dosuspension  = 1
+physics.driving.restlength    = 0.5
+physics.driving.stretchlength = 1.0
+physics.driving.constant.k    = 1.0
+physics.driving.constant.c    = 10.0
+
+########
+### Rendering settings
 
 # Testing: generate paint cells (takes some time)
 render.paint.enabled = 0
@@ -20,3 +31,10 @@ render.paint.enabled = 0
 #    1 = medium
 #    2 = high
 render.quality = 2
+
+########
+### Network settings
+
+# Network settings for both client and server
+network.port = 1820
+network.host = localhost

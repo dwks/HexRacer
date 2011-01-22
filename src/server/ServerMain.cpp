@@ -28,6 +28,7 @@
 #include "misc/Sleeper.h"
 
 #include "config.h"
+#include "settings/SettingsManager.h"
 
 namespace Project {
 namespace Server {
@@ -74,7 +75,7 @@ void ServerMain::run() {
     Connection::ServerManager server;
     ClientManager clients;
     
-    server.addServer(1820);
+    server.addServer(GET_SETTING("network.port", 1820));
     
     Render::MeshLoader *meshLoader = new Render::MeshLoader();
     meshLoader->loadOBJ("testTerrain", "models/testterrain.obj");
@@ -85,6 +86,8 @@ void ServerMain::run() {
             test_terrain->getTriangles()));
     
     ADD_OBSERVER(new ServerObserver(this));
+    
+    Physics::Suspension suspension;
     
     int loops = 0;
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
@@ -125,9 +128,9 @@ void ServerMain::run() {
             lastPhysicsTime = thisTime;
         }
         
-        Physics::Suspension().applySuspension(&playerList, NULL);
+        suspension.applySuspension(&playerList, NULL);
         
-        if(++loops == 10) {
+        if(++loops == 5) {
             loops = 0;
             
             for(int p = 0; p < clientCount; p ++) {
