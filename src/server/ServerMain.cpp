@@ -15,6 +15,7 @@
 
 #include "physics/PhysicsWorld.h"
 #include "physics/PhysicsFactory.h"
+#include "physics/Suspension.h"
 
 #include "object/PlayerList.h"
 
@@ -121,6 +122,8 @@ void ServerMain::run() {
             physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
             lastPhysicsTime = thisTime;
         }
+        
+        Physics::Suspension().applySuspension(&playerList, NULL);
         
         if(++loops == 10) {
             loops = 0;
