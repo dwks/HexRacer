@@ -11,7 +11,7 @@ attribute vec3 tangent;
 attribute vec3 bitangent;
 
 void main()
-{	
+{
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	
 	eyeNormal = normalize(gl_NormalMatrix * gl_Normal);

@@ -10,7 +10,7 @@ display.fullscreen = 0
 display.bpp        = 0
 
 # Enables suspension (very much in the testing stage)
-physics.driving.dosuspension = 0
+physics.driving.dosuspension = 1
 
 # Testing: generate paint cells (takes some time)
 render.paint.enabled = 0

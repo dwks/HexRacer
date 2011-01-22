@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #include "Shader.h"
+#include "log/Logger.h"
 
 using namespace Project;
 using namespace Render;
@@ -38,7 +39,10 @@ Shader::Shader(GLchar *fs, GLchar *vs) { // Built the shader program
 	{
 		infoLog = (char *)malloc(infologLength);
 		glGetProgramInfoLog(p, infologLength, &charsWritten, infoLog);
-		printf("%s\n",infoLog);
+		//printf("%s\n",infoLog);
+        if(*infoLog != 0) {
+            LOG(OPENGL, infoLog);
+        }
 		free(infoLog);
 	}
 }
