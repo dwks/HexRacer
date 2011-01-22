@@ -30,7 +30,7 @@ render.paint.enabled = 0
 #    0 = low
 #    1 = medium
 #    2 = high
-render.quality = 1
+render.quality = 2
 
 ########
 ### Network settings

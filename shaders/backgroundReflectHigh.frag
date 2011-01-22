@@ -1,4 +1,4 @@
-// Color map, normal map and glow map with phong shading
+// Background reflection with Normal Mapping
 
 varying vec3 eyeNormal;
 varying vec3 objectNormal;
@@ -7,9 +7,11 @@ varying vec4 position;
 varying vec3 eyeTangent; 
 varying vec3 eyeBitangent;
 
+uniform samplerCube cubeMap;
+uniform mat4 cameraMatrix;
+
 uniform sampler2D colorMap;
 uniform sampler2D normalMap;
-uniform sampler2D glowMap;
 uniform int hasTexture [3];
 uniform int numLights;
 
@@ -27,6 +29,20 @@ void main() {
 	
 	vec3 view = normalize(position.xyz);
 	vec3 reflection = normalize(reflect(view, normal));
+
+	//Worldspace calculations----------------------------------------------------------------------------------------
+	
+	mat3 cameraNormalMatrix;
+	cameraNormalMatrix[0][0] = cameraMatrix[0][0];
+	cameraNormalMatrix[1][0] = cameraMatrix[1][0];
+	cameraNormalMatrix[2][0] = cameraMatrix[2][0];
+	cameraNormalMatrix[0][1] = cameraMatrix[0][1];
+	cameraNormalMatrix[1][1] = cameraMatrix[1][1];
+	cameraNormalMatrix[2][1] = cameraMatrix[2][1];
+	cameraNormalMatrix[0][2] = cameraMatrix[0][2];
+	cameraNormalMatrix[1][2] = cameraMatrix[1][2];
+	cameraNormalMatrix[2][2] = cameraMatrix[2][2];
+	vec3 worldReflect = normalize(cameraNormalMatrix * reflection);
 	
 	//Lighting calculations----------------------------------------------------------------------------------------
 	
@@ -75,14 +91,7 @@ void main() {
 		specular_color *= texture2D(normalMap, gl_TexCoord[0].st).w;
 	}
 	
-	vec4 ambient_base;
-	//if (hasTexture[2] == 1)
-	//	ambient_base = texture2D(glowMap, gl_TexCoord[0].st);
-	//else
-		ambient_base = gl_FrontMaterial.ambient;
+	float krefl = gl_FrontMaterial.shininess/13.0;
 	
-	gl_FragColor = diffuse_color + specular_color + ambient_color;
-	gl_FragColor.x += (1.0-gl_FragColor.x)*ambient_base.x;
-	gl_FragColor.y += (1.0-gl_FragColor.y)*ambient_base.y;
-	gl_FragColor.z += (1.0-gl_FragColor.z)*ambient_base.z;
+	gl_FragColor = (diffuse_color + ambient_color)*(1.0-krefl) + textureCube(cubeMap, worldReflect)*krefl + specular_color;
 }

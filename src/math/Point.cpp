@@ -97,6 +97,12 @@ double Point::length() const {
         (getZ() * getZ()));
 }
 
+double Point::lengthSquared() const {
+ return (getX() * getX()) +
+        (getY() * getY()) +
+        (getZ() * getZ());
+}
+
 double Point::distance(const Point &other) const {
     double x_diff = (getX() - other.getX());
     double y_diff = (getY() - other.getY());
@@ -104,6 +110,17 @@ double Point::distance(const Point &other) const {
     
     return std::sqrt(
         x_diff * x_diff
+        + y_diff * y_diff
+        + z_diff * z_diff);
+}
+
+double Point::distanceSquared(const Point &other) const {
+
+    double x_diff = (getX() - other.getX());
+    double y_diff = (getY() - other.getY());
+    double z_diff = (getZ() - other.getZ());
+    
+    return (x_diff * x_diff
         + y_diff * y_diff
         + z_diff * z_diff);
 }

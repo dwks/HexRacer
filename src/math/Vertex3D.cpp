@@ -32,8 +32,8 @@ namespace Math {
 	BoundingObject2D* Vertex3D::projectTo2D(Axis project_axis) const {
 		return new Vertex2D(getPosition(), project_axis);
 	}
-	bool Vertex3D::intersects3D(const BoundingObject3D& bound_obj) const {
-		return bound_obj.pointInside(getPosition());
+	bool Vertex3D::intersects3D(const BoundingObject3D& bounding_obj) const {
+		return bounding_obj.pointInside(getPosition());
 	}
 	void Vertex3D::translate(const Point& translation) {
 		position += translation;

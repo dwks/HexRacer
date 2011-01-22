@@ -52,15 +52,15 @@ namespace Math {
 	}
 
 	bool BoundingTriangle2D::pointInside(const Point& p) const {
+
 		return (Geometry::sameSideOfLine2D(getVertex(0), getVertex(1), getVertex(2), p, projectAxis) &&
 			Geometry::sameSideOfLine2D(getVertex(1), getVertex(2), getVertex(0), p, projectAxis) &&
 			Geometry::sameSideOfLine2D(getVertex(2), getVertex(0), getVertex(1), p, projectAxis));
 
 		/*
-        
         Point p2D = Point::point2D(p, projectAxis);
         
-        Point v1 = getVertex(0) *- getVertex(1);
+        Point v1 = getVertex(0) - getVertex(1);
         Point v2 = getVertex(1) - getVertex(2);
         Point v3 = getVertex(2) - getVertex(0);
 
@@ -73,25 +73,25 @@ namespace Math {
         double d3 = w3.dotProduct(v3);
         
         if(d1 <= 0.0 && d2 <= 0.0 && d3 <= 0.0) return true;
-        if(d1 >= 0.0 && d2 >= 0.0 && d3 >= 0.0) return true;
+        if (d1 >= 0.0 && d2 >= 0.0 && d3 >= 0.0) return true;
         
         return false;
-
 		*/
+
 	}
 
-	bool BoundingTriangle2D::intersects2D(const BoundingObject2D& bound_obj) const {
+	bool BoundingTriangle2D::intersects2D(const BoundingObject2D& bounding_obj) const {
 
-		if (bound_obj.getProjectAxis() != projectAxis)
+		if (bounding_obj.getProjectAxis() != projectAxis)
 			return false;
 
-		switch (bound_obj.getObjectType()) {
+		switch (bounding_obj.getObjectType()) {
 
 			case TRIANGLE:
 				return false;
 
 			case BOX: {
-				const BoundingBox2D* box_2D = (const BoundingBox2D*) &bound_obj;
+				const BoundingBox2D* box_2D = (const BoundingBox2D*) &bounding_obj;
 				//2D Triangle-Box Intersection
 
 				//Check if any of the box's vertices is inside this triangle
@@ -152,7 +152,7 @@ namespace Math {
 		}
 
 		//Defer to the other object's interesection tests
-		return bound_obj.intersects2D(*this);
+		return bounding_obj.intersects2D(*this);
 	}
 
 	void BoundingTriangle2D::translate(const Point& translation) {

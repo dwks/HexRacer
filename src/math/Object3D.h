@@ -17,10 +17,10 @@ public:
 	Object3D(void) {}
 	virtual ~Object3D(void) {}
 
-	bool intersects(const BoundingObject& bound_obj) const;
+	bool intersects(const BoundingObject& bounding_obj) const;
 	void moveCentroid(const Point& position);
 
-	virtual bool intersects3D(const BoundingObject3D& bound_obj) const = 0;
+	virtual bool intersects3D(const BoundingObject3D& bounding_obj) const = 0;
 
 	/** Instantiates and returns a 2D version of this object projected to the axis @a project_axis
 	*/

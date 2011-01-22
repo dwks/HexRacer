@@ -20,8 +20,8 @@ namespace Math {
 		return Geometry::frontOfPlane(origin, normal, p);
 	}
 
-	bool BoundingPlane3D::intersects3D(const BoundingObject3D& bound_obj) const {
-		return bound_obj.intersects3D(*this);
+	bool BoundingPlane3D::intersects3D(const BoundingObject3D& bounding_obj) const {
+		return bounding_obj.intersects3D(*this);
 	}
 
 	void BoundingPlane3D::translate(const Point& translation) {

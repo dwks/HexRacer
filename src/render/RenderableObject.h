@@ -27,7 +27,7 @@ public:
 	void render(RenderManager* manager);
 	virtual void subRender(RenderManager* manager) = 0;
 
-	virtual bool shouldDraw( const Math::BoundingObject& bound_obj ) { return true; }
+	virtual bool shouldDraw( const Math::BoundingObject& bounding_obj ) { return true; }
 
 	//bool hasRenderProperties() const;
 	RenderProperties* getRenderProperties() const;

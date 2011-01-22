@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Point.h"
+#include "ObjectSpatial.h"
 
 namespace Project {
 namespace Math {

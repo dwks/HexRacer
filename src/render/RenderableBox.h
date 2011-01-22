@@ -14,7 +14,7 @@ public:
 		: Math::BoundingBox3D(width, height, depth, centroid) {}
 
 	void renderGeometry(ShaderParamSetter& setter, const Math::BoundingObject* bounding_object = NULL);
-	bool shouldDraw( const Math::BoundingObject& bound_obj );
+	bool shouldDraw( const Math::BoundingObject& bounding_obj );
 	
 };
 

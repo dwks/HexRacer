@@ -1,6 +1,7 @@
 #include "GeometryDrawing.h"
 #include "MathWrapper.h"
 #include "OpenGL.h"
+#include "math/Vertex2D.h"
 #include <typeinfo>
 #include <vector>
 using namespace Project;
@@ -42,6 +43,10 @@ void GeometryDrawing::drawObject(ObjectSpatial& object, bool wireframe) {
 	}
 	else if (object_type == typeid(BoundingConvexHull3D&)) {
 		drawBoundingConvexHull3D((BoundingConvexHull3D&) object, wireframe);
+		return;
+	}
+	else if (object_type == typeid(BoundingSphere&)) {
+		drawBoundingSphere((BoundingSphere&) object, wireframe);
 		return;
 	}
 	else if (object_type == typeid(Vertex2D&)) {
@@ -260,4 +265,15 @@ void GeometryDrawing::drawBoundingConvexHull3D(Math::BoundingConvexHull3D& objec
 	vector<BoundingPlane3D> planes = object.getPlanes();
 	for (unsigned int i = 0; i < planes.size(); i++)
 		drawBoundingPlane3D(planes[i], wireframe);
+}
+
+void GeometryDrawing::drawBoundingSphere(Math::BoundingSphere& object, bool wireframe) {
+	GLUquadric* quad = gluNewQuadric();
+	if (wireframe)
+		gluQuadricDrawStyle(quad, GLU_LINE);
+	glPushMatrix();
+	glTranslatef(object.getPosition().getX(), object.getPosition().getY(), object.getPosition().getZ());
+	gluSphere(quad, object.getRadius(), 12, 12);
+	glPopMatrix();
+	gluDeleteQuadric(quad);
 }

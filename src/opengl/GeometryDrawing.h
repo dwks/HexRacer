@@ -7,7 +7,7 @@
 #include "math/Triangle3D.h"
 #include "math/BoundingPlane3D.h"
 #include "math/BoundingConvexHull3D.h"
-#include "math/Vertex2D.h"
+#include "math/BoundingSphere.h"
 
 namespace Project {
 namespace OpenGL {
@@ -28,6 +28,7 @@ public:
 	static void drawTriangle3D(Math::Triangle3D& object, bool wireframe = false);
 	static void drawBoundingPlane3D(Math::BoundingPlane3D& object, bool wireframe = false);
 	static void drawBoundingConvexHull3D(Math::BoundingConvexHull3D& object, bool wireframe = false);
+	static void drawBoundingSphere(Math::BoundingSphere& object, bool wireframe = false);
 };
 
 }  // namespace OpenGL

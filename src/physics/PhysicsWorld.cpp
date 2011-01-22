@@ -131,7 +131,6 @@ double PhysicsWorld::raycastLength(const Math::Point &from,
         return (from - Converter::toPoint(ray.m_hitPointWorld)).length();
     }
 
-	//return 9999999999.0;
 	return DBL_MAX;
 }
 

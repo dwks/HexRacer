@@ -15,6 +15,7 @@ namespace Render {
 		specular = Color(Color::WHITE);
 		ambient = Color(Color::BLACK);
 		strength = 1.0f;
+		hasAttenuation = true;
 
 	}
 
@@ -49,11 +50,25 @@ namespace Render {
 		values[3] = 1.0f;
 		glLightfv(light, GL_POSITION, values);
 
-		glLightf(light, GL_QUADRATIC_ATTENUATION, 1.0f/strength);
+		glLightf(light, GL_QUADRATIC_ATTENUATION, quadAttenuation);
+			
 	}
 
 	void Light::setStrength(float _strength) {
 		strength = maximum(1.0f, _strength);
+		updateAttenuation();
+	}
+
+	void Light::setHasAttenuation(bool has_attenuation) {
+		hasAttenuation = has_attenuation;
+		updateAttenuation();
+	}
+
+	void Light::updateAttenuation() {
+		if (hasAttenuation)
+			quadAttenuation = 1.0/strength;
+		else
+			quadAttenuation = 0.0;
 	}
 
 }  // namespace Render

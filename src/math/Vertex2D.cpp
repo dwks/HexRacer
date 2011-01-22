@@ -42,8 +42,8 @@ namespace Math {
 		return (getPosition() == p);
 	}
 
-	bool Vertex2D::intersects2D(const BoundingObject2D& bound_obj) const {
-		return bound_obj.pointInside(getPosition());
+	bool Vertex2D::intersects2D(const BoundingObject2D& bounding_obj) const {
+		return bounding_obj.pointInside(getPosition());
 	}
 	void Vertex2D::translate(const Point& translation) {
 		position += Point::point2D(translation, projectAxis);
