@@ -58,7 +58,7 @@ public:
     
     void applyMovement(const Math::Point &movement);
     void applyForce(const Math::Point &movement, const Math::Point &at);
-protected:
+private:
     btRigidBody* primaryRigidBody;
 };
 

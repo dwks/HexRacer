@@ -87,6 +87,8 @@ void ServerMain::run() {
     
     ADD_OBSERVER(new ServerObserver(this));
     
+    Physics::Suspension suspension;
+    
     int loops = 0;
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
     for(;;) {
@@ -126,7 +128,7 @@ void ServerMain::run() {
             lastPhysicsTime = thisTime;
         }
         
-        Physics::Suspension().applySuspension(&playerList, NULL);
+        suspension.applySuspension(&playerList, NULL);
         
         if(++loops == 5) {
             loops = 0;

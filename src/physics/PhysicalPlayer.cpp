@@ -42,7 +42,7 @@ void PhysicalPlayer::constructRigidBody(const Math::Matrix &transformation) {
     destroyRigidBody();
     
     primaryRigidBody = Physics::PhysicsFactory
-        ::createRigidBox(0.2,0.2,0.2,Math::Point(),2.0);
+        ::createRigidBox(0.4,0.2,0.8,Math::Point(),2.0);
     primaryRigidBody->setWorldTransform(
         Converter::toTransform(transformation));
     
@@ -51,6 +51,19 @@ void PhysicalPlayer::constructRigidBody(const Math::Matrix &transformation) {
     
     PhysicsWorld::getInstance()->registerRigidBody(primaryRigidBody);
 }
+
+/*void PhysicalPlayer::constructSprings() {
+    static const Math::Point suspensionPoint[] = {
+        Math::Point(0.4, -0.2, 0.8 * 0.9),
+        Math::Point(-0.4, -0.2, 0.8 * 0.9),
+        Math::Point(-0.4, -0.2, -0.8 * 0.9),
+        Math::Point(0.4, -0.2, -0.8 * 0.9),
+    };
+    
+    for(int wheel = 0; wheel < 4; wheel ++) {
+        spring[4] = Suspension::Spring(suspensionPoint[wheel]);
+    }
+}*/
 
 Math::Point PhysicalPlayer::getOrigin() const {
     btTransform trans = primaryRigidBody->getWorldTransform();
@@ -74,14 +87,21 @@ void PhysicalPlayer::applyMovement(const Math::Point &movement) {
     
     btTransform transform = primaryRigidBody->getWorldTransform();
     btMatrix3x3 matrix(transform.getRotation());
-    Math::Point orientation
-        = Converter::toPoint(matrix
-            * Converter::toVector(Math::Point(0.0, 0.0, 1.0)));
+    Math::Point orientation = Converter::toPoint(matrix
+        * Converter::toVector(Math::Point(0.0, 0.0, 1.0)));
     
     double accel = movement.getZ();
     primaryRigidBody->applyCentralForce(
-        Converter::toVector(orientation
-            * accel * 5000.0f));
+        Converter::toVector(orientation * accel * 5000.0f));
+    
+    double jump = movement.getY();
+    if(jump) {
+        /*Math::Point upwards = Converter::toPoint(matrix
+            * Converter::toVector(Math::Point(0.0, 1.0, 0.0)));*/
+        Math::Point upwards = Math::Point(0.0, 1.0, 0.0);
+        primaryRigidBody->applyCentralForce(
+            Converter::toVector(upwards * jump * 10000.0f));
+    }
 }
 
 void PhysicalPlayer::applyForce(const Math::Point &movement,

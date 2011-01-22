@@ -14,7 +14,6 @@
 #include "render/RenderList.h"
 
 #include "physics/PhysicsWorld.h"
-#include "physics/Suspension.h"
 
 #include "settings/SettingsManager.h"
 #include "config.h"
@@ -52,7 +51,7 @@ PlayerManager::~PlayerManager() {
 }
 
 void PlayerManager::applySuspension(Render::RenderManager *renderManager) {
-    Physics::Suspension().applySuspension(playerList, renderManager);
+    suspension.applySuspension(playerList, renderManager);
 }
 
 void PlayerManager::render(Render::RenderManager *renderManager) {

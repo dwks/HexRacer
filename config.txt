@@ -15,8 +15,10 @@ display.bpp        = 0
 
 # Enables suspension (very much in the testing stage)
 physics.driving.dosuspension  = 1
-physics.driving.restlength    = 0.4
+physics.driving.restlength    = 0.5
 physics.driving.stretchlength = 1.0
+physics.driving.constant.k    = 1.0
+physics.driving.constant.c    = 10.0
 
 ########
 ### Rendering settings

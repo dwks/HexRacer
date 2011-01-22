@@ -266,6 +266,7 @@ void SDLMain::run() {
         render();
         playerManager->applySuspension(renderer);
         physicsWorld->render();
+        //renderGrid();
         
         SDL_GL_SwapBuffers();
         
@@ -362,6 +363,23 @@ void SDLMain::render() {
 	glDisable(GL_TEXTURE_2D);
     
     glFlush();
+}
+
+void SDLMain::renderGrid() {
+    static const int SIZE = 10;
+    static const double HEIGHT = 1.0;
+    
+    glColor3f(0.5f, 0.0f, 0.0f);
+    
+    glBegin(GL_LINES);
+    for(int i = -SIZE; i < SIZE; i ++) {
+        OpenGL::MathWrapper::glVertex(Math::Point(i, HEIGHT, -SIZE));
+        OpenGL::MathWrapper::glVertex(Math::Point(i, HEIGHT, SIZE));
+        
+        OpenGL::MathWrapper::glVertex(Math::Point(-SIZE, HEIGHT, i));
+        OpenGL::MathWrapper::glVertex(Math::Point(SIZE, HEIGHT, i));
+    }
+    glEnd();
 }
 
 }  // namespace SDL

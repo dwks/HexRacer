@@ -4,6 +4,8 @@
 #include "object/Player.h"
 #include "object/PlayerList.h"
 
+#include "physics/Suspension.h"
+
 #include "event/TypedObserver.h"
 #include "event/PlayerMovement.h"
 #include "event/UpdatePlayerList.h"
@@ -17,6 +19,7 @@ class PlayerManager {
 private:
     int id;
     Object::PlayerList *playerList;
+    Physics::Suspension suspension;
 private:
     class PlayerMovementHandler
         : public Event::TypedObserver<Event::PlayerMovement> {
