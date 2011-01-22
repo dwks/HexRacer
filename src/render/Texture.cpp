@@ -5,10 +5,14 @@
 namespace Project {
 namespace Render {
 
-	Texture::Texture(std::string _name, std::string color_map_filename, std::string normal_map_filename) {
+	Texture::Texture(std::string _name,
+		std::string color_map_filename,
+		std::string normal_map_filename,
+		std::string glow_map_filename) {
 		name = _name;
 		colorMap = loadTexture2D(color_map_filename);
 		normalMap = loadTexture2D(normal_map_filename);
+		glowMap = loadTexture2D(glow_map_filename);
 	}
 
 	Texture::~Texture() {
@@ -34,6 +38,14 @@ namespace Render {
 
 	GLuint Texture::getNormalMap() const {
 		return normalMap;
+	}
+
+	bool Texture::hasGlowMap() const {
+		return (glowMap > 0);
+	}
+
+	GLuint Texture::getGlowMap() const {
+		return glowMap;
 	}
 
 	GLuint Texture::loadTexture2D(std::string filename,

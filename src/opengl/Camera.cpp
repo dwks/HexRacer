@@ -5,13 +5,15 @@ using namespace Project;
 using namespace OpenGL;
 using namespace Math;
 
-Camera::Camera(void)
+Camera::Camera(CameraType camera_type)
 {
 
 	cameraMatrix[3] = 0.0f;
 	cameraMatrix[7] = 0.0f;
 	cameraMatrix[11] = 0.0f;
 	cameraMatrix[15] = 0.0f;
+
+	cameraType = camera_type;
 
 	frustrum = new BoundingConvexHull3D(4);
 	setAspect(1.0f);
@@ -70,21 +72,34 @@ void Camera::updateDirections() {
 	cameraMatrix[9] = static_cast<GLfloat>(-cameraLookDirection.getY());
 	cameraMatrix[10] = static_cast<GLfloat>(-cameraLookDirection.getZ());
 
-	//Update the plane normals
-	double angle = fieldOfView/360.0*PI;
-	double half_plane_height = tan(angle);//*2.0f;
-	double half_plane_width = half_plane_height*aspect;
+	if (cameraType == PERSPECTIVE) {
 
-	Point center = cameraPosition+cameraLookDirection;
-	Point top_left = center-(cameraRightDirection*half_plane_width)+(actualCameraUpDirection*half_plane_height);
-	Point top_right = center+(cameraRightDirection*half_plane_width)+(actualCameraUpDirection*half_plane_height);
-	Point bottom_left = center-(cameraRightDirection*half_plane_width)-(actualCameraUpDirection*half_plane_height);
-	Point bottom_right = center+(cameraRightDirection*half_plane_width)-(actualCameraUpDirection*half_plane_height);
+		//Update the plane normals
+		double angle = fieldOfView/360.0*PI;
+		halfPlaneHeight = tan(angle);
+		halfPlaneWidth = halfPlaneHeight*aspect;
 
-	leftPlaneNormal = Geometry::triangleNormal(cameraPosition, bottom_left, top_left);
-	rightPlaneNormal = Geometry::triangleNormal(cameraPosition, top_right, bottom_right);
-	topPlaneNormal = Geometry::triangleNormal(cameraPosition, top_left, top_right);
-	bottomPlaneNormal = Geometry::triangleNormal(cameraPosition, bottom_right, bottom_left);
+		Point center = cameraPosition+cameraLookDirection;
+		Point top_left = center-(cameraRightDirection*halfPlaneWidth)+(actualCameraUpDirection*halfPlaneHeight);
+		Point top_right = center+(cameraRightDirection*halfPlaneWidth)+(actualCameraUpDirection*halfPlaneHeight);
+		Point bottom_left = center-(cameraRightDirection*halfPlaneWidth)-(actualCameraUpDirection*halfPlaneHeight);
+		Point bottom_right = center+(cameraRightDirection*halfPlaneWidth)-(actualCameraUpDirection*halfPlaneHeight);
+
+		leftPlaneNormal = Geometry::triangleNormal(cameraPosition, bottom_left, top_left);
+		rightPlaneNormal = Geometry::triangleNormal(cameraPosition, top_right, bottom_right);
+		topPlaneNormal = Geometry::triangleNormal(cameraPosition, top_left, top_right);
+		bottomPlaneNormal = Geometry::triangleNormal(cameraPosition, bottom_right, bottom_left);
+
+	}
+	else {
+		halfPlaneHeight = orthoHeight*0.5;
+		halfPlaneWidth = halfPlaneHeight*aspect;
+
+		leftPlaneNormal = cameraRightDirection;
+		rightPlaneNormal = cameraRightDirection*(-1.0);
+		bottomPlaneNormal = actualCameraUpDirection;
+		topPlaneNormal = actualCameraUpDirection*(-1.0);
+	}
 
 	updateFrustrum();
 }
@@ -121,22 +136,65 @@ void Camera::glLookAt() {
 void Camera::glProjection() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(fieldOfView, aspect, nearPlane, farPlane);
+	if (cameraType == PERSPECTIVE)
+		gluPerspective(fieldOfView, aspect, nearPlane, farPlane);
+	else {
+		double half_height = orthoHeight*0.5;
+		double half_width = half_height*aspect;
+		glOrtho(-half_width, half_width, -half_height, half_height, nearPlane, farPlane);
+	}
 }
 
 void Camera::updateFrustrum() {
 
-	frustrum->setPlaneOrigin(0, cameraPosition);
-	frustrum->setPlaneNormal(0, rightPlaneNormal);
-	frustrum->setPlaneOrigin(1, cameraPosition);
-	frustrum->setPlaneNormal(1, leftPlaneNormal);
-	frustrum->setPlaneOrigin(2, cameraPosition);
-	frustrum->setPlaneNormal(2, topPlaneNormal);
-	frustrum->setPlaneOrigin(3, cameraPosition);
-	frustrum->setPlaneNormal(3, bottomPlaneNormal);
+	if (cameraType == PERSPECTIVE) {
+
+		frustrum->setPlaneOrigin(0, cameraPosition);
+		frustrum->setPlaneNormal(0, rightPlaneNormal);
+		frustrum->setPlaneOrigin(1, cameraPosition);
+		frustrum->setPlaneNormal(1, leftPlaneNormal);
+		frustrum->setPlaneOrigin(2, cameraPosition);
+		frustrum->setPlaneNormal(2, topPlaneNormal);
+		frustrum->setPlaneOrigin(3, cameraPosition);
+		frustrum->setPlaneNormal(3, bottomPlaneNormal);
+
+	}
+	else {
+
+		Point rightEdge = cameraRightDirection*halfPlaneWidth;
+		Point topEdge = cameraUpDirection*halfPlaneHeight;
+		frustrum->setPlaneOrigin(0, cameraPosition+rightEdge);
+		frustrum->setPlaneNormal(0, rightPlaneNormal);
+		frustrum->setPlaneOrigin(1, cameraPosition-rightEdge);
+		frustrum->setPlaneNormal(1, leftPlaneNormal);
+		frustrum->setPlaneOrigin(2, cameraPosition+topEdge);
+		frustrum->setPlaneNormal(2, topPlaneNormal);
+		frustrum->setPlaneOrigin(3, cameraPosition-topEdge);
+		frustrum->setPlaneNormal(3, bottomPlaneNormal);
+
+	}
 
 	cameraMatrix[12] = static_cast<GLfloat>(cameraPosition.getX());
 	cameraMatrix[13] = static_cast<GLfloat>(cameraPosition.getY());
 	cameraMatrix[14] = static_cast<GLfloat>(cameraPosition.getZ());
 
+}
+
+Point Camera::cameraToWorld(Point p) {
+	return cameraToWorld(p.getX(), p.getY(), p.getZ());
+}
+
+Point Camera::cameraToWorld(double x, double y, double z) {
+
+	x -= 0.5;
+	y -= 0.5;
+
+	if (cameraType == PERSPECTIVE) {
+		x *= z;
+		y *= z;
+	}
+
+	return (cameraPosition+cameraLookDirection*z
+		+(cameraRightDirection*halfPlaneWidth*x)
+		+(cameraUpDirection*halfPlaneHeight*y));
 }

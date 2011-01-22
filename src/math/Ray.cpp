@@ -3,16 +3,32 @@
 namespace Project {
 namespace Math {
 
-	Ray::Ray(Point _origin, Point _direction, bool _bounded, double min_t, double max_t) {
+	Ray::Ray(Point _origin, Point _direction) {
 		origin = _origin;
 		direction = _direction.normalized();
-		bounded = _bounded;
+		minBounded = false;
+		maxBounded = false;
+	}
+
+	Ray::Ray(Point _origin, Point _direction, double min_t) {
+		origin = _origin;
+		direction = _direction.normalized();
+		minBounded = true;
+		maxBounded = false;
+		minT = min_t;
+	}
+
+	Ray::Ray(Point _origin, Point _direction, double min_t, double max_t) {
+		origin = _origin;
+		direction = _direction.normalized();
+		minBounded = true;
+		maxBounded = true;
 		minT = min_t;
 		maxT = max_t;
 	}
 
 	bool Ray::insideRange(double t) {
-		return (!bounded || (t >= minT && t <= maxT));
+		return ((!minBounded || t >= minT) && (!maxBounded || t <= maxT));
 	}
 
 	Point Ray::atT(double t) {

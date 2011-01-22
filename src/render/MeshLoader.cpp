@@ -71,18 +71,33 @@ MeshLoader *MeshLoader::instance = 0;
 
 			bool hasColorMap = (obj_mat.colorMapFilename.length() > 0);
 			bool hasNormalMap = (obj_mat.bumpMapFilename.length() > 0);
+			bool hasGlowMap = (obj_mat.glowMapFilename.length() > 0);
+
+			string tex_name;
+			if (hasColorMap)
+				tex_name = obj_mat.colorMapFilename;
+			else {
+				if (hasNormalMap) {
+					tex_name = obj_mat.bumpMapFilename;
+				}
+				else if (hasGlowMap) {
+					tex_name = obj_mat.glowMapFilename;
+				}
+			}
+
 			Texture* tex = NULL;
 
-			if (hasColorMap || hasNormalMap) {
+			if (hasColorMap || hasNormalMap || hasGlowMap) {
 
 				//Look for a pre-loaded texture with the same name
-				tex = getTextureByName(obj_mat.colorMapFilename);
+				tex = getTextureByName(tex_name);
 				if (tex == NULL && mat != NULL) {
 					//Create a new texture
 					string color_map_name = string(directory).append(obj_mat.colorMapFilename);
 					string normal_map_name = string(directory).append(obj_mat.bumpMapFilename);
+					string glow_map_name = string(directory).append(obj_mat.glowMapFilename);
 
-					tex = new Texture(color_map_name, color_map_name, normal_map_name);
+					tex = new Texture(tex_name, color_map_name, normal_map_name, glow_map_name);
 					textures.push_back(tex);
 				}
 			}

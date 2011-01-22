@@ -39,7 +39,7 @@ void main() {
 		float light_dist = length((position-gl_LightSource[i].position).xyz);
 		
 		float attenuation = 1.0/(1.0 + gl_LightSource[i].quadraticAttenuation*light_dist*light_dist);
-		if (attenuation >= 0.001) {
+		if (attenuation >= 0.004) {
 		
 			attenuation = min(attenuation, 1.0);
 			vec3 light = normalize((position-gl_LightSource[i].position).xyz);
@@ -76,9 +76,9 @@ void main() {
 	}
 	
 	vec4 ambient_base;
-	//if (hasTexture[2] == 1)
-	//	ambient_base = texture2D(glowMap, gl_TexCoord[0].st);
-	//else
+	if (hasTexture[2] == 1)
+		ambient_base = texture2D(glowMap, gl_TexCoord[0].st);
+	else
 		ambient_base = gl_FrontMaterial.ambient;
 	
 	gl_FragColor = diffuse_color + specular_color + ambient_color;

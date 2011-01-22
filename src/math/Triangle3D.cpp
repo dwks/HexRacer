@@ -70,6 +70,8 @@ namespace Math {
 
 	bool Triangle3D::intersects3D(const BoundingObject3D& bounding_obj) const {
 
+		//Not implemented for sphere
+
 		const BoundingBox3D* box_3D;
 		const BoundingPlane3D* plane_3D;
 		const BoundingConvexHull3D* ch_3D;

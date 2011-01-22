@@ -7,6 +7,8 @@ varying vec4 position;
 varying vec3 eyeTangent; 
 varying vec3 eyeBitangent;
 
+varying mat3 cameraNormalMatrix;
+
 uniform samplerCube cubeMap;
 uniform mat4 cameraMatrix;
 
@@ -32,16 +34,6 @@ void main() {
 
 	//Worldspace calculations----------------------------------------------------------------------------------------
 	
-	mat3 cameraNormalMatrix;
-	cameraNormalMatrix[0][0] = cameraMatrix[0][0];
-	cameraNormalMatrix[1][0] = cameraMatrix[1][0];
-	cameraNormalMatrix[2][0] = cameraMatrix[2][0];
-	cameraNormalMatrix[0][1] = cameraMatrix[0][1];
-	cameraNormalMatrix[1][1] = cameraMatrix[1][1];
-	cameraNormalMatrix[2][1] = cameraMatrix[2][1];
-	cameraNormalMatrix[0][2] = cameraMatrix[0][2];
-	cameraNormalMatrix[1][2] = cameraMatrix[1][2];
-	cameraNormalMatrix[2][2] = cameraMatrix[2][2];
 	vec3 worldReflect = normalize(cameraNormalMatrix * reflection);
 	
 	//Lighting calculations----------------------------------------------------------------------------------------
@@ -55,7 +47,7 @@ void main() {
 		float light_dist = length((position-gl_LightSource[i].position).xyz);
 		
 		float attenuation = 1.0/(1.0 + gl_LightSource[i].quadraticAttenuation*light_dist*light_dist);
-		if (attenuation >= 0.001) {
+		if (attenuation >= 0.004) {
 		
 			attenuation = min(attenuation, 1.0);
 			vec3 light = normalize((position-gl_LightSource[i].position).xyz);

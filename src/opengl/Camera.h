@@ -3,6 +3,7 @@
 
 #include "math/Point.h"
 #include "math/BoundingConvexHull3D.h"
+#include "math/Ray.h"
 #include "OpenGL.h"
 using namespace Project;
 using namespace Math;
@@ -14,6 +15,8 @@ namespace OpenGL {
 */
 class Camera
 {
+public:
+	enum CameraType {ORTHOGRAPHIC, PERSPECTIVE};
 private:
 
 	Point cameraPosition;
@@ -28,19 +31,26 @@ private:
 	Point rightPlaneNormal;
 	Point bottomPlaneNormal;
 
+	double halfPlaneWidth;
+	double halfPlaneHeight;
+
 	double aspect;
 	double fieldOfView;
 	double nearPlane;
 	double farPlane;
 
+	double orthoHeight;
+
 	BoundingConvexHull3D* frustrum;
 	GLfloat cameraMatrix [16];
+
+	CameraType cameraType;
 
 	void updateDirections();
 	void updateFrustrum();
 
 public:
-	Camera(void);
+	Camera(CameraType camera_type = PERSPECTIVE);
 	~Camera(void);
 
 	void setPosition(Point pos);
@@ -52,16 +62,20 @@ public:
 	void setFieldOfViewDegrees(double fov);
 	void setNearPlane(double near);
 	void setFarPlane(double far);
+	void setOrthoHeight(double height);
 	
-	Point getPosition() { return cameraPosition; }
-	Point getLookPosition() { return cameraLookPosition; }
-	Point getLookDirection() { return cameraLookDirection; }
-	Point getUpDirection() { return actualCameraUpDirection; }
-	Point getRightDirection() { return cameraRightDirection; }
-	double getAspect() { return aspect; }
-	double getFieldOfViewDegrees() { return fieldOfView; }
-	double getNearPlane() { return nearPlane; }
-	double getFarPlane() { return farPlane; }
+	Point getPosition() const { return cameraPosition; }
+	Point getLookPosition() const { return cameraLookPosition; }
+	Point getLookDirection() const { return cameraLookDirection; }
+	Point getUpDirection() const { return actualCameraUpDirection; }
+	Point getRightDirection() const { return cameraRightDirection; }
+	double getAspect() const { return aspect; }
+	double getFieldOfViewDegrees() const { return fieldOfView; }
+	double getNearPlane() const { return nearPlane; }
+	double getFarPlane() const { return farPlane; }
+	double getOrthoHeight() const { return orthoHeight; }
+	Point cameraToWorld(Point p);
+	Point cameraToWorld(double x, double y, double z = 1.0);
 
 	void glLookAt();
 	void glProjection();

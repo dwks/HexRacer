@@ -4,13 +4,15 @@
 #include "Light.h"
 #include "math/BoundingSphere.h"
 
-#define LIGHT_MANAGER_MIN_ATTENUATION_THRESHHOLD 0.001
+#define LIGHT_MANAGER_MIN_ATTENUATION_THRESHHOLD 0.004
 
 namespace Project {
 namespace Render {
 
 class LightManagerNode 
 	: public Math::BoundingSphere {
+private:
+	float prevQuadAttenuation;
 public:
 	Light* light;
 	bool active;
