@@ -13,7 +13,6 @@
 #include "render/TextureCube.h"
 
 #include "event/ObserverList.h"
-#include "event/PlayerMovement.h"
 
 #include "physics/PhysicsFactory.h"
 #include "physics/PhysicsWorld.h"
@@ -125,8 +124,6 @@ void SDLMain::run() {
 	//glEnable(GL_CULL_FACE);
 	//glCullFace(GL_BACK);
     
-	quadric = gluNewQuadric();
-    
 	//Instantiate the rendering objects
 	meshLoader = new Render::MeshLoader();
 	renderer = new Render::RenderManager();
@@ -136,7 +133,7 @@ void SDLMain::run() {
 	renderer->loadShadersFile("shaders.txt");
     
 	//Load the model
-	meshLoader->loadOBJ("testTerrain", "models/testterrain.obj");
+	meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
 	meshLoader->loadOBJ("playerCube", "models/playercube.obj");
 	meshLoader->loadOBJ("backgroundCube", "models/backgroundcube.obj");
 	//Add the test terrain

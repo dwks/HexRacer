@@ -16,7 +16,7 @@ public:
         QUIT,
         PACKET_RECEIVED,
         SEND_PACKET,
-        PLAYER_MOVEMENT,
+        PLAYER_ACTION,
         UPDATE_PLAYER_LIST,
         CAMERA_MOVEMENT,
         SET_DEBUG_DRAWING,

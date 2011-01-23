@@ -60,10 +60,6 @@ Math::Matrix Player::getTransformation() const {
     return physical->getTransformation();
 }
 
-void Player::applyMovement(const Math::Point &movement) {
-    physical->applyMovement(movement);
-}
-
 void Player::applyForce(const Math::Point &movement, const Math::Point &at) {
     physical->applyForce(movement, at);
 }

@@ -21,10 +21,22 @@
 namespace Project {
 namespace SDL {
 
-void PlayerManager::PlayerMovementHandler::observe(
-    Event::PlayerMovement *movement) {
+void PlayerManager::PlayerActionHandler::observe(
+    Event::PlayerAction *action) {
     
-    manager->getPlayer()->applyMovement(movement->getMovement());
+    Object::Player *player = manager->getPlayer();
+    
+    switch(action->getMovementType()) {
+    case Event::PlayerAction::ACCELERATE:
+        player->applyAcceleration(action->getValue());
+        break;
+    case Event::PlayerAction::TURN:
+        player->applyTurning(action->getValue());
+        break;
+    case Event::PlayerAction::JUMP:
+        player->doJump();
+        break;
+    }
 }
 
 void PlayerManager::UpdatePlayerListHandler::observe(
@@ -41,8 +53,7 @@ PlayerManager::PlayerManager(int id) : id(id) {
     playerList = new Object::PlayerList();
     playerList->addPlayer(player);
     
-    // commented out until the ID is assigned correctly
-    ADD_OBSERVER(new PlayerMovementHandler(this));
+    ADD_OBSERVER(new PlayerActionHandler(this));
     ADD_OBSERVER(new UpdatePlayerListHandler(this));
 }
 

@@ -7,7 +7,7 @@
 #include "HandshakePacket.h"
 #include "EventPacket.h"
 
-#include "event/PlayerMovement.h"
+#include "event/PlayerAction.h"
 #include "event/UpdatePlayerList.h"
 
 #include "PacketSerializer.h"
@@ -24,7 +24,7 @@ std::string PacketSerializer::packetToString(Packet *packet) {
     out.register_type<HandshakePacket>();
     out.register_type<EventPacket>();
     
-    out.register_type<Event::PlayerMovement>();
+    out.register_type<Event::PlayerAction>();
     out.register_type<Event::UpdatePlayerList>();
     
     try {
@@ -47,7 +47,7 @@ Packet *PacketSerializer::stringToPacket(const std::string &string) {
     in.register_type<HandshakePacket>();
     in.register_type<EventPacket>();
     
-    in.register_type<Event::PlayerMovement>();
+    in.register_type<Event::PlayerAction>();
     in.register_type<Event::UpdatePlayerList>();
     
     Packet *packet;

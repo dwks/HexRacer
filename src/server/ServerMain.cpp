@@ -11,7 +11,7 @@
 #include "network/HandshakePacket.h"
 #include "network/EventPacket.h"
 
-#include "event/PlayerMovement.h"
+#include "event/PlayerAction.h"
 #include "event/UpdatePlayerList.h"
 #include "event/ObserverList.h"
 
@@ -50,11 +50,24 @@ void ServerMain::ServerVisitor::visit(Network::EventPacket &packet) {
 
 void ServerMain::ServerObserver::observe(Event::EventBase *event) {
     switch(event->getType()) {
-    case Event::EventType::PLAYER_MOVEMENT: {
-        Event::PlayerMovement *movement
-            = dynamic_cast<Event::PlayerMovement *>(event);
-        main->getPlayerList().getPlayer(main->getWhichSocket())
-            ->applyMovement(movement->getMovement());
+    case Event::EventType::PLAYER_ACTION: {
+        Event::PlayerAction *action
+            = dynamic_cast<Event::PlayerAction *>(event);
+        Object::Player *player = main->getPlayerList()
+            .getPlayer(main->getWhichSocket());
+        
+        switch(action->getMovementType()) {
+        case Event::PlayerAction::ACCELERATE:
+            player->applyAcceleration(action->getValue());
+            break;
+        case Event::PlayerAction::TURN:
+            player->applyTurning(action->getValue());
+            break;
+        case Event::PlayerAction::JUMP:
+            player->doJump();
+            break;
+        }
+        
         break;
     }
     default:
@@ -78,7 +91,7 @@ void ServerMain::run() {
     server.addServer(GET_SETTING("network.port", 1820));
     
     Render::MeshLoader *meshLoader = new Render::MeshLoader();
-    meshLoader->loadOBJ("testTerrain", "models/testterrain.obj");
+    meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
     Render::MeshGroup *test_terrain = meshLoader->getModelByName("testTerrain");
     
     Physics::PhysicsWorld::getInstance()->registerRigidBody(
@@ -113,8 +126,8 @@ void ServerMain::run() {
         {
             Network::Packet *packet;
             while((packet = clients.nextPacket(&whichSocket))) {
-                LOG(NETWORK, "Packet received from "
-                    << whichSocket << ": " << packet);
+                /*LOG(NETWORK, "Packet received from "
+                    << whichSocket << ": " << packet);*/
                 
                 packet->accept(visitor);
             }
@@ -133,10 +146,10 @@ void ServerMain::run() {
         if(++loops == 5) {
             loops = 0;
             
-            for(int p = 0; p < clientCount; p ++) {
+            /*for(int p = 0; p < clientCount; p ++) {
                 LOG(PHYSICS, "Player " << p << " is at "
                     << getPlayerList().getPlayer(p)->getPosition());
-            }
+            }*/
             
             Event::UpdatePlayerList *update
                 = new Event::UpdatePlayerList(

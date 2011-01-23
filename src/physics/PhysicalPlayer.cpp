@@ -1,15 +1,20 @@
+#include <cmath>
+
 #include "PhysicalPlayer.h"
 #include "Converter.h"
 #include "PhysicsWorld.h"
 #include "PhysicsFactory.h"
 
+#include "math/Values.h"
+
 #include "log/Logger.h"
+#include "settings/SettingsManager.h"
 
 namespace Project {
 namespace Physics {
 
 PhysicalPlayer::PhysicalPlayer(const Math::Point &position) {
-    primaryRigidBody = NULL;  // essential, constructRigidBody tries to delete
+    rigidBody = NULL;  // essential, constructRigidBody tries to delete it
     
     constructRigidBody(position);
 }
@@ -19,97 +24,110 @@ PhysicalPlayer::~PhysicalPlayer() {
 }
 
 void PhysicalPlayer::destroyRigidBody() {
-    if(primaryRigidBody) {
-        PhysicsWorld::getInstance()->destroyRigidBody(primaryRigidBody);
+    if(rigidBody) {
+        PhysicsWorld::getInstance()->destroyRigidBody(rigidBody);
         
-        delete primaryRigidBody;  // works even if NULL
+        delete rigidBody;  // works even if NULL
     }
 }
 
 void PhysicalPlayer::constructRigidBody(const Math::Point &position) {
     destroyRigidBody();
 	
-    primaryRigidBody = Physics::PhysicsFactory
+    rigidBody = Physics::PhysicsFactory
         ::createRigidBox(0.4,0.2,0.8,position,2.0);
     
-    /*primaryRigidBody->setCenterOfMassTransform(Converter::toTransform(
+    /*rigidBody->setCenterOfMassTransform(Converter::toTransform(
         Math::Matrix::getTranslationMatrix(Math::Point(0.0, +3.0, 0.0))));*/
     
-    PhysicsWorld::getInstance()->registerRigidBody(primaryRigidBody);
+    PhysicsWorld::getInstance()->registerRigidBody(rigidBody);
 }
 
 void PhysicalPlayer::constructRigidBody(const Math::Matrix &transformation) {
-    destroyRigidBody();
+    constructRigidBody(Math::Point());
     
-    primaryRigidBody = Physics::PhysicsFactory
-        ::createRigidBox(0.4,0.2,0.8,Math::Point(),2.0);
-    primaryRigidBody->setWorldTransform(
+    rigidBody->setWorldTransform(
         Converter::toTransform(transformation));
-    
-    /*primaryRigidBody->setCenterOfMassTransform(Converter::toTransform(
-        Math::Matrix::getTranslationMatrix(Math::Point(0.0, +3.0, 0.0))));*/
-    
-    PhysicsWorld::getInstance()->registerRigidBody(primaryRigidBody);
 }
 
-/*void PhysicalPlayer::constructSprings() {
-    static const Math::Point suspensionPoint[] = {
-        Math::Point(0.4, -0.2, 0.8 * 0.9),
-        Math::Point(-0.4, -0.2, 0.8 * 0.9),
-        Math::Point(-0.4, -0.2, -0.8 * 0.9),
-        Math::Point(0.4, -0.2, -0.8 * 0.9),
-    };
-    
-    for(int wheel = 0; wheel < 4; wheel ++) {
-        spring[4] = Suspension::Spring(suspensionPoint[wheel]);
-    }
-}*/
-
 Math::Point PhysicalPlayer::getOrigin() const {
-    btTransform trans = primaryRigidBody->getWorldTransform();
+    btTransform trans = rigidBody->getWorldTransform();
     
     return Converter::toPoint(trans.getOrigin());
 }
 
 Math::Matrix PhysicalPlayer::getTransformation() const {
-    btTransform trans = primaryRigidBody->getWorldTransform();
+    btTransform trans = rigidBody->getWorldTransform();
     
     return Converter::toMatrix(trans);
 }
 
-void PhysicalPlayer::applyMovement(const Math::Point &movement) {
-    primaryRigidBody->activate();
+Math::Point PhysicalPlayer::getLinearVelocity() const {
+    return Converter::toPoint(rigidBody->getLinearVelocity());
+}
+
+Math::Point PhysicalPlayer::getAngularVelocity() const {
+    return Converter::toPoint(rigidBody->getAngularVelocity());
+}
+
+void PhysicalPlayer::applyAcceleration(double acceleration) {
+    rigidBody->activate();
     
-    double turn = movement.getX();
-    primaryRigidBody->applyTorque(
-        Converter::toVector(Math::Point(0.0, 1.0, 0.0)
-            * turn * 400.0f));
+    double constant = GET_SETTING("physics.constant.accel", 1.0);
     
-    btTransform transform = primaryRigidBody->getWorldTransform();
+    btTransform transform = rigidBody->getWorldTransform();
     btMatrix3x3 matrix(transform.getRotation());
     Math::Point orientation = Converter::toPoint(matrix
-        * Converter::toVector(Math::Point(0.0, 0.0, 1.0)));
+        * Converter::toVector(Math::Point(0.0, 0.0, 1.0) * constant));
     
-    double accel = movement.getZ();
-    primaryRigidBody->applyCentralForce(
-        Converter::toVector(orientation * accel * 5000.0f));
+    applyForce(orientation * constant * acceleration);
+}
+
+void PhysicalPlayer::applyTurning(double amount) {
+    rigidBody->activate();
     
-    double jump = movement.getY();
-    if(jump) {
-        /*Math::Point upwards = Converter::toPoint(matrix
-            * Converter::toVector(Math::Point(0.0, 1.0, 0.0)));*/
-        Math::Point upwards = Math::Point(0.0, 1.0, 0.0);
-        primaryRigidBody->applyCentralForce(
-            Converter::toVector(upwards * jump * 10000.0f));
-    }
+    double constant = GET_SETTING("physics.constant.turn", 1.0);
+    double centripetalConstant
+        = GET_SETTING("physics.constant.centripetal", 1.0);
+    
+    Math::Matrix matrix = getTransformation();
+    Math::Point forwardAxis = matrix * Math::Point(0.0, 0.0, 1.0, 0.0);
+    Math::Point centripetalAxis = matrix * Math::Point(-1.0, 0.0, 0.0, 0.0);
+    
+    forwardAxis.normalize();
+    centripetalAxis.normalize();
+    
+    double speed = getLinearVelocity().length();
+    /*double centripetalSpeed = getLinearVelocity().dotProduct(forwardAxis)
+        / getLinearVelocity().length();*/
+    
+    //LOG(PHYSICS, "centripetal: " << centripetalSpeed);
+    
+    applyForce(centripetalAxis * centripetalConstant * speed * amount);
+    applyTorque(Math::Point(0.0, -1.0, 0.0) * constant * speed * amount);
+}
+
+void PhysicalPlayer::doJump() {
+    /*Math::Point upwards = Converter::toPoint(matrix
+        * Converter::toVector(Math::Point(0.0, 1.0, 0.0)));*/
+    Math::Point upwards = Math::Point(0.0, 1.0, 0.0);
+    applyForce(upwards * 30.0f);
+}
+
+void PhysicalPlayer::applyForce(const Math::Point &force) {
+    rigidBody->applyCentralForce(Converter::toVector(force));
 }
 
 void PhysicalPlayer::applyForce(const Math::Point &movement,
-    const Math::Point &at) {
+    const Math::Point &force) {
     
-    primaryRigidBody->applyForce(
+    rigidBody->applyForce(
         Converter::toVector(movement),
-        Converter::toVector(at));
+        Converter::toVector(force));
+}
+
+void PhysicalPlayer::applyTorque(const Math::Point &torque) {
+    rigidBody->applyTorque(Converter::toVector(torque));
 }
 
 }  // namespace Physics

@@ -6,6 +6,7 @@ include_directories(.)
 
 aux_source_directory(connection CONNECTION_SOURCES)
 aux_source_directory(event EVENT_SOURCES)
+aux_source_directory(handler HANDLER_SOURCES)
 aux_source_directory(log LOG_SOURCES)
 aux_source_directory(math MATH_SOURCES)
 aux_source_directory(misc MISC_SOURCES)
@@ -33,7 +34,8 @@ set(SOURCES
     ${SETTINGS_SOURCES}
     ${RENDER_SOURCES}
     ${PAINT_SOURCES}
-    ${TIMING_SOURCES})
+    ${TIMING_SOURCES}
+    ${HANDLER_SOURCES})
 
 set(SDL_SOURCES
     ${SDL_DIR_SOURCES})

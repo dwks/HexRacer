@@ -51,11 +51,10 @@ private:
 	Render::RenderList* rootRenderable;
 	Render::LightManager *lightManager;
 
+	int testPaintColor;
+
 	Paint::PaintManager *paintManager;
 	vector<Paint::PaintCell*> paintCells;
-	int testPaintColor;
-    
-	GLUquadric* quadric;
 private:
     class CameraObserver : public Event::TypedObserver<Event::CameraMovement> {
     private:

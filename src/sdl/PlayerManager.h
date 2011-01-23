@@ -7,7 +7,7 @@
 #include "physics/Suspension.h"
 
 #include "event/TypedObserver.h"
-#include "event/PlayerMovement.h"
+#include "event/PlayerAction.h"
 #include "event/UpdatePlayerList.h"
 
 #include "opengl/Color.h"
@@ -21,14 +21,14 @@ private:
     Object::PlayerList *playerList;
     Physics::Suspension suspension;
 private:
-    class PlayerMovementHandler
-        : public Event::TypedObserver<Event::PlayerMovement> {
+    class PlayerActionHandler
+        : public Event::TypedObserver<Event::PlayerAction> {
     private:
         PlayerManager *manager;
     public:
-        PlayerMovementHandler(PlayerManager *manager) : manager(manager) {}
+        PlayerActionHandler(PlayerManager *manager) : manager(manager) {}
         
-        virtual void observe(Event::PlayerMovement *movement);
+        virtual void observe(Event::PlayerAction *action);
     };
     
     class UpdatePlayerListHandler
