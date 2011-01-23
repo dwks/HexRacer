@@ -206,8 +206,11 @@ void SDLMain::run() {
             test_terrain->getTriangles()));
     
 #ifdef HAVE_OPENAL
-    Sound::SoundSystem soundSystem;
-    soundSystem.playMusic();
+    Sound::SoundSystem *soundSystem = new Sound::SoundSystem();
+    if(!soundSystem->initialize()) {
+        delete soundSystem;
+        soundSystem = NULL;
+    }
 #endif
     
     LOG2(GLOBAL, PROGRESS, "Entering main game loop");
@@ -274,6 +277,10 @@ void SDLMain::run() {
         
         SDL_GL_SwapBuffers();
         
+#ifdef HAVE_OPENAL
+        if(soundSystem) soundSystem->doAction(SDL_GetTicks());
+#endif
+        
         {
             Uint32 thisTime = SDL_GetTicks();
             int timeTakenSoFar = static_cast<int>(thisTime - lastTime);
@@ -285,6 +292,10 @@ void SDLMain::run() {
     }
     
     LOG2(GLOBAL, PROGRESS, "Exiting main game loop");
+    
+#ifdef HAVE_OPENAL
+    delete soundSystem;
+#endif
     
     delete joystick;
     delete inputManager;
