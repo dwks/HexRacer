@@ -112,9 +112,10 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
         playerSuspension[player->getID()][wheel] = displacement;
         
         // draw a wheel
-        debugDrawWheel(matrix, suspensionPoint[wheel] + axis
-            * (GET_SETTING("physics.driving.stretchlength", 1.0)
-                - (displacement.getDisplacement() + WHEEL_DIAMETER)));
+        debugDrawWheel(matrix, suspensionPoint[wheel]
+            + Math::Point(0.0, -1.0, 0.0)
+                * (GET_SETTING("physics.driving.stretchlength", 1.0)
+                    - (displacement.getDisplacement() + WHEEL_DIAMETER)));
     }
 }
 
@@ -181,7 +182,6 @@ void Suspension::debugDrawWheel(const Math::Matrix &transform,
     glPushMatrix();
     
     OpenGL::MathWrapper::glMultMatrix(transform);
-    
     OpenGL::MathWrapper::glMultMatrix(
         Math::Matrix::getTranslationMatrix(centre));
     glRotated(90.0, 0.0, 1.0, 0.0);

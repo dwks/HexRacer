@@ -126,8 +126,8 @@ void ServerMain::run() {
         {
             Network::Packet *packet;
             while((packet = clients.nextPacket(&whichSocket))) {
-                LOG(NETWORK, "Packet received from "
-                    << whichSocket << ": " << packet);
+                /*LOG(NETWORK, "Packet received from "
+                    << whichSocket << ": " << packet);*/
                 
                 packet->accept(visitor);
             }
@@ -146,10 +146,10 @@ void ServerMain::run() {
         if(++loops == 5) {
             loops = 0;
             
-            for(int p = 0; p < clientCount; p ++) {
+            /*for(int p = 0; p < clientCount; p ++) {
                 LOG(PHYSICS, "Player " << p << " is at "
                     << getPlayerList().getPlayer(p)->getPosition());
-            }
+            }*/
             
             Event::UpdatePlayerList *update
                 = new Event::UpdatePlayerList(
