@@ -22,6 +22,8 @@
 
 #include "render/ShaderUniformVector4.h"
 
+#include "sound/SoundSystem.h"
+
 #include "SDL_image.h"
 
 #include "settings/SettingsManager.h"
@@ -202,6 +204,11 @@ void SDLMain::run() {
     Physics::PhysicsWorld::getInstance()->registerRigidBody(
         Physics::PhysicsFactory::createRigidTriMesh(
             test_terrain->getTriangles()));
+    
+#ifdef HAVE_OPENAL
+    Sound::SoundSystem soundSystem;
+    soundSystem.playMusic();
+#endif
     
     LOG2(GLOBAL, PROGRESS, "Entering main game loop");
     

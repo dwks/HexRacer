@@ -17,6 +17,7 @@ std::string Subsystem::getDescription() const {
         "SDL",
         "NETWORK",
         "PHYSICS",
+        "AUDIO"
     };
     int size = static_cast<int>(sizeof(descriptions) / sizeof(*descriptions));
     

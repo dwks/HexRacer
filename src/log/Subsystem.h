@@ -15,6 +15,7 @@ public:
         SDL,
         NETWORK,
         PHYSICS,
+        AUDIO,
         SUBSYSTEMS
     };
 private:
