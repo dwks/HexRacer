@@ -6,7 +6,13 @@
 #include "object/PlayerList.h"
 #include "settings/SettingsManager.h"
 
+#include "opengl/OpenGL.h"
+#include "GL/glu.h"
+#include "opengl/MathWrapper.h"
+
 #include "PhysicsWorld.h"
+
+#define WHEEL_DIAMETER 0.2
 
 namespace Project {
 namespace Physics {
@@ -104,6 +110,11 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
         
         // record displacement for next time
         playerSuspension[player->getID()][wheel] = displacement;
+        
+        // draw a wheel
+        debugDrawWheel(matrix, suspensionPoint[wheel] + axis
+            * (GET_SETTING("physics.driving.stretchlength", 1.0)
+                - (displacement.getDisplacement() + WHEEL_DIAMETER)));
     }
 }
 
@@ -120,12 +131,7 @@ void Suspension::applySuspension(Object::PlayerList *playerList,
         
         applyDragForce(player);
         calculateSuspensionForPlayer(player);
-        applyTurningForce(player);
     }
-}
-
-void Suspension::applyTurningForce(Object::Player *player) {
-    
 }
 
 void Suspension::applyDragForce(Object::Player *player) {
@@ -156,6 +162,33 @@ void Suspension::applyDragForce(Object::Player *player) {
         
         physicalPlayer->applyForce(sidewaysDrag);
     }
+}
+
+void Suspension::debugDrawWheel(const Math::Matrix &transform,
+    const Math::Point &centre) {
+    
+    static bool first = true;
+    static int diskID;
+    if(first) {
+        GLUquadric *quadric = gluNewQuadric();
+        diskID = glGenLists(1);
+        glNewList(diskID, GL_COMPILE);
+        gluDisk(quadric, WHEEL_DIAMETER * 0.1, WHEEL_DIAMETER, 18, 18);
+        glEndList();
+        gluDeleteQuadric(quadric);
+    }
+    
+    glPushMatrix();
+    
+    OpenGL::MathWrapper::glMultMatrix(transform);
+    
+    OpenGL::MathWrapper::glMultMatrix(
+        Math::Matrix::getTranslationMatrix(centre));
+    glRotated(90.0, 0.0, 1.0, 0.0);
+    
+    glCallList(diskID);
+    
+    glPopMatrix();
 }
 
 }  // namespace Physics

@@ -53,8 +53,6 @@ private:
 
 	Paint::PaintManager *paintManager;
 	vector<Paint::PaintCell*> paintCells;
-    
-	GLUquadric* quadric;
 private:
     class CameraObserver : public Event::TypedObserver<Event::CameraMovement> {
     private:

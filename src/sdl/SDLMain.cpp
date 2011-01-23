@@ -124,8 +124,6 @@ void SDLMain::run() {
 	//glEnable(GL_CULL_FACE);
 	//glCullFace(GL_BACK);
     
-	quadric = gluNewQuadric();
-    
 	//Instantiate the rendering objects
 	meshLoader = new Render::MeshLoader();
 	renderer = new Render::RenderManager();
