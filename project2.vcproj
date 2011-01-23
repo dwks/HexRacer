@@ -317,6 +317,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PlayerAction.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Ray.cpp"
 				>
 			</File>
@@ -346,6 +350,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetDebugDrawing.cpp"
 				>
 			</File>
 			<File
@@ -449,10 +457,6 @@
 				</File>
 				<File
 					RelativePath=".\src\event\PacketReceived.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\event\PlayerMovement.cpp"
 					>
 				</File>
 				<File
@@ -847,6 +851,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PlayerAction.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Ray.h"
 				>
 			</File>
@@ -876,6 +884,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderSettings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetDebugDrawing.h"
 				>
 			</File>
 			<File
@@ -1151,10 +1163,6 @@
 				</File>
 				<File
 					RelativePath=".\src\event\PacketReceived.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\event\PlayerMovement.h"
 					>
 				</File>
 				<File

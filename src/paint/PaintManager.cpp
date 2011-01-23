@@ -29,9 +29,11 @@ namespace Paint {
 
 		temp_list.push_back(paint_cells[0]);
 		BoundingBox3D paint_bound(*paint_cells[0]);
+		paint_cells[0]->index = 0;
 		for (unsigned i = 1; i < paint_cells.size(); i++) {
 			temp_list.push_back(paint_cells[i]);
 			paint_bound.expandToInclude(*paint_cells[i]);
+			paint_cells[i]->index = i;
 		}
 
 		neutralPaintTree->resize(paint_bound);

@@ -32,8 +32,8 @@ public:
 	float getQuadraticAttenuation() const { return quadAttenuation; }
 
 	void setDiffuse(Project::OpenGL::Color _diffuse) { diffuse = _diffuse; }
-	void setSpecular(Project::OpenGL::Color _specular) { diffuse = _specular; }
-	void setAmbient(Project::OpenGL::Color _ambient) { diffuse = _ambient; }
+	void setSpecular(Project::OpenGL::Color _specular) { specular = _specular; }
+	void setAmbient(Project::OpenGL::Color _ambient) { ambient = _ambient; }
 	void setStrength(float _strength);
 	void setHasAttenuation(bool has_attenuation);
 
