@@ -8,11 +8,23 @@ namespace Project {
 namespace Paint {
 
 	PaintCell::PaintCell(Point _center) {
-		playerColor = 2;
+		playerColor = -1;
 		center = _center;
 		for (int i = 0; i < CELL_VERTICES; i++) {
 			vertexSet[i] = false;
 		}
+	}
+
+	PaintCell::PaintCell(Math::Point _center, Math::Point* vertices, Math::Point _normal, int _index) {
+		playerColor = -1;
+		center = _center;
+		for (int i = 0; i < CELL_VERTICES; i++) {
+			vertex[i] = vertices[i];
+			vertexSet[i] = true;
+		}
+		normal = _normal;
+		index = _index;
+		setBoundingDimensions();
 	}
 
 	void PaintCell::setBoundingDimensions() {

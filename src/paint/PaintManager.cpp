@@ -1,6 +1,7 @@
 #include "PaintManager.h"
 #include "sdl/PlayerManager.h"
 #include "opengl/MathWrapper.h"
+#include "math/BoundingSphere.h"
 using namespace Project;
 using namespace Math;
 using namespace Render;
@@ -10,49 +11,46 @@ namespace Project {
 namespace Paint {
 
 	PaintManager::PaintManager() {
-		paintTree = NULL;
+		neutralPaintTree = new BSPTree3D(BoundingBox3D(), TREE_SPLIT_METHOD, TREE_SPLIT_SIZE);
+		coloredPaintTree = new BSPTree3D(BoundingBox3D(), TREE_SPLIT_METHOD, TREE_SPLIT_SIZE);
 		getRenderProperties()->setWantsShaderName("paintShader");
 	}
 
 	void PaintManager::setPaintCells(const std::vector<PaintCell*>& paint_cells) {
 
-		if (paintTree)
-			paintTree->clear();
+		neutralPaintTree->clear();
+		coloredPaintTree->clear();
+		paintList.clear();
 
-		if (paint_cells.size() == 0) {
+		if (paint_cells.size() == 0)
 			return;
-		}
 
+		vector<ObjectSpatial*> temp_list;
+
+		temp_list.push_back(paint_cells[0]);
 		BoundingBox3D paint_bound(*paint_cells[0]);
 		for (unsigned i = 1; i < paint_cells.size(); i++) {
+			temp_list.push_back(paint_cells[i]);
 			paint_bound.expandToInclude(*paint_cells[i]);
 		}
 
-		if (!paintTree)
-			paintTree = new BSPTree3D(paint_bound, BSPTree3D::FAIR_XSTART, 20);
-		else {
-			paintTree->clear();
-			paintTree->resize(paint_bound);
-		}
-
-		for (unsigned i = 0; i < paint_cells.size(); i++) {
-			paintTree->add(paint_cells[i]);
-		}
+		neutralPaintTree->resize(paint_bound);
+		coloredPaintTree->resize(paint_bound);
+		
+		neutralPaintTree->add(temp_list);
+		paintList = vector<PaintCell*>(paint_cells);
 	}
 
 	void PaintManager::renderGeometry(ShaderParamSetter& setter, const Math::BoundingObject* bounding_object) {
-
-		if (!paintTree)
-			return;
 
 		lastDrawnColor =-2;
 
 		vector<ObjectSpatial*> visible_cells;
 
 		if (bounding_object)
-			visible_cells = paintTree->query(*bounding_object, SpatialContainer::NEARBY);
+			visible_cells = coloredPaintTree->query(*bounding_object, SpatialContainer::NEARBY);
 		else
-			visible_cells = paintTree->all();
+			visible_cells = coloredPaintTree->all();
 
 		for (unsigned int i = 0; i < visible_cells.size(); i++) {
 
@@ -76,6 +74,82 @@ namespace Paint {
 
 		}
 
+	}
+
+
+	void PaintManager::colorCellsByIndex(vector<int> cell_indices, int new_color) {
+		for (unsigned int i = 0; i < cell_indices.size(); i++) {
+			colorCell(paintList[cell_indices[i]], new_color);
+		}
+	}
+
+	vector<int> PaintManager::colorCellsInRadius(Point centroid, double radius, int new_color) {
+
+		BoundingSphere query_sphere(centroid, radius);
+		vector<int> colored_indices;
+		vector<ObjectSpatial*> candidate_cells;
+
+		if (new_color >= 0)
+			candidate_cells = neutralPaintTree->query(query_sphere, SpatialContainer::NEARBY);
+		else
+			candidate_cells = coloredPaintTree->query(query_sphere, SpatialContainer::NEARBY);
+
+		for (unsigned int i = 0; i < candidate_cells.size(); i++) {
+
+			PaintCell* cell = (PaintCell*) candidate_cells[i];
+			if (cell->center.distanceSquared(centroid) <= query_sphere.getRadiusSquared()) {
+				if (colorCell(cell, new_color)) {
+					colored_indices.push_back(cell->index);
+				}
+			}
+
+		}
+
+		return colored_indices;
+	}
+
+	double PaintManager::weightedCellsInRadius(Point centroid, double radius, int color) {
+
+		double weighted_score = 0.0;
+
+		BoundingSphere query_sphere(centroid, radius);
+		vector<ObjectSpatial*> candidate_cells = coloredPaintTree->query(query_sphere, SpatialContainer::NEARBY);
+
+		for (unsigned int i = 0; i < candidate_cells.size(); i++) {
+
+			PaintCell* cell = (PaintCell*) candidate_cells[i];
+			double dist_squared = cell->center.distanceSquared(centroid);
+
+			if (dist_squared <= query_sphere.getRadiusSquared()) {
+				weighted_score += (query_sphere.getRadiusSquared()-dist_squared)/query_sphere.getRadiusSquared();
+			}
+
+		}
+
+		return weighted_score;
+	}
+
+	bool PaintManager::colorCell(PaintCell* cell, int new_color) {
+
+		if (new_color >= 0 && cell->playerColor < 0) {
+
+			cell->playerColor = new_color;
+			neutralPaintTree->remove(cell);
+			coloredPaintTree->add(cell);
+			return true;
+
+		}
+
+		if (new_color < 0 && cell->playerColor >= 0) {
+
+			cell->playerColor = new_color;
+			coloredPaintTree->remove(cell);
+			neutralPaintTree->add(cell);
+			return true;
+
+		}
+
+		return false;
 	}
 
 }  // namespace Paint

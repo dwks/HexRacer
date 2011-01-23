@@ -91,6 +91,7 @@ void BSPTree3D::split(vector<ObjectSpatial*>* objects) {
 			}
 			;break;
 
+
 	}
 
 	//Don't split on an axis that is below the min length
@@ -120,12 +121,12 @@ void BSPTree3D::split(vector<ObjectSpatial*>* objects) {
 
 	child[0] = new BSPTree3D(
 		BoundingBox3D(
-			Point(boundingBox.minX(), boundingBox.minY(), boundingBox.minZ()), split_max
+			boundingBox.getCorner(false, false, false), split_max
 		),
 		next_split_method, splitCount, minLength);
 	child[1] = new BSPTree3D(
 		BoundingBox3D(
-			Point(boundingBox.maxX(), boundingBox.maxY(), boundingBox.maxZ()), split_min
+			boundingBox.getCorner(true, true, true), split_min
 		),
 		next_split_method, splitCount, minLength);
 }

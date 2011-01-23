@@ -12,6 +12,8 @@ void main()
 	
 	vec3 view = normalize(position.xyz);
 	kOrient = abs(dot(view, eyeNormal));
+	kOrient *= 1.5;
 	kOrient = pow(kOrient, 0.5);
+	kOrient = min(kOrient, 1.0);
 
 }

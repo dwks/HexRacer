@@ -48,8 +48,8 @@ bool BoundingBox3D::isInside(const BoundingObject& bounding_obj) const {
 			case BOX:
 				return (
 					bound_3D.minX() <= minX() && bound_3D.maxX() >= maxX() &&
-					bound_3D.minY() <= minX() && bound_3D.maxY() >= maxY() &&
-					bound_3D.minZ() <= minX() && bound_3D.maxZ() >= maxZ()
+					bound_3D.minY() <= minY() && bound_3D.maxY() >= maxY() &&
+					bound_3D.minZ() <= minZ() && bound_3D.maxZ() >= maxZ()
 					);
 
 			default: break;

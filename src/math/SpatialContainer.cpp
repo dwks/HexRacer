@@ -19,11 +19,7 @@ bool SpatialContainer::queryTypeFilter(ObjectSpatial* object, const BoundingObje
 
 		case BOX_INTERSECT:
 			//Check if the object is 2D
-			//Create a 2D or 3D bounding box based on the object for the intersection test
-            
-            // !!!
-            return true;
-            
+			//Create a 2D or 3D bounding box based on the object for the intersection test 
 			if (obj_2D)
 				return BoundingBox2D(*object, obj_2D->getProjectAxis()).intersects(bounding_object);
 			else

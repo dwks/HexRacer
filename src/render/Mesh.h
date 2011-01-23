@@ -25,10 +25,10 @@ private:
 	void generateTriangleTree();
 	void drawTriangle(MeshTriangle* triangle, ShaderParamSetter& setter);
 
-	static const int TREE_SPLIT_SIZE = 12;
+	static const int TREE_SPLIT_SIZE = 20;
 	static const unsigned int MIN_TREE_SIZE = 300;
 	static const Math::SpatialContainer::QueryType CULLING_QUERY_TYPE = Math::SpatialContainer::NEARBY;
-	static const Math::BSPTree3D::SplitMethod TREE_SPLIT_METHOD = Math::BSPTree3D::FAIR_XSTART;
+	static const Math::BSPTree3D::SplitMethod TREE_SPLIT_METHOD = Math::BSPTree3D::MIN_OVERLAP;
 
 public:
 

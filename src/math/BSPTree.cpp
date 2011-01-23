@@ -37,12 +37,14 @@ bool BSPTree::add(ObjectSpatial* object) {
 		}
 	}
 
-	for (short i = 0; i < 2; i++) {
-		if (object->isInside(child[i]->getBoundingObject())) {
-			child[i]->add(object);
-			subtreeSize++;
-			return true;
-		}
+	if (object->isInside(child[0]->getBoundingObject())) {
+		child[0]->add(object);
+		subtreeSize++;
+		return true;
+	} else if (object->isInside(child[1]->getBoundingObject())) {
+		child[1]->add(object);
+		subtreeSize++;
+		return true;
 	}
 
 	list.add(object);
@@ -50,6 +52,7 @@ bool BSPTree::add(ObjectSpatial* object) {
 }
 
 void BSPTree::add(vector<ObjectSpatial*> objects) {
+
 	if (leaf) {
 		if (size()+static_cast<int>(objects.size()) <= splitCount || !allowSplit()) {
 			list.add(objects);
@@ -86,27 +89,50 @@ void BSPTree::add(vector<ObjectSpatial*> objects) {
 		subtreeSize += add_to_child_0.size();
 		subtreeSize += add_to_child_1.size();
 		list.add(add_to_this);
-		
 	}
 	
 }
 
 bool BSPTree::remove(ObjectSpatial* object) {
+
+	if (list.remove(object))
+		return true;
+
+	if (!leaf) {
+		if (object->isInside(child[0]->getBoundingObject())) {
+			return child[0]->remove(object);
+		}
+		else if (object->isInside(child[1]->getBoundingObject())) {
+			return child[1]->remove(object);
+		}
+	}
+
 	return false;
 }
 
 bool BSPTree::contains(ObjectSpatial* object) const {
+
+	if (list.contains(object))
+		return true;
+
+	if (!leaf) {
+		if (object->isInside(child[0]->getBoundingObject())) {
+			return child[0]->contains(object);
+		}
+		else if (object->isInside(child[1]->getBoundingObject())) {
+			return child[1]->contains(object);
+		}
+	}
+
 	return false;
 }
 
 vector<ObjectSpatial*> BSPTree::query(const BoundingObject& bounding_object, QueryType query_type) const {
-	if (leaf)
-		return list.query(bounding_object, query_type);
-	else {
-		vector<ObjectSpatial*> query_list;
-		appendQuery(&query_list, bounding_object, query_type);
-		return query_list;
-	}
+
+	vector<ObjectSpatial*> query_list;
+	appendQuery(&query_list, bounding_object, query_type);
+	return query_list;
+
 }
 
 vector<ObjectSpatial*> BSPTree::all() const {
@@ -134,34 +160,21 @@ void BSPTree::clear() {
 
 void BSPTree::appendQuery(vector<ObjectSpatial*>* result_list, const BoundingObject& bounding_object, QueryType query_type) const {
 
+	if (size() <= 0)
+		return;
+
+	const ObjectSpatial& this_bound = (const BoundingObject2D&) getBoundingObject();
+	if (!this_bound.intersects(bounding_object))
+		return;
+	else if (this_bound.isInside(bounding_object)) {
+		appendAll(result_list);
+		return;
+	}
+
 	list.appendQuery(result_list, bounding_object, query_type);
 	if (!leaf) {
-		for (short i = 0; i < 2; i++) {
-
-			bool inside = false;
-			bool intersects = false;
-
-			const BoundingObject& child_bound = child[i]->getBoundingObject();
-			if (!child_bound.is2D()) {
-				intersects = ((BoundingObject3D&)child_bound).intersects(bounding_object);
-				if (intersects) {
-					inside = ((BoundingObject3D&)child_bound).isInside(bounding_object);
-				}
-			}
-			else {
-				intersects = ((BoundingObject2D&)child_bound).intersects(bounding_object);
-				if (intersects) {
-					inside = ((BoundingObject2D&)child_bound).isInside(bounding_object);
-				}
-			}
-
-			//If the child is entirely inside the bounding object, append all objects in the child
-			//If the child only intersects, append the query result of the child
-			if (inside)
-				child[i]->appendAll(result_list);
-			else if (intersects)
-				child[i]->appendQuery(result_list, bounding_object, query_type);
-		}
+		child[0]->appendQuery(result_list, bounding_object, query_type);
+		child[1]->appendQuery(result_list, bounding_object, query_type);
 	}
 
 }

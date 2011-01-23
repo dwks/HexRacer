@@ -26,6 +26,7 @@ namespace Math {
 
 			const BoundingPlane3D* plane_3D;
 			const BoundingConvexHull3D* ch_3D;
+			const BoundingSphere* sphere_3D;
 			std::vector<BoundingPlane3D> planes;
 
 			switch (bound_3D.getObjectType()) {
@@ -35,6 +36,12 @@ namespace Math {
 						bound_3D.minX() <= minX() && bound_3D.maxX() >= maxX() &&
 						bound_3D.minY() <= minX() && bound_3D.maxY() >= maxY() &&
 						bound_3D.minZ() <= minX() && bound_3D.maxZ() >= maxZ()
+						);
+
+				case CIRCLE:
+					sphere_3D = (const BoundingSphere*) (&bound_3D);
+					return (
+						(sphere_3D->centroid().distance(position)+radius) <= sphere_3D->getRadius()
 						);
 
 				case PLANE:
@@ -72,6 +79,7 @@ namespace Math {
 
 		const BoundingPlane3D* plane_3D;
 		const BoundingConvexHull3D* ch_3D;
+		const BoundingSphere* sphere_3D;
 		Point p;
 		std::vector<BoundingPlane3D> planes;
 
@@ -94,6 +102,12 @@ namespace Math {
 					bounding_obj.maxZ() )
 					);
 				return pointInside(p);
+
+			case CIRCLE:
+				sphere_3D = (const BoundingSphere*) (&bounding_obj);
+				return (
+					(sphere_3D->centroid().distance(position)-radius) <= sphere_3D->getRadius()
+					);
 
 			case PLANE:
 				plane_3D = (const BoundingPlane3D*) (&bounding_obj);

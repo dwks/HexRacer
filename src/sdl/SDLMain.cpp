@@ -144,6 +144,7 @@ void SDLMain::run() {
     
 	paintManager = new Paint::PaintManager();
 
+	testPaintColor = 0;
     if(GET_SETTING("render.paint.enabled", 1)) {
         Paint::PaintGenerator paint_gen(test_terrain->getTriangles());
         paintCells = paint_gen.getPaintCells();
@@ -224,21 +225,33 @@ void SDLMain::run() {
                     Point2D(event.resize.w, event.resize.h));
                 break;
             case SDL_MOUSEBUTTONDOWN:
-                /*LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " pressed "
-                    << "at " << event.button.x << "," << event.button.y);*/
-                /*trackball->setMouseStartAt(projector.screenToGL(
-                    Point2D(event.button.x, event.button.y)));*/
-				simpleTrackball->setMouseStartAt(projector.screenToGL(
-                    Point2D(event.button.x, event.button.y)));
+				/*
+                LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " pressed "
+                    << "at " << event.button.x << "," << event.button.y);
+				*/
+				if (event.button.button == 1) {
+					simpleTrackball->setMouseStartAt(projector.screenToGL(
+						Point2D(event.button.x, event.button.y)));
+				}
+				else if (event.button.button == 2) {
+					//Middle Mouse Event
+					paintManager->colorCellsInRadius(camera->getLookPosition(), 3.0, -1);
+				}
+				else if (event.button.button == 3) {
+					//Right Mouse Event
+					paintManager->colorCellsInRadius(camera->getLookPosition(), 3.0, testPaintColor);
+					testPaintColor++;
+					testPaintColor = testPaintColor % 8;
+				}
                 break;
             case SDL_MOUSEMOTION:
                 if(event.motion.state & SDL_BUTTON(1)) {
                     //LOG2(SDL, INPUT, "Mouse moved to " << event.motion.x << "," << event.motion.y);
-                    /*trackball->setMouseCurrentAt(projector.screenToGL(
-                        Point2D(event.motion.x, event.motion.y)));*/
-					simpleTrackball->setMouseCurrentAt(projector.screenToGL(
-                    Point2D(event.button.x, event.button.y)));
-					updateCamera();
+					if (event.button.button == 1) {
+						simpleTrackball->setMouseCurrentAt(projector.screenToGL(
+						Point2D(event.button.x, event.button.y)));
+						updateCamera();
+					}
                 }
                 break;
             case SDL_MOUSEBUTTONUP:

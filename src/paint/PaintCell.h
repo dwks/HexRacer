@@ -16,12 +16,14 @@ public:
 	static const Math::Axis PAINT_AXIS = Math::Y_AXIS;
 
 	PaintCell(Math::Point _center);
+	PaintCell(Math::Point _center, Math::Point* vertices, Math::Point _normal, int _index);
 
 	bool vertexSet [CELL_VERTICES];
 	Math::Point vertex [CELL_VERTICES];
 	Math::Point normal;
 	Math::Point center;
 	int playerColor;
+	int index;
 
 	int getOppositeVertex(int vert_index);
 	void fillEmptyVertices();

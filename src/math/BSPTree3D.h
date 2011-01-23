@@ -22,7 +22,7 @@ public:
 			MIN_OVERLAP: The split plane that intersects the minimum number of contained objects
 				(only works when adding vectors of objects)
 	*/
-	BSPTree3D(BoundingBox3D bounding_box, SplitMethod split_method = FAIR_XSTART, int split_count = 4, double min_length = 0.0001f);
+	BSPTree3D(BoundingBox3D bounding_box = BoundingBox3D(), SplitMethod split_method = FAIR_XSTART, int split_count = 4, double min_length = 0.0001f);
 	~BSPTree3D(void);
 
 	bool allowSplit() const;
