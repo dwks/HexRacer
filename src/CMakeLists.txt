@@ -19,6 +19,7 @@ aux_source_directory(render RENDER_SOURCES)
 aux_source_directory(server SERVER_DIR_SOURCES)
 aux_source_directory(settings SETTINGS_SOURCES)
 aux_source_directory(sdl SDL_DIR_SOURCES)
+aux_source_directory(sound SOUND_SOURCES)
 aux_source_directory(timing TIMING_SOURCES)
 
 set(SOURCES
@@ -38,7 +39,8 @@ set(SOURCES
     ${HANDLER_SOURCES})
 
 set(SDL_SOURCES
-    ${SDL_DIR_SOURCES})
+    ${SDL_DIR_SOURCES}
+    ${SOUND_SOURCES})
 
 set(SERVER_SOURCES
     ${SERVER_DIR_SOURCES})
@@ -52,17 +54,13 @@ include_directories(${Boost_INCLUDE_DIRS})
 # OpenGL stuff
 set(OPENGL_LIBRARIES GL GLU GLEW)
 
+# OpenAL
+find_package(OpenAL)
+
 # SDL stuff
 find_package(SDL)
 find_package(SDL_image)
 include_directories(${SDL_INCLUDE_DIR} ${SDLIMAGE_INCLUDE_DIR})
-
-# Qt 4 stuff
-#find_package(Qt4 COMPONENTS
-#    QtCore QtGui QtOpenGL REQUIRED)
-#include(${QT_USE_FILE})
-#QT4_AUTOMOC(${SOURCES} ${QT_SOURCES})
-#include_directories(../build)  # for the moc
 
 # bullet stuff
 set(BULLET_LIBRARIES BulletDynamics BulletCollision LinearMath)
@@ -81,15 +79,12 @@ add_executable(sdl ${SDL_SOURCES})
 add_executable(server ${SERVER_SOURCES})
 
 set(COMMON_LIBRARIES
-    ${CORE_LIBRARY} ${Boost_LIBRARIES} ${OPENGL_LIBRARIES} ${BULLET_LIBRARIES})
+    ${CORE_LIBRARY}
+    ${Boost_LIBRARIES}
+    ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY}
+    ${OPENGL_LIBRARIES}
+    ${BULLET_LIBRARIES})
 
-#target_link_libraries(sdl ${COMMON_LIBRARIES} ${SDL_LIBRARIES})
-#target_link_libraries(server ${COMMON_LIBRARIES})
-
-target_link_libraries(sdl
-    ${CORE_LIBRARY} ${Boost_LIBRARIES} ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${OPENGL_LIBRARIES}
-    BulletDynamics BulletCollision LinearMath)
-target_link_libraries(server
-    ${CORE_LIBRARY} ${Boost_LIBRARIES} ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${OPENGL_LIBRARIES}
-    BulletDynamics BulletCollision LinearMath)
+target_link_libraries(sdl ${COMMON_LIBRARIES} ${OPENAL_LIBRARY} alut)
+target_link_libraries(server ${COMMON_LIBRARIES})
 

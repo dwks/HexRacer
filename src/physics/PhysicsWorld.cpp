@@ -8,7 +8,6 @@
 #include "opengl/OpenGL.h"
 
 #include "event/ObserverList.h"
-#include "PhysicsSerializer.h"
 #include "PhysicsFactory.h"
 
 namespace Project {
@@ -104,15 +103,6 @@ void PhysicsWorld::setDebug(bool on) {
 
 void PhysicsWorld::render() {
     //collisionBodies[1]->applyCentralForce(btVector3(2.0f, 0.0f, 0.0f));
-    
-    static bool first = true;
-    if(first) {
-        first = false;
-        
-        PhysicsSerializer().serialize(collisionBodies[1]);
-    }
-    
-    //stepWorld(10 * 1000);  // step world by 10 ms
     
     if(debugging) {
         dynamicsWorld->debugDrawWorld();

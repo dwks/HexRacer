@@ -39,12 +39,19 @@ TypeRegistry::TypeRegistry() {
         registerType(Subsystem::NETWORK, "PACKET", counter ++);
     }
     
-    //PHYSICS log message types
+    // PHYSICS log message types
     {
         int counter = 1;
-        registerType(Subsystem::PHYSICS, "INIT", counter++);
-        registerType(Subsystem::PHYSICS, "CREATE", counter++);
-        registerType(Subsystem::PHYSICS, "TIMESTEP", counter++);
+        registerType(Subsystem::PHYSICS, "INIT", counter ++);
+        registerType(Subsystem::PHYSICS, "CREATE", counter ++);
+        registerType(Subsystem::PHYSICS, "TIMESTEP", counter ++);
+    }
+    
+    // AUDIO log message types
+    {
+        int counter = 1;
+        registerType(Subsystem::AUDIO, "INIT", counter ++);
+        registerType(Subsystem::AUDIO, "MUSIC", counter ++);
     }
 }
 

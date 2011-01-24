@@ -22,6 +22,8 @@
 
 #include "render/ShaderUniformVector4.h"
 
+#include "sound/SoundSystem.h"
+
 #include "SDL_image.h"
 
 #include "settings/SettingsManager.h"
@@ -206,6 +208,14 @@ void SDLMain::run() {
         Physics::PhysicsFactory::createRigidTriMesh(
             test_terrain->getTriangles()));
     
+#ifdef HAVE_OPENAL
+    Sound::SoundSystem *soundSystem = new Sound::SoundSystem();
+    if(!soundSystem->initialize()) {
+        delete soundSystem;
+        soundSystem = NULL;
+    }
+#endif
+    
     LOG2(GLOBAL, PROGRESS, "Entering main game loop");
     
     Uint32 lastTime = SDL_GetTicks();
@@ -282,6 +292,10 @@ void SDLMain::run() {
         
         SDL_GL_SwapBuffers();
         
+#ifdef HAVE_OPENAL
+        if(soundSystem) soundSystem->doAction(SDL_GetTicks());
+#endif
+        
         {
             Uint32 thisTime = SDL_GetTicks();
             int timeTakenSoFar = static_cast<int>(thisTime - lastTime);
@@ -293,6 +307,10 @@ void SDLMain::run() {
     }
     
     LOG2(GLOBAL, PROGRESS, "Exiting main game loop");
+    
+#ifdef HAVE_OPENAL
+    delete soundSystem;
+#endif
     
     delete joystick;
     delete inputManager;
