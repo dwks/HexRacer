@@ -1,9 +1,13 @@
-#include "../math/Values.h"
 #include "Color.h"
+#include "math/Values.h"
 #include "OpenGL.h"
+#include <ostream>
+#include <istream>
 using namespace Project;
-using namespace OpenGL;
 using namespace Math;
+
+namespace Project {
+namespace OpenGL {
 
 Color::Color(float red, float green, float blue, float alpha) {
 	setRedf(red);
@@ -125,19 +129,19 @@ int Color::colorFloatToInt(float f) {
 	return (int) (f*(float) PROJECT_OPENGL__COLOR_BIT_DEPTH);
 }
 
-int Color::redi() {
+int Color::redi() const {
 	return colorFloatToInt(redf());
 }
 
-int Color::greeni() {
+int Color::greeni() const {
 	return colorFloatToInt(greenf());
 }
 
-int Color::bluei() {
+int Color::bluei() const {
 	return colorFloatToInt(bluef());
 }
 
-int Color::alphai() {
+int Color::alphai() const {
 	return colorFloatToInt(alphaf());
 }
 
@@ -294,3 +298,29 @@ void Color::glColor(Color color) {
 void Color::glColor(Color color, float force_alpha) {
 	glColor4f(color.redf(), color.greenf(), color.bluef(), force_alpha);
 }
+
+std::ostream &operator << (std::ostream &stream, const Color &color) {
+    stream << '('
+		<< color.redi() << ','
+        << color.greeni() << ','
+        << color.bluei() << ','
+		<< color.alphai() << ')';
+    
+    return stream;
+}
+
+std::istream &operator >> (std::istream &stream, Color &color) {
+    int r, g, b, a;
+    char c;
+    stream >> c >> r >> c >> g >> c >> b >> c >> a >> c;
+    
+	color.setRedi(r);
+	color.setGreeni(g);
+	color.setBluei(b);
+	color.setAlphai(a);
+
+	return stream;
+}
+
+}  // namespace OpenGL
+}  // namespace Project

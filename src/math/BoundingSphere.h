@@ -31,6 +31,8 @@ public:
 	void translate(const Point& translation) { position += translation; }
 	ObjectType getObjectType() const { return CIRCLE; }
 
+	void moveCentroid(const Point& position) { this->position = position; }
+
 	//Class specific
 	Point getPosition() const { return position; }
 	double getRadius() const { return radius; }

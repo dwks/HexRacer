@@ -1,6 +1,8 @@
 #include "Light.h"
 #include "opengl/OpenGL.h"
 #include "math/Values.h"
+#include <ostream>
+#include <istream>
 using namespace Project;
 using namespace OpenGL;
 using namespace Math;
@@ -70,6 +72,42 @@ namespace Render {
 		else
 			quadAttenuation = 0.0;
 	}
+
+	std::ostream &operator << (std::ostream &stream, const Light &light) {
+
+		stream << light.getPosition() << ' '
+			<< light.getDiffuse() << ' '
+			<< light.getSpecular() << ' '
+			<< light.getAmbient() << ' '
+			<< light.getHasAttenuation() << ' '
+			<< light.getStrength();
+
+		return stream;
+	}
+
+	std::istream &operator >> (std::istream &stream, Light &light) {
+
+		Point position;
+		Color diffuse;
+		Color specular;
+		Color ambient;
+		bool has_attenuation;
+		float strength;
+		char c;
+
+		stream >> position >> diffuse  >> specular
+			 >> ambient >> has_attenuation >> strength;
+
+		light.moveCentroid(position);
+		light.setDiffuse(diffuse);
+		light.setSpecular(specular);
+		light.setAmbient(ambient);
+		light.setHasAttenuation(has_attenuation);
+		light.setStrength(strength);
+
+		return stream;
+	}
+
 
 }  // namespace Render
 }  // namespace Project

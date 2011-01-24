@@ -12,6 +12,7 @@
 #include "render/MeshLoader.h"
 #include "render/ShaderUniformVector4.h"
 #include "render/RenderList.h"
+#include "render/ColorConstants.h"
 
 #include "physics/PhysicsWorld.h"
 
@@ -80,7 +81,7 @@ void PlayerManager::render(Render::RenderManager *renderManager) {
             renderList->addRenderable(player_cube_mesh);
             
             renderList->getRenderProperties()->addShaderParameter(
-				new Render::ShaderUniformVector4("playerColor", getPlayerColor(player->getID())));
+				new Render::ShaderUniformVector4("playerColor", Render::ColorConstants::playerColor(player->getID())));
         }
         
         // first if, then second if
@@ -120,20 +121,6 @@ void PlayerManager::usePlayerList(Object::PlayerList *playerList) {
 
 Object::Player *PlayerManager::getPlayer() {
     return playerList->getPlayer(id);
-}
-
-OpenGL::Color PlayerManager::getPlayerColor(int id) {
-	switch (id % 8) {
-		case 0: return OpenGL::Color::RED;
-		case 1: return OpenGL::Color::GREEN;
-		case 2: return OpenGL::Color::BLUE;
-		case 3: return OpenGL::Color::YELLOW;
-		case 4: return OpenGL::Color::ORANGE;
-		case 5: return OpenGL::Color::PURPLE;
-		case 6: return OpenGL::Color::TEAL;
-		case 7: return OpenGL::Color::INDIGO;
-	}
-	return OpenGL::Color::WHITE;
 }
 
 }  // namespace SDL

@@ -48,15 +48,15 @@ void Camera::setLookDirection(Point dir) {
 }
 
 void Camera::setUpDirection(Point dir) {
-	cameraUpDirection = dir.normalized();
+	givenCameraUpDirection = dir.normalized();
 	updateDirections();
 }
 
 void Camera::updateDirections() {
 
 	cameraLookDirection = (cameraLookPosition-cameraPosition).normalized();
-	cameraRightDirection = cameraLookDirection.crossProduct(cameraUpDirection).normalized();
-	actualCameraUpDirection = cameraRightDirection.crossProduct(cameraLookDirection);
+	cameraRightDirection = cameraLookDirection.crossProduct(givenCameraUpDirection).normalized();
+	cameraUpDirection = cameraRightDirection.crossProduct(cameraLookDirection);
 
 	//Update the camera matrix
 
@@ -64,13 +64,13 @@ void Camera::updateDirections() {
 	cameraMatrix[1] = static_cast<GLfloat>(cameraRightDirection.getY());
 	cameraMatrix[2] = static_cast<GLfloat>(cameraRightDirection.getZ());
 	
-	cameraMatrix[4] = static_cast<GLfloat>(actualCameraUpDirection.getX());
-	cameraMatrix[5] = static_cast<GLfloat>(actualCameraUpDirection.getY());
-	cameraMatrix[6] = static_cast<GLfloat>(actualCameraUpDirection.getZ());
+	cameraMatrix[4] = static_cast<GLfloat>(cameraUpDirection.getX());
+	cameraMatrix[5] = static_cast<GLfloat>(cameraUpDirection.getY());
+	cameraMatrix[6] = static_cast<GLfloat>(cameraUpDirection.getZ());
 
-	cameraMatrix[8] = static_cast<GLfloat>(-cameraLookDirection.getX());
-	cameraMatrix[9] = static_cast<GLfloat>(-cameraLookDirection.getY());
-	cameraMatrix[10] = static_cast<GLfloat>(-cameraLookDirection.getZ());
+	cameraMatrix[8] = static_cast<GLfloat>(cameraLookDirection.getX());
+	cameraMatrix[9] = static_cast<GLfloat>(cameraLookDirection.getY());
+	cameraMatrix[10] = static_cast<GLfloat>(cameraLookDirection.getZ());
 
 	if (cameraType == PERSPECTIVE) {
 
@@ -80,10 +80,10 @@ void Camera::updateDirections() {
 		halfPlaneWidth = halfPlaneHeight*aspect;
 
 		Point center = cameraPosition+cameraLookDirection;
-		Point top_left = center-(cameraRightDirection*halfPlaneWidth)+(actualCameraUpDirection*halfPlaneHeight);
-		Point top_right = center+(cameraRightDirection*halfPlaneWidth)+(actualCameraUpDirection*halfPlaneHeight);
-		Point bottom_left = center-(cameraRightDirection*halfPlaneWidth)-(actualCameraUpDirection*halfPlaneHeight);
-		Point bottom_right = center+(cameraRightDirection*halfPlaneWidth)-(actualCameraUpDirection*halfPlaneHeight);
+		Point top_left = center-(cameraRightDirection*halfPlaneWidth)+(cameraUpDirection*halfPlaneHeight);
+		Point top_right = center+(cameraRightDirection*halfPlaneWidth)+(cameraUpDirection*halfPlaneHeight);
+		Point bottom_left = center-(cameraRightDirection*halfPlaneWidth)-(cameraUpDirection*halfPlaneHeight);
+		Point bottom_right = center+(cameraRightDirection*halfPlaneWidth)-(cameraUpDirection*halfPlaneHeight);
 
 		leftPlaneNormal = Geometry::triangleNormal(cameraPosition, bottom_left, top_left);
 		rightPlaneNormal = Geometry::triangleNormal(cameraPosition, top_right, bottom_right);
@@ -92,13 +92,10 @@ void Camera::updateDirections() {
 
 	}
 	else {
-		halfPlaneHeight = orthoHeight*0.5;
-		halfPlaneWidth = halfPlaneHeight*aspect;
-
 		leftPlaneNormal = cameraRightDirection;
 		rightPlaneNormal = cameraRightDirection*(-1.0);
-		bottomPlaneNormal = actualCameraUpDirection;
-		topPlaneNormal = actualCameraUpDirection*(-1.0);
+		bottomPlaneNormal = cameraUpDirection;
+		topPlaneNormal = cameraUpDirection*(-1.0);
 	}
 
 	updateFrustrum();
@@ -130,12 +127,13 @@ void Camera::glLookAt() {
 	gluLookAt(
 		cameraPosition.getX(), cameraPosition.getY(), cameraPosition.getZ(),
 		cameraLookPosition.getX(), cameraLookPosition.getY(), cameraLookPosition.getZ(),
-		cameraUpDirection.getX(), cameraUpDirection.getY(), cameraUpDirection.getZ());
+		givenCameraUpDirection.getX(), givenCameraUpDirection.getY(), givenCameraUpDirection.getZ());
 }
 
 void Camera::glProjection() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+
 	if (cameraType == PERSPECTIVE)
 		gluPerspective(fieldOfView, aspect, nearPlane, farPlane);
 	else {
@@ -186,8 +184,8 @@ Point Camera::cameraToWorld(Point p) {
 
 Point Camera::cameraToWorld(double x, double y, double z) {
 
-	x -= 0.5;
-	y -= 0.5;
+	x = (x-0.5) * 2.0;
+	y = (y-0.5) * 2.0;
 
 	if (cameraType == PERSPECTIVE) {
 		x *= z;
@@ -197,4 +195,19 @@ Point Camera::cameraToWorld(double x, double y, double z) {
 	return (cameraPosition+cameraLookDirection*z
 		+(cameraRightDirection*halfPlaneWidth*x)
 		+(cameraUpDirection*halfPlaneHeight*y));
+}
+
+void Camera::setOrthoHeight(double height) {
+	orthoHeight = height;
+	halfPlaneHeight = orthoHeight*0.5;
+	halfPlaneWidth = halfPlaneHeight*aspect;
+
+	if (cameraType == ORTHOGRAPHIC) {
+		updateFrustrum();
+	}
+}
+
+void Camera::setCameraType(CameraType type) {
+	cameraType = type;
+	updateDirections();
 }

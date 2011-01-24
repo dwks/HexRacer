@@ -177,6 +177,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\BackgroundRenderable.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\BaseRenderable.cpp"
 				>
 			</File>
@@ -202,6 +206,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\CameraMovement.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ColorConstants.cpp"
 				>
 			</File>
 			<File
@@ -715,6 +723,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\BackgroundRenderable.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\BaseRenderable.h"
 				>
 			</File>
@@ -740,6 +752,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\CameraMovement.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ColorConstants.h"
 				>
 			</File>
 			<File

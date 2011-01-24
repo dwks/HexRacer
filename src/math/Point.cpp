@@ -349,7 +349,7 @@ std::ostream &operator << (std::ostream &stream, const Point &point) {
 std::istream &operator >> (std::istream &stream, Point &point) {
     double x, y, z, w;
     char c;
-    stream >> c >> x >> c >> y >> z >> c >> w >> c;
+    stream >> c >> x >> c >> y >> c >> z >> c >> w >> c;
     
     point = Math::Point(x, y, z, w);
     

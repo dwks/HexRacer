@@ -21,10 +21,10 @@ private:
 
 	Point cameraPosition;
 	Point cameraLookPosition;
-	Point cameraUpDirection;
+	Point givenCameraUpDirection;
 	Point cameraRightDirection;
 	Point cameraLookDirection;
-	Point actualCameraUpDirection;
+	Point cameraUpDirection;
 
 	Point topPlaneNormal;
 	Point leftPlaneNormal;
@@ -67,7 +67,7 @@ public:
 	Point getPosition() const { return cameraPosition; }
 	Point getLookPosition() const { return cameraLookPosition; }
 	Point getLookDirection() const { return cameraLookDirection; }
-	Point getUpDirection() const { return actualCameraUpDirection; }
+	Point getUpDirection() const { return cameraUpDirection; }
 	Point getRightDirection() const { return cameraRightDirection; }
 	double getAspect() const { return aspect; }
 	double getFieldOfViewDegrees() const { return fieldOfView; }
@@ -76,6 +76,9 @@ public:
 	double getOrthoHeight() const { return orthoHeight; }
 	Point cameraToWorld(Point p);
 	Point cameraToWorld(double x, double y, double z = 1.0);
+
+	void setCameraType(CameraType type);
+	CameraType getCameraType() const { return cameraType; }
 
 	void glLookAt();
 	void glProjection();

@@ -1,6 +1,7 @@
 #ifndef PROJECT_RENDER__LIGHT_H
 #define PROJECT_RENDER__LIGHT_H
 
+#include <iosfwd>
 #include "math/Vertex3D.h"
 #include "opengl/Color.h"
 
@@ -40,6 +41,9 @@ public:
 	void glApply(GLenum light) const;
 
 };
+
+std::ostream &operator << (std::ostream &stream, const Light& light);
+std::istream &operator >> (std::istream &stream, Light &light);
 
 }  // namespace Render
 }  // namespace Project

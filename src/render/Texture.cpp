@@ -66,6 +66,9 @@ namespace Render {
 			glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 
 			GLint image_format = toGLFormat(surface->format->BytesPerPixel);
+
+			SDL_LockSurface(surface);
+
 			glTexImage2D(GL_TEXTURE_2D,
 				0,
 				image_format,
@@ -75,6 +78,8 @@ namespace Render {
 				image_format,
 				GL_UNSIGNED_BYTE,
 				surface->pixels);
+
+			SDL_UnlockSurface(surface);
 
 			SDL_FreeSurface(surface);
 			
@@ -119,6 +124,8 @@ namespace Render {
 			SDL_Surface* surface = IMG_Load(filename.c_str());
 			if (surface) {
 				GLint image_format = toGLFormat(surface->format->BytesPerPixel);
+
+				SDL_LockSurface(surface);
 				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X+i,
 				0,
 				image_format,
@@ -128,6 +135,9 @@ namespace Render {
 				image_format,
 				GL_UNSIGNED_BYTE,
 				surface->pixels);
+
+				SDL_UnlockSurface(surface);
+
 				SDL_FreeSurface(surface);
 			}
 		}

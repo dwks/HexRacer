@@ -14,6 +14,7 @@
 #include "render/Shader.h"
 #include "render/MeshLoader.h"
 #include "render/RenderList.h"
+#include "render/BackgroundRenderable.h"
 
 #include "paint/PaintManager.h"
 #include "paint/PaintGenerator.h"

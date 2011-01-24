@@ -41,6 +41,7 @@ Makefile
 
 # Objects and meshes
 /models
+/maps
 
 # System Specific Config Files
 renderconfig.txt

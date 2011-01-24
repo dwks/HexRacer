@@ -1,11 +1,10 @@
 #include "PaintManager.h"
-#include "sdl/PlayerManager.h"
 #include "opengl/MathWrapper.h"
 #include "math/BoundingSphere.h"
+#include "render/ColorConstants.h"
 using namespace Project;
 using namespace Math;
 using namespace Render;
-using namespace SDL;
 
 namespace Project {
 namespace Paint {
@@ -60,7 +59,7 @@ namespace Paint {
 			if (cell->playerColor >= 0) {
 
 				if (lastDrawnColor != cell->playerColor) {
-					setter.setUniformVector4("playerColor", PlayerManager::getPlayerColor(cell->playerColor));
+					setter.setUniformVector4("playerColor", ColorConstants::playerColor(cell->playerColor));
 					lastDrawnColor = cell->playerColor;
 				}
 				glBegin(GL_TRIANGLE_FAN);

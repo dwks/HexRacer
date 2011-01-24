@@ -18,7 +18,7 @@ public:
 	virtual ~Object3D(void) {}
 
 	bool intersects(const BoundingObject& bounding_obj) const;
-	void moveCentroid(const Point& position);
+	virtual void moveCentroid(const Point& position);
 
 	virtual bool intersects3D(const BoundingObject3D& bounding_obj) const = 0;
 

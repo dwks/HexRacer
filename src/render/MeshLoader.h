@@ -22,9 +22,9 @@ public:
     
 	/** Load a Wavefront OBJ file to a model with name @a model_name from
 		the file @a filename
-		Returns true if model was loaded successfully
+		Returns a pointer to the mesh group object if successful, 0 otherwise
 	*/
-	bool loadOBJ(string model_name, string filename);
+	MeshGroup* loadOBJ(string model_name, string filename);
 	
 	MeshGroup* getModelByName(string model_name);
 

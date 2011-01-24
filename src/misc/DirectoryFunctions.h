@@ -10,9 +10,11 @@ namespace Misc {
 class DirectoryFunctions {
 public:
 
+	static bool fileExists(const char *name);
 	static string extractFilename(string str);
 	static string extractDirectory(string str);
-	static bool fileExists(const char *name);
+	static string toRelativeFilename(string base_directory, string full_filename);
+	static string fromRelativeFilename(string base_directory, string relative_filename);
 
 };
 

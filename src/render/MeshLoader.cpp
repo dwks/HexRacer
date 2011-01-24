@@ -1,6 +1,7 @@
 #include "MeshLoader.h"
 #include "model_obj.h"
 #include "misc/DirectoryFunctions.h"
+#include "misc/StdVectorFunctions.h"
 #include "log/Logger.h"
 using namespace Project;
 using namespace Math;
@@ -13,7 +14,12 @@ namespace Render {
 
 MeshLoader *MeshLoader::instance = 0;
 
-	bool MeshLoader::loadOBJ(string model_name, string filename) {
+	MeshGroup* MeshLoader::loadOBJ(string model_name, string filename) {
+
+		//Check if a model with the same name already exists
+		MeshGroup* group = getModelByName(model_name);
+		if (group)
+			return group;
 
 		string directory = DirectoryFunctions::extractDirectory(filename);
 
@@ -21,7 +27,7 @@ MeshLoader *MeshLoader::instance = 0;
 
 		if (!obj_file.import(filename.c_str(), true)) {
             LOG(OPENGL, "Can't open .OBJ file \"" << filename << "\"");
-			return false;
+			return NULL;
         }
 
 		vector<MeshVertex*> vert_list;
@@ -93,9 +99,9 @@ MeshLoader *MeshLoader::instance = 0;
 				tex = getTextureByName(tex_name);
 				if (tex == NULL && mat != NULL) {
 					//Create a new texture
-					string color_map_name = string(directory).append(obj_mat.colorMapFilename);
-					string normal_map_name = string(directory).append(obj_mat.bumpMapFilename);
-					string glow_map_name = string(directory).append(obj_mat.glowMapFilename);
+					string color_map_name = DirectoryFunctions::fromRelativeFilename(directory, obj_mat.colorMapFilename);
+					string normal_map_name = DirectoryFunctions::fromRelativeFilename(directory, obj_mat.bumpMapFilename);
+					string glow_map_name = DirectoryFunctions::fromRelativeFilename(directory, obj_mat.glowMapFilename);
 
 					tex = new Texture(tex_name, color_map_name, normal_map_name, glow_map_name);
 					textures.push_back(tex);
@@ -115,8 +121,6 @@ MeshLoader *MeshLoader::instance = 0;
 			}
 
 			Mesh* sub_mesh = new Mesh(face_list, mat);
-			//RenderProperties* properties = new RenderProperties();
-			//sub_mesh->setRenderProperties(properties);
 			RenderProperties* properties = sub_mesh->getRenderProperties();
 			if (mat) {
 				properties->setMaterial(mat);
@@ -140,7 +144,7 @@ MeshLoader *MeshLoader::instance = 0;
 
 		obj_file.destroy(); //Unload the obj file content
 
-		return true;
+		return new_group;
 		
 	}
 
@@ -152,6 +156,18 @@ MeshLoader *MeshLoader::instance = 0;
 		}
 		LOG(OPENGL, model_name.append(": Model Not Found"));
 		return NULL;
+	}
+
+	bool MeshLoader::deleteModelByName(string model_name) {
+		for (unsigned int i = 0; i < models.size(); i++) {
+			if (models[i]->getName() == model_name) {
+				delete(models[i]);
+				Misc::vectorRemoveAtIndex(models, i);
+				return true;
+			}
+		}
+		LOG(OPENGL, model_name.append(": Model Not Found"));
+		return false;
 	}
 	/*
 	Material* MeshLoader::getMaterialByName(string name) {

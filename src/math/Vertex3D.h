@@ -35,6 +35,8 @@ public:
 	void translate(const Point& translation);
 	ObjectType getObjectType() const { return VERTEX; }
 
+	void moveCentroid(const Point& position) { this->position = position; }
+
 	//Class specific
 	Point getPosition() const { return position; }
 
