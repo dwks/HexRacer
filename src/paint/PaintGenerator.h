@@ -18,7 +18,7 @@ private:
 	vector<double> heightsAtPoint(double u, double v);
 
 public:
-	PaintGenerator(std::vector<Math::Triangle3D> _triangles);
+	PaintGenerator(std::vector<Math::Triangle3D> _triangles, double cell_radius = PAINT_CELL_RADIUS);
 	std::vector<PaintCell*>& getPaintCells() { return paintCells; }
 };
 

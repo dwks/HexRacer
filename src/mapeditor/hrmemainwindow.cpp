@@ -13,7 +13,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	setCentralWidget(mapEditor);
 
 	//
-	settingsManager = new SettingsManager();
+	settingsManager = new SettingsManager("mapeditorconfig.txt");
 
 	/*Menu Bar*************************************************************/
 

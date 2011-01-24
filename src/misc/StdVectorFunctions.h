@@ -34,6 +34,22 @@ static bool vectorContains(std::vector<Type>& v, Type element) {
 	return false;
 }
 
+template <typename Type>
+static void vectorAppend(std::vector<Type>& v1, std::vector<Type>& v2) {
+	for (unsigned int i = 0; i < v2.size(); i++)
+		v1.push_back(v2[i]);
+}
+
+template <typename Type>
+static std::vector<Type> vectorAppended(std::vector<Type>& v1, std::vector<Type>& v2) {
+
+	std::vector<Type> return_v(v1);
+	for (unsigned int i = 0; i < v2.size(); i++)
+		return_v.push_back(v2[i]);
+	return return_v;
+
+}
+
 }  // namespace Misc
 }  // namespace Project
 

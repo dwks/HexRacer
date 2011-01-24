@@ -99,14 +99,12 @@ void MapEditorWidget::paintGL() {
 		HRMap::MeshType type = static_cast<HRMap::MeshType>(i);
 		if (map->getMapMesh(type)) {
 			rootRenderable->addRenderable(map->getMapMesh(type));
-			//map->getMapMesh(type)->render(renderer);
 		}
 	}
 
 	rootRenderable->render(renderer);
 
 	delete(rootRenderable);
-	
 
 	if (map->getCubeMap())
 		background->render(renderer);
@@ -260,6 +258,7 @@ void MapEditorWidget::setAdvancedRendering(bool enabled) {
 	advancedRendering = enabled;
 	updateGL();
 }
+
 void MapEditorWidget::setOrthoView(bool enabled) {
 
 	if (enabled) {
@@ -290,4 +289,8 @@ void MapEditorWidget::setOrthoView(bool enabled) {
 
 	camera->glProjection();
 	updateGL();
+}
+
+void MapEditorWidget::setRenderPaint(bool enabled) {
+	renderPaint = enabled;
 }

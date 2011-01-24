@@ -38,7 +38,7 @@ void main() {
 	
 		float light_dist = length((position-gl_LightSource[i].position).xyz);
 		
-		float attenuation = 1.0/(1.0 + gl_LightSource[i].quadraticAttenuation*light_dist*light_dist);
+		float attenuation = 1.0/(gl_LightSource[i].constantAttenuation + gl_LightSource[i].quadraticAttenuation*light_dist*light_dist);
 		if (attenuation >= 0.004) {
 		
 			attenuation = min(attenuation, 1.0);

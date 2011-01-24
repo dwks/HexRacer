@@ -4,8 +4,8 @@ varying vec3 eyeNormal;
 varying vec3 objectNormal;
 varying vec4 position;
 
-varying vec3 eyeTangent; 
-varying vec3 eyeBitangent;
+//varying vec3 eyeTangent; 
+//varying vec3 eyeBitangent;
 
 varying vec4 diffuseColor;
 varying vec4 ambientColor;
@@ -26,8 +26,8 @@ void main()
 	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 	position = gl_ModelViewMatrix * gl_Vertex;
 	
-	eyeTangent = normalize(gl_NormalMatrix * tangent);
-	eyeBitangent = normalize(gl_NormalMatrix * bitangent);
+	//eyeTangent = normalize(gl_NormalMatrix * tangent);
+	//eyeBitangent = normalize(gl_NormalMatrix * bitangent);
 	
 	//Calculate Diffuse and Ambient Lighting-------------------------------------------------------===
 	diffuseColor = vec4(0.0, 0.0, 0.0, 1.0);
@@ -35,7 +35,7 @@ void main()
 	
 	if (numLights > 0) {
 		float light_dist = length((position-gl_LightSource[0].position).xyz);
-		float attenuation = 1.0/(1.0 + gl_LightSource[0].quadraticAttenuation*light_dist*light_dist);
+		float attenuation = 1.0/(gl_LightSource[0].constantAttenuation + gl_LightSource[0].quadraticAttenuation*light_dist*light_dist);
 		if (attenuation >= 0.004) {
 		
 			attenuation = min(attenuation, 1.0);
@@ -50,7 +50,7 @@ void main()
 	}
 	if (numLights > 1) {
 		float light_dist = length((position-gl_LightSource[1].position).xyz);
-		float attenuation = 1.0/(1.0 + gl_LightSource[1].quadraticAttenuation*light_dist*light_dist);
+		float attenuation = 1.0/(gl_LightSource[1].constantAttenuation + gl_LightSource[1].quadraticAttenuation*light_dist*light_dist);
 		if (attenuation >= 0.004) {
 		
 			attenuation = min(attenuation, 1.0);
@@ -64,14 +64,13 @@ void main()
 		}
 	}
 	
-	cameraNormalMatrix[0][0] = cameraMatrix[0][0];
-	cameraNormalMatrix[1][0] = cameraMatrix[1][0];
-	cameraNormalMatrix[2][0] = cameraMatrix[2][0];
+	cameraNormalMatrix[0][0] = -cameraMatrix[0][0];
 	cameraNormalMatrix[0][1] = cameraMatrix[0][1];
-	cameraNormalMatrix[1][1] = cameraMatrix[1][1];
-	cameraNormalMatrix[2][1] = cameraMatrix[2][1];
 	cameraNormalMatrix[0][2] = cameraMatrix[0][2];
+	cameraNormalMatrix[1][0] = -cameraMatrix[1][0];
+	cameraNormalMatrix[1][1] = cameraMatrix[1][1];
 	cameraNormalMatrix[1][2] = cameraMatrix[1][2];
-	cameraNormalMatrix[2][2] = cameraMatrix[2][2];
-	
+	cameraNormalMatrix[2][0] = cameraMatrix[2][0];
+	cameraNormalMatrix[2][1] = -cameraMatrix[2][1];
+	cameraNormalMatrix[2][2] = -cameraMatrix[2][2];
 }

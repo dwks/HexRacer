@@ -70,9 +70,9 @@ namespace Paint {
 		vertexSet[vert_index] = true;
 	}
 
-	Point PaintCell::calcVertexLocation(int vert_index) {
+	Point PaintCell::calcVertexLocation(int vert_index, double cell_radius) {
 		double angle = (double) vert_index * (PI/3.0);
-		Point p = Point::point2D(cos(angle)*PAINT_CELL_RADIUS, sin(angle)*PAINT_CELL_RADIUS, PAINT_AXIS);
+		Point p = Point::point2D(cos(angle)*cell_radius, sin(angle)*cell_radius, PAINT_AXIS);
 		return center+p;
 	}
 

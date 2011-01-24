@@ -39,7 +39,7 @@ void main() {
 	if (numLights > 0) {
 		float light_dist = length((position-gl_LightSource[0].position).xyz);
 		
-		float attenuation = 1.0/(1.0 + gl_LightSource[0].quadraticAttenuation*light_dist*light_dist);
+		float attenuation = 1.0/(gl_LightSource[0].constantAttenuation + gl_LightSource[0].quadraticAttenuation*light_dist*light_dist);
 		if (attenuation >= 0.004) {
 		
 			attenuation = min(attenuation, 1.0);
@@ -56,7 +56,7 @@ void main() {
 	if (numLights > 1) {
 		float light_dist = length((position-gl_LightSource[1].position).xyz);
 		
-		float attenuation = 1.0/(1.0 + gl_LightSource[1].quadraticAttenuation*light_dist*light_dist);
+		float attenuation = 1.0/(gl_LightSource[1].constantAttenuation + gl_LightSource[1].quadraticAttenuation*light_dist*light_dist);
 		if (attenuation >= 0.004) {
 		
 			attenuation = min(attenuation, 1.0);

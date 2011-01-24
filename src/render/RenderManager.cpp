@@ -447,6 +447,7 @@ namespace Render {
 		if (cubeMap && camera) {
 			glActiveTexture(cubeMapTexture);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->getCubeMap());
+			glDisable(GL_TEXTURE_CUBE_MAP);
 			glActiveTexture(colorMapTexture);
 			setUniformInt(SHADER_CUBEMAP_UNIFORM_NAME, cubeMapTextureNum);
 			setUniformMatrix4(SHADER_CAMERA_MATRIX_UNIFORM_NAME, GL_FALSE, camera->getCameraMatrix());

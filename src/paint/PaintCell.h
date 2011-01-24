@@ -31,7 +31,7 @@ public:
 	void calculateNormal();
 	void contractVertices(double amount);
 	void setVertex(int vert_index, Math::Point _vertex);
-	Math::Point calcVertexLocation(int vert_index);
+	Math::Point calcVertexLocation(int vert_index, double cell_radius = PAINT_CELL_RADIUS);
 
 };
 

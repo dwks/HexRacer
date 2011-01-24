@@ -20,7 +20,7 @@ namespace Render {
 		}
 		else {
 			if (light->getQuadraticAttenuation() != prevQuadAttenuation) {
-				double radius = sqrt( (1.0/LIGHT_MANAGER_MIN_ATTENUATION_THRESHHOLD - 1.0) / light->getQuadraticAttenuation() );
+				double radius = sqrt( (1.0/LIGHT_MANAGER_MIN_ATTENUATION_THRESHHOLD - light->getConstantAttenuation()) / light->getQuadraticAttenuation() );
 				setRadius(radius);
 				prevQuadAttenuation = light->getQuadraticAttenuation();
 			}

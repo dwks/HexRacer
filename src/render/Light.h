@@ -31,6 +31,7 @@ public:
 	float getStrength() const { return strength; }
 	bool getHasAttenuation() const { return hasAttenuation; }
 	float getQuadraticAttenuation() const { return quadAttenuation; }
+	float getConstantAttenuation() const;
 
 	void setDiffuse(Project::OpenGL::Color _diffuse) { diffuse = _diffuse; }
 	void setSpecular(Project::OpenGL::Color _specular) { specular = _specular; }

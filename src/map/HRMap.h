@@ -5,6 +5,7 @@
 #include "render/RenderList.h"
 #include "render/TextureCube.h"
 #include "render/Light.h"
+#include "paint/PaintCell.h"
 #include <string>
 #include <vector>
 
@@ -30,6 +31,7 @@ private:
 	std::string bgImageZNeg;
 	Render::TextureCube* cubeMap;
 	std::vector<Render::Light*> lights;
+	std::vector<Paint::PaintCell*> paintCells;
 
 public:
 
@@ -44,9 +46,14 @@ public:
 	Render::MeshGroup* getMapMesh(MeshType type) const { return mapMesh[static_cast<int>(type)]; }
 	Render::RenderList* getTrackRenderable() const { return trackRenderable; }
 	Render::TextureCube* getCubeMap() const { return cubeMap; }
+	std::vector<Paint::PaintCell*> getPaintCells() const { return paintCells; }
+
+
 	std::vector<Render::Light*> getLights() const { return lights; }
 	void clear();
+	void clearPaint();
 	void loadMapMesh(HRMap::MeshType type, string filename);
+	void generatePaint(double cell_radius = PAINT_CELL_RADIUS);
 
 	std::string getFilename() const { return filename; }
 

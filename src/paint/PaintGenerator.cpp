@@ -12,7 +12,7 @@ using namespace std;
 namespace Project {
 namespace Paint {
 
-	PaintGenerator::PaintGenerator(std::vector<Triangle3D> _triangles) {
+	PaintGenerator::PaintGenerator(std::vector<Triangle3D> _triangles, double cell_radius) {
 
 		if (_triangles.size() <= 0)
 			return;
@@ -31,9 +31,9 @@ namespace Paint {
 		triangleTree = new BSPTree3D(paint_bound);
 		triangleTree->add(triangles);
 
-		double cell_u_division = PAINT_CELL_RADIUS*3.0;
-		double cell_half_height = sqrt(3.0)*PAINT_CELL_RADIUS*0.5;
-		double odd_row_offset = PAINT_CELL_RADIUS*1.5;
+		double cell_u_division = cell_radius*3.0;
+		double cell_half_height = sqrt(3.0)*cell_radius*0.5;
+		double odd_row_offset = cell_radius*1.5;
 
 		BoundingBox2D b2D(paint_bound, PaintCell::PAINT_AXIS);
 
@@ -71,7 +71,7 @@ namespace Paint {
 		for (unsigned int i = 0; i < paintCells.size(); i++) {
 			for (int v = 0; v < PaintCell::CELL_VERTICES; v++) {
 
-				Point wanted_point = paintCells[i]->calcVertexLocation(v);
+				Point wanted_point = paintCells[i]->calcVertexLocation(v, cell_radius);
 
 				//Find the heights at the wanted point
 				vector<double> heights = heightsAtPoint(

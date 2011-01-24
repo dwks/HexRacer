@@ -293,6 +293,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PaintEvent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\paint\PaintGenerator.cpp"
 				>
 			</File>
@@ -832,6 +836,10 @@
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintCell.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\PaintEvent.h"
 				>
 			</File>
 			<File

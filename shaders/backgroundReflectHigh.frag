@@ -46,7 +46,7 @@ void main() {
 	
 		float light_dist = length((position-gl_LightSource[i].position).xyz);
 		
-		float attenuation = 1.0/(1.0 + gl_LightSource[i].quadraticAttenuation*light_dist*light_dist);
+		float attenuation = 1.0/(gl_LightSource[i].constantAttenuation + gl_LightSource[i].quadraticAttenuation*light_dist*light_dist);
 		if (attenuation >= 0.004) {
 		
 			attenuation = min(attenuation, 1.0);
@@ -79,7 +79,7 @@ void main() {
 	specular_color *= gl_FrontMaterial.specular;
 	ambient_color *= diffuse_base;
 	
-	float krefl = gl_FrontMaterial.shininess/13.0;
+	float krefl = (gl_FrontMaterial.shininess-1.0)/12.0;
 	
 	if (hasTexture[1] == 1) {
 		float shine_factor = texture2D(normalMap, gl_TexCoord[0].st).w;

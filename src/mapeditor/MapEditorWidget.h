@@ -39,6 +39,7 @@ private:
 	Camera* camera;
 	SimpleTrackball* trackball;
 	bool advancedRendering;
+	bool renderPaint;
 
 	HRMap* map;
 	RenderManager* renderer;
@@ -85,6 +86,7 @@ public slots:
 	void loadMesh(HRMap::MeshType type, string filename);
 	void setAdvancedRendering(bool enabled);
 	void setOrthoView(bool enabled);
+	void setRenderPaint(bool enabled);
 
 };
 

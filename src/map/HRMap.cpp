@@ -1,9 +1,11 @@
 #include "HRMap.h"
 #include "misc/DirectoryFunctions.h"
+#include "paint/PaintGenerator.h"
 #include <fstream>
 using namespace Project;
 using namespace Misc;
 using namespace Render;
+using namespace Paint;
 using namespace std;
 
 namespace Project {
@@ -120,6 +122,12 @@ namespace Map {
 		return false;
 	}
 
+	void HRMap::clearPaint() {
+		for (unsigned int i = 0; i < paintCells.size(); i++) {
+			delete(paintCells[i]);
+		}
+		paintCells.clear();
+	}
 	void HRMap::clear() {
 
 		version = "";
@@ -181,5 +189,16 @@ namespace Map {
 		}
 	}
 
+	void HRMap::generatePaint(double cell_radius) {
+		vector<Triangle3D> triangles;
+
+		if (getMapMesh(TRACK))
+			triangles = getMapMesh(TRACK)->getTriangles();
+		if (getMapMesh(INVIS_TRACK))
+			Misc::vectorAppend(triangles, getMapMesh(INVIS_TRACK)->getTriangles());
+
+		PaintGenerator generator(triangles, cell_radius);
+		paintCells = generator.getPaintCells();
+	}
 }  // namespace Map
 }  // namespace Project

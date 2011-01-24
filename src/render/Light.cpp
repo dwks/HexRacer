@@ -53,6 +53,7 @@ namespace Render {
 		glLightfv(light, GL_POSITION, values);
 
 		glLightf(light, GL_QUADRATIC_ATTENUATION, quadAttenuation);
+		glLightf(light, GL_CONSTANT_ATTENUATION, getConstantAttenuation());
 			
 	}
 
@@ -71,6 +72,13 @@ namespace Render {
 			quadAttenuation = 1.0/strength;
 		else
 			quadAttenuation = 0.0;
+	}
+
+	float Light::getConstantAttenuation() const {
+		if (hasAttenuation)
+			return 0.75f;
+		else
+			return 1.0f;
 	}
 
 	std::ostream &operator << (std::ostream &stream, const Light &light) {
