@@ -48,8 +48,6 @@ public:
     
     void render(Render::RenderManager *renderManager);
 
-	static OpenGL::Color getPlayerColor(int id);
-
 protected:
     void usePlayerList(Object::PlayerList *playerList);
     Object::Player *getPlayer();

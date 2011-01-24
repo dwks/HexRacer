@@ -70,5 +70,11 @@ void main() {
 	
 	float krefl = gl_FrontMaterial.shininess/13.0;
 	
+	if (hasTexture[1] == 1) {
+		float shine_factor = texture2D(normalMap, gl_TexCoord[0].st).w;
+		specular_color *= shine_factor;
+		krefl *= shine_factor;
+	}
+	
 	gl_FragColor = (diffuse_color + ambient_color)*(1.0-krefl) + textureCube(cubeMap, worldReflect)*krefl + specular_color;
 }

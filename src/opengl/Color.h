@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../math/Point.h"
+#include <iosfwd>
+#include "math/Point.h"
 #include "OpenGL.h"
 
 namespace Project {
@@ -14,8 +15,8 @@ class Color
 {
 private:
 	float r, g, b, a;
-	float colorIntToFloat(int i);
-	int colorFloatToInt(float f);
+	static float colorIntToFloat(int i);
+	static int colorFloatToInt(float f);
 public:
 
 	enum ColorPreset {RED, GREEN, BLUE, WHITE, BLACK, LIGHTGREY, GREY, DARKGREY, YELLOW, ORANGE, PURPLE, INDIGO, VIOLET, PINK, BROWN, TEAL};
@@ -33,10 +34,10 @@ public:
 	float greenf() const { return g; }
 	float bluef() const { return b; }
 	float alphaf() const { return a; }
-	int redi();
-	int greeni();
-	int bluei();
-	int alphai();
+	int redi() const;
+	int greeni() const;
+	int bluei() const;
+	int alphai() const;
 
 	void setRedf(float red);
 	void setGreenf(float green);
@@ -72,6 +73,9 @@ public:
 	void operator /= (float factor);
 
 };
+
+std::ostream &operator << (std::ostream &stream, const Color &color);
+std::istream &operator >> (std::istream &stream, Color &color);
 
 }  // namespace OpenGL
 }  // namespace Project

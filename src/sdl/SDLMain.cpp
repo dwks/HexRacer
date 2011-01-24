@@ -21,6 +21,7 @@
 #include "opengl/GeometryDrawing.h"
 
 #include "render/ShaderUniformVector4.h"
+#include "render/BackgroundRenderable.h"
 
 #include "sound/SoundSystem.h"
 
@@ -110,7 +111,7 @@ void SDLMain::run() {
 	camera = new OpenGL::Camera();
 	camera->setFieldOfViewDegrees(60.0f);
 	camera->setPosition(Point(0.0f, 2.0f, -4.0f));
-	camera->setFarPlane(200.0f);
+	camera->setFarPlane(VIEW_DISTANCE);
 	updateCamera();
     
     resizeGL(width, height);
@@ -137,7 +138,6 @@ void SDLMain::run() {
 	//Load the model
 	meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
 	meshLoader->loadOBJ("playerCube", "models/playercube.obj");
-	meshLoader->loadOBJ("backgroundCube", "models/backgroundcube.obj");
 	//Add the test terrain
 	Render::MeshGroup* test_terrain = meshLoader->getModelByName("testTerrain");
     
@@ -150,8 +150,11 @@ void SDLMain::run() {
 		paintManager->setPaintCells(paintCells);
     }
 
+	Render::BackgroundRenderable* background = new Render::BackgroundRenderable(camera);
+	background->getRenderProperties()->setWantsShaderName("backgroundShader");
+
 	rootRenderable->addRenderable(test_terrain);
-	rootRenderable->addRenderable(meshLoader->getModelByName("backgroundCube"));
+	rootRenderable->addRenderable(background);
     
 	/*
 	rootRenderable->getRenderProperties()->setColor(OpenGL::Color::VIOLET);
@@ -315,6 +318,8 @@ void SDLMain::run() {
     delete joystick;
     delete inputManager;
     delete network;
+
+	delete background;
 }
 
 void SDLMain::handleJoystick() {

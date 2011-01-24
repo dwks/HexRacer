@@ -13,5 +13,6 @@
 #define PAINT_CELL_CONTRACTION 0.1
 
 #define INITIAL_CAR_LOCATION Math::Point(0.0, 1.0, 0.0)
+#define VIEW_DISTANCE 200.0
 
 #endif

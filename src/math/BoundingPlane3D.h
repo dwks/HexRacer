@@ -32,6 +32,8 @@ public:
 	void translate(const Point& translation);
 	ObjectType getObjectType() const { return PLANE; }
 
+	void moveCentroid(const Point& position) { this->origin = position; }
+
 	//Class specific
 	void setNormal(Point _normal) { normal = _normal.normalized(); }
 	Point getNormal() const { return normal; }
