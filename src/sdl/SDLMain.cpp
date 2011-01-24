@@ -241,16 +241,14 @@ void SDLMain::run() {
                 LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " pressed "
                     << "at " << event.button.x << "," << event.button.y);
 				*/
-				if (event.button.button == 1) {
+				if (event.button.button == 1) {  // left
 					simpleTrackball->setMouseStartAt(projector.screenToGL(
 						Point2D(event.button.x, event.button.y)));
 				}
-				else if (event.button.button == 2) {
-					//Middle Mouse Event
+				else if (event.button.button == 2) {  // middle
 					paintManager->colorCellsInRadius(camera->getLookPosition(), 3.0, -1);
 				}
-				else if (event.button.button == 3) {
-					//Right Mouse Event
+				else if (event.button.button == 3) {  // right
 					paintManager->colorCellsInRadius(camera->getLookPosition(), 3.0, testPaintColor);
 					testPaintColor++;
 					testPaintColor = testPaintColor % 8;

@@ -5,7 +5,7 @@
 #define HAVE_BOOST
 
 // enables sound
-#define HAVE_OPENAL
+//#define HAVE_OPENAL
 
 #define PAINT_CELL_RADIUS 0.75
 #define PAINT_CELL_VERTEX_HEIGHT_THRESHHOLD 1.0

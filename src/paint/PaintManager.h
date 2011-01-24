@@ -13,7 +13,7 @@ class PaintManager
 	: public Render::BaseRenderable {
 private:
 
-	vector<PaintCell*> paintList;
+	std::vector<PaintCell*> paintList;
 	Math::BSPTree3D* neutralPaintTree;
 	Math::BSPTree3D* coloredPaintTree;
 	int lastDrawnColor;
@@ -36,13 +36,13 @@ public:
 		@param cell_indices A vector with the indices of all paint cells to color
 		@parma new_color The color which to color the paint cells
 	*/
-	void colorCellsByIndex(vector<int> cell_indices, int new_color);
+	void colorCellsByIndex(std::vector<int> cell_indices, int new_color);
 
 	/** Color all neutral paint cells inside a sphere with center @a centroid and
 		radius @a radius to the player color @a new_color
 		Returns a vector of the indices of all paint cells that were colored
 	*/
-	vector<int> colorCellsInRadius(Math::Point centroid, double radius, int new_color);
+	std::vector<int> colorCellsInRadius(Math::Point centroid, double radius, int new_color);
 
 	/** Returns a number representing the concentration of paint cells of color @a color
 		inside the given radius. Increasing from zero depending on proximity and quantity.

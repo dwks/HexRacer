@@ -1,6 +1,8 @@
 #include <cstdlib>
 #include "SoundSystem.h"
 
+#ifdef HAVE_OPENAL
+
 #include "AL/al.h"
 #include "AL/alut.h"
 
@@ -111,3 +113,5 @@ void SoundSystem::doAction(unsigned long currentTime) {
 
 }  // namespace Sound
 }  // namespace Project
+
+#endif

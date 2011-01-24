@@ -1,8 +1,10 @@
 #ifndef PROJECT_SOUND__SOUND_SYSTEM_H
 #define PROJECT_SOUND__SOUND_SYSTEM_H
 
-#include "timing/TimedSubsystem.h"
 #include "config.h"
+#ifdef HAVE_OPENAL
+
+#include "timing/TimedSubsystem.h"
 
 #include "AL/al.h"
 
@@ -32,4 +34,5 @@ private:
 }  // namespace Sound
 }  // namespace Project
 
+#endif
 #endif
