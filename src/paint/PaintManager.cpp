@@ -2,6 +2,7 @@
 #include "opengl/MathWrapper.h"
 #include "math/BoundingSphere.h"
 #include "render/ColorConstants.h"
+#include "event/ObserverList.h"
 using namespace Project;
 using namespace Math;
 using namespace Render;
@@ -9,10 +10,20 @@ using namespace Render;
 namespace Project {
 namespace Paint {
 
+    void PaintManager::PaintEventHandler::observe(Event::PaintEvent *paintEvent) {
+        Math::Point position = paintEvent->getPoint();
+        double radius = paintEvent->getRadius();
+        int colour = paintEvent->getColour();
+        
+        paintManager->colorCellsInRadius(position, radius, colour);
+    }
+    
 	PaintManager::PaintManager() {
 		neutralPaintTree = new BSPTree3D(BoundingBox3D(), TREE_SPLIT_METHOD, TREE_SPLIT_SIZE);
 		coloredPaintTree = new BSPTree3D(BoundingBox3D(), TREE_SPLIT_METHOD, TREE_SPLIT_SIZE);
 		getRenderProperties()->setWantsShaderName("paintShader");
+        
+        ADD_OBSERVER(new PaintEventHandler(this));
 	}
 
 	void PaintManager::setPaintCells(const std::vector<PaintCell*>& paint_cells) {

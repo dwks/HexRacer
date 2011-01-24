@@ -4,14 +4,17 @@
 #include "SDL_events.h"
 #include "SDL_keysym.h"
 
+#include "PlayerManager.h"
+
 namespace Project {
 namespace SDL {
 
 class InputManager {
 private:
     bool keyDown[SDLK_LAST];
+    PlayerManager *playerManager;
 public:
-    InputManager();
+    InputManager(PlayerManager *playerManager);
     
     void handleEvent(SDL_Event *event);
     

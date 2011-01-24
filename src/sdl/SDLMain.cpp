@@ -185,8 +185,6 @@ void SDLMain::run() {
 	light->setSpecular(OpenGL::Color::INDIGO);
 	light->setStrength(10.0f);
 	lightManager->addLight(light);
-
-    inputManager = new InputManager();
     
     // this must happen before Players are created
     physicsWorld = new Physics::PhysicsWorld();
@@ -203,6 +201,8 @@ void SDLMain::run() {
     else {
         playerManager = new PlayerManager(0);
     }
+    
+    inputManager = new InputManager(playerManager);
     
     ADD_OBSERVER(new CameraObserver(simpleTrackball, camera));
     ADD_OBSERVER(new QuitObserver(this));

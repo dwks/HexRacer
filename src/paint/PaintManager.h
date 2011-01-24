@@ -4,6 +4,8 @@
 #include "PaintCell.h"
 #include "render/BaseRenderable.h"
 #include "math/BSPTree3D.h"
+#include "event/PaintEvent.h"
+#include "event/TypedObserver.h"
 #include <vector>
 
 namespace Project {
@@ -11,6 +13,16 @@ namespace Paint {
 
 class PaintManager
 	: public Render::BaseRenderable {
+private:
+    class PaintEventHandler : public Event::TypedObserver<Event::PaintEvent> {
+    private:
+        PaintManager *paintManager;
+    public:
+        PaintEventHandler(PaintManager *paintManager)
+            : paintManager(paintManager) {}
+        
+        virtual void observe(Event::PaintEvent *paintEvent);
+    };
 private:
 
 	std::vector<PaintCell*> paintList;

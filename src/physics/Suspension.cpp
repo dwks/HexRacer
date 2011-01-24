@@ -156,7 +156,7 @@ void Suspension::applyDragForce(Object::Player *player) {
     
     if(linearVelocity.lengthSquared()) {
         double sidewaysSpeed = linearVelocity.dotProduct(sidewaysAxis)
-            / linearVelocity.length();
+            /*/ linearVelocity.length()*/;
         
         double sideways = GET_SETTING("physics.driving.sidewaysdrag", 0.1);
         Math::Point sidewaysDrag = -sideways * sidewaysSpeed * sidewaysAxis;

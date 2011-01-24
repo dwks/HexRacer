@@ -9,6 +9,9 @@
 #include "event/TypedObserver.h"
 #include "event/PlayerAction.h"
 #include "event/UpdatePlayerList.h"
+#include "event/PaintEvent.h"
+
+#include "paint/PaintManager.h"
 
 #include "opengl/Color.h"
 
@@ -50,6 +53,7 @@ public:
 
 protected:
     void usePlayerList(Object::PlayerList *playerList);
+public:
     Object::Player *getPlayer();
 };
 

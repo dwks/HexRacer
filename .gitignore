@@ -39,9 +39,10 @@ Makefile
 # Windows clutter
 *.db
 
-# Objects and meshes
+# Objects and meshes and other game data
 /models
 /maps
+/sound
 
 # System Specific Config Files
 renderconfig.txt

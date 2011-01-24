@@ -20,6 +20,7 @@ public:
         UPDATE_PLAYER_LIST,
         CAMERA_MOVEMENT,
         SET_DEBUG_DRAWING,
+        PAINT_EVENT,
         TYPES
     };
 };

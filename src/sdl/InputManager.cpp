@@ -7,10 +7,14 @@
 #include "event/SetDebugDrawing.h"
 #include "event/QuitEvent.h"
 
+#include "event/PaintEvent.h"
+
 namespace Project {
 namespace SDL {
 
-InputManager::InputManager() {
+InputManager::InputManager(PlayerManager *playerManager)
+    : playerManager(playerManager) {
+    
     for(std::size_t x = 0; x < sizeof keyDown / sizeof *keyDown; x ++) {
         keyDown[x] = false;
     }
@@ -75,6 +79,41 @@ void InputManager::advanceToNextFrame() {
         static bool debug = false;
         debug = !debug;
         EMIT_EVENT(new Event::SetDebugDrawing(debug));
+    }
+    
+    {
+        static int paint = 0;
+        static bool painting = false;
+        static bool erasing = false;
+        
+        if(keyDown[SDLK_p]) {
+            keyDown[SDLK_p] = false;
+            
+            painting = !painting;
+            erasing = false;
+            paint = (paint + 1) % 8;
+        }
+        if(keyDown[SDLK_o]) {
+            keyDown[SDLK_o] = false;
+            
+            erasing = !erasing;
+            painting = false;
+        }
+        
+        static double PAINTING_RADIUS = 1.5;
+        
+        if(painting) {
+            EMIT_EVENT(new Event::PaintEvent(
+                playerManager->getPlayer()->getPosition(),
+                PAINTING_RADIUS,
+                paint));
+        }
+        if(erasing) {
+            EMIT_EVENT(new Event::PaintEvent(
+                playerManager->getPlayer()->getPosition(),
+                PAINTING_RADIUS,
+                -1));
+        }
     }
 }
 
