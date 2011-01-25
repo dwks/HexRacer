@@ -7,6 +7,8 @@
 #include "network/PacketVisitor.h"
 #include "event/MultiObserver.h"
 
+#include "ServerNetworkPortal.h"
+
 namespace Project {
 namespace Server {
 
@@ -38,8 +40,10 @@ private:
     Object::PlayerList playerList;
     Paint::PaintManager paintManager;
     ServerVisitor visitor;
+    ServerNetworkPortal *networkPortal;
 public:
-    ServerMain() : clientCount(0), visitor(this) {}
+    ServerMain();
+    ~ServerMain();
     
     void run();
     

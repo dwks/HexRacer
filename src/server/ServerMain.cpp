@@ -14,6 +14,8 @@
 #include "event/PlayerAction.h"
 #include "event/UpdatePlayerList.h"
 #include "event/PaintEvent.h"
+#include "event/PaintCellsChanged.h"
+
 #include "event/ObserverList.h"
 
 #include "physics/PhysicsWorld.h"
@@ -78,7 +80,11 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         double radius = paintEvent->getRadius();
         int colour = paintEvent->getColour();
         
-        main->getPaintManager().colorCellsInRadius(position, radius, colour);
+        std::vector<int> cells = main->getPaintManager()
+            .colorCellsInRadius(position, radius, colour);
+        
+        EMIT_EVENT(new Event::PaintCellsChanged(colour, cells));
+        break;
     }
     default:
         LOG2(NETWORK, WARNING,
@@ -88,7 +94,22 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
 }
 
 bool ServerMain::ServerObserver::interestedIn(Event::EventType::type_t type) {
+    switch(type) {
+    case Event::EventType::PAINT_CELLS_CHANGED:
+        return false;
+    default:
+        break;
+    }
+    
     return true;
+}
+
+ServerMain::ServerMain() : clientCount(0), visitor(this) {
+    
+}
+
+ServerMain::~ServerMain() {
+    delete networkPortal;
 }
 
 void ServerMain::run() {
@@ -99,6 +120,8 @@ void ServerMain::run() {
     ClientManager clients;
     
     server.addServer(GET_SETTING("network.port", 1820));
+    
+    networkPortal = new ServerNetworkPortal(&clients);
     
     Render::MeshLoader *meshLoader = new Render::MeshLoader();
     meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));

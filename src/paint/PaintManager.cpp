@@ -18,12 +18,21 @@ namespace Paint {
         paintManager->colorCellsInRadius(position, radius, colour);
     }
     
+    void PaintManager::PaintCellsChangedHandler::observe(
+        Event::PaintCellsChanged *paintCellsChanged) {
+        
+        paintManager->colorCellsByIndex(
+            paintCellsChanged->getCells(),
+            paintCellsChanged->getColour());
+    }
+    
 	PaintManager::PaintManager() {
 		neutralPaintTree = new BSPTree3D(BoundingBox3D(), TREE_SPLIT_METHOD, TREE_SPLIT_SIZE);
 		coloredPaintTree = new BSPTree3D(BoundingBox3D(), TREE_SPLIT_METHOD, TREE_SPLIT_SIZE);
 		getRenderProperties()->setWantsShaderName("paintShader");
         
         ADD_OBSERVER(new PaintEventHandler(this));
+        ADD_OBSERVER(new PaintCellsChangedHandler(this));
 	}
 
 	void PaintManager::setPaintCells(const std::vector<PaintCell*>& paint_cells) {
@@ -88,8 +97,7 @@ namespace Paint {
 
 	}
 
-
-	void PaintManager::colorCellsByIndex(vector<int> cell_indices, int new_color) {
+	void PaintManager::colorCellsByIndex(const vector<int> &cell_indices, int new_color) {
 		for (unsigned int i = 0; i < cell_indices.size(); i++) {
 			colorCell(paintList[cell_indices[i]], new_color);
 		}
