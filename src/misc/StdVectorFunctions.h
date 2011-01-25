@@ -25,7 +25,7 @@ static bool vectorRemoveOneElement(std::vector<Type>& v, Type element) {
 }
 
 template <typename Type>
-static bool vectorContains(std::vector<Type>& v, Type element) {
+static bool vectorContains(const std::vector<Type>& v, Type element) {
 	for (unsigned int i = 0; i < v.size(); i++) {
 		if (v[i] == element) {
 			return true;
@@ -35,13 +35,13 @@ static bool vectorContains(std::vector<Type>& v, Type element) {
 }
 
 template <typename Type>
-static void vectorAppend(std::vector<Type>& v1, std::vector<Type>& v2) {
+static void vectorAppend(std::vector<Type>& v1, const std::vector<Type>& v2) {
 	for (unsigned int i = 0; i < v2.size(); i++)
 		v1.push_back(v2[i]);
 }
 
 template <typename Type>
-static std::vector<Type> vectorAppended(std::vector<Type>& v1, std::vector<Type>& v2) {
+static std::vector<Type> vectorAppended(std::vector<Type>& v1, const std::vector<Type>& v2) {
 
 	std::vector<Type> return_v(v1);
 	for (unsigned int i = 0; i < v2.size(); i++)

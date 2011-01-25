@@ -26,7 +26,9 @@ void NetworkPortal::PacketSender::observe(Event::SendPacket *packet) {
 
 void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
     switch(event->getType()) {
-    case Event::EventType::PLAYER_ACTION: {
+    case Event::EventType::PLAYER_ACTION:
+    case Event::EventType::PAINT_EVENT:
+    {
         if(portal->getPortal() == NULL) break;
         
         Network::Packet *packet = new Network::EventPacket(event);

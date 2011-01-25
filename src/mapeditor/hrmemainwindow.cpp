@@ -1,6 +1,16 @@
+#ifdef CMAKE_BUILD
+    #include "hrmemainwindow.moc"
+#endif
+
 #include "hrmemainwindow.h"
-#include <direct.h>
 #include <stdlib.h>
+
+#ifdef WIN32
+    #include <direct.h>
+#else
+    #include "boost/filesystem.hpp"
+#endif
+
 using namespace std;
 
 HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
@@ -86,10 +96,16 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	/*File Types and Paths*************************************************************/
 
+#ifdef WIN32
 	char currentPath[_MAX_PATH];
 	getcwd(currentPath, _MAX_PATH);
-	saveDir = QString(currentPath);
-	meshDir = QString(currentPath);
+    saveDir = QString(currentPath);
+    meshDir = QString(currentPath);
+#else
+    std::string currentPath = boost::filesystem::current_path().string();
+    saveDir = QString::fromStdString(currentPath);
+    meshDir = QString::fromStdString(currentPath);
+#endif
 
 	mapType = QString("HexRace Map File (*.hrm *.HRM)");
 	meshType = QString("Wavefront OBJ (*.obj *.OBJ)");

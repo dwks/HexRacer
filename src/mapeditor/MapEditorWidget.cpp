@@ -1,7 +1,12 @@
+#ifdef CMAKE_BUILD
+    #include "MapEditorWidget.moc"
+#endif
+
 #include "MapEditorWidget.h"
 #include "config.h"
-#include "math.h"
 #include "opengl/MathWrapper.h"
+#include "math/Values.h"
+#include <math.h>
 using namespace Paint;
 
 MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget, Qt::WindowFlags f)
@@ -206,8 +211,8 @@ void MapEditorWidget::wheelMoved(bool up, Qt::KeyboardModifiers modifiers) {
 		else
 			orthoHeight += CAMERA_ORTHO_HEIGHT_INC;
 
-		orthoHeight = max(CAMERA_MIN_ORTHO_HEIGHT, orthoHeight);
-		orthoHeight = min(CAMERA_MAX_ORTHO_HEIGHT, orthoHeight);
+		orthoHeight = Math::maximum<double>(CAMERA_MIN_ORTHO_HEIGHT, orthoHeight);
+		orthoHeight = Math::minimum<double>(CAMERA_MAX_ORTHO_HEIGHT, orthoHeight);
 
 		camera->setOrthoHeight(orthoHeight);
 		camera->glProjection();
@@ -219,8 +224,8 @@ void MapEditorWidget::wheelMoved(bool up, Qt::KeyboardModifiers modifiers) {
 		else
 			precisionScale -= PRECISION_SCALE_INCREMENT;
 
-		precisionScale = max(MIN_PRECISION_SCALE, precisionScale);
-		precisionScale = min(MAX_PRECISION_SCALE, precisionScale);
+		precisionScale = Math::maximum<double>(MIN_PRECISION_SCALE, precisionScale);
+		precisionScale = Math::minimum<double>(MAX_PRECISION_SCALE, precisionScale);
 		updateGL();
 	}
 
@@ -305,7 +310,7 @@ void MapEditorWidget::mapLightsChanged() {
 
 	lightManager->clear();
 	vector<Light*> lights = map->getLights();
-	for (int i = 0; i < lights.size(); i++) {
+	for (int i = 0; i < int(lights.size()); i++) {
 		lightManager->addLight(lights[i], false, true);
 	}
 

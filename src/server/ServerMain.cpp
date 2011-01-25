@@ -13,6 +13,7 @@
 
 #include "event/PlayerAction.h"
 #include "event/UpdatePlayerList.h"
+#include "event/PaintEvent.h"
 #include "event/ObserverList.h"
 
 #include "physics/PhysicsWorld.h"
@@ -69,6 +70,15 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         }
         
         break;
+    }
+    case Event::EventType::PAINT_EVENT: {
+        Event::PaintEvent *paintEvent
+            = dynamic_cast<Event::PaintEvent *>(event);
+        Math::Point position = paintEvent->getPoint();
+        double radius = paintEvent->getRadius();
+        int colour = paintEvent->getColour();
+        
+        main->getPaintManager().colorCellsInRadius(position, radius, colour);
     }
     default:
         LOG2(NETWORK, WARNING,

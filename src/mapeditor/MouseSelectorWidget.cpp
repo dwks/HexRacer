@@ -1,3 +1,7 @@
+#ifdef CMAKE_BUILD
+    #include "MouseSelectorWidget.moc"
+#endif
+
 #include "MouseSelectorWidget.h"
 #include "opengl/GeometryDrawing.h"
 #include <QtGui>
@@ -76,6 +80,7 @@ int MouseSelectorWidget::mouseButtonToIndex(Qt::MouseButton button) {
 		case Qt::LeftButton: return 0;
 		case Qt::MidButton: return 1;
 		case Qt::RightButton: return 2;
+        default: break;
 	}
 	return -1;
 }
@@ -85,6 +90,7 @@ Qt::MouseButton MouseSelectorWidget::mouseIndexToButton(int index) {
 		case 0: return Qt::LeftButton;
 		case 1: return Qt::MidButton;
 		case 2: return Qt::RightButton;
+        default: break;
 	}
 	return Qt::NoButton;
 }
@@ -155,7 +161,7 @@ void MouseSelectorWidget::mouseReleaseEvent(QMouseEvent *event) {
 void MouseSelectorWidget::wheelEvent(QWheelEvent *event) {
 
 
-	if (wheel_state = 0)
+	if (wheel_state == 0)
 		wheel_state = event->delta();
 	else {
 

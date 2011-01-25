@@ -2,6 +2,7 @@
 #define PROJECT_SERVER__SERVER_MAIN_H
 
 #include "object/PlayerList.h"
+#include "paint/PaintManager.h"
 
 #include "network/PacketVisitor.h"
 #include "event/MultiObserver.h"
@@ -35,6 +36,7 @@ private:
     int clientCount;
     int whichSocket;
     Object::PlayerList playerList;
+    Paint::PaintManager paintManager;
     ServerVisitor visitor;
 public:
     ServerMain() : clientCount(0), visitor(this) {}
@@ -43,6 +45,7 @@ public:
     
     int getWhichSocket() const { return whichSocket; }
     Object::PlayerList &getPlayerList() { return playerList; }
+    Paint::PaintManager &getPaintManager() { return paintManager; }
 };
 
 }  // namespace Server
