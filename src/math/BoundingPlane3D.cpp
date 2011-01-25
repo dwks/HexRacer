@@ -24,6 +24,10 @@ namespace Math {
 		return bounding_obj.intersects3D(*this);
 	}
 
+	RayIntersection BoundingPlane3D::rayIntersection(Ray ray) const {
+		return Geometry::rayPlaneIntersection(ray, origin, normal);
+	}
+
 	void BoundingPlane3D::translate(const Point& translation) {
 		origin += translation;
 	}

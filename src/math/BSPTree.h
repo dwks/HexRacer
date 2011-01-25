@@ -19,6 +19,7 @@ public:
 	void add(vector<ObjectSpatial*> objects);
 	vector<ObjectSpatial*> query(const BoundingObject& bounding_object, QueryType query_type) const;
 	vector<ObjectSpatial*> all() const;
+	RayIntersection rayIntersection(Ray ray) const;
 	int size() const;
 	void clear();
 

@@ -134,41 +134,39 @@ namespace Math {
 		return vertex[vert_index];
 	}
 
-	/*
-	RayIntersection Triangle3D::getRayIntersection(Ray ray) const {
+	RayIntersection Triangle3D::rayIntersection(Ray ray) const {
 
 		double d = normal.dotProduct(ray.direction);
 
 		if (d != 0.0) {
 
 			Point v = ray.origin-getVertex(0);
-			float t = -(v.dotProduct(normal))/d;
+			double t = -(v.dotProduct(normal))/d;
 
 			//Fail if the intersection is not within the ray's range
 			if (!ray.insideRange(t))
 				return RayIntersection();
-			else
-				return RayIntersection(t);
+
+			Point ray_point = ray.atT(t);
 
 			//Calculate barycentric coordinates, return if point is outside of triangle
-			float S0 = Vector3::dotProduct(Vector3::crossProduct(vertex[2]->position-vertex[1]->position, rp-vertex[1]->position), normal);
-			if (S0 < 0.0f)
-				return Intersection();
+			double s0 = ((getVertex(2)-getVertex(1)).crossProduct(ray_point-getVertex(1))).dotProduct(normal);
+			if (s0 < 0.0)
+				return RayIntersection();
 
-			float S1 = Vector3::dotProduct(Vector3::crossProduct(vertex[0]->position-vertex[2]->position, rp-vertex[2]->position), normal);
-			if (S1 < 0.0f)
-				return Intersection();
+			double s1 = ((getVertex(0)-getVertex(2)).crossProduct(ray_point-getVertex(2))).dotProduct(normal);
+			if (s1 < 0.0)
+				return RayIntersection();
 
-			float S2 = Vector3::dotProduct(Vector3::crossProduct(vertex[1]->position-vertex[0]->position, rp-vertex[0]->position), normal);
-			if (S2 < 0.0f)
-				return Intersection();
+			double s2 = ((getVertex(1)-getVertex(0)).crossProduct(ray_point-getVertex(0))).dotProduct(normal);
+			if (s2 < 0.0)
+				return RayIntersection();
 
+			return RayIntersection(t);
 		}
 
 		return RayIntersection();
 
 	}
-	*/
-
 }  // namespace Math
 }  // namespace Project

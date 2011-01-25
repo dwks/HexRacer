@@ -28,11 +28,13 @@ private:
 	QMenuBar* menuBar;
 	QMenu* fileMenu;
 	QMenu* meshMenu;
+	QMenu* mapMenu;
 
 	QFrame* optionsFrame;
 	QToolBar* optionsBar;
 	QAction* advancedRenderingAction;
 	QAction* orthoCameraAction;
+	QAction* showPaintAction;
 
 	SettingsManager* settingsManager;
 

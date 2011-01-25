@@ -353,6 +353,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\ObserverList.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\paint\PaintCell.cpp"
 				>
 			</File>
@@ -746,6 +750,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\ObjectSpatial.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\ObserverList.h"
 				>
 			</File>
 			<File

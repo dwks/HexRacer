@@ -141,6 +141,57 @@ vector<ObjectSpatial*> BSPTree::all() const {
 	return return_list;
 }
 
+RayIntersection BSPTree::rayIntersection(Ray ray) const {
+
+	bool intersects;
+	if (getBoundingObject().is2D())
+		intersects = ((const BoundingObject2D&)getBoundingObject()).rayIntersection(ray).intersects;
+	else
+		intersects = ((const BoundingObject3D&)getBoundingObject()).rayIntersection(ray).intersects;
+
+	if (size() == 0 || !intersects)
+		return RayIntersection();
+
+	RayIntersection min_intersect = list.rayIntersection(ray);
+
+	if (leaf)
+		return min_intersect;
+
+	if (min_intersect.intersects) {
+		ray.maxT = min_intersect.t;
+		ray.maxBounded = true;
+	}
+
+	RayIntersection child_0_intersect;
+	RayIntersection child_1_intersect;
+
+	if (getBoundingObject().is2D()) {
+		child_0_intersect = ((const BoundingObject2D&)child[0]->getBoundingObject()).rayIntersection(ray);
+		child_1_intersect = ((const BoundingObject2D&)child[1]->getBoundingObject()).rayIntersection(ray);
+	}
+	else {
+		child_0_intersect = ((const BoundingObject3D&)child[0]->getBoundingObject()).rayIntersection(ray);
+		child_1_intersect = ((const BoundingObject3D&)child[1]->getBoundingObject()).rayIntersection(ray);
+	}
+
+	if (child_0_intersect.intersects && (!min_intersect.intersects || child_0_intersect < min_intersect)) {
+		child_0_intersect = child[0]->rayIntersection(ray);
+		if (child_0_intersect.intersects && (!min_intersect.intersects || child_0_intersect < min_intersect)) {
+			min_intersect = child_0_intersect;
+		}
+	}
+
+	if (child_1_intersect.intersects && (!min_intersect.intersects || child_1_intersect < min_intersect)) {
+		child_1_intersect = child[1]->rayIntersection(ray);
+		if (child_1_intersect.intersects && (!min_intersect.intersects || child_1_intersect < min_intersect)) {
+			min_intersect = child_1_intersect;
+		}
+	}
+
+	return min_intersect;
+
+}
+
 int BSPTree::size() const {
 	if (leaf)
 		return list.size();
@@ -163,13 +214,25 @@ void BSPTree::appendQuery(vector<ObjectSpatial*>* result_list, const BoundingObj
 	if (size() <= 0)
 		return;
 
-	const ObjectSpatial& this_bound = (const BoundingObject2D&) getBoundingObject();
-	if (!this_bound.intersects(bounding_object))
-		return;
-	else if (this_bound.isInside(bounding_object)) {
-		appendAll(result_list);
-		return;
+	if (getBoundingObject().is2D()) {
+		const BoundingObject2D& this_bound = (const BoundingObject2D&) getBoundingObject();
+		if (!this_bound.intersects(bounding_object))
+			return;
+		else if (this_bound.isInside(bounding_object)) {
+			appendAll(result_list);
+			return;
+		}
 	}
+	else {
+		const BoundingObject3D& this_bound = (const BoundingObject3D&) getBoundingObject();
+		if (!this_bound.intersects(bounding_object))
+			return;
+		else if (this_bound.isInside(bounding_object)) {
+			appendAll(result_list);
+			return;
+		}
+	}
+
 
 	list.appendQuery(result_list, bounding_object, query_type);
 	if (!leaf) {

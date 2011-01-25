@@ -35,6 +35,8 @@ public:
 	void translate(const Point& translation);
 	ObjectType getObjectType() const { return BOX; }
 
+	RayIntersection rayIntersection(Ray ray) const;
+
 	//Class specific
 
 	/** Set the dimensions of this box to the envelope of @a object

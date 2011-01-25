@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Point.h"
+#include "Ray.h"
+#include "RayIntersection.h"
 
 namespace Project {
 namespace Math {
@@ -43,6 +45,8 @@ public:
 	virtual bool intersects(const BoundingObject& bounding_obj) const = 0;
 
 	virtual ObjectType getObjectType() const = 0;
+
+	virtual RayIntersection rayIntersection(Ray ray) const { return RayIntersection(); }
 
 };
 

@@ -3,6 +3,7 @@
 #include "BoundingConvexHull3D.h"
 #include "Values.h"
 #include "BoundingBox2D.h"
+#include <float.h>
 using namespace Project;
 using namespace Math;
 using namespace std;
@@ -121,6 +122,62 @@ bool BoundingBox3D::intersects3D(const BoundingObject3D& bounding_obj) const {
 void BoundingBox3D::translate(const Point& translation) {
 	minCorner += translation;
 	maxCorner += translation;
+}
+
+RayIntersection BoundingBox3D::rayIntersection(Ray ray) const {
+
+	double tnear = FLT_MIN;
+	double tfar = FLT_MAX;
+
+	double min_plane;
+	double max_plane;
+	double origin;
+	double dir;
+
+	for (short i = 0; i < 3; i++) {
+
+		min_plane = minCorner[i];
+		max_plane = maxCorner[i];
+		origin = ray.origin[i];
+		dir = ray.direction[i];
+
+		if (dir == 0.0) {
+			if (!(origin >= min_plane && origin <= max_plane)) {
+				return RayIntersection();
+			}
+		}
+		else {
+			double t1 = (min_plane-origin)/dir;
+			double t2 = (max_plane-origin)/dir;
+			
+			if (t1 > t2) {
+				double temp = t2;
+				t2 = t1;
+				t1 = temp;
+			}
+
+			if (t1 > tnear)
+				tnear = t1;
+			if (t2 < tfar)
+				tfar = t2;
+
+			if (tnear > tfar)
+				return RayIntersection();
+			if (ray.maxBounded && tnear > ray.maxT)
+				return RayIntersection();
+			if (ray.minBounded && tfar < ray.minT)
+				return RayIntersection();
+		}
+
+	}
+
+	if (ray.insideRange(tnear))
+		return RayIntersection(tnear);
+	if (ray.insideRange(tfar))
+		return RayIntersection(tfar);
+
+	return RayIntersection();
+
 }
 
 Point BoundingBox3D::getCorner(int index) const {

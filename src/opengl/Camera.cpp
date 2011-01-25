@@ -211,3 +211,17 @@ void Camera::setCameraType(CameraType type) {
 	cameraType = type;
 	updateDirections();
 }
+
+Ray Camera::cameraRay(double x, double y) {
+
+	Point plane_point = cameraToWorld(x, y, 1.0);
+
+	if (cameraType == ORTHOGRAPHIC) {
+		Point near_plane_point = cameraToWorld(x, y, 0.0);
+		return Ray(near_plane_point, plane_point-near_plane_point, 0.0);
+	}
+	else {
+		return Ray(cameraPosition, plane_point-cameraPosition, 0.0);
+	}
+
+}

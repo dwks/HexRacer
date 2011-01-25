@@ -87,6 +87,24 @@ vector<ObjectSpatial*> SpatialList::all() const {
 	return objectList;
 }
 
+RayIntersection SpatialList::rayIntersection(Ray ray) const {
+	if (objectList.size() == 0 || (boundingBox && !boundingBox->rayIntersection(ray).intersects))
+		return RayIntersection();
+
+	RayIntersection first_intersection = RayIntersection();
+
+	for (unsigned int i = 0; i < objectList.size(); i++) {
+		RayIntersection intersection = objectList[i]->rayIntersection(ray);
+		if (intersection.intersects) {
+			if ((!first_intersection.intersects || intersection < first_intersection)) {
+				first_intersection = intersection;
+			}
+		}
+	}
+
+	return first_intersection;
+}
+
 int SpatialList::size() const {
 	return objectList.size();
 }

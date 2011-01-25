@@ -20,12 +20,16 @@ using namespace Render;
 #define MAP_EDITOR_TRACKBALL_BUTTON Qt::LeftButton
 #define CAMERA_MOVE_INC 0.25
 #define CAMERA_MOVE_ORTHO_INC 0.1
-#define CAMERA_MIN_ORTHO_HEIGHT 0.1
+#define CAMERA_MIN_ORTHO_HEIGHT 1.0
 #define CAMERA_MAX_ORTHO_HEIGHT 1000.0
-#define CAMERA_ORTHO_HEIGHT_INC 2.0
+#define CAMERA_ORTHO_HEIGHT_INC 5.0
 #define CAMERA_ORTHO_PROJECT_AXIS Y_AXIS
 #define CAMERA_ORTHO_UP Point::point2D(0.0, 1.0, CAMERA_ORTHO_PROJECT_AXIS)
 #define CAMERA_PERSPECTIVE_UP Point(0.0, 1.0, 0.0)
+#define PRECISION_SCALE_INCREMENT 0.2f
+#define PRECISION_SCALE_DRAW_SCALE 15.0f
+#define MIN_PRECISION_SCALE 0.1f
+#define MAX_PRECISION_SCALE 5.0f
 
 class MapEditorWidget : public MouseSelectorWidget
 {
@@ -39,7 +43,7 @@ private:
 	Camera* camera;
 	SimpleTrackball* trackball;
 	bool advancedRendering;
-	bool renderPaint;
+	bool showPaint;
 
 	HRMap* map;
 	RenderManager* renderer;
@@ -86,7 +90,8 @@ public slots:
 	void loadMesh(HRMap::MeshType type, string filename);
 	void setAdvancedRendering(bool enabled);
 	void setOrthoView(bool enabled);
-	void setRenderPaint(bool enabled);
+	void setShowPaint(bool enabled);
+	void generatePaint();
 
 };
 

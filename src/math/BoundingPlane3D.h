@@ -31,6 +31,7 @@ public:
 	bool intersects3D(const BoundingObject3D& bounding_obj) const;
 	void translate(const Point& translation);
 	ObjectType getObjectType() const { return PLANE; }
+	RayIntersection rayIntersection(Ray ray) const;
 
 	void moveCentroid(const Point& position) { this->origin = position; }
 

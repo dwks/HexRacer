@@ -34,8 +34,13 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	meshMenu->addAction("&Load Invisible Solid",	this, SLOT(loadInvisibleSolidMesh()));
 	meshMenu->addAction("&Load Decor",				this, SLOT(loadDecorMesh()));
 
+	//Map Menu
+	mapMenu = new QMenu("&Map", this);
+	mapMenu->addAction("&Generate Paint Cells",	mapEditor, SLOT(generatePaint()));
+
 	menuBar->addMenu(fileMenu);
 	menuBar->addMenu(meshMenu);
+	menuBar->addMenu(mapMenu);
 	setMenuBar(menuBar);
 
 	/*Actions*************************************************************/
@@ -47,6 +52,10 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	orthoCameraAction = new QAction("&Orthographic View", this);
 	orthoCameraAction->setCheckable(true);
 	connect(orthoCameraAction, SIGNAL(toggled(bool)), mapEditor, SLOT(setOrthoView(bool)));
+
+	showPaintAction = new QAction("&Show Paint", this);
+	showPaintAction->setCheckable(true);
+	connect(showPaintAction, SIGNAL(toggled(bool)), mapEditor, SLOT(setShowPaint(bool)));
 
 	/*Options Toolbar*************************************************************/
 
@@ -60,9 +69,12 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	advancedRenderingButton->setDefaultAction(advancedRenderingAction);
 	QToolButton* orthoCameraButton = new QToolButton(this);
 	orthoCameraButton->setDefaultAction(orthoCameraAction);
+	QToolButton* showPaintButton = new QToolButton(this);
+	showPaintButton->setDefaultAction(showPaintAction);
 
 	viewing_layout->addWidget(advancedRenderingButton);
 	viewing_layout->addWidget(orthoCameraButton);
+	viewing_layout->addWidget(showPaintButton);
 
 	options_layout->addLayout(viewing_layout);
 

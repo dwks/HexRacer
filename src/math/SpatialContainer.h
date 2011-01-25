@@ -32,6 +32,7 @@ public:
 	*/
 	virtual vector<ObjectSpatial*> query(const BoundingObject& bounding_object, QueryType query_type) const = 0;
 	virtual vector<ObjectSpatial*> all() const = 0;
+	virtual RayIntersection rayIntersection(Ray ray) const = 0;
 	virtual int size() const = 0;
 	virtual void clear() = 0;
 

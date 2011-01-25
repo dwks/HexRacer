@@ -4,6 +4,10 @@
 using namespace Project;
 using namespace Math;
 
+#ifndef SQUARE_ROOT_THREE
+#define SQUARE_ROOT_THREE 1.7320508075688772935274463415058723669428052538103806280558
+#endif
+
 namespace Project {
 namespace Paint {
 
@@ -71,9 +75,27 @@ namespace Paint {
 	}
 
 	Point PaintCell::calcVertexLocation(int vert_index, double cell_radius) {
+		/*
 		double angle = (double) vert_index * (PI/3.0);
 		Point p = Point::point2D(cos(angle)*cell_radius, sin(angle)*cell_radius, PAINT_AXIS);
 		return center+p;
+		*/
+		switch (vert_index) {
+			case 0:
+				return center+Point::point2D(cell_radius, 0.0, PAINT_AXIS);
+			case 1:
+				return center+Point::point2D(cell_radius*0.5, cell_radius*SQUARE_ROOT_THREE*0.5, PAINT_AXIS);
+			case 2:
+				return center+Point::point2D(-cell_radius*0.5, cell_radius*SQUARE_ROOT_THREE*0.5, PAINT_AXIS);
+			case 3:
+				return center+Point::point2D(-cell_radius, 0.0, PAINT_AXIS);
+			case 4:
+				return center+Point::point2D(-cell_radius*0.5, -cell_radius*SQUARE_ROOT_THREE*0.5, PAINT_AXIS);
+			case 5:
+				return center+Point::point2D(cell_radius*0.5, -cell_radius*SQUARE_ROOT_THREE*0.5, PAINT_AXIS);
+			default:
+				return center;
+		}
 	}
 
 	void PaintCell::contractVertices(double amount) {

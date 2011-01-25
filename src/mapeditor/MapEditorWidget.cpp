@@ -1,6 +1,8 @@
 #include "MapEditorWidget.h"
 #include "config.h"
 #include "math.h"
+#include "opengl/MathWrapper.h"
+using namespace Paint;
 
 MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget, Qt::WindowFlags f)
 	: MouseSelectorWidget(parent, shareWidget, f)
@@ -20,6 +22,7 @@ MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget,
 	advancedRendering = false;
 	precisionScale = 1.0;
 	orthoHeight = 20.0;
+	showPaint = false;
 
 	perspectiveCameraHeight = 0.0;
 
@@ -67,6 +70,8 @@ void MapEditorWidget::resizeGL(int w, int h) {
 
 void MapEditorWidget::paintGL() {
 
+	camera->glProjection();
+
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -109,10 +114,53 @@ void MapEditorWidget::paintGL() {
 	if (map->getCubeMap())
 		background->render(renderer);
 
-	lightManager->resetLights();
-
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
+
+	//Draw Paint
+	if (showPaint) {
+		Color::glColor(Color::YELLOW);
+		vector<PaintCell*> paint_cells = map->getPaintCells();
+		for (unsigned int i = 0; i < paint_cells.size(); i++) {
+			PaintCell* cell = paint_cells[i];
+			glBegin(GL_TRIANGLE_FAN);
+			OpenGL::MathWrapper::glVertex(cell->center);
+			for (int j = 0; j < Paint::PaintCell::CELL_VERTICES; j++) {
+				OpenGL::MathWrapper::glVertex(cell->vertex[j]);
+			}
+			OpenGL::MathWrapper::glVertex(cell->vertex[0]);
+			glEnd();
+		}
+	}
+
+	lightManager->resetLights();
+
+	/*HUD Elements************************************************************/
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glOrtho(0.0f, viewWidth, 0.0f, viewHeight, 2.0f, -2.0f);
+
+	//Draw Precision Scale
+	glEnable(GL_POINT_SMOOTH);
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+
+	glPointSize(precisionScale*PRECISION_SCALE_DRAW_SCALE);
+
+	Color::glColor(Color(0.5f, 0.5f, 0.5f, 0.5f));
+	glBegin(GL_POINTS);
+	glVertex3f(viewWidth-40, viewHeight-40, 0.0f);
+	glEnd();
+
+	glPointSize(1.0f);
+
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
+	glDisable(GL_POINT_SMOOTH);
 
 }
 
@@ -151,6 +199,7 @@ void MapEditorWidget::mouseDragged(Qt::MouseButton button, Point current_positio
 }
 
 void MapEditorWidget::wheelMoved(bool up, Qt::KeyboardModifiers modifiers) {
+
 	if (camera->getCameraType() == Camera::ORTHOGRAPHIC) {
 		if (up)
 			orthoHeight -= CAMERA_ORTHO_HEIGHT_INC;
@@ -164,46 +213,57 @@ void MapEditorWidget::wheelMoved(bool up, Qt::KeyboardModifiers modifiers) {
 		camera->glProjection();
 		updateGL();
 	}
+	else {
+		if (up)
+			precisionScale += PRECISION_SCALE_INCREMENT;
+		else
+			precisionScale -= PRECISION_SCALE_INCREMENT;
+
+		precisionScale = max(MIN_PRECISION_SCALE, precisionScale);
+		precisionScale = min(MAX_PRECISION_SCALE, precisionScale);
+		updateGL();
+	}
+
 }
 void MapEditorWidget::keyPressEvent(QKeyEvent *event) {
 
 	switch (event->key()) {
 		case Qt::Key_W:
 			if (camera->getCameraType() == Camera::PERSPECTIVE)
-				translateCamera(camera->getLookDirection()*CAMERA_MOVE_INC);
+				translateCamera(camera->getLookDirection()*CAMERA_MOVE_INC*precisionScale);
 			else
 				translateCamera(camera->getUpDirection()*CAMERA_MOVE_ORTHO_INC*orthoHeight);
 			;break;
 
 		case Qt::Key_A:
 			if (camera->getCameraType() == Camera::PERSPECTIVE)
-				translateCamera(camera->getRightDirection()*-CAMERA_MOVE_INC);
+				translateCamera(camera->getRightDirection()*-CAMERA_MOVE_INC*precisionScale);
 			else
 				translateCamera(camera->getRightDirection()*-CAMERA_MOVE_ORTHO_INC*orthoHeight);
 			;break;
 
 		case Qt::Key_D:
 			if (camera->getCameraType() == Camera::PERSPECTIVE)
-				translateCamera(camera->getRightDirection()*CAMERA_MOVE_INC);
+				translateCamera(camera->getRightDirection()*CAMERA_MOVE_INC*precisionScale);
 			else
 				translateCamera(camera->getRightDirection()*CAMERA_MOVE_ORTHO_INC*orthoHeight);
 			;break;
 
 		case Qt::Key_S:
 			if (camera->getCameraType() == Camera::PERSPECTIVE)
-				translateCamera(camera->getLookDirection()*-CAMERA_MOVE_INC);
+				translateCamera(camera->getLookDirection()*-CAMERA_MOVE_INC*precisionScale);
 			else
 				translateCamera(camera->getUpDirection()*-CAMERA_MOVE_ORTHO_INC*orthoHeight);
 			;break;
 
 		case Qt::Key_E:
 			if (camera->getCameraType() == Camera::PERSPECTIVE)
-				translateCamera(camera->getUpDirection()*CAMERA_MOVE_INC);
+				translateCamera(camera->getUpDirection()*CAMERA_MOVE_INC*precisionScale);
 			;break;
 
 		case Qt::Key_Q:
 			if (camera->getCameraType() == Camera::PERSPECTIVE)
-				translateCamera(camera->getUpDirection()*-CAMERA_MOVE_INC);
+				translateCamera(camera->getUpDirection()*-CAMERA_MOVE_INC*precisionScale);
 			;break;
 
 	}
@@ -291,6 +351,11 @@ void MapEditorWidget::setOrthoView(bool enabled) {
 	updateGL();
 }
 
-void MapEditorWidget::setRenderPaint(bool enabled) {
-	renderPaint = enabled;
+void MapEditorWidget::setShowPaint(bool enabled) {
+	showPaint = enabled;
+}
+
+void MapEditorWidget::generatePaint() {
+	map->generatePaint(0.5);
+	updateGL();
 }

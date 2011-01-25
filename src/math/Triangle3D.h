@@ -39,7 +39,7 @@ public:
 	virtual Point getVertex(short vert_index) const;
 	Point getNormal() const { return normal; }
 
-	//RayIntersection getRayIntersection(Ray ray) const;
+	RayIntersection rayIntersection(Ray ray) const;
 };
 
 }  // namespace Math

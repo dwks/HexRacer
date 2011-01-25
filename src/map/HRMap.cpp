@@ -1,10 +1,12 @@
 #include "HRMap.h"
 #include "misc/DirectoryFunctions.h"
+#include "misc/StdVectorFunctions.h"
 #include "paint/PaintGenerator.h"
 #include <fstream>
 using namespace Project;
 using namespace Misc;
 using namespace Render;
+using namespace Math;
 using namespace Paint;
 using namespace std;
 
@@ -50,21 +52,6 @@ namespace Map {
 				else if (keyword == "version") {
 					in_file >> version;
 				}
-				else if (keyword == meshName(TRACK)) {
-					in_file >> mapMeshFile[TRACK];
-				}
-				else if (keyword == meshName(INVIS_TRACK)) {
-					in_file >> mapMeshFile[INVIS_TRACK];
-				}
-				else if (keyword == meshName(SOLID)) {
-					in_file >> mapMeshFile[SOLID];
-				}
-				else if (keyword == meshName(INVIS_SOLID)) {
-					in_file >> mapMeshFile[INVIS_SOLID];
-				}
-				else if (keyword == meshName(DECOR)) {
-					in_file >> mapMeshFile[DECOR];
-				}
 				else if (keyword == "bgimgxpos") {
 					in_file >> bgImageXPos;
 				}
@@ -90,12 +77,19 @@ namespace Map {
 					in_file >> *light;
 					lights.push_back(light);
 				}
+				else {
+					for (int i = 0; i < HRMap::NUM_MESHES; i++) {
+						HRMap::MeshType type = static_cast<HRMap::MeshType>(i);
+						if (keyword == meshName(type)) {
+							in_file >> mapMeshFile[i];
+							break;
+						}
+					}
+				}
 
 			}
 
 		}
-
-		
 
 		bgImageXPos = DirectoryFunctions::fromRelativeFilename(file_directory, bgImageXPos);
 		bgImageXNeg = DirectoryFunctions::fromRelativeFilename(file_directory, bgImageXNeg);
@@ -103,7 +97,6 @@ namespace Map {
 		bgImageYNeg = DirectoryFunctions::fromRelativeFilename(file_directory, bgImageYNeg);
 		bgImageZPos = DirectoryFunctions::fromRelativeFilename(file_directory, bgImageZPos);
 		bgImageZNeg = DirectoryFunctions::fromRelativeFilename(file_directory, bgImageZNeg);
-
 		//trackRenderable = new RenderList();
 
 		for (int i = 0; i < NUM_MESHES; i++) {
@@ -163,6 +156,8 @@ namespace Map {
 			delete(lights[i]);
 		}
 
+		clearPaint();
+
 	}
 
 
@@ -190,12 +185,15 @@ namespace Map {
 	}
 
 	void HRMap::generatePaint(double cell_radius) {
+
+		clearPaint();
+
 		vector<Triangle3D> triangles;
 
 		if (getMapMesh(TRACK))
 			triangles = getMapMesh(TRACK)->getTriangles();
 		if (getMapMesh(INVIS_TRACK))
-			Misc::vectorAppend(triangles, getMapMesh(INVIS_TRACK)->getTriangles());
+			vectorAppend(triangles, getMapMesh(INVIS_TRACK)->getTriangles());
 
 		PaintGenerator generator(triangles, cell_radius);
 		paintCells = generator.getPaintCells();
