@@ -188,6 +188,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\BackgroundRenderable.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\BaseRenderable.cpp"
 				>
 			</File>
@@ -197,6 +201,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\BoundingBox3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\BoundingCircle.cpp"
 				>
 			</File>
 			<File
@@ -217,6 +225,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\BoundingPlane3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\BoundingSphere.cpp"
 				>
 			</File>
 			<File
@@ -241,6 +253,10 @@
 			</File>
 			<File
 				RelativePath=".\src\opengl\Color.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ColorConstants.cpp"
 				>
 			</File>
 			<File
@@ -301,6 +317,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\LightManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\LightManagerNode.cpp"
 				>
 			</File>
 			<File
@@ -425,10 +445,6 @@
 			</File>
 			<File
 				RelativePath=".\src\object\PlayerList.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\event\PlayerMovement.cpp"
 				>
 			</File>
 			<File
@@ -560,6 +576,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\physics\Suspension.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\Texture.cpp"
 				>
 			</File>
@@ -678,6 +698,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\BackgroundRenderable.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\BaseRenderable.h"
 				>
 			</File>
@@ -687,6 +711,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\BoundingBox3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\BoundingCircle.h"
 				>
 			</File>
 			<File
@@ -707,6 +735,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\BoundingPlane3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\BoundingSphere.h"
 				>
 			</File>
 			<File
@@ -731,6 +763,10 @@
 			</File>
 			<File
 				RelativePath=".\src\opengl\Color.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\ColorConstants.h"
 				>
 			</File>
 			<File
@@ -791,6 +827,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\LightManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\LightManagerNode.h"
 				>
 			</File>
 			<File
@@ -922,10 +962,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\event\PlayerMovement.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\math\Point.h"
 				>
 			</File>
@@ -1051,6 +1087,10 @@
 			</File>
 			<File
 				RelativePath=".\src\log\Subsystem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\Suspension.h"
 				>
 			</File>
 			<File
