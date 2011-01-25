@@ -160,18 +160,10 @@ void MouseSelectorWidget::mouseReleaseEvent(QMouseEvent *event) {
 
 void MouseSelectorWidget::wheelEvent(QWheelEvent *event) {
 
-
-	if (wheel_state == 0)
-		wheel_state = event->delta();
-	else {
-
-		if (event->delta() > wheel_state)
-			this->wheelMoved(true, event->modifiers());
-		if (event->delta() < wheel_state)
-			this->wheelMoved(false, event->modifiers());
-
-		wheel_state = event->delta();
-	}
+	if (event->delta() > 0)
+		this->wheelMoved(true, event->modifiers());
+	else if (event->delta() < 0)
+		this->wheelMoved(false, event->modifiers());
 
 	active_modifiers = event->modifiers();
 }

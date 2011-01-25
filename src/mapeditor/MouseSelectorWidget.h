@@ -26,7 +26,7 @@ public:
 
 protected:
 
-	int wheel_state;
+	//int wheel_state;
 	bool mouse_pressed[3];
 	bool mouse_dragged[3];
 	Point mouse_click_pos[3];

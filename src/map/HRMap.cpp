@@ -167,6 +167,15 @@ namespace Map {
 		mapMeshFile[static_cast<int>(type)] = filename;
 	}
 
+	void HRMap::clearMapMesh(HRMap::MeshType type) {
+		int i = static_cast<int>(type);
+		if (mapMesh[i] != NULL) {
+			MeshLoader::getInstance()->deleteModelByName(meshName(type));
+			mapMesh[i] = NULL;
+		}
+		mapMeshFile[i] = "";
+	}
+
 	string HRMap::meshName(MeshType type) {
 		switch (type) {
 			case HRMap::TRACK:
@@ -179,6 +188,23 @@ namespace Map {
 				return "mapInvisSolidMesh";
 			case HRMap::DECOR:
 				return "mapDecor";
+			default:
+				return "";
+		}
+	}
+
+	string HRMap::meshTitle(MeshType type) {
+		switch (type) {
+			case HRMap::TRACK:
+				return "Track";
+			case HRMap::INVIS_TRACK:
+				return "Invisible Track";
+			case HRMap::SOLID:
+				return "Solid";
+			case HRMap::INVIS_SOLID:
+				return "Invisible Solid";
+			case HRMap::DECOR:
+				return "Decor";
 			default:
 				return "";
 		}

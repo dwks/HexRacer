@@ -88,6 +88,7 @@ public slots:
 	void saveMap();
 	void saveMapAs(string filename);
 	void loadMesh(HRMap::MeshType type, string filename);
+	void clearMesh(HRMap::MeshType type);
 	void setAdvancedRendering(bool enabled);
 	void setOrthoView(bool enabled);
 	void setShowPaint(bool enabled);

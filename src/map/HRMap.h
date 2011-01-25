@@ -53,11 +53,13 @@ public:
 	void clear();
 	void clearPaint();
 	void loadMapMesh(HRMap::MeshType type, string filename);
+	void clearMapMesh(HRMap::MeshType type);
 	void generatePaint(double cell_radius = PAINT_CELL_RADIUS);
 
 	std::string getFilename() const { return filename; }
 
 	static std::string meshName(MeshType type);
+	static std::string meshTitle(MeshType type);
 
 };
 

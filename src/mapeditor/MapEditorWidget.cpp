@@ -319,6 +319,12 @@ void MapEditorWidget::loadMesh(HRMap::MeshType type, string filename) {
 	map->loadMapMesh(type, filename);
 	updateGL();
 }
+
+void MapEditorWidget::clearMesh(HRMap::MeshType type) {
+	map->clearMapMesh(type);
+	updateGL();
+}
+
 void MapEditorWidget::setAdvancedRendering(bool enabled) {
 	advancedRendering = enabled;
 	updateGL();

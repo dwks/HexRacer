@@ -38,11 +38,30 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	//Meshes Menu
 	meshMenu = new QMenu("&Mesh", this);
+
+	meshLoadMapper = new QSignalMapper(this);
+	connect(meshLoadMapper, SIGNAL(mapped(int)), this, SLOT(loadMesh(int)));
+	meshClearMapper = new QSignalMapper(this);
+	connect(meshClearMapper, SIGNAL(mapped(int)), this, SLOT(clearMesh(int)));
+
+	for (int i = 0; i < HRMap::NUM_MESHES; i++) {
+		HRMap::MeshType type = static_cast<HRMap::MeshType>(i);
+		QAction* load_mesh_action = new QAction(QString(("Load "+HRMap::meshTitle(type)).c_str()), this);
+		QAction* clear_mesh_action = new QAction(QString(("Clear "+HRMap::meshTitle(type)).c_str()), this);
+		meshLoadMapper->setMapping(load_mesh_action, i);
+		meshClearMapper->setMapping(clear_mesh_action, i);
+		connect(load_mesh_action, SIGNAL(triggered()), meshLoadMapper, SLOT(map()));
+		connect(clear_mesh_action, SIGNAL(triggered()), meshClearMapper, SLOT(map()));
+		meshMenu->addAction(load_mesh_action);
+		meshMenu->addAction(clear_mesh_action);
+	}
+	/*
 	meshMenu->addAction("&Load Track",				this, SLOT(loadTrackMesh()));
 	meshMenu->addAction("&Load Invisible Track",	this, SLOT(loadInvisibleTrackMesh()));
 	meshMenu->addAction("&Load Solid",				this, SLOT(loadSolidMesh()));
 	meshMenu->addAction("&Load Invisible Solid",	this, SLOT(loadInvisibleSolidMesh()));
 	meshMenu->addAction("&Load Decor",				this, SLOT(loadDecorMesh()));
+	*/
 
 	//Map Menu
 	mapMenu = new QMenu("&Map", this);
@@ -145,7 +164,7 @@ void HRMEMainWindow::saveMapFileAs() {
 
 }
 
-string HRMEMainWindow::meshLoadDialog() {
+void HRMEMainWindow::loadMesh(int mesh_index) {
 	QString qfilename = QFileDialog::getOpenFileName (0,
 		tr("Load Mesh"),
 		meshDir,
@@ -153,25 +172,9 @@ string HRMEMainWindow::meshLoadDialog() {
 
 	if (!qfilename.isNull()) {
 		meshDir = qfilename;
-		return qfilename.toStdString();
-	}
-	else {
-		return "";
+		mapEditor->loadMesh(static_cast<HRMap::MeshType>(mesh_index), qfilename.toStdString());
 	}
 }
-
-void HRMEMainWindow::loadTrackMesh() {
-	mapEditor->loadMesh(HRMap::TRACK, meshLoadDialog());
-}
-void HRMEMainWindow::loadInvisibleTrackMesh() {
-	mapEditor->loadMesh(HRMap::INVIS_TRACK, meshLoadDialog());
-}
-void HRMEMainWindow::loadSolidMesh() {
-	mapEditor->loadMesh(HRMap::SOLID, meshLoadDialog());
-}
-void HRMEMainWindow::loadInvisibleSolidMesh() {
-	mapEditor->loadMesh(HRMap::INVIS_SOLID, meshLoadDialog());
-}
-void HRMEMainWindow::loadDecorMesh() {
-	mapEditor->loadMesh(HRMap::DECOR, meshLoadDialog());
+void HRMEMainWindow::clearMesh(int mesh_index) {
+	mapEditor->clearMesh(static_cast<HRMap::MeshType>(mesh_index));
 }

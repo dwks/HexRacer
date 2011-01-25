@@ -24,6 +24,9 @@ private:
 
 	MapEditorWidget* mapEditor;
 	MeshLoader* meshLoader;
+	
+	QSignalMapper* meshLoadMapper;
+	QSignalMapper* meshClearMapper;
 
 	QMenuBar* menuBar;
 	QMenu* fileMenu;
@@ -47,12 +50,8 @@ private slots:
 
 	void openMapFile();
 	void saveMapFileAs();
-	string meshLoadDialog();
-	void loadTrackMesh();
-	void loadInvisibleTrackMesh();
-	void loadSolidMesh();
-	void loadInvisibleSolidMesh();
-	void loadDecorMesh();
+	void loadMesh(int mesh_index);
+	void clearMesh(int mesh_index);
 
 };
 
