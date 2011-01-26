@@ -20,15 +20,15 @@ public:
 	GeometryDrawing(void);
 	~GeometryDrawing(void);
 
-	static void drawObject(Math::ObjectSpatial& object, bool wireframe = false);
-	static void drawBoundingObject(Math::BoundingObject& object, bool wireframe = false);
-	static void drawBoundingBox3D(Math::BoundingBox3D& object, bool wireframe = false);
-	static void drawBoundingBox2D(Math::BoundingBox2D& object, bool wireframe = false);
-	static void drawBoundingTriangle2D(Math::BoundingTriangle2D& object, bool wireframe = false);
-	static void drawTriangle3D(Math::Triangle3D& object, bool wireframe = false);
-	static void drawBoundingPlane3D(Math::BoundingPlane3D& object, bool wireframe = false);
-	static void drawBoundingConvexHull3D(Math::BoundingConvexHull3D& object, bool wireframe = false);
-	static void drawBoundingSphere(Math::BoundingSphere& object, bool wireframe = false);
+	static void drawObject(const Math::ObjectSpatial& object, bool wireframe = false);
+	static void drawBoundingObject(const Math::BoundingObject& object, bool wireframe = false);
+	static void drawBoundingBox3D(const Math::BoundingBox3D& object, bool wireframe = false);
+	static void drawBoundingBox2D(const Math::BoundingBox2D& object, bool wireframe = false);
+	static void drawBoundingTriangle2D(const Math::BoundingTriangle2D& object, bool wireframe = false);
+	static void drawTriangle3D(const Math::Triangle3D& object, bool wireframe = false);
+	static void drawBoundingPlane3D(const Math::BoundingPlane3D& object, bool wireframe = false);
+	static void drawBoundingConvexHull3D(const Math::BoundingConvexHull3D& object, bool wireframe = false);
+	static void drawBoundingSphere(const Math::BoundingSphere& object, bool wireframe = false);
 };
 
 }  // namespace OpenGL
