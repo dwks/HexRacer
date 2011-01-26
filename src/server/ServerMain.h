@@ -35,6 +35,7 @@ private:
         virtual bool interestedIn(Event::EventType::type_t type);
     };
 private:
+    bool quit;
     int clientCount;
     int whichSocket;
     Object::PlayerList playerList;
@@ -46,6 +47,8 @@ public:
     ~ServerMain();
     
     void run();
+    
+    void setQuit() { quit = true; }
     
     int getWhichSocket() const { return whichSocket; }
     Object::PlayerList &getPlayerList() { return playerList; }
