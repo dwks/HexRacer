@@ -48,13 +48,15 @@ public:
 	Render::TextureCube* getCubeMap() const { return cubeMap; }
 	std::vector<Paint::PaintCell*> getPaintCells() const { return paintCells; }
 
-
 	std::vector<Render::Light*> getLights() const { return lights; }
 	void clear();
 	void clearPaint();
 	void loadMapMesh(HRMap::MeshType type, string filename);
 	void clearMapMesh(HRMap::MeshType type);
 	void generatePaint(double cell_radius = PAINT_CELL_RADIUS);
+
+	void addLight(Render::Light* light);
+	void removeLight(Render::Light* light);
 
 	std::string getFilename() const { return filename; }
 

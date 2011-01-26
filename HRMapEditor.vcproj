@@ -281,6 +281,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\mapeditor\LightObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\log\Logger.cpp"
 				>
 			</File>
@@ -290,6 +294,10 @@
 			</File>
 			<File
 				RelativePath=".\src\mapeditor\MapEditorWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\mapeditor\MapObject.cpp"
 				>
 			</File>
 			<File
@@ -637,11 +645,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\mapeditor\LightObject.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\log\Logger.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\log\LogOpener.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\mapeditor\MapEditorConstants.h"
 				>
 			</File>
 			<File
@@ -669,6 +685,10 @@
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\src\mapeditor\MapObject.h"
+				>
 			</File>
 			<File
 				RelativePath=".\src\render\Material.h"

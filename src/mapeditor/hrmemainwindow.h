@@ -39,6 +39,11 @@ private:
 	QAction* orthoCameraAction;
 	QAction* showPaintAction;
 
+	QSignalMapper* mapObjectMapper;
+
+	QActionGroup* mapObjectGroup;
+	QAction* mapObjectAction[MapObject::NUM_OBJECT_TYPES];
+
 	SettingsManager* settingsManager;
 
 	QString saveDir;
@@ -52,6 +57,7 @@ private slots:
 	void saveMapFileAs();
 	void loadMesh(int mesh_index);
 	void clearMesh(int mesh_index);
+	void selectMapObject(QAction* action);
 
 };
 

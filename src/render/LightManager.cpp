@@ -68,7 +68,8 @@ namespace Render {
 		if (activeLights.size() >= maxActiveLights)
 			return;
 
-		vector<ObjectSpatial*> visible_lights = light_tree->query(object, SpatialContainer::INTERSECT);
+		vector<ObjectSpatial*> visible_lights;
+		light_tree->appendQuery(&visible_lights, object, SpatialContainer::INTERSECT);
 		for (unsigned int i = 0; i < visible_lights.size() && activeLights.size() < maxActiveLights; i++) {
 			LightManagerNode* light_node = (LightManagerNode*) visible_lights[i];
 			if (!light_node->active) {

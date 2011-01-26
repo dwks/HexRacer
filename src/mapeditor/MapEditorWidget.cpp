@@ -5,8 +5,11 @@
 #include "MapEditorWidget.h"
 #include "config.h"
 #include "opengl/MathWrapper.h"
+#include "opengl/GeometryDrawing.h"
 #include "math/Values.h"
 #include <math.h>
+#include "LightObject.h"
+#include "MapEditorConstants.h"
 using namespace Paint;
 
 MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget, Qt::WindowFlags f)
@@ -15,7 +18,7 @@ MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget,
 
 	setFocusPolicy(Qt::StrongFocus);
 	
-	trackball = new SimpleTrackball(-1.0, 1.0);
+	trackball = new SimpleTrackball(1.0, 1.0);
 
 	camera = new Camera(Camera::PERSPECTIVE);
 	camera->setPosition(Point(0.0, 0.0, -3.0));
@@ -31,9 +34,14 @@ MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget,
 
 	perspectiveCameraHeight = 0.0;
 
+	selectPending = false;
+
 	map = new HRMap();
 
-	
+	editObjectType = MapObject::LIGHT;
+	selectedObject = NULL;
+
+	collisionTree = new BSPTree3D(BoundingBox3D(), BSPTree3D::MIN_OVERLAP);
 }
 
 MapEditorWidget::~MapEditorWidget() {
@@ -52,6 +60,13 @@ void MapEditorWidget::initializeGL() {
 	glDisable(GL_LIGHTING);
 	glDisable(GL_BLEND);
 
+	GLUquadric* quadric = gluNewQuadric();
+	sphereList = glGenLists(1);
+	glNewList(sphereList, GL_COMPILE);
+	gluSphere(quadric, MAP_EDITOR_LIGHT_SPHERE_RADIUS, 12, 12);
+	glEndList();
+	gluDeleteQuadric(quadric);
+
 	renderer = new RenderManager();
 	renderer->loadShadersFile("shaders.txt");
 	lightManager = renderer->getLightManager();
@@ -68,7 +83,6 @@ void MapEditorWidget::resizeGL(int w, int h) {
 	viewHeight = h;
 	aspect = (float) w / (float) h;
 	camera->setAspect(aspect);
-	camera->glProjection();
 	glViewport(0, 0, viewWidth, viewHeight);
 
 }
@@ -77,15 +91,20 @@ void MapEditorWidget::paintGL() {
 
 	camera->glProjection();
 
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	Color::glColor(Color::WHITE);
-
 	camera->glLookAt();
+
+	if (selectPending) {
+		selectObject(selectU, selectV);
+		selectPending = false;
+	}
+
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	Color::glColor(Color::WHITE);
 
 	if (advancedRendering) {
 		//Activate all lights near the camera's focal point
@@ -93,7 +112,7 @@ void MapEditorWidget::paintGL() {
 		//Activate all lights visible to the camera
 		lightManager->activateIntersectingLights(*camera->getFrustrum());
 		//Render the active lights
-		lightManager->drawActiveLightSpheres();
+		//lightManager->drawActiveLightSpheres();
 		glEnable(GL_LIGHTING);
 	}
 
@@ -138,6 +157,16 @@ void MapEditorWidget::paintGL() {
 		}
 	}
 
+	//Draw Map Objects
+	if (editObjectType != MapObject::MESH_INSTANCE) {
+		renderObjects(editObjectType, false);
+	}
+	//Draw box around selected object
+	if (selectedObject) {
+		Color::glColor(SELECTED_OBJECT_BOX_COLOR);
+		GeometryDrawing::drawBoundingBox3D(selectedObject->getBoundingBox(), true);
+	}
+
 	lightManager->resetLights();
 
 	/*HUD Elements************************************************************/
@@ -171,16 +200,27 @@ void MapEditorWidget::paintGL() {
 
 Point MapEditorWidget::screenToWorld(Point screenPos) {
 	return Point(
-			-((float) screenPos.getU()/(float) viewWidth*2.0f-1.0f),
-			-((float) screenPos.getV()/(float) viewHeight*2.0f-1.0f)
+			((double) screenPos.getU()/(double) (viewWidth-1)),
+			1.0-((double) screenPos.getV()/(double) (viewHeight-1))
 		);
 }
 
 void MapEditorWidget::mouseClicked(Qt::MouseButton button, Point click_position, Qt::KeyboardModifiers modifiers) {
 
-	if (button == MAP_EDITOR_TRACKBALL_BUTTON) {
+	if (button == MAP_EDITOR_MAIN_BUTTON) {
 		trackball->setMouseStartAt(click_position);
-		//updateGL();
+	}
+	else if (button == MAP_EDITOR_EDIT_BUTTON) {
+		if (modifiers & MAP_EDITOR_CREATE_MODIFIER) {
+			createObject(click_position.getU(), click_position.getV());
+		}
+		else {
+			//selectObject(click_position.getU(), click_position.getV());
+			selectPending = true;
+			selectU = click_position.getU();
+			selectV = click_position.getV();
+			updateGL();
+		}
 	}
 
 }
@@ -189,9 +229,9 @@ void MapEditorWidget::mouseDragged(Qt::MouseButton button, Point current_positio
 
 	Point delta = current_position-previous_position;
 
-	if (button == MAP_EDITOR_TRACKBALL_BUTTON) {
+	if (button == MAP_EDITOR_MAIN_BUTTON) {
 		if (camera->getCameraType() == Camera::ORTHOGRAPHIC) {
-			camera->translate(Point::point2D(delta.getU(), delta.getV(), CAMERA_ORTHO_PROJECT_AXIS)*orthoHeight*(-0.5));
+			camera->translate(Point::point2D(-delta.getU(), delta.getV(), CAMERA_ORTHO_PROJECT_AXIS)*orthoHeight*(-0.5));
 			updateGL();
 		}
 		else {
@@ -203,6 +243,9 @@ void MapEditorWidget::mouseDragged(Qt::MouseButton button, Point current_positio
 
 }
 
+void MapEditorWidget::mouseReleased(Qt::MouseButton button, Point release_position, Point click_position, Qt::KeyboardModifiers modifiers) {
+	bool moved = release_position.distanceSquared(click_position) > MAP_EDITOR_NO_DRAG_CLICK_THRESHHOLD;
+}
 void MapEditorWidget::wheelMoved(bool up, Qt::KeyboardModifiers modifiers) {
 
 	if (camera->getCameraType() == Camera::ORTHOGRAPHIC) {
@@ -292,6 +335,7 @@ void MapEditorWidget::newMap() {
 
 void MapEditorWidget::loadMap(string filename) {
 	map->loadMapFile(filename);
+	mapCollisionChanged();
 	mapLightsChanged();
 	updateGL();
 }
@@ -308,23 +352,75 @@ void MapEditorWidget::saveMapAs(string filename) {
 
 void MapEditorWidget::mapLightsChanged() {
 
+	//Delete all light objects
+	int type_index = static_cast<int>(MapObject::LIGHT);
+	for (unsigned int i = 0; i < mapObjects[type_index].size(); i++)
+		delete(mapObjects[type_index][i]);
+	mapObjects[type_index].clear();
+
 	lightManager->clear();
 	vector<Light*> lights = map->getLights();
-	for (int i = 0; i < int(lights.size()); i++) {
+	for (unsigned int i = 0; i < lights.size(); i++) {
 		lightManager->addLight(lights[i], false, true);
+		mapObjects[type_index].append(new LightObject(lights[i]));
 	}
 
+
 }
+
+void MapEditorWidget::addLight(Point position) {
+
+	Light* new_light = new Light(position);
+	new_light->setStrength(20.0f);
+
+	lightManager->addLight(new_light);
+	map->addLight(new_light);
+
+	mapObjects[static_cast<int>(MapObject::LIGHT)].append(new LightObject(new_light));
+}
+
 void MapEditorWidget::loadMesh(HRMap::MeshType type, string filename) {
 	map->loadMapMesh(type, filename);
+	if (type != HRMap::DECOR)
+		mapCollisionChanged();
 	updateGL();
 }
 
 void MapEditorWidget::clearMesh(HRMap::MeshType type) {
 	map->clearMapMesh(type);
+	if (type != HRMap::DECOR)
+		mapCollisionChanged();
 	updateGL();
 }
 
+void MapEditorWidget::mapCollisionChanged() {
+
+	vector<ObjectSpatial*> collision_triangles;
+	collisionTree->appendAll(&collision_triangles);
+
+	for (unsigned int i = 0; i < collision_triangles.size(); i++)
+		delete(collision_triangles[i]);
+
+	collisionTree->clear();
+	collision_triangles.clear();
+
+	BoundingBox3D collision_bound;
+
+	for (int i = 0; i < HRMap::NUM_MESHES; i++) {
+		HRMap::MeshType type = static_cast<HRMap::MeshType>(i);
+		if (type != HRMap::DECOR && map->getMapMesh(type)) {
+			vector<Triangle3D> triangles = map->getMapMesh(type)->getTriangles();
+			for (unsigned int t = 0; t < triangles.size(); t++) {
+				collision_bound.expandToInclude(triangles[i]);
+				collision_triangles.push_back(new Triangle3D(triangles[i]));
+			}
+		}
+	}
+
+	collisionTree->resize(collision_bound);
+	collisionTree->add(collision_triangles);
+
+}
 void MapEditorWidget::setAdvancedRendering(bool enabled) {
 	advancedRendering = enabled;
 	updateGL();
@@ -369,4 +465,73 @@ void MapEditorWidget::setShowPaint(bool enabled) {
 void MapEditorWidget::generatePaint() {
 	map->generatePaint(0.5);
 	updateGL();
+}
+
+void MapEditorWidget::setMapObjectType(MapObject::ObjectType type) {
+	editObjectType = type;
+	updateGL();
+}
+void MapEditorWidget::createObject(double u, double v) {
+	switch (editObjectType) {
+
+		case MapObject::LIGHT:
+			addLight(camera->cameraToWorld(u, v));
+			break;
+
+		default:
+			break;
+
+	}
+
+	updateGL();
+}
+void MapEditorWidget::selectObject(double u, double v) {
+
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	int type_index = static_cast<int>(editObjectType);
+
+	renderObjects(editObjectType, true);
+
+	QImage frame_buffer = grabFrameBuffer();
+	QRgb pixel = frame_buffer.pixel(u*frame_buffer.width(), (1.0-v)*frame_buffer.height());
+	int selected_index = qRed(pixel)*65536 + qGreen(pixel)*256 + qBlue(pixel);
+	if (selected_index >= 0 && selected_index < mapObjects[type_index].size())
+		selectedObject = mapObjects[type_index][selected_index];
+	else
+		selectedObject = NULL;
+
+}
+void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buffer) {
+
+	int type_index = static_cast<int>(type);
+
+	switch (type) {
+		case MapObject::LIGHT:
+
+			for (unsigned int i = 0; i < mapObjects[type_index].size(); i++) {
+				Light* light = ((LightObject*)mapObjects[type_index][i])->getLight();
+
+				if (object_buffer)
+					glBufferIndexColor(i);
+				else
+					Color::glColor(light->getDiffuse());
+				
+				glPushMatrix();
+				MathWrapper::glTranslate(light->getPosition());
+				glCallList(sphereList);
+				glPopMatrix();
+			}
+			break;
+
+		default:
+			break;
+	}
+}
+
+void MapEditorWidget::glBufferIndexColor(int buffer_index) {
+	GLubyte r = buffer_index/65536;
+	GLubyte g = (buffer_index % 65536)/256;
+	GLubyte b = ((buffer_index % 65536) % 256);
+	glColor3ub(r, g, b);
 }

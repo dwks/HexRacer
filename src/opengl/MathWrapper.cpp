@@ -23,5 +23,9 @@ void MathWrapper::glGetDouble(Math::Matrix &matrix, int openglMatrix) {
         static_cast<GLdouble *>(matrix.getData()));
 }
 
+void MathWrapper::glTranslate(const Math::Point &point) {
+	glTranslatef(point.getX(), point.getY(), point.getZ());
+}
+
 }  // namespace OpenGL
 }  // namespace Project

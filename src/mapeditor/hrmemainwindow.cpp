@@ -4,6 +4,7 @@
 
 #include "hrmemainwindow.h"
 #include <stdlib.h>
+#include "MapObject.h"
 
 #ifdef WIN32
     #include <direct.h>
@@ -86,6 +87,20 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	showPaintAction->setCheckable(true);
 	connect(showPaintAction, SIGNAL(toggled(bool)), mapEditor, SLOT(setShowPaint(bool)));
 
+	//Map Objects
+	mapObjectGroup = new QActionGroup(this);
+	mapObjectGroup->setExclusive(true);
+	connect(mapObjectGroup, SIGNAL(triggered(QAction*)), this, SLOT(selectMapObject(QAction*)));
+
+	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
+		MapObject::ObjectType type = static_cast<MapObject::ObjectType>(i);
+		mapObjectAction[i] = new QAction(QString(MapObject::typeTitle(type).c_str()), this);
+		mapObjectAction[i]->setCheckable(true);
+		if (i == 0)
+			mapObjectAction[i]->setChecked(true);
+		mapObjectGroup->addAction(mapObjectAction[i]);
+	}
+
 	/*Options Toolbar*************************************************************/
 
 	optionsFrame = new QFrame(this);
@@ -93,7 +108,9 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	QHBoxLayout* viewing_layout = new QHBoxLayout(this);
 	QHBoxLayout* options_layout = new QHBoxLayout(this);
+	QHBoxLayout* objects_layout = new QHBoxLayout(this);
 	
+	//Viewing buttons
 	QToolButton* advancedRenderingButton = new QToolButton(this);
 	advancedRenderingButton->setDefaultAction(advancedRenderingAction);
 	QToolButton* orthoCameraButton = new QToolButton(this);
@@ -105,7 +122,20 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	viewing_layout->addWidget(orthoCameraButton);
 	viewing_layout->addWidget(showPaintButton);
 
+	viewing_layout->setAlignment(Qt::AlignLeft);
+
+	//Object buttons
+	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
+		QToolButton* object_button = new QToolButton(this);
+		object_button->setDefaultAction(mapObjectAction[i]);
+		objects_layout->addWidget(object_button);
+	}
+
+	objects_layout->setAlignment(Qt::AlignRight);
+
 	options_layout->addLayout(viewing_layout);
+	options_layout->addSpacing(10);
+	options_layout->addLayout(objects_layout);
 
 	optionsFrame->setLayout(options_layout);
 	optionsBar->addWidget(optionsFrame);
@@ -177,4 +207,14 @@ void HRMEMainWindow::loadMesh(int mesh_index) {
 }
 void HRMEMainWindow::clearMesh(int mesh_index) {
 	mapEditor->clearMesh(static_cast<HRMap::MeshType>(mesh_index));
+}
+
+void HRMEMainWindow::selectMapObject(QAction* action) {
+
+	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
+		if (action == mapObjectAction[i]) {
+			mapEditor->setMapObjectType(static_cast<MapObject::ObjectType>(i));
+			return;
+		}
+	}
 }

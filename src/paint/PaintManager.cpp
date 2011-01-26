@@ -60,9 +60,9 @@ namespace Paint {
 		vector<ObjectSpatial*> visible_cells;
 
 		if (bounding_object)
-			visible_cells = coloredPaintTree->query(*bounding_object, SpatialContainer::NEARBY);
+			coloredPaintTree->appendQuery(&visible_cells, *bounding_object, SpatialContainer::NEARBY);
 		else
-			visible_cells = coloredPaintTree->all();
+			coloredPaintTree->appendAll(&visible_cells);
 
 		for (unsigned int i = 0; i < visible_cells.size(); i++) {
 
@@ -102,9 +102,9 @@ namespace Paint {
 		vector<ObjectSpatial*> candidate_cells;
 
 		if (new_color >= 0)
-			candidate_cells = neutralPaintTree->query(query_sphere, SpatialContainer::NEARBY);
+			neutralPaintTree->appendQuery(&candidate_cells, query_sphere, SpatialContainer::NEARBY);
 		else
-			candidate_cells = coloredPaintTree->query(query_sphere, SpatialContainer::NEARBY);
+			coloredPaintTree->appendQuery(&candidate_cells, query_sphere, SpatialContainer::NEARBY);
 
 		for (unsigned int i = 0; i < candidate_cells.size(); i++) {
 
@@ -125,7 +125,8 @@ namespace Paint {
 		double weighted_score = 0.0;
 
 		BoundingSphere query_sphere(centroid, radius);
-		vector<ObjectSpatial*> candidate_cells = coloredPaintTree->query(query_sphere, SpatialContainer::NEARBY);
+		vector<ObjectSpatial*> candidate_cells;
+		coloredPaintTree->appendQuery(&candidate_cells, query_sphere, SpatialContainer::NEARBY);
 
 		for (unsigned int i = 0; i < candidate_cells.size(); i++) {
 

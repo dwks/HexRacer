@@ -19,6 +19,7 @@ public:
         Note: the vector should be normalized before calling this function.
     */
     static void glNormal(const Math::Point &point);
+	static void glTranslate(const Math::Point &point);
     
     static void glMultMatrix(const Math::Matrix &matrix);
     static void glGetDouble(Math::Matrix &matrix, int openglMatrix);
