@@ -5,6 +5,7 @@
 #include <QtGui>
 #include <QGLWidget>
 #include "MouseSelectorWidget.h"
+#include "MapObject.h"
 #include "opengl/Camera.h"
 #include "opengl/SimpleTrackball.h"
 #include "render/RenderManager.h"
@@ -16,20 +17,6 @@ using namespace OpenGL;
 using namespace Math;
 using namespace Map;
 using namespace Render;
-
-#define MAP_EDITOR_TRACKBALL_BUTTON Qt::LeftButton
-#define CAMERA_MOVE_INC 0.25
-#define CAMERA_MOVE_ORTHO_INC 0.1
-#define CAMERA_MIN_ORTHO_HEIGHT 1.0
-#define CAMERA_MAX_ORTHO_HEIGHT 1000.0
-#define CAMERA_ORTHO_HEIGHT_INC 5.0
-#define CAMERA_ORTHO_PROJECT_AXIS Y_AXIS
-#define CAMERA_ORTHO_UP Point::point2D(0.0, 1.0, CAMERA_ORTHO_PROJECT_AXIS)
-#define CAMERA_PERSPECTIVE_UP Point(0.0, 1.0, 0.0)
-#define PRECISION_SCALE_INCREMENT 0.2f
-#define PRECISION_SCALE_DRAW_SCALE 15.0f
-#define MIN_PRECISION_SCALE 0.1f
-#define MAX_PRECISION_SCALE 5.0f
 
 class MapEditorWidget : public MouseSelectorWidget
 {
@@ -45,6 +32,8 @@ private:
 	bool advancedRendering;
 	bool showPaint;
 
+	GLuint sphereList;
+
 	HRMap* map;
 	RenderManager* renderer;
 	LightManager* lightManager;
@@ -54,6 +43,16 @@ private:
 
 	double precisionScale;
 	double orthoHeight;
+
+	MapObject::ObjectType editObjectType;
+	QList<MapObject*> mapObjects[MapObject::NUM_OBJECT_TYPES];
+	MapObject* selectedObject;
+
+	bool selectPending;
+	double selectU;
+	double selectV;
+
+	BSPTree3D* collisionTree;
 
 public:
 
@@ -72,14 +71,22 @@ private:
 	Point screenToWorld(Point screenPos);
 	void mouseClicked(Qt::MouseButton button, Point click_position, Qt::KeyboardModifiers modifiers);
 	void mouseDragged(Qt::MouseButton button, Point current_position, Point click_position, Point previous_position, Qt::KeyboardModifiers modifiers);
+	void mouseReleased(Qt::MouseButton button, Point release_position, Point click_position, Qt::KeyboardModifiers modifiers);
 
 	void updateCamera();
 	void translateCamera(Point translation);
 	void keyPressEvent(QKeyEvent *event);
 
 	void mapLightsChanged();
+	void mapCollisionChanged();
 	//void keyReleaseEvent(QKeyEvent *event);
 	void wheelMoved(bool up, Qt::KeyboardModifiers modifiers);
+	void addLight(Point position);
+
+	void createObject(double u, double v);
+	void selectObject(double u, double v);
+	void renderObjects(MapObject::ObjectType type, bool object_buffer = false);
+	static void glBufferIndexColor(int buffer_index);
 
 public slots:
 
@@ -93,6 +100,7 @@ public slots:
 	void setOrthoView(bool enabled);
 	void setShowPaint(bool enabled);
 	void generatePaint();
+	void setMapObjectType(MapObject::ObjectType type);
 
 };
 

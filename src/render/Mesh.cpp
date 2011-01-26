@@ -68,7 +68,8 @@ namespace Render {
 			}
 		}
 		else {
-			vector<ObjectSpatial*> culled_triangles = triangleTree->query(*bounding_object, CULLING_QUERY_TYPE);
+			vector<ObjectSpatial*> culled_triangles;
+			triangleTree->appendQuery(&culled_triangles, *bounding_object, CULLING_QUERY_TYPE);
 			for (unsigned int i = 0; i < culled_triangles.size(); i++) {
 				drawTriangle((MeshTriangle*) culled_triangles[i], setter);
 			}

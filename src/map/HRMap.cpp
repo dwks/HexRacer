@@ -224,5 +224,16 @@ namespace Map {
 		PaintGenerator generator(triangles, cell_radius);
 		paintCells = generator.getPaintCells();
 	}
+
+	void HRMap::addLight(Light* light) {
+		lights.push_back(light);
+	}
+
+	void HRMap::removeLight(Light* light) {
+		if (Misc::vectorRemoveOneElement(lights, light)) {
+			delete(light);
+		}
+	}
+
 }  // namespace Map
 }  // namespace Project
