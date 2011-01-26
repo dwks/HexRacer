@@ -23,7 +23,12 @@ public:
 
 	RenderableObject(bool has_properties = true);
 	virtual ~RenderableObject();
-
+    
+    /** Sets the transformation of this RenderableObject based on its physical
+        state.
+    */
+    virtual void preRenderUpdate(const Math::Matrix &transformation) = 0;
+    
 	void render(RenderManager* manager);
 	virtual void subRender(RenderManager* manager) = 0;
 

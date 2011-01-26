@@ -4,6 +4,10 @@
 namespace Project {
 namespace Render {
 
+    void BaseRenderable::preRenderUpdate(const Math::Matrix &transformation) {
+        getRenderProperties()->setTransformation(transformation);
+    }
+    
 	void BaseRenderable::subRender(RenderManager* manager) {
         ShaderParamSetter param = manager->getShaderParamSetter();
 		if (manager->hasTransformation())

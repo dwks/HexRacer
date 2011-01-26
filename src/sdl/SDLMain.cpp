@@ -137,7 +137,11 @@ void SDLMain::run() {
     
 	//Load the model
 	meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
-	meshLoader->loadOBJ("playerCube", "models/playercube.obj");
+	Render::RenderableObject *object
+        = meshLoader->loadOBJ("playerCube", "models/playercube.obj");
+    object->getRenderProperties()->setTransformation(
+        Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0)));
+    
 	//Add the test terrain
 	Render::MeshGroup* test_terrain = meshLoader->getModelByName("testTerrain");
     
@@ -385,8 +389,9 @@ void SDLMain::render() {
 	//Pass the camera to the renderer for culling
 	renderer->setCamera(camera);
 
-	 //Render players
-	playerManager->render(renderer);
+    //Render players
+    playerManager->preRender();
+    playerManager->render(renderer);
 	
 	//Render the scene
 	rootRenderable->render(renderer);

@@ -66,6 +66,23 @@ void PlayerManager::applySuspension(Render::RenderManager *renderManager) {
     suspension.applySuspension(playerList, renderManager);
 }
 
+void PlayerManager::preRender() {
+    Object::PlayerList::IteratorType it = playerList->getIterator();
+    while(it.hasNext()) {
+        Object::Player *player = it.next();
+        player->preRender();
+    }
+}
+
+void PlayerManager::render(Render::RenderManager *renderManager) {
+    Object::PlayerList::IteratorType it = playerList->getIterator();
+    while(it.hasNext()) {
+        Object::Player *player = it.next();
+        player->getRenderableObject()->render(renderManager);
+    }
+}
+
+#if 0
 void PlayerManager::render(Render::RenderManager *renderManager) {
     Object::PlayerList::IteratorType it = playerList->getIterator();
     while(it.hasNext()) {
@@ -104,6 +121,7 @@ void PlayerManager::render(Render::RenderManager *renderManager) {
         }
     }
 }
+#endif
 
 void PlayerManager::usePlayerList(Object::PlayerList *playerList) {
 #if 1

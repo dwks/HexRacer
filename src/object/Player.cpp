@@ -3,6 +3,8 @@
 #include "physics/PhysicsWorld.h"
 #include "physics/PhysicsFactory.h"
 
+#include "settings/ProgramSettings.h"
+
 namespace Project {
 namespace Object {
 
@@ -21,17 +23,7 @@ Player::Player(int id, const Math::Point &origin) : AbstractObject(id) {
         physical = NULL;
     }
     
-    /*renderable = new Render::RenderList(); //new Render::RenderablePlayer();
-    
-    Render::MeshGroup* player_cube_mesh
-        = Render::MeshLoader::getInstance()->getModelByName("playerCube");
-    renderable->addRenderable(player_cube_mesh);
-    
-    renderable->getRenderProperties()->addShaderParameter(
-        new Render::ShaderUniformVector4("playerColor",
-            OpenGL::Color(OpenGL::Color::BLUE)));*/
-    
-    renderable = NULL;
+    initialize();
 }
 
 Player::~Player() {
@@ -62,6 +54,13 @@ Math::Matrix Player::getTransformation() const {
 
 void Player::applyForce(const Math::Point &movement, const Math::Point &at) {
     physical->applyForce(movement, at);
+}
+
+void Player::initialize() {
+    if(Settings::ProgramSettings::getInstance()->isClient()) {
+        renderable = new Render::RenderablePlayer();
+        renderable->initialize(getID());
+    }
 }
 
 }  // namespace Object

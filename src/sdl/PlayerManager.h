@@ -49,6 +49,7 @@ public:
     
     void applySuspension(Render::RenderManager *renderManager);
     
+    void preRender();
     void render(Render::RenderManager *renderManager);
 
 protected:
