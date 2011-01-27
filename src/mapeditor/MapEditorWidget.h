@@ -22,6 +22,12 @@ class MapEditorWidget : public MouseSelectorWidget
 {
 	Q_OBJECT
 
+public:
+
+	static const int NUM_EDIT_MODES = 3;
+	enum EditMode {EDIT_TRANSLATE, EDIT_ROTATE, EDIT_SCALE};
+	static string editModeTitle(EditMode mode);
+
 private:
 
 	int viewWidth;
@@ -31,8 +37,10 @@ private:
 	SimpleTrackball* trackball;
 	bool advancedRendering;
 	bool showPaint;
+	bool cameraMovedSinceClick;
 
 	GLuint sphereList;
+	GLuint hudCircleList;
 
 	HRMap* map;
 	RenderManager* renderer;
@@ -47,10 +55,9 @@ private:
 	MapObject::ObjectType editObjectType;
 	QList<MapObject*> mapObjects[MapObject::NUM_OBJECT_TYPES];
 	MapObject* selectedObject;
+	EditMode editMode;
 
-	bool selectPending;
-	double selectU;
-	double selectV;
+	QImage objectBuffer;
 
 	BSPTree3D* collisionTree;
 
@@ -58,6 +65,8 @@ public:
 
 	MapEditorWidget(QWidget * parent = 0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f = 0);
 	~MapEditorWidget();
+
+	Color getSelectedColor(int color_index);
 
 	//QSize sizeHint() const;
 	//QSize minimumSize () const;
@@ -84,9 +93,12 @@ private:
 	void addLight(Point position);
 
 	void createObject(double u, double v);
-	void selectObject(double u, double v);
+	void selectObject(double u, double v, bool rerender = true);
 	void renderObjects(MapObject::ObjectType type, bool object_buffer = false);
 	static void glBufferIndexColor(int buffer_index);
+
+	void translateSelectedObject(Point translation);
+	void setSelectedObject(MapObject* object);
 
 public slots:
 
@@ -101,6 +113,20 @@ public slots:
 	void setShowPaint(bool enabled);
 	void generatePaint();
 	void setMapObjectType(MapObject::ObjectType type);
+	void setEditMode(EditMode mode);
+
+	void setSelectedPositionX(double x);
+	void setSelectedPositionY(double y);
+	void setSelectedPositionZ(double z);
+
+	void setSelectedColor(int color_index, Color color);
+
+signals:
+
+	void selectedObjectChanged(MapObject*);
+	void selectedPositionXChanged(double);
+	void selectedPositionYChanged(double);
+	void selectedPositionZChanged(double);
 
 };
 

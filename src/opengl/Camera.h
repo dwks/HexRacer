@@ -74,6 +74,7 @@ public:
 	double getNearPlane() const { return nearPlane; }
 	double getFarPlane() const { return farPlane; }
 	double getOrthoHeight() const { return orthoHeight; }
+	double getOrthoWidth() const { return orthoHeight*aspect; }
 	Point cameraToWorld(Point p);
 	Point cameraToWorld(double x, double y, double z = 1.0);
 	Ray cameraRay(double x, double y);

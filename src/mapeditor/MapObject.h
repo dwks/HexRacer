@@ -13,12 +13,57 @@ class MapObject {
 public:
 
 	static const int NUM_OBJECT_TYPES = 4;
-
 	enum ObjectType {LIGHT, MESH_INSTANCE, PATH_NODE, START_POINT};
 
 	virtual void translate(const Point& translation) = 0;
 	virtual ObjectType getType() const = 0;
 	virtual BoundingBox3D getBoundingBox() const = 0;
+	virtual Point getPosition() const = 0;
+	virtual void setPosition(const Point& new_position) = 0;
+
+	virtual bool hasColors() const { return false; }
+	virtual void setDiffuse(const Color& color) {}
+	virtual void setSpecular(const Color& color) {}
+	virtual void setAmbient(const Color& color) {}
+	virtual Color getDiffuse() const { return Color(); }
+	virtual Color getSpecular() const { return Color(); }
+	virtual Color getAmbient() const { return Color(); }
+
+	virtual void setColor(int color_index, const Color& color) {
+		switch (color_index) {
+			case 0:
+				setDiffuse(color);
+				break;
+			case 1:
+				setSpecular(color);
+				break;
+			case 2:
+				setAmbient(color);
+				break;
+			case 3:
+				break;
+		}
+	}
+
+	virtual Color getColor(int color_index) const {
+		switch (color_index) {
+			case 0:
+				return getDiffuse();
+			case 1:
+				return getSpecular();
+			case 2:
+				return getAmbient();
+			default:
+				return Color();
+		}
+	}
+
+	void setPositionCoord(double value, Axis axis) {
+		Point pos = getPosition();
+		pos.setCoord(value, axis);
+		setPosition(pos);
+	}
+	
 
 	static string typeTitle(ObjectType type);
 };

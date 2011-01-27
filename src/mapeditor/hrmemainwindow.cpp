@@ -22,6 +22,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	mapEditor = new MapEditorWidget();
 	setCentralWidget(mapEditor);
+	connect(mapEditor, SIGNAL(selectedObjectChanged(MapObject*)), this, SLOT(selectedObjectChanged(MapObject*)));
 
 	//
 	settingsManager = new SettingsManager("mapeditorconfig.txt");
@@ -56,13 +57,6 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		meshMenu->addAction(load_mesh_action);
 		meshMenu->addAction(clear_mesh_action);
 	}
-	/*
-	meshMenu->addAction("&Load Track",				this, SLOT(loadTrackMesh()));
-	meshMenu->addAction("&Load Invisible Track",	this, SLOT(loadInvisibleTrackMesh()));
-	meshMenu->addAction("&Load Solid",				this, SLOT(loadSolidMesh()));
-	meshMenu->addAction("&Load Invisible Solid",	this, SLOT(loadInvisibleSolidMesh()));
-	meshMenu->addAction("&Load Decor",				this, SLOT(loadDecorMesh()));
-	*/
 
 	//Map Menu
 	mapMenu = new QMenu("&Map", this);
@@ -96,9 +90,21 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		MapObject::ObjectType type = static_cast<MapObject::ObjectType>(i);
 		mapObjectAction[i] = new QAction(QString(MapObject::typeTitle(type).c_str()), this);
 		mapObjectAction[i]->setCheckable(true);
-		if (i == 0)
-			mapObjectAction[i]->setChecked(true);
 		mapObjectGroup->addAction(mapObjectAction[i]);
+	}
+	
+	//Edit Modes
+	editModeGroup = new QActionGroup(this);
+	editModeGroup->setExclusive(true);
+	connect(editModeGroup, SIGNAL(triggered(QAction*)), this, SLOT(selectEditMode(QAction*)));
+
+	for (int i = 0; i < MapEditorWidget::NUM_EDIT_MODES; i++) {
+		MapEditorWidget::EditMode mode = static_cast<MapEditorWidget::EditMode>(i);
+		editModeAction[i] = new QAction(QString(MapEditorWidget::editModeTitle(mode).c_str()), this);
+		editModeAction[i]->setCheckable(true);
+		if (i == 0)
+			editModeAction[i]->setChecked(true);
+		editModeGroup->addAction(editModeAction[i]);
 	}
 
 	/*Options Toolbar*************************************************************/
@@ -109,6 +115,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	QHBoxLayout* viewing_layout = new QHBoxLayout(this);
 	QHBoxLayout* options_layout = new QHBoxLayout(this);
 	QHBoxLayout* objects_layout = new QHBoxLayout(this);
+	QHBoxLayout* edit_mode_layout = new QHBoxLayout(this);
 	
 	//Viewing buttons
 	QToolButton* advancedRenderingButton = new QToolButton(this);
@@ -131,17 +138,118 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		objects_layout->addWidget(object_button);
 	}
 
+	//Edit Mode Buttons
+	for (int i = 0; i < MapEditorWidget::NUM_EDIT_MODES; i++) {
+		QToolButton* edit_mode_button = new QToolButton(this);
+		edit_mode_button->setDefaultAction(editModeAction[i]);
+		edit_mode_layout->addWidget(edit_mode_button);
+	}
+
 	objects_layout->setAlignment(Qt::AlignRight);
 
 	options_layout->addLayout(viewing_layout);
 	options_layout->addSpacing(10);
 	options_layout->addLayout(objects_layout);
+	options_layout->addSpacing(10);
+	options_layout->addLayout(edit_mode_layout);
 
 	optionsFrame->setLayout(options_layout);
 	optionsBar->addWidget(optionsFrame);
 
 	addToolBar(Qt::TopToolBarArea, optionsBar);
 
+	/*Properties*************************************************************/
+
+	objectPropertiesBar = new QToolBar(this);
+
+	//Position
+	positionPropertyFrame = new QFrame(this);
+
+	double range = 9999999.9;
+	double single_step = 0.1;
+	int decimals = 5;
+	positionXBox = new QDoubleSpinBox(positionPropertyFrame);
+	positionXBox->setRange(-range, range);
+	positionXBox->setDecimals(decimals);
+	positionXBox->setSingleStep(single_step);
+	positionYBox = new QDoubleSpinBox(positionPropertyFrame);
+	positionYBox->setRange(-range, range);
+	positionYBox->setDecimals(decimals);
+	positionYBox->setSingleStep(single_step);
+	positionZBox = new QDoubleSpinBox(positionPropertyFrame);
+	positionZBox->setRange(-range, range);
+	positionZBox->setDecimals(decimals);
+	positionZBox->setSingleStep(single_step);
+
+	connect(positionXBox, SIGNAL(valueChanged(double)), mapEditor, SLOT(setSelectedPositionX(double)));
+	connect(positionYBox, SIGNAL(valueChanged(double)), mapEditor, SLOT(setSelectedPositionY(double)));
+	connect(positionZBox, SIGNAL(valueChanged(double)), mapEditor, SLOT(setSelectedPositionZ(double)));
+
+	connect(mapEditor, SIGNAL(selectedPositionXChanged(double)), positionXBox, SLOT(setValue(double)));
+	connect(mapEditor, SIGNAL(selectedPositionYChanged(double)), positionYBox, SLOT(setValue(double)));
+	connect(mapEditor, SIGNAL(selectedPositionZChanged(double)), positionZBox, SLOT(setValue(double)));
+
+	QGridLayout* position_layout = new QGridLayout(positionPropertyFrame);
+	position_layout->addWidget(new QLabel("Position", positionPropertyFrame), 0, 0);
+	position_layout->addWidget(new QLabel("X", positionPropertyFrame), 1, 0);
+	position_layout->addWidget(positionXBox, 1, 1);
+	position_layout->addWidget(new QLabel("Y", positionPropertyFrame), 2, 0);
+	position_layout->addWidget(positionYBox, 2, 1);
+	position_layout->addWidget(new QLabel("Z", positionPropertyFrame), 3, 0);
+	position_layout->addWidget(positionZBox, 3, 1);
+
+	positionPropertyFrame->setLayout(position_layout);
+
+	//Colors
+
+	colorPropertyFrame = new QFrame(this);
+	QGridLayout* color_layout = new QGridLayout(colorPropertyFrame);
+
+	colorPropertyMapper = new QSignalMapper(this);
+	connect(colorPropertyMapper, SIGNAL(mapped(int)), this, SLOT(choosePropertyColor(int)));
+
+	color_layout->addWidget(new QLabel("Color", colorPropertyFrame), 0, 0);
+
+	for (int i = 0; i < 3; i++) {
+
+		QString color_name;
+		if (i == 0)
+			color_name = "Diffuse";
+		else if (i == 1)
+			color_name = "Specular";
+		else
+			color_name = "Ambient";
+
+		QPushButton* color_button = new QPushButton(color_name, colorPropertyFrame);
+		connect(color_button, SIGNAL(clicked()), colorPropertyMapper, SLOT(map()));
+		colorPropertyMapper->setMapping(color_button, i);
+		color_layout->addWidget(color_button, 1+i, 0);
+	}
+
+	colorPropertyFrame->setLayout(color_layout);
+
+	//Lights
+	lightPropertyFrame = new QFrame(this);
+	QGridLayout* light_layout = new QGridLayout(lightPropertyFrame);
+
+	QDoubleSpinBox* lightStrengthBox = new QDoubleSpinBox(lightPropertyFrame);
+	QCheckBox* attenuationBox = new QCheckBox(lightPropertyFrame);
+
+	light_layout->addWidget(new QLabel("Light", lightPropertyFrame), 0, 0);
+	light_layout->addWidget(new QLabel("Strength", lightPropertyFrame), 1, 0);
+	light_layout->addWidget(lightStrengthBox, 1, 1);
+	light_layout->addWidget(new QLabel("Has Attenuation", lightPropertyFrame), 2, 0);
+	light_layout->addWidget(attenuationBox, 2, 1);
+
+	lightPropertyFrame->setLayout(light_layout);
+
+	//
+
+	objectPropertiesBar->addWidget(positionPropertyFrame);
+	objectPropertiesBar->addWidget(colorPropertyFrame);
+	objectPropertiesBar->addWidget(lightPropertyFrame);
+
+	addToolBar(Qt::LeftToolBarArea, objectPropertiesBar);
 
 	/*File Types and Paths*************************************************************/
 
@@ -159,6 +267,11 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	mapType = QString("HexRace Map File (*.hrm *.HRM)");
 	meshType = QString("Wavefront OBJ (*.obj *.OBJ)");
 
+
+	//Initialize
+
+	mapObjectAction[0]->setChecked(true);
+	selectedObjectChanged(NULL);
 }
 
 HRMEMainWindow::~HRMEMainWindow()
@@ -216,5 +329,45 @@ void HRMEMainWindow::selectMapObject(QAction* action) {
 			mapEditor->setMapObjectType(static_cast<MapObject::ObjectType>(i));
 			return;
 		}
+	}
+}
+
+void HRMEMainWindow::selectEditMode(QAction* action) {
+
+	for (int i = 0; i < MapEditorWidget::NUM_EDIT_MODES; i++) {
+		if (action == editModeAction[i]) {
+			mapEditor->setEditMode(static_cast<MapEditorWidget::EditMode>(i));
+			return;
+		}
+	}
+}
+
+void HRMEMainWindow::selectedObjectChanged(MapObject* selected_object) {
+
+	positionPropertyFrame->setVisible(false);
+	positionPropertyFrame->setEnabled(false);
+	colorPropertyFrame->setEnabled(false);
+
+	if (selected_object) {
+		/*
+		switch (selected_object->getType()) {
+			case MapObject::LIGHT:
+				colorPropertyFrame->setEnabled(true);
+				break;
+
+			default:
+				break;
+		}
+		*/
+		colorPropertyFrame->setEnabled(selected_object->hasColors());
+		positionPropertyFrame->setEnabled(true);
+	}
+}
+
+void HRMEMainWindow::choosePropertyColor(int color_index) {
+	QColor color = QColorDialog::getColor(colorToQColor(mapEditor->getSelectedColor(color_index)));
+
+	if (color.isValid()) {
+		mapEditor->setSelectedColor(color_index, QColorToColor(color));
 	}
 }

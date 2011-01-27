@@ -1,12 +1,15 @@
 #ifndef HRMEMAINWINDOW_H
 #define HRMEMAINWINDOW_H
 
+#include <QtGui>
 #include <QtGui/QMainWindow>
 #include "MapEditorWidget.h"
 #include "render/MeshLoader.h"
+#include "opengl/Color.h"
 #include "settings/SettingsManager.h"
 using namespace Project;
 using namespace Render;
+using namespace OpenGL;
 using namespace Settings;
 
 class HRMEMainWindow : public QMainWindow
@@ -19,6 +22,14 @@ public:
 
 	QSize sizeHint() const { return QSize(1024, 768); }
 	QSize minimumSize () const { return QSize(640, 480); }
+
+	static QColor colorToQColor(Color color) {
+		return QColor(color.redi(), color.greeni(), color.bluei(), color.alphai());
+	}
+
+	static Color QColorToColor(QColor color) {
+		return Color::colori(color.red(), color.green(), color.blue(), color.alpha());
+	}
 
 private:
 
@@ -35,14 +46,33 @@ private:
 
 	QFrame* optionsFrame;
 	QToolBar* optionsBar;
+
+	//Properties
+
+	QFrame* positionPropertyFrame;
+	QFrame* colorPropertyFrame;
+	QSignalMapper* colorPropertyMapper;
+
+	QFrame* lightPropertyFrame;
+	
+	
+	QToolBar* objectPropertiesBar;
+
+	QDoubleSpinBox* positionXBox;
+	QDoubleSpinBox* positionYBox;
+	QDoubleSpinBox* positionZBox;
+
+	//Viewing
+
 	QAction* advancedRenderingAction;
 	QAction* orthoCameraAction;
 	QAction* showPaintAction;
 
-	QSignalMapper* mapObjectMapper;
-
 	QActionGroup* mapObjectGroup;
 	QAction* mapObjectAction[MapObject::NUM_OBJECT_TYPES];
+
+	QActionGroup* editModeGroup;
+	QAction* editModeAction[MapEditorWidget::NUM_EDIT_MODES];
 
 	SettingsManager* settingsManager;
 
@@ -58,6 +88,11 @@ private slots:
 	void loadMesh(int mesh_index);
 	void clearMesh(int mesh_index);
 	void selectMapObject(QAction* action);
+	void selectEditMode(QAction* action);
+
+	void selectedObjectChanged(MapObject* selected_object);
+
+	void choosePropertyColor(int color_index);
 
 };
 
