@@ -12,7 +12,8 @@ namespace Render {
 class BaseRenderable
 	: public RenderableObject {
 public:
-
+    virtual void preRenderUpdate(const Math::Matrix &transformation);
+    
 	void subRender(RenderManager* manager);
 	virtual void renderGeometry(ShaderParamSetter& setter, const Math::BoundingObject* bounding_object = NULL) = 0;
 

@@ -1,18 +1,20 @@
 #ifndef PROJECT_RENDER__RENDERABLE_PLAYER_H
 #define PROJECT_RENDER__RENDERABLE_PLAYER_H
 
-#include "BaseRenderable.h"
+#include "RenderList.h"
 
 namespace Project {
 namespace Render {
 
-class RenderablePlayer : public BaseRenderable {
+class RenderablePlayer : public RenderList {
 private:
     Math::Point origin;
 public:
-    virtual void updatePhysicalData(const Math::Point &origin);
+    virtual void initialize(int id);
     
-    virtual void renderGeometry(ShaderParamSetter setter) = 0;
+    virtual void preRenderUpdate(const Math::Matrix &transformation);
+    
+    virtual void updatePhysicalData(const Math::Point &origin);
 };
 
 }  // namespace Render

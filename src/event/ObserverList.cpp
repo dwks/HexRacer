@@ -31,7 +31,7 @@ void ObserverList::addObserver(MultiObserver *observer) {
 void ObserverList::notifyObservers(EventBase *event, bool freeEvent) {
     observer_list_t &list = type_list[event->getType()];
     
-    LOG2(GLOBAL, WARNING, typeid(*event).name() << " event");
+    LOG(GLOBAL, typeid(*event).name() << " event");
     
     if(list.size() == 0) {
         LOG2(GLOBAL, WARNING, "Event type has no observers: "
