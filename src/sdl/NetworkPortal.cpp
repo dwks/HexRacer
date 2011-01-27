@@ -14,6 +14,7 @@
 
 #include "event/ObserverList.h"
 #include "event/PacketReceived.h"
+#include "event/TogglePainting.h"
 
 namespace Project {
 namespace SDL {
@@ -26,8 +27,14 @@ void NetworkPortal::PacketSender::observe(Event::SendPacket *packet) {
 
 void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
     switch(event->getType()) {
+    case Event::EventType::TOGGLE_PAINT: {
+        Event::TogglePainting *toggle
+            = dynamic_cast<Event::TogglePainting *>(event);
+        if(!toggle->getPropagate()) break;
+        toggle->setPropagate(false);
+        // fall-through
+    }
     case Event::EventType::PLAYER_ACTION:
-    case Event::EventType::PAINT_CELLS_CHANGED:
     {
         if(portal->getPortal() == NULL) break;
         

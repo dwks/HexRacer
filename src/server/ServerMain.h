@@ -3,6 +3,9 @@
 
 #include "object/PlayerList.h"
 #include "paint/PaintManager.h"
+#include "paint/PaintSubsystem.h"
+
+#include "object/WorldManager.h"
 
 #include "network/PacketVisitor.h"
 #include "event/MultiObserver.h"
@@ -38,8 +41,9 @@ private:
     bool quit;
     int clientCount;
     int whichSocket;
-    Object::PlayerList playerList;
+    Object::WorldManager *worldManager;
     Paint::PaintManager paintManager;
+    Paint::PaintSubsystem *paintSubsystem;
     ServerVisitor visitor;
     ServerNetworkPortal *networkPortal;
 public:
@@ -51,7 +55,8 @@ public:
     void setQuit() { quit = true; }
     
     int getWhichSocket() const { return whichSocket; }
-    Object::PlayerList &getPlayerList() { return playerList; }
+    Object::PlayerList &getPlayerList()
+        { return *worldManager->getPlayerList(); }
     Paint::PaintManager &getPaintManager() { return paintManager; }
 };
 

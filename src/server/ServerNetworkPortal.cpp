@@ -2,7 +2,7 @@
 #include "network/EventPacket.h"
 
 #include "event/ObserverList.h"
-#include "event/PaintEvent.h"
+#include "event/TogglePainting.h"
 
 #include "log/Logger.h"
 
@@ -17,9 +17,16 @@ ServerNetworkPortal::ServerNetworkPortal(ClientManager *clientManager)
 
 void ServerNetworkPortal::EventPropagator::observe(Event::EventBase *event) {
     switch(event->getType()) {
-    case Event::EventType::PAINT_CELLS_CHANGED:
+    case Event::EventType::TOGGLE_PAINT:
     {
         Network::Packet *packet = new Network::EventPacket(event);
+        
+        Event::TogglePainting *toggle
+            = dynamic_cast<Event::TogglePainting *>(event);
+        LOG(NETWORK, "server: see TogglePainting " << toggle->getPropagate());
+        //if(!toggle->getPropagate()) break;
+        // always propagate
+        toggle->setPropagate(false);
         
         if(event->getType() < 0) {
             portal->getClientManager()->sendPacket(packet);

@@ -23,8 +23,6 @@
 #include "physics/PhysicsFactory.h"
 #include "physics/Suspension.h"
 
-#include "object/PlayerList.h"
-
 #include "render/MeshGroup.h"
 #include "render/MeshLoader.h"
 
@@ -52,12 +50,11 @@ void ServerMain::ServerVisitor::visit(Network::HandshakePacket &packet) {
 
 void ServerMain::ServerVisitor::visit(Network::EventPacket &packet) {
     // bootstrap into event subsystem
+    EMIT_EVENT(packet.getEvent());
     
-    //EMIT_EVENT(packet.getEvent());
-    
-    // don't free this Event
+    /*// don't free this Event
     Event::ObserverList::getInstance().notifyObservers(
-        packet.getEvent(), false);
+        packet.getEvent(), false);*/
 }
 
 void ServerMain::ServerObserver::observe(Event::EventBase *event) {
@@ -85,7 +82,7 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         
         break;
     }
-    case Event::EventType::PAINT_EVENT: {
+    /*case Event::EventType::PAINT_EVENT: {
         Event::PaintEvent *paintEvent
             = dynamic_cast<Event::PaintEvent *>(event);
         Math::Point position = paintEvent->getPoint();
@@ -97,7 +94,13 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         
         EMIT_EVENT(new Event::PaintCellsChanged(colour, cells));
         break;
-    }
+    }*/
+    /*case Event::EventType::TOGGLE_PAINT: {
+        Event::TogglePainting *toggle
+            = dynamic_cast<Event::TogglePainting *>(event);
+        
+        // auto-handled by PaintSubsystem
+    }*/
     default:
         LOG2(NETWORK, WARNING,
             "Don't know how to handle events of type " << event->getType());
@@ -107,7 +110,8 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
 
 bool ServerMain::ServerObserver::interestedIn(Event::EventType::type_t type) {
     switch(type) {
-    case Event::EventType::PAINT_CELLS_CHANGED:
+    case Event::EventType::PAINT_EVENT:
+    case Event::EventType::TOGGLE_PAINT:  // handled by PaintSubsystem
         return false;
     default:
         break;
@@ -158,6 +162,9 @@ void ServerMain::run() {
     
     Physics::Suspension suspension;
     
+    worldManager = new Object::WorldManager();
+    paintSubsystem = new Paint::PaintSubsystem(worldManager, 20);
+    
     int loops = 0;
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
     quit = false;
@@ -174,7 +181,7 @@ void ServerMain::run() {
                 packetSerializer.packetToString(packet));
             
             clients.addClient(socket);
-            playerList.addPlayer(
+            worldManager->getPlayerList()->addPlayer(
                 new Object::Player(clientCount, INITIAL_CAR_LOCATION));
             
             clientCount ++;
@@ -198,7 +205,8 @@ void ServerMain::run() {
             lastPhysicsTime = thisTime;
         }
         
-        suspension.applySuspension(&playerList, NULL);
+        paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
+        suspension.applySuspension(worldManager->getPlayerList(), NULL);
         
         if(++loops == 5) {
             loops = 0;
@@ -210,7 +218,8 @@ void ServerMain::run() {
             
             Event::UpdatePlayerList *update
                 = new Event::UpdatePlayerList(
-                    Misc::Sleeper::getTimeMilliseconds(), &playerList);
+                    Misc::Sleeper::getTimeMilliseconds(),
+                    worldManager->getPlayerList());
             Network::Packet *packet = new Network::EventPacket(update);
             clients.sendPacket(packet);
             delete packet;

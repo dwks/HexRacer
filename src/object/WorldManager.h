@@ -20,6 +20,7 @@ private:
 public:
     WorldManager();
     WorldManager(World *world, PlayerList *playerList);
+    ~WorldManager();
     
     World *getWorld() { return world; }
     PlayerList *getPlayerList() { return playerList; }

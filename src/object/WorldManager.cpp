@@ -14,6 +14,11 @@ WorldManager::WorldManager(World *world, PlayerList *playerList)
     
 }
 
+WorldManager::~WorldManager() {
+    delete world;
+    delete playerList;
+}
+
 Player *WorldManager::getPlayer(int id) {
     return playerList->getPlayer(id);
 }
