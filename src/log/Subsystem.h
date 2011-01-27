@@ -11,11 +11,12 @@ public:
     enum subsystem_t {
         GLOBAL,
         OPENGL,
-		PAINT,
+        PAINT,
         SDL,
         NETWORK,
         PHYSICS,
         AUDIO,
+        CAMERA,
         SUBSYSTEMS
     };
 private:

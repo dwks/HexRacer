@@ -53,6 +53,13 @@ TypeRegistry::TypeRegistry() {
         registerType(Subsystem::AUDIO, "INIT", counter ++);
         registerType(Subsystem::AUDIO, "MUSIC", counter ++);
     }
+    
+    //CAMERA OBJECT log message types
+    {
+        int counter = 1;
+        registerType(Subsystem::CAMERA, "INIT", counter ++);
+        registerType(Subsystem::CAMERA, "UPDATE", counter ++);    
+    }
 }
 
 void TypeRegistry::registerType(Subsystem subsystem,
