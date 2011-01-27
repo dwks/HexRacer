@@ -252,6 +252,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\object\CameraObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\Color.cpp"
 				>
 			</File>
@@ -420,6 +424,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PaintCellsChanged.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\PaintEvent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\PhysicalObject.cpp"
 				>
 			</File>
@@ -441,6 +453,10 @@
 			</File>
 			<File
 				RelativePath=".\src\object\Player.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\PlayerAction.cpp"
 				>
 			</File>
 			<File
@@ -588,6 +604,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\timing\TimedSubsystem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\TogglePainting.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\Trackball.cpp"
 				>
 			</File>
@@ -625,6 +649,10 @@
 			</File>
 			<File
 				RelativePath=".\src\object\World.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\object\WorldManager.cpp"
 				>
 			</File>
 			<Filter
@@ -759,6 +787,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\CameraMovement.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\object\CameraObject.h"
 				>
 			</File>
 			<File
@@ -934,6 +966,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PaintCellsChanged.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\PaintEvent.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\PhysicalObject.h"
 				>
 			</File>
@@ -955,6 +995,10 @@
 			</File>
 			<File
 				RelativePath=".\src\object\Player.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\PlayerAction.h"
 				>
 			</File>
 			<File
@@ -1102,6 +1146,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\timing\TimedSubsystem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\TogglePainting.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\Trackball.h"
 				>
 			</File>
@@ -1139,6 +1191,10 @@
 			</File>
 			<File
 				RelativePath=".\src\object\World.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\object\WorldManager.h"
 				>
 			</File>
 			<Filter
