@@ -25,6 +25,15 @@ PhysicsWorld::PhysicsWorld() {
     setupPhysicsWorld();
 }
 
+PhysicsWorld::~PhysicsWorld() {
+    // delete in reverse order of allocation, more or less
+    delete dynamicsWorld;
+    delete constraintSolver;
+    delete collisionConfiguration;
+    delete collisionDispatcher;
+    delete broadPhaseInterface;
+}
+
 void PhysicsWorld::stepWorld(float microseconds) {
     //LOG2( PHYSICS, TIMESTEP, "Stepping simulation by: " << microseconds << " microseconds");
     

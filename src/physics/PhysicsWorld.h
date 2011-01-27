@@ -33,6 +33,8 @@ public:
     friend class DebugDrawingObserver;
 public:
     PhysicsWorld();
+    ~PhysicsWorld();
+    
     void setupPhysicsWorld();
     void stepWorld(float microseconds);
     void setGravity(float xAccel, float yAccel, float zAccel);

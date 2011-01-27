@@ -29,6 +29,7 @@ void WorldManager::usePlayerList(PlayerList *playerList) {
         Object::Player *player = iterator.next();
         world->removeObject(player);
     }
+    // the players are deleted by the PlayerList's destructor
     delete this->playerList;
     
     // now add the new player list

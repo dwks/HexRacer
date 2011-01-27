@@ -34,15 +34,15 @@ namespace Object {
     
     //This is a temp implementation of this fucntion
     void CameraObject::updateCamera(){
-        //Modify for interpolation and to use quaternions and vectors instead of just points
-        CameraObject::setDestination(playerManager->getPlayer()->getPosition());
-        
-        camera->setLookPosition(this->destination);
-        
         // follow right behind the car
         Math::Point point = playerManager->getPlayer()->getTransformation()
             * Math::Point(0.0, 3.0, -10.0);
         camera->setPosition(point);
+        
+        //Modify for interpolation and to use quaternions and vectors instead of just points
+        CameraObject::setDestination(playerManager->getPlayer()->getPosition());
+        
+        camera->setLookPosition(this->destination);
     }
     
     

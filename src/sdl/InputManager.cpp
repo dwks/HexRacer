@@ -15,8 +15,8 @@
 namespace Project {
 namespace SDL {
 
-InputManager::InputManager(ClientData *clientData, PlayerManager *playerManager)
-    : playerManager(playerManager), clientData(clientData) {
+InputManager::InputManager(int ms, ClientData *clientData, PlayerManager *playerManager)
+    : TimedSubsystem(ms), playerManager(playerManager), clientData(clientData) {
     
     for(std::size_t x = 0; x < sizeof keyDown / sizeof *keyDown; x ++) {
         keyDown[x] = false;
@@ -34,7 +34,7 @@ void InputManager::handleEvent(SDL_Event *event) {
     }
 }
 
-void InputManager::advanceToNextFrame() {
+void InputManager::doAction(unsigned long currentTime) {
     static const double CAMERA_FACTOR = 0.8;
     
     if(keyDown[SDLK_LEFT]) {

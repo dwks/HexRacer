@@ -225,7 +225,7 @@ void SDLMain::run() {
     }
     paintSubsystem = new Paint::PaintSubsystem(worldManager, 20);
     
-    inputManager = new InputManager(clientData, playerManager);
+    inputManager = new InputManager(10, clientData, playerManager);
     
     cameraObject->setPlayerManager(playerManager);
     
@@ -302,10 +302,8 @@ void SDLMain::run() {
         network->checkNetwork();
         
         handleJoystick();
-        inputManager->advanceToNextFrame();
+        inputManager->doStep(SDL_GetTicks());
         paintSubsystem->doStep(SDL_GetTicks());
-        
-        cameraObject->doStep(SDL_GetTicks());
         
         {
             static Uint32 lastPhysicsTime = SDL_GetTicks();
@@ -313,6 +311,8 @@ void SDLMain::run() {
             physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
             lastPhysicsTime = thisTime;
         }
+        
+        cameraObject->doStep(SDL_GetTicks());
         
         render();
         playerManager->applySuspension(renderer);

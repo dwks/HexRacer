@@ -82,25 +82,6 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         
         break;
     }
-    /*case Event::EventType::PAINT_EVENT: {
-        Event::PaintEvent *paintEvent
-            = dynamic_cast<Event::PaintEvent *>(event);
-        Math::Point position = paintEvent->getPoint();
-        double radius = paintEvent->getRadius();
-        int colour = paintEvent->getColour();
-        
-        std::vector<int> cells = main->getPaintManager()
-            .colorCellsInRadius(position, radius, colour);
-        
-        EMIT_EVENT(new Event::PaintCellsChanged(colour, cells));
-        break;
-    }*/
-    /*case Event::EventType::TOGGLE_PAINT: {
-        Event::TogglePainting *toggle
-            = dynamic_cast<Event::TogglePainting *>(event);
-        
-        // auto-handled by PaintSubsystem
-    }*/
     default:
         LOG2(NETWORK, WARNING,
             "Don't know how to handle events of type " << event->getType());
@@ -237,6 +218,8 @@ void ServerMain::run() {
             while(lastTime < currentTime + tosleep) lastTime += 10;
         }
     }
+    
+    delete physicsWorld;
 }
 
 }  // namespace Server

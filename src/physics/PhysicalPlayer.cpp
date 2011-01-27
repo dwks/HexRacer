@@ -111,7 +111,7 @@ void PhysicalPlayer::doJump() {
     /*Math::Point upwards = Converter::toPoint(matrix
         * Converter::toVector(Math::Point(0.0, 1.0, 0.0)));*/
     Math::Point upwards = Math::Point(0.0, 1.0, 0.0);
-    applyForce(upwards * 30.0f);
+    applyForce(upwards * 50.0f);
 }
 
 void PhysicalPlayer::applyForce(const Math::Point &force) {

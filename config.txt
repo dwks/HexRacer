@@ -18,9 +18,9 @@ display.bpp        = 0
 ### Physics settings
 
 # Acceleration and responsiveness of input
-physics.constant.turn             = 0.3
+physics.constant.turn             = 0.2
 physics.constant.accel            = 3.0
-physics.constant.centripetal      = 2.0
+physics.constant.centripetal      = 1.0
 
 # Vehicle suspension
 physics.driving.enablesuspension  = 1
@@ -47,7 +47,7 @@ render.paint.legacypaint = 0
 #    0 = low
 #    1 = medium
 #    2 = high
-render.quality = 0
+render.quality = 2
 
 ########
 ### Network settings
