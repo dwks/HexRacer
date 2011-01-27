@@ -208,20 +208,24 @@ void SDLMain::run() {
     physicsWorld = new Physics::PhysicsWorld();
     physicsWorld->createTestScene();
     
+    worldManager = new Object::WorldManager();
+    
     network = new NetworkPortal();
     if(network->connectTo(
         GET_SETTING("network.host", "localhost").c_str(),
         GET_SETTING("network.port", 1820))) {
         
         network->waitForWorld();
-        playerManager = new PlayerManager(network->getID());
+        clientData = new ClientData(network->getID());
+        playerManager = new PlayerManager(network->getID(), worldManager);
     }
     else {
-        playerManager = new PlayerManager(0);
+        clientData = new ClientData();
+        playerManager = new PlayerManager(0, worldManager);
     }
-    worldManager = new Object::WorldManager();
+    paintSubsystem = new Paint::PaintSubsystem(worldManager, 20);
     
-    inputManager = new InputManager(playerManager);
+    inputManager = new InputManager(clientData, playerManager);
     
     cameraObject->setPlayerManager(playerManager);
     
@@ -299,6 +303,7 @@ void SDLMain::run() {
         
         handleJoystick();
         inputManager->advanceToNextFrame();
+        paintSubsystem->doStep(SDL_GetTicks());
         
         cameraObject->doStep(SDL_GetTicks());
         
@@ -408,9 +413,9 @@ void SDLMain::render() {
 	//Pass the camera to the renderer for culling
 	renderer->setCamera(cameraObject->camera);
 
-    //Render players
-    playerManager->preRender();
-    playerManager->render(renderer);
+    //Render most of the world
+    worldManager->getWorld()->preRender();
+    worldManager->getWorld()->getRenderableObject()->render(renderer);
 	
 	//Render the scene
 	rootRenderable->render(renderer);

@@ -3,6 +3,7 @@
 
 #include "object/Player.h"
 #include "object/PlayerList.h"
+#include "object/WorldManager.h"
 
 #include "physics/Suspension.h"
 
@@ -21,7 +22,7 @@ namespace SDL {
 class PlayerManager {
 private:
     int id;
-    Object::PlayerList *playerList;
+    Object::WorldManager *worldManager;
     Physics::Suspension suspension;
 private:
     class PlayerActionHandler
@@ -44,14 +45,11 @@ private:
         virtual void observe(Event::UpdatePlayerList *update);
     };
 public:
-    PlayerManager(int id);
+    PlayerManager(int id, Object::WorldManager *worldManager);
     ~PlayerManager();
     
     void applySuspension(Render::RenderManager *renderManager);
     
-    void preRender();
-    void render(Render::RenderManager *renderManager);
-
 protected:
     void usePlayerList(Object::PlayerList *playerList);
 public:

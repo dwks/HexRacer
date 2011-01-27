@@ -10,11 +10,13 @@
 
 #include "event/PaintEvent.h"
 
+#include "settings/SettingsManager.h"
+
 namespace Project {
 namespace SDL {
 
-InputManager::InputManager(PlayerManager *playerManager)
-    : playerManager(playerManager) {
+InputManager::InputManager(ClientData *clientData, PlayerManager *playerManager)
+    : playerManager(playerManager), clientData(clientData) {
     
     for(std::size_t x = 0; x < sizeof keyDown / sizeof *keyDown; x ++) {
         keyDown[x] = false;
@@ -93,27 +95,47 @@ void InputManager::advanceToNextFrame() {
             painting = !painting;
             erasing = false;
             paint = (paint + 1) % 8;
+            
+            if(painting) {
+                EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
+                    Event::TogglePainting::PAINTING));
+            }
+            else {
+                EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
+                    Event::TogglePainting::NOTHING));
+            }
         }
         if(keyDown[SDLK_o]) {
             keyDown[SDLK_o] = false;
             
             erasing = !erasing;
             painting = false;
+            
+            if(erasing) {
+                EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
+                    Event::TogglePainting::ERASING));
+            }
+            else {
+                EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
+                    Event::TogglePainting::NOTHING));
+            }
         }
         
         static double PAINTING_RADIUS = 1.5;
         
-        if(painting) {
-            EMIT_EVENT(new Event::PaintEvent(
-                playerManager->getPlayer()->getPosition(),
-                PAINTING_RADIUS,
-                paint));
-        }
-        if(erasing) {
-            EMIT_EVENT(new Event::PaintEvent(
-                playerManager->getPlayer()->getPosition(),
-                PAINTING_RADIUS,
-                -1));
+        if(GET_SETTING("render.paint.legacypaint", 0)) {
+            if(painting) {
+                EMIT_EVENT(new Event::PaintEvent(
+                    playerManager->getPlayer()->getPosition(),
+                    PAINTING_RADIUS,
+                    paint));
+            }
+            if(erasing) {
+                EMIT_EVENT(new Event::PaintEvent(
+                    playerManager->getPlayer()->getPosition(),
+                    PAINTING_RADIUS,
+                    -1));
+            }
         }
     }
 }

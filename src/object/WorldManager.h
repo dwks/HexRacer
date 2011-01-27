@@ -22,8 +22,12 @@ public:
     WorldManager(World *world, PlayerList *playerList);
     
     World *getWorld() { return world; }
+    PlayerList *getPlayerList() { return playerList; }
     
     Player *getPlayer(int id);
+    
+    void usePlayerList(PlayerList *playerList);
+    void initForClient(int id);
 };
 
 }  // namespace Object

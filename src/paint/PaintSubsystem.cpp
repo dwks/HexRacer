@@ -16,6 +16,7 @@ PaintSubsystem::PaintSubsystem(Object::WorldManager *worldManager,
     unsigned long tickTime)
     : TimedSubsystem(tickTime), worldManager(worldManager) {
     
+    ADD_OBSERVER(new TogglePaintingHandler(this));
 }
 
 void PaintSubsystem::setPainting(int id,

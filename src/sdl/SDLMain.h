@@ -10,6 +10,7 @@
 #include "NetworkPortal.h"
 #include "PlayerManager.h"
 #include "InputManager.h"
+#include "ClientData.h"
 #include "physics/PhysicsWorld.h"
 #include "render/RenderManager.h"
 #include "render/Shader.h"
@@ -21,6 +22,7 @@
 
 #include "paint/PaintManager.h"
 #include "paint/PaintGenerator.h"
+#include "paint/PaintSubsystem.h"
 
 #include "event/ObserverList.h"
 #include "event/TypedObserver.h"
@@ -52,6 +54,7 @@ private:
     Object::WorldManager *worldManager;
     Physics::PhysicsWorld *physicsWorld;
     Render::MeshGroup *test_terrain;
+    ClientData *clientData;
     
 	Render::MeshLoader *meshLoader;
 	Render::RenderManager *renderer;
@@ -62,6 +65,7 @@ private:
 
 	Paint::PaintManager *paintManager;
 	vector<Paint::PaintCell*> paintCells;
+    Paint::PaintSubsystem *paintSubsystem;
 private:
     class CameraObserver : public Event::TypedObserver<Event::CameraMovement> {
     private:

@@ -48,101 +48,42 @@ void PlayerManager::UpdatePlayerListHandler::observe(
     manager->usePlayerList(update->getPlayerList());
 }
 
-PlayerManager::PlayerManager(int id) : id(id) {
-    Object::Player *player = new Object::Player(id, INITIAL_CAR_LOCATION);
+PlayerManager::PlayerManager(int id, Object::WorldManager *worldManager)
+    : id(id), worldManager(worldManager) {
     
-    playerList = new Object::PlayerList();
-    playerList->addPlayer(player);
+    worldManager->initForClient(id);
     
     ADD_OBSERVER(new PlayerActionHandler(this));
     ADD_OBSERVER(new UpdatePlayerListHandler(this));
 }
 
 PlayerManager::~PlayerManager() {
-    delete playerList;
+    
 }
 
 void PlayerManager::applySuspension(Render::RenderManager *renderManager) {
-    suspension.applySuspension(playerList, renderManager);
+    suspension.applySuspension(worldManager->getPlayerList(), renderManager);
 }
 
-void PlayerManager::preRender() {
-    Object::PlayerList::IteratorType it = playerList->getIterator();
-    while(it.hasNext()) {
-        Object::Player *player = it.next();
-        player->preRender();
-    }
-}
-
-void PlayerManager::render(Render::RenderManager *renderManager) {
-    Object::PlayerList::IteratorType it = playerList->getIterator();
+/*void PlayerManager::render(Render::RenderManager *renderManager) {
+    Object::PlayerList::IteratorType it
+        = worldManager->getPlayerList()->getIterator();
     while(it.hasNext()) {
         Object::Player *player = it.next();
         player->getRenderableObject()->render(renderManager);
     }
-}
-
-#if 0
-void PlayerManager::render(Render::RenderManager *renderManager) {
-    Object::PlayerList::IteratorType it = playerList->getIterator();
-    while(it.hasNext()) {
-        Object::Player *player = it.next();
-        
-        Render::RenderableObject *renderable = player->getRenderableObject();
-        if(!renderable) {
-            Render::RenderList *renderList = new Render::RenderList();
-            renderable = renderList;
-            
-            Render::MeshGroup* player_cube_mesh
-                = Render::MeshLoader::getInstance()->getModelByName("playerCube");
-            renderList->addRenderable(player_cube_mesh);
-            
-            renderList->getRenderProperties()->addShaderParameter(
-				new Render::ShaderUniformVector4("playerColor", Render::ColorConstants::playerColor(player->getID())));
-        }
-        
-        // first if, then second if
-        
-        if(renderable) {
-            //Math::Point origin = player->getPosition();
-            //Math::Matrix matrix = Math::Matrix::getTranslationMatrix(origin);
-            Math::Matrix matrix = player->getTransformation();
-            
-            // original size of model is 2x2, scale appropriately
-            matrix = matrix
-                * Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0));
-			
-            
-			//btRigidBody* body = player->getPhysicalObject()->getPrimaryRigidBody();
-			//btQuaternion quat = body->getOrientation();
-            
-            renderable->getRenderProperties()->setTransformation(matrix);
-            renderable->render(renderManager);
-        }
-    }
-}
-#endif
+}*/
 
 void PlayerManager::usePlayerList(Object::PlayerList *playerList) {
-#if 1
-    delete this->playerList;
-    this->playerList = playerList;
-#else
-    Object::PlayerList::IteratorType it = playerList->getIterator();
-    while(it.hasNext()) {
-        Object::Player *player = it.next();
-        
-        //player->getPhysicalObject()->
-    }
-#endif
+    worldManager->usePlayerList(playerList);
 }
 
 Object::Player *PlayerManager::getPlayer() {
-    return playerList->getPlayer(id);
+    return worldManager->getPlayerList()->getPlayer(id);
 }
 
 Object::Player *PlayerManager::getPlayer(int id) {
-    return playerList->getPlayer(id);
+    return worldManager->getPlayerList()->getPlayer(id);
 }
 
 }  // namespace SDL
