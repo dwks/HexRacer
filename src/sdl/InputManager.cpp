@@ -81,6 +81,10 @@ void InputManager::advanceToNextFrame() {
         EMIT_EVENT(new Event::SetDebugDrawing(debug));
     }
     
+    if(keyDown[SDLK_p]) {
+        
+    }
+#if 0
     {
         static int paint = 0;
         static bool painting = false;
@@ -115,6 +119,7 @@ void InputManager::advanceToNextFrame() {
                 -1));
         }
     }
+#endif
 }
 
 }  // namespace SDL

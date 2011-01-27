@@ -141,5 +141,9 @@ Object::Player *PlayerManager::getPlayer() {
     return playerList->getPlayer(id);
 }
 
+Object::Player *PlayerManager::getPlayer(int id) {
+    return playerList->getPlayer(id);
+}
+
 }  // namespace SDL
 }  // namespace Project

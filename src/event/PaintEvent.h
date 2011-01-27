@@ -10,16 +10,6 @@ namespace Event {
 
 class PaintEvent : public EventBase {
 private:
-    friend class boost::serialization::access;
-    
-    template <typename Archive>
-    void serialize(Archive &ar, const unsigned version) {
-        ar & boost::serialization::base_object<EventBase>(*this);
-        ar & point;
-        ar & radius;
-        ar & colour;
-    }
-private:
     Math::Point point;
     double radius;
     int colour;

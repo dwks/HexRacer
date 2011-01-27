@@ -56,6 +56,7 @@ protected:
     void usePlayerList(Object::PlayerList *playerList);
 public:
     Object::Player *getPlayer();
+    Object::Player *getPlayer(int id);
 };
 
 }  // namespace SDL
