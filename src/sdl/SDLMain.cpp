@@ -176,8 +176,8 @@ void SDLMain::run() {
     
 	//Create some lights
 	Render::Light* light = new Render::Light(Math::Point(1.0f, 2.0f, -1.0f));
-	//light->setHasAttenuation(false);
-	//light->setAmbient(OpenGL::Color(0.1, 0.1, 0.1));
+	light->setHasAttenuation(false);
+	light->setAmbient(OpenGL::Color(0.5, 0.5, 0.5));
 	light->setStrength(20.0f);
 	lightManager->addLight(light);
 

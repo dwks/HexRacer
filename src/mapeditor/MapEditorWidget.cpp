@@ -34,12 +34,13 @@ MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget,
 
 	perspectiveCameraHeight = 0.0;
 
-	selectPending = false;
-
 	map = new HRMap();
 
 	editObjectType = MapObject::LIGHT;
 	selectedObject = NULL;
+	editMode = EDIT_TRANSLATE;
+
+	cameraMovedSinceClick = false;
 
 	collisionTree = new BSPTree3D(BoundingBox3D(), BSPTree3D::MIN_OVERLAP);
 }
@@ -66,6 +67,15 @@ void MapEditorWidget::initializeGL() {
 	gluSphere(quadric, MAP_EDITOR_LIGHT_SPHERE_RADIUS, 12, 12);
 	glEndList();
 	gluDeleteQuadric(quadric);
+
+	hudCircleList = glGenLists(1);
+	glNewList(hudCircleList, GL_COMPILE);
+	int vertices = 18;
+	for (int i = 0; i <= vertices; i++) {
+		double angle = (double) i / (double) vertices * PI * 2.0;
+		glVertex3f(cos(angle), sin(angle), 0.0f);
+	}
+	glEndList();
 
 	renderer = new RenderManager();
 	renderer->loadShadersFile("shaders.txt");
@@ -96,11 +106,6 @@ void MapEditorWidget::paintGL() {
 
 	camera->glLookAt();
 
-	if (selectPending) {
-		selectObject(selectU, selectV);
-		selectPending = false;
-	}
-
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -111,13 +116,12 @@ void MapEditorWidget::paintGL() {
 		lightManager->activateNearFocalPoint(camera->getLookPosition());
 		//Activate all lights visible to the camera
 		lightManager->activateIntersectingLights(*camera->getFrustrum());
-		//Render the active lights
-		//lightManager->drawActiveLightSpheres();
 		glEnable(GL_LIGHTING);
 	}
 
 	renderer->setCubeMap(map->getCubeMap());
 	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_COLOR_MATERIAL);
 
 	RenderList* rootRenderable = new RenderList();
 	if (!advancedRendering) {
@@ -178,19 +182,63 @@ void MapEditorWidget::paintGL() {
 	glLoadIdentity();
 	glOrtho(0.0f, viewWidth, 0.0f, viewHeight, 2.0f, -2.0f);
 
-	//Draw Precision Scale
-	glEnable(GL_POINT_SMOOTH);
 	glDepthMask(GL_FALSE);
+
+	//Draw Colors
+
+	if (selectedObject && selectedObject->hasColors()) {
+
+		double r = MAP_EDITOR_COLOR_DISPLAY_RADIUS;
+
+		for (int i = 0; i < 3; i++) {
+
+			glPushMatrix();
+			glTranslatef(r, viewHeight-r*(2*i+1), 0.0f);
+			glScalef(r, r, r);
+			
+			Color::glColor(selectedObject->getColor(i));
+			glBegin(GL_POLYGON);
+			glCallList(hudCircleList);
+			glEnd();
+			Color::glColor(Color::WHITE);
+
+			glBegin(GL_LINE_STRIP);
+			glCallList(hudCircleList);
+			glEnd();
+
+			glPopMatrix();
+
+		}
+
+	}
+
+	//Draw Precision Scale Filled
 	glEnable(GL_BLEND);
 
-	glPointSize(precisionScale*PRECISION_SCALE_DRAW_SCALE);
+	Color::glColor(PRECISION_SCALE_HUD_DISC_COLOR, 0.5f);
+	glPushMatrix();
+	
+	glTranslatef(viewWidth-40, viewHeight-40, 0.0f);
+	float scale = precisionScale*PRECISION_SCALE_DRAW_SCALE;
+	glScalef(scale, scale, scale);
 
-	Color::glColor(Color(0.5f, 0.5f, 0.5f, 0.5f));
-	glBegin(GL_POINTS);
-	glVertex3f(viewWidth-40, viewHeight-40, 0.0f);
+	glBegin(GL_POLYGON);
+	glCallList(hudCircleList);
+	glEnd();
+	glPopMatrix();
+
+	//Draw Precision Scale Unit Outline
+
+	Color::glColor(PRECISION_SCALE_HUD_CIRCLE_COLOR);
+	
+	glTranslatef(viewWidth-40, viewHeight-40, 0.0f);
+	scale = PRECISION_SCALE_DRAW_SCALE;
+	glScalef(scale, scale, scale);
+
+	glBegin(GL_LINE_STRIP);
+	glCallList(hudCircleList);
 	glEnd();
 
-	glPointSize(1.0f);
 
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
@@ -211,16 +259,7 @@ void MapEditorWidget::mouseClicked(Qt::MouseButton button, Point click_position,
 		trackball->setMouseStartAt(click_position);
 	}
 	else if (button == MAP_EDITOR_EDIT_BUTTON) {
-		if (modifiers & MAP_EDITOR_CREATE_MODIFIER) {
-			createObject(click_position.getU(), click_position.getV());
-		}
-		else {
-			//selectObject(click_position.getU(), click_position.getV());
-			selectPending = true;
-			selectU = click_position.getU();
-			selectV = click_position.getV();
-			updateGL();
-		}
+		cameraMovedSinceClick = false;
 	}
 
 }
@@ -240,11 +279,56 @@ void MapEditorWidget::mouseDragged(Qt::MouseButton button, Point current_positio
 			updateGL();
 		}
 	}
+	else if (button == MAP_EDITOR_EDIT_BUTTON && selectedObject) {
+		bool z_edit = (modifiers & MAP_EDITOR_Z_EDIT_MODIFIER);
+		if (editMode == EDIT_TRANSLATE) {
+			Point translation;
+			if (z_edit) {
+				if (camera->getCameraType() == Camera::ORTHOGRAPHIC) {
+					translation = camera->getLookDirection()
+						*MAP_EDITOR_Z_TRANSLATE_SCALE*delta.getV()*precisionScale;
+				}
+				else {
+					translation = (selectedObject->getPosition()-camera->getPosition()).normalized()
+						*MAP_EDITOR_Z_TRANSLATE_SCALE*delta.getV()*precisionScale;
+				}
+			}
+			else {
+				double translate_u_scale;
+				double translate_v_scale;
+				if (camera->getCameraType() == Camera::ORTHOGRAPHIC) {
+					translate_u_scale = camera->getOrthoWidth();
+					translate_v_scale = camera->getOrthoHeight();
+				}
+				else {
+					double z = camera->getPosition().distance(selectedObject->getPosition());
+					//double z = (selectedObject->getPosition()-camera->getPosition()).dotProduct(camera->getLookDirection());
+					translate_u_scale = z*camera->getAspect();
+					translate_v_scale = z;
+				}
+				translation = camera->getRightDirection()*delta.getU()*translate_u_scale*precisionScale
+					+camera->getUpDirection()*delta.getV()*translate_v_scale*precisionScale;
+			}
+			translateSelectedObject(translation);
+		}
+		updateGL();
+	}
 
 }
 
 void MapEditorWidget::mouseReleased(Qt::MouseButton button, Point release_position, Point click_position, Qt::KeyboardModifiers modifiers) {
-	bool moved = release_position.distanceSquared(click_position) > MAP_EDITOR_NO_DRAG_CLICK_THRESHHOLD;
+	bool moved = cameraMovedSinceClick || (release_position.distanceSquared(click_position) >= MAP_EDITOR_NO_DRAG_CLICK_THRESHHOLD);
+
+	if (button == MAP_EDITOR_EDIT_BUTTON && !moved) {
+		if (modifiers & MAP_EDITOR_CREATE_MODIFIER) {
+			createObject(click_position.getU(), click_position.getV());
+		}
+		else {
+			selectObject(click_position.getU(), click_position.getV());
+			updateGL();
+		}
+	}
+	
 }
 void MapEditorWidget::wheelMoved(bool up, Qt::KeyboardModifiers modifiers) {
 
@@ -324,6 +408,11 @@ void MapEditorWidget::updateCamera() {
 
 void MapEditorWidget::translateCamera(Point translation) {
 	camera->translate(translation);
+	if (mouse_pressed[mouseButtonToIndex(MAP_EDITOR_EDIT_BUTTON)] &&
+		selectedObject && editMode == EDIT_TRANSLATE) {
+		translateSelectedObject(translation);
+	}
+	cameraMovedSinceClick = true;
 	updateGL();
 }
 
@@ -460,6 +549,7 @@ void MapEditorWidget::setOrthoView(bool enabled) {
 
 void MapEditorWidget::setShowPaint(bool enabled) {
 	showPaint = enabled;
+	updateGL();
 }
 
 void MapEditorWidget::generatePaint() {
@@ -468,8 +558,14 @@ void MapEditorWidget::generatePaint() {
 }
 
 void MapEditorWidget::setMapObjectType(MapObject::ObjectType type) {
-	editObjectType = type;
-	updateGL();
+	if (type != editObjectType) {
+		setSelectedObject(NULL);
+		editObjectType = type;
+		updateGL();
+	}
+}
+void MapEditorWidget::setEditMode(EditMode mode) {
+	editMode = mode;
 }
 void MapEditorWidget::createObject(double u, double v) {
 	switch (editObjectType) {
@@ -485,21 +581,32 @@ void MapEditorWidget::createObject(double u, double v) {
 
 	updateGL();
 }
-void MapEditorWidget::selectObject(double u, double v) {
+void MapEditorWidget::selectObject(double u, double v, bool rerender) {
 
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	int type_index = static_cast<int>(editObjectType);
 
-	renderObjects(editObjectType, true);
+	if (rerender) {
+		camera->glProjection();
 
-	QImage frame_buffer = grabFrameBuffer();
-	QRgb pixel = frame_buffer.pixel(u*frame_buffer.width(), (1.0-v)*frame_buffer.height());
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+
+		camera->glLookAt();
+
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		renderObjects(editObjectType, true);
+		objectBuffer = grabFrameBuffer();
+	}
+
+	QRgb pixel = objectBuffer.pixel(u*objectBuffer.width(), (1.0-v)*objectBuffer.height());
 	int selected_index = qRed(pixel)*65536 + qGreen(pixel)*256 + qBlue(pixel);
 	if (selected_index >= 0 && selected_index < mapObjects[type_index].size())
-		selectedObject = mapObjects[type_index][selected_index];
+		setSelectedObject(mapObjects[type_index][selected_index]);
 	else
 		selectedObject = NULL;
+
+	selectedObjectChanged(selectedObject);
 
 }
 void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buffer) {
@@ -534,4 +641,65 @@ void MapEditorWidget::glBufferIndexColor(int buffer_index) {
 	GLubyte g = (buffer_index % 65536)/256;
 	GLubyte b = ((buffer_index % 65536) % 256);
 	glColor3ub(r, g, b);
+}
+string MapEditorWidget::editModeTitle(EditMode mode) {
+	switch (mode) {
+		case EDIT_TRANSLATE:
+			return "Translate";
+		case EDIT_ROTATE:
+			return "Rotate";
+		case EDIT_SCALE:
+			return "Scale";
+		default:
+			return "";
+	}
+}
+void MapEditorWidget::translateSelectedObject(Point translation) {
+	selectedObject->translate(translation);
+	Point pos = selectedObject->getPosition();
+	selectedPositionXChanged(pos.getX());
+	selectedPositionYChanged(pos.getY());
+	selectedPositionZChanged(pos.getZ());
+}
+
+void MapEditorWidget::setSelectedPositionX(double x) {
+	if (selectedObject) {
+		selectedObject->setPositionCoord(x, X_AXIS);
+		updateGL();
+	}
+}
+void MapEditorWidget::setSelectedPositionY(double y) {
+	if (selectedObject) {
+		selectedObject->setPositionCoord(y, Y_AXIS);
+		updateGL();
+	}
+}
+void MapEditorWidget::setSelectedPositionZ(double z) {
+	if (selectedObject) {
+		selectedObject->setPositionCoord(z, Z_AXIS);
+		updateGL();
+	}
+}
+void MapEditorWidget::setSelectedObject(MapObject* object) {
+	selectedObject = object;
+	if (selectedObject) {
+		Point pos = selectedObject->getPosition();
+		selectedPositionXChanged(pos.getX());
+		selectedPositionYChanged(pos.getY());
+		selectedPositionZChanged(pos.getZ());
+	}
+	selectedObjectChanged(object);
+}
+Color MapEditorWidget::getSelectedColor(int color_index) {
+	if (selectedObject) {
+		return selectedObject->getColor(color_index);
+	}
+	return Color();
+}
+
+void MapEditorWidget::setSelectedColor(int color_index, Color color) {
+	if (selectedObject) {
+		selectedObject->setColor(color_index, color);
+	}
+	updateGL();
 }

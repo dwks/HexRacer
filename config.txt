@@ -1,7 +1,7 @@
 ################
 # Settings for the project
 
-map = models/testterrain.obj
+map = models/testtrack.obj
 #map = models/terrain2.obj
 
 ########
@@ -38,13 +38,13 @@ physics.driving.sidewaysdrag      = 3.0
 ### Rendering settings
 
 # Testing: generate paint cells (takes some time)
-render.paint.enabled = 1
+render.paint.enabled = 0
 
 # Rendering quality
 #    0 = low
 #    1 = medium
 #    2 = high
-render.quality = 2
+render.quality = 0
 
 ########
 ### Network settings
