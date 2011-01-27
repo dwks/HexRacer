@@ -12,8 +12,9 @@ void PaintSubsystem::TogglePaintingHandler::observe(
     subsystem->setPainting(toggle->getID(), toggle->getPaintType());
 }
 
-PaintSubsystem::PaintSubsystem(unsigned long tickTime)
-    : TimedSubsystem(tickTime) {
+PaintSubsystem::PaintSubsystem(Object::WorldManager *worldManager,
+    unsigned long tickTime)
+    : TimedSubsystem(tickTime), worldManager(worldManager) {
     
 }
 
@@ -32,23 +33,23 @@ void PaintSubsystem::doAction(unsigned long currentTime) {
         int id = (*i).first;
         Event::TogglePainting::PaintType type = (*i).second;
         
-        /*switch(type) {
+        switch(type) {
         case Event::TogglePainting::ERASING:
             EMIT_EVENT(new Event::PaintEvent(
-                playerManager->getPlayer(id)->getPosition(),
+                worldManager->getPlayer(id)->getPosition(),
                 PAINTING_RADIUS,
                 -1));
             break;
         case Event::TogglePainting::PAINTING:
             EMIT_EVENT(new Event::PaintEvent(
-                playerManager->getPlayer(id)->getPosition(),
+                worldManager->getPlayer(id)->getPosition(),
                 PAINTING_RADIUS,
                 id));
             break;
         default:
         case Event::TogglePainting::NOTHING:
             break;
-        }*/
+        }
     }
 }
 

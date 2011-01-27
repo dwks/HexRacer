@@ -76,13 +76,16 @@ void SDLMain::resizeGL(int width, int height) {
     // use perspective projection
     //double aspect_ratio = static_cast<double>(width) / height;
     //gluPerspective(FIELD_OF_VIEW, aspect_ratio, 0.01, 100.0);
-	cameraObject->camera->setAspect(static_cast<double>(width)/static_cast<double>(height));
-	cameraObject->camera->glProjection();
+    if(cameraObject) {
+        cameraObject->camera->setAspect(
+            static_cast<double>(width)/static_cast<double>(height));
+        cameraObject->camera->glProjection();
+    }
     
     glMatrixMode(GL_MODELVIEW);
 }
 
-void SDLMain::run() {
+void SDLMain::initSDL() {
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
@@ -102,90 +105,104 @@ void SDLMain::run() {
     
     projector.setCurrentDimensions(Point2D(width, height));
     
-	simpleTrackball = new OpenGL::SimpleTrackball();
+    // camera stuff follows
     
-	//Initialize the camera
-        cameraObject = new Object::CameraObject();
-	cameraObject->camera->setFieldOfViewDegrees(60.0f);
-	cameraObject->camera->setPosition(Point(0.0f, 2.0f, -4.0f));
-	cameraObject->camera->setFarPlane(VIEW_DISTANCE);
-	updateCamera();
+    simpleTrackball = new OpenGL::SimpleTrackball();
     
+    cameraObject = new Object::CameraObject();
+    cameraObject->camera->setFieldOfViewDegrees(60.0f);
+    cameraObject->camera->setPosition(Point(0.0f, 2.0f, -4.0f));
+    cameraObject->camera->setFarPlane(VIEW_DISTANCE);
+    updateCamera();
+    
+    // this should be called after the camera has been created so that it gets
+    // the correct aspect ratio
     resizeGL(width, height);
+}
+
+void SDLMain::initOpenGL() {
+    glewInit();
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_RESCALE_NORMAL);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
+}
+
+void SDLMain::initRenderer() {
+    //Instantiate the rendering objects
+    meshLoader = new Render::MeshLoader();
+    renderer = new Render::RenderManager();
+    lightManager = renderer->getLightManager();
+    rootRenderable = new Render::RenderList();
     
-    joystick = new JoystickManager();
-    joystick->open();
+    renderer->loadShadersFile("shaders.txt");
     
-	glewInit();
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_RESCALE_NORMAL);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
-    
-	//Instantiate the rendering objects
-	meshLoader = new Render::MeshLoader();
-	renderer = new Render::RenderManager();
-	lightManager = renderer->getLightManager();
-	rootRenderable = new Render::RenderList();
-    
-	renderer->loadShadersFile("shaders.txt");
-    
-	//Load the model
-	meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
-	Render::RenderableObject *object
+    //Load the model
+    meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
+    Render::RenderableObject *object
         = meshLoader->loadOBJ("playerCube", "models/playercube.obj");
     object->getRenderProperties()->setTransformation(
         Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0)));
     
-	//Add the test terrain
-	Render::MeshGroup* test_terrain = meshLoader->getModelByName("testTerrain");
+    //Add the test terrain
+    test_terrain = meshLoader->getModelByName("testTerrain");
     
-	paintManager = new Paint::PaintManager();
+    paintManager = new Paint::PaintManager();
 
-	testPaintColor = 0;
+    testPaintColor = 0;
     if(GET_SETTING("render.paint.enabled", 1)) {
         Paint::PaintGenerator paint_gen(test_terrain->getTriangles());
         paintCells = paint_gen.getPaintCells();
-		paintManager->setPaintCells(paintCells);
+        paintManager->setPaintCells(paintCells);
     }
 
-	Render::BackgroundRenderable* background = new Render::BackgroundRenderable(cameraObject->camera);
-	background->getRenderProperties()->setWantsShaderName("backgroundShader");
+    Render::BackgroundRenderable* background = new Render::BackgroundRenderable(cameraObject->camera);
+    background->getRenderProperties()->setWantsShaderName("backgroundShader");
 
-	rootRenderable->addRenderable(test_terrain);
-	rootRenderable->addRenderable(background);
+    rootRenderable->addRenderable(test_terrain);
+    rootRenderable->addRenderable(background);
     
-	/*
-	rootRenderable->getRenderProperties()->setColor(OpenGL::Color::VIOLET);
-	rootRenderable->getRenderProperties()->setColorOverride(true);
-	rootRenderable->getRenderProperties()->setShaderOverride(true);
-	rootRenderable->getRenderProperties()->setTextureOverride(true);
-	*/
+    /*
+    rootRenderable->getRenderProperties()->setColor(OpenGL::Color::VIOLET);
+    rootRenderable->getRenderProperties()->setColorOverride(true);
+    rootRenderable->getRenderProperties()->setShaderOverride(true);
+    rootRenderable->getRenderProperties()->setTextureOverride(true);
+    */
     
-	Render::TextureCube* background_texture = new Render::TextureCube(
-		"models/starfield.png",
-		"models/starfield.png",
-		"models/starfield.png",
-		"models/starfield.png",
-		"models/starfield.png",
-		"models/starfield.png");
+    Render::TextureCube* background_texture = new Render::TextureCube(
+        "models/starfield.png",
+        "models/starfield.png",
+        "models/starfield.png",
+        "models/starfield.png",
+        "models/starfield.png",
+        "models/starfield.png");
 
-	renderer->setCubeMap(background_texture);
+    renderer->setCubeMap(background_texture);
     
-	//Create some lights
-	Render::Light* light = new Render::Light(Math::Point(1.0f, 2.0f, -1.0f));
-	light->setHasAttenuation(false);
-	light->setAmbient(OpenGL::Color(0.5, 0.5, 0.5));
-	light->setStrength(20.0f);
-	lightManager->addLight(light);
+    //Create some lights
+    Render::Light* light = new Render::Light(Math::Point(1.0f, 2.0f, -1.0f));
+    light->setHasAttenuation(false);
+    light->setAmbient(OpenGL::Color(0.5, 0.5, 0.5));
+    light->setStrength(20.0f);
+    lightManager->addLight(light);
 
-	light = new Render::Light(Math::Point(7.0f, 2.5f, 3.0f));
-	light->setDiffuse(OpenGL::Color::INDIGO);
-	light->setSpecular(OpenGL::Color::INDIGO);
-	light->setStrength(10.0f);
-	lightManager->addLight(light);
+    light = new Render::Light(Math::Point(7.0f, 2.5f, 3.0f));
+    light->setDiffuse(OpenGL::Color::INDIGO);
+    light->setSpecular(OpenGL::Color::INDIGO);
+    light->setStrength(10.0f);
+    lightManager->addLight(light);
+}
+
+void SDLMain::run() {
+    initSDL();
+    
+    joystick = new JoystickManager();
+    joystick->open();
+    
+    initOpenGL();
+    initRenderer();
     
     // this must happen before Players are created
     physicsWorld = new Physics::PhysicsWorld();
@@ -202,6 +219,7 @@ void SDLMain::run() {
     else {
         playerManager = new PlayerManager(0);
     }
+    worldManager = new Object::WorldManager();
     
     inputManager = new InputManager(playerManager);
     
@@ -321,8 +339,8 @@ void SDLMain::run() {
     delete joystick;
     delete inputManager;
     delete network;
-
-	delete background;
+    
+	//delete background;
 }
 
 void SDLMain::handleJoystick() {

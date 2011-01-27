@@ -22,7 +22,12 @@ private:
     typedef std::vector<ObjectBase *> objectListType;
     objectListType objectList;
 public:
+    // the world always has an ID of 0
+    World() : AbstractObject(0) {}
+    
     void addObject(ObjectBase *object);
+    
+    virtual void preRender();
     
     virtual Physics::PhysicalObject *getPhysicalObject()
         { return NULL; }

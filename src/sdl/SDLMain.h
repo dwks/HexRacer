@@ -17,6 +17,8 @@
 #include "render/RenderList.h"
 #include "render/BackgroundRenderable.h"
 
+#include "object/WorldManager.h"
+
 #include "paint/PaintManager.h"
 #include "paint/PaintGenerator.h"
 
@@ -38,8 +40,8 @@ private:
     //OpenGL::Trackball *trackball;
 	OpenGL::SimpleTrackball *simpleTrackball;
 	OpenGL::Camera *camera;
-        Object::CameraObject *cameraObject;
-        
+    Object::CameraObject *cameraObject;
+    
     bool quit;
     
     Projector projector;
@@ -47,7 +49,9 @@ private:
     InputManager *inputManager;
     NetworkPortal *network;
     PlayerManager *playerManager;
+    Object::WorldManager *worldManager;
     Physics::PhysicsWorld *physicsWorld;
+    Render::MeshGroup *test_terrain;
     
 	Render::MeshLoader *meshLoader;
 	Render::RenderManager *renderer;
@@ -92,7 +96,10 @@ private:
     void renderGrid();
 
 	void updateCamera();
-
+private:
+    void initSDL();
+    void initOpenGL();
+    void initRenderer();
 };
 
 }  // namespace SDL
