@@ -12,6 +12,8 @@ namespace Render {
 class CompositeRenderable
 	: public RenderableObject {
 
+    virtual void preRenderUpdate(const Math::Matrix &transformation);
+    
 	void subRender(RenderManager* manager);
 	virtual std::vector<RenderableObject*> getChildren() = 0;
 

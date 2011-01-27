@@ -17,7 +17,7 @@ namespace Paint {
 		if (_triangles.size() <= 0)
 			return;
 
-		LOG(PAINT, "Generating Paint Cells... ");
+		LOG(PAINT, "Generating Paint Cells...");
 
 		vector<ObjectSpatial*> triangles;
 
@@ -41,7 +41,7 @@ namespace Paint {
 		double start_v = b2D.minV();
 		double end_u = b2D.maxU();
 		double end_v = b2D.maxV();
-
+        
 		//Generate Cells
 		bool even_row = true;
 		for (double v = start_v; v <= end_v; v += cell_half_height) {
@@ -66,7 +66,9 @@ namespace Paint {
 
 			even_row = !even_row;
 		}
-
+        
+        LOG(PAINT, "Generating paint cell vertices ...");
+        
 		//Generate cell vertices
 		for (unsigned int i = 0; i < paintCells.size(); i++) {
 			for (int v = 0; v < PaintCell::CELL_VERTICES; v++) {
@@ -103,7 +105,9 @@ namespace Paint {
 
 			}
 		}
-
+        
+        LOG(PAINT, "Deleting partial paint cells ...");
+        
 		//Delete all paint cells with a missing vertex
 		for (int i = paintCells.size()-1; i >= 0; i--) {
 			bool delete_cell = false;

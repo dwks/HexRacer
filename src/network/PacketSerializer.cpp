@@ -10,6 +10,7 @@
 #include "event/PlayerAction.h"
 #include "event/UpdatePlayerList.h"
 #include "event/PaintEvent.h"
+#include "event/PaintCellsChanged.h"
 
 #include "PacketSerializer.h"
 #include "PointSerializer.h"
@@ -28,6 +29,7 @@ std::string PacketSerializer::packetToString(Packet *packet) {
     out.register_type<Event::PlayerAction>();
     out.register_type<Event::UpdatePlayerList>();
     out.register_type<Event::PaintEvent>();
+    out.register_type<Event::PaintCellsChanged>();
     
     try {
         out << packet;
@@ -52,6 +54,7 @@ Packet *PacketSerializer::stringToPacket(const std::string &string) {
     in.register_type<Event::PlayerAction>();
     in.register_type<Event::UpdatePlayerList>();
     in.register_type<Event::PaintEvent>();
+    in.register_type<Event::PaintCellsChanged>();
     
     Packet *packet;
     try {

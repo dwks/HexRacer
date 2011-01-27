@@ -17,7 +17,7 @@ GeometryDrawing::~GeometryDrawing(void)
 {
 }
 
-void GeometryDrawing::drawObject(ObjectSpatial& object, bool wireframe) {
+void GeometryDrawing::drawObject(const ObjectSpatial& object, bool wireframe) {
 
 	const std::type_info& object_type = typeid(object);
 
@@ -86,14 +86,14 @@ void GeometryDrawing::drawObject(ObjectSpatial& object, bool wireframe) {
 
 }
 
-void GeometryDrawing::drawBoundingObject(Math::BoundingObject& object, bool wireframe) {
+void GeometryDrawing::drawBoundingObject(const Math::BoundingObject& object, bool wireframe) {
 
-	BoundingObject3D* obj_3D = dynamic_cast<BoundingObject3D*>(&object);
+	const BoundingObject3D* obj_3D = dynamic_cast<const BoundingObject3D*>(&object);
 	if (obj_3D) {
 		drawObject(*obj_3D, wireframe);
 		return;
 	}
-	BoundingObject2D* obj_2D = dynamic_cast<BoundingObject2D*>(&object);
+	const BoundingObject2D* obj_2D = dynamic_cast<const BoundingObject2D*>(&object);
 	if (obj_2D) {
 		drawObject(*obj_2D, wireframe);
 		return;
@@ -101,7 +101,7 @@ void GeometryDrawing::drawBoundingObject(Math::BoundingObject& object, bool wire
 
 }
 
-void GeometryDrawing::drawBoundingBox3D(BoundingBox3D& object, bool wireframe) {
+void GeometryDrawing::drawBoundingBox3D(const BoundingBox3D& object, bool wireframe) {
 
 	if (wireframe) {
 
@@ -179,7 +179,7 @@ void GeometryDrawing::drawBoundingBox3D(BoundingBox3D& object, bool wireframe) {
 
 }
 
-void GeometryDrawing::drawBoundingBox2D(BoundingBox2D& object, bool wireframe) {
+void GeometryDrawing::drawBoundingBox2D(const BoundingBox2D& object, bool wireframe) {
 
 	if (wireframe)
 		glBegin(GL_LINE_LOOP);
@@ -192,7 +192,7 @@ void GeometryDrawing::drawBoundingBox2D(BoundingBox2D& object, bool wireframe) {
 	glEnd();
 }
 
-void GeometryDrawing::drawBoundingTriangle2D(Math::BoundingTriangle2D& object, bool wireframe) {
+void GeometryDrawing::drawBoundingTriangle2D(const Math::BoundingTriangle2D& object, bool wireframe) {
 
 	if (wireframe)
 		glBegin(GL_LINE_LOOP);
@@ -206,7 +206,7 @@ void GeometryDrawing::drawBoundingTriangle2D(Math::BoundingTriangle2D& object, b
 
 }
 
-void GeometryDrawing::drawTriangle3D(Math::Triangle3D& object, bool wireframe) {
+void GeometryDrawing::drawTriangle3D(const Math::Triangle3D& object, bool wireframe) {
 
 	if (wireframe)
 		glBegin(GL_LINE_LOOP);
@@ -220,7 +220,7 @@ void GeometryDrawing::drawTriangle3D(Math::Triangle3D& object, bool wireframe) {
 
 }
 
-void GeometryDrawing::drawBoundingPlane3D(Math::BoundingPlane3D& object, bool wireframe) {
+void GeometryDrawing::drawBoundingPlane3D(const Math::BoundingPlane3D& object, bool wireframe) {
 	//Get the plane's tangent and bitangent vector
 	Point tangent;
 	Point bitangent;
@@ -261,13 +261,13 @@ void GeometryDrawing::drawBoundingPlane3D(Math::BoundingPlane3D& object, bool wi
 	}
 }
 
-void GeometryDrawing::drawBoundingConvexHull3D(Math::BoundingConvexHull3D& object, bool wireframe) {
+void GeometryDrawing::drawBoundingConvexHull3D(const Math::BoundingConvexHull3D& object, bool wireframe) {
 	vector<BoundingPlane3D> planes = object.getPlanes();
 	for (unsigned int i = 0; i < planes.size(); i++)
 		drawBoundingPlane3D(planes[i], wireframe);
 }
 
-void GeometryDrawing::drawBoundingSphere(Math::BoundingSphere& object, bool wireframe) {
+void GeometryDrawing::drawBoundingSphere(const Math::BoundingSphere& object, bool wireframe) {
 	GLUquadric* quad = gluNewQuadric();
 	if (wireframe)
 		gluQuadricDrawStyle(quad, GLU_LINE);

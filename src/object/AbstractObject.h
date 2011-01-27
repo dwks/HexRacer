@@ -26,6 +26,8 @@ public:
     
     virtual int getID() const { return id; }
     
+    virtual void preRender();
+    
     virtual Physics::PhysicalObject *getPhysicalObject() = 0;
     virtual Render::RenderableObject *getRenderableObject() = 0;
 };

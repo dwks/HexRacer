@@ -27,6 +27,10 @@ public:
     */
     virtual int getID() const = 0;
     
+    /** Updates the renderable object based on the physical object.
+    */
+    virtual void preRender() = 0;
+    
     /** Returns the physical component of this object.
     */
     virtual Physics::PhysicalObject *getPhysicalObject() = 0;

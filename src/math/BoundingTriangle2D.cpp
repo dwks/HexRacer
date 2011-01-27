@@ -52,12 +52,12 @@ namespace Math {
 	}
 
 	bool BoundingTriangle2D::pointInside(const Point& p) const {
-
+        // all of these actually work, it's just a question of speed.
+#if 1
 		return (Geometry::sameSideOfLine2D(getVertex(0), getVertex(1), getVertex(2), p, projectAxis) &&
 			Geometry::sameSideOfLine2D(getVertex(1), getVertex(2), getVertex(0), p, projectAxis) &&
 			Geometry::sameSideOfLine2D(getVertex(2), getVertex(0), getVertex(1), p, projectAxis));
-
-		/*
+#elif 1
         Point p2D = Point::point2D(p, projectAxis);
         
         Point v1 = getVertex(0) - getVertex(1);
@@ -68,16 +68,72 @@ namespace Math {
 		Point w2 = p2D - getVertex(2);
 		Point w3 = p2D - getVertex(0);
         
-        double d1 = w1.dotProduct(v1);
-        double d2 = w2.dotProduct(v2);
-        double d3 = w3.dotProduct(v3);
+        Point p1 = w1.crossProduct(v1);
+        Point p2 = w2.crossProduct(v2);
+        Point p3 = w3.crossProduct(v3);
         
-        if(d1 <= 0.0 && d2 <= 0.0 && d3 <= 0.0) return true;
-        if (d1 >= 0.0 && d2 >= 0.0 && d3 >= 0.0) return true;
+        if(p2.dotProduct(p1) >= 0 && p2.dotProduct(p3) >= 0) return true;
         
         return false;
-		*/
-
+#else
+        Point p2D;
+        Point projectedVertex[3];
+        
+        switch(projectAxis) {
+        case X_AXIS:
+            p2D = Point(p.getY(), p.getZ());
+            projectedVertex[0] = Point(getVertex(0).getY(), getVertex(0).getZ());
+            projectedVertex[1] = Point(getVertex(1).getY(), getVertex(1).getZ());
+            projectedVertex[2] = Point(getVertex(2).getY(), getVertex(2).getZ());
+            break;
+        case Y_AXIS:
+            p2D = Point(p.getX(), p.getZ());
+            projectedVertex[0] = Point(getVertex(0).getX(), getVertex(0).getZ());
+            projectedVertex[1] = Point(getVertex(1).getX(), getVertex(1).getZ());
+            projectedVertex[2] = Point(getVertex(2).getX(), getVertex(2).getZ());
+            break;
+        case Z_AXIS:
+            p2D = Point::point2D(p, Z_AXIS);
+            projectedVertex[0] = getVertex(0);
+            projectedVertex[1] = getVertex(1);
+            projectedVertex[2] = getVertex(2);
+            break;
+        }
+        
+        bool odd = false;
+        
+        static const int VERTICES = 3;
+        int last = VERTICES - 1;
+        for(int x = 0; x < VERTICES; x ++) {
+            const Point &cur = projectedVertex[x];
+            const Point &prev = projectedVertex[last];
+            
+            bool x_y = cur.getY() < p2D.getY();
+            bool last_y = prev.getY() < p2D.getY();
+            
+            if(x_y != last_y) {
+                if(cur.getX()
+                    + (p2D.getY() - cur.getY()) / (prev.getY() - cur.getY())
+                        * (p2D.getX() - cur.getX()) < p2D.getX()) {
+                    
+                    odd = !odd;
+                }
+            }
+            
+            last = x;
+        }
+        
+        if(odd != (Geometry::sameSideOfLine2D(getVertex(0), getVertex(1), getVertex(2), p, projectAxis) &&
+            Geometry::sameSideOfLine2D(getVertex(1), getVertex(2), getVertex(0), p, projectAxis) &&
+            Geometry::sameSideOfLine2D(getVertex(2), getVertex(0), getVertex(1), p, projectAxis))) {
+            
+            LOG(OPENGL, p2D << " inside " << projectedVertex[0] << "," << projectedVertex[1] << ","
+                << projectedVertex[2]);
+            LOG(OPENGL, "odd is " << odd << " which is incorrect");
+        }
+        
+        return odd;
+#endif
 	}
 
 	bool BoundingTriangle2D::intersects2D(const BoundingObject2D& bounding_obj) const {

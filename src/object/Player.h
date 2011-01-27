@@ -4,13 +4,7 @@
 #include "AbstractObject.h"
 #include "math/Point.h"
 #include "physics/PhysicalPlayer.h"
-//#include "render/RenderList.h"
-
-/*namespace Project {
-namespace Physics {
-class PhysicalPlayer;
-}  // namespace Physics
-}  // namespace Project*/
+#include "render/RenderablePlayer.h"
 
 namespace Project {
 namespace Object {
@@ -20,13 +14,22 @@ private:
     friend class boost::serialization::access;
     
     template <typename Archive>
-    void serialize(Archive &ar, const unsigned version) {
+    void save(Archive &ar, const unsigned version) const {
         ar & boost::serialization::base_object<AbstractObject>(*this);
         ar & physical;
     }
+    
+    template <typename Archive>
+    void load(Archive &ar, const unsigned version) {
+        ar & boost::serialization::base_object<AbstractObject>(*this);
+        ar & physical;
+        initialize();
+    }
+    
+    BOOST_SERIALIZATION_SPLIT_MEMBER()
 private:
     Physics::PhysicalPlayer *physical;
-    Render::RenderableObject *renderable;
+    Render::RenderablePlayer *renderable;
 public:
     Player();
     Player(int id, const Math::Point &origin);
@@ -36,7 +39,7 @@ public:
         { this->physical = physical; }
     virtual Physics::PhysicalObject *getPhysicalObject();
     
-    void setRenderableObject(Render::RenderableObject *renderable)
+    void setRenderableObject(Render::RenderablePlayer *renderable)
         { this->renderable = renderable; }
     virtual Render::RenderableObject *getRenderableObject();
     
@@ -49,6 +52,8 @@ public:
     Math::Point getPosition() const;
     Math::Matrix getTransformation() const;
     void applyForce(const Math::Point &movement, const Math::Point &at);
+    
+    void initialize();
 };
 
 }  // namespace Object

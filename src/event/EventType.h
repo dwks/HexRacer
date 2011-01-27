@@ -21,6 +21,7 @@ public:
         CAMERA_MOVEMENT,
         SET_DEBUG_DRAWING,
         PAINT_EVENT,
+        PAINT_CELLS_CHANGED,
         TYPES
     };
 };

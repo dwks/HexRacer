@@ -22,6 +22,7 @@ public:
     void addClient(Connection::Socket *socket);
     
     void sendPacket(Network::Packet *packet);
+    void sendPacketExcept(Network::Packet *packet, int exception);
     
     Network::Packet *nextPacket(int *whichSocket = NULL);
 };
