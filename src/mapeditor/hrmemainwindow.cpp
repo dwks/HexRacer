@@ -5,6 +5,7 @@
 #include "hrmemainwindow.h"
 #include <stdlib.h>
 #include "MapObject.h"
+#include "LightObject.h"
 
 #ifdef WIN32
     #include <direct.h>
@@ -38,6 +39,10 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	fileMenu->addAction("&Save", mapEditor, SLOT(newFile()), QKeySequence("CTRL+S"));
 	fileMenu->addAction("&Save As", this, SLOT(saveMapFileAs()), QKeySequence("CTRL+ALT+S"));
 
+	//Edit Menu
+	editMenu = new QMenu("&Edit", this);
+	editMenu->addAction("&Delete", mapEditor, SLOT(deleteSelected()), QKeySequence(Qt::Key_Delete));
+
 	//Meshes Menu
 	meshMenu = new QMenu("&Mesh", this);
 
@@ -63,6 +68,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	mapMenu->addAction("&Generate Paint Cells",	mapEditor, SLOT(generatePaint()));
 
 	menuBar->addMenu(fileMenu);
+	menuBar->addMenu(editMenu);
 	menuBar->addMenu(meshMenu);
 	menuBar->addMenu(mapMenu);
 	setMenuBar(menuBar);
@@ -232,14 +238,16 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	lightPropertyFrame = new QFrame(this);
 	QGridLayout* light_layout = new QGridLayout(lightPropertyFrame);
 
-	QDoubleSpinBox* lightStrengthBox = new QDoubleSpinBox(lightPropertyFrame);
-	QCheckBox* attenuationBox = new QCheckBox(lightPropertyFrame);
+	lightStrengthBox = new QDoubleSpinBox(lightPropertyFrame);
+	connect(lightStrengthBox, SIGNAL(valueChanged(double)), mapEditor, SLOT(setLightStrength(double)));
+	lightAttenuationBox = new QCheckBox(lightPropertyFrame);
+	connect(lightAttenuationBox, SIGNAL(toggled(bool)), mapEditor, SLOT(setLightHasAttenuation(bool)));
 
 	light_layout->addWidget(new QLabel("Light", lightPropertyFrame), 0, 0);
 	light_layout->addWidget(new QLabel("Strength", lightPropertyFrame), 1, 0);
 	light_layout->addWidget(lightStrengthBox, 1, 1);
 	light_layout->addWidget(new QLabel("Has Attenuation", lightPropertyFrame), 2, 0);
-	light_layout->addWidget(attenuationBox, 2, 1);
+	light_layout->addWidget(lightAttenuationBox, 2, 1);
 
 	lightPropertyFrame->setLayout(light_layout);
 
@@ -344,21 +352,24 @@ void HRMEMainWindow::selectEditMode(QAction* action) {
 
 void HRMEMainWindow::selectedObjectChanged(MapObject* selected_object) {
 
-	positionPropertyFrame->setVisible(false);
 	positionPropertyFrame->setEnabled(false);
 	colorPropertyFrame->setEnabled(false);
+	lightPropertyFrame->setEnabled(false);
+
+	Light* light;
 
 	if (selected_object) {
-		/*
 		switch (selected_object->getType()) {
 			case MapObject::LIGHT:
-				colorPropertyFrame->setEnabled(true);
+				light = ((LightObject*)selected_object)->getLight();
+				lightStrengthBox->setValue(light->getStrength());
+				lightAttenuationBox->setChecked(light->getHasAttenuation());
+				lightPropertyFrame->setEnabled(true);
 				break;
 
 			default:
 				break;
 		}
-		*/
 		colorPropertyFrame->setEnabled(selected_object->hasColors());
 		positionPropertyFrame->setEnabled(true);
 	}

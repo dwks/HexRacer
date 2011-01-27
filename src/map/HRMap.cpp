@@ -17,6 +17,7 @@ namespace Map {
 
 		trackRenderable = NULL;
 		cubeMap = NULL;
+		collisionTree = NULL;
 
 		for (int i = 0; i < NUM_MESHES; i++) {
 			mapMesh[i] = NULL;
@@ -132,6 +133,8 @@ namespace Map {
 		bgImageZPos = "";
 		bgImageZNeg = "";
 
+		clearCollisionTree();
+
 		for (int i = 0; i < NUM_MESHES; i++) {
 			MeshType type = static_cast<MeshType>(i);
 			if (mapMesh[i] != NULL) {
@@ -165,6 +168,8 @@ namespace Map {
 		MeshLoader::getInstance()->deleteModelByName(meshName(type));
 		mapMesh[static_cast<int>(type)] = MeshLoader::getInstance()->loadOBJ(meshName(type), filename);
 		mapMeshFile[static_cast<int>(type)] = filename;
+		if (type != DECOR)
+			clearCollisionTree();
 	}
 
 	void HRMap::clearMapMesh(HRMap::MeshType type) {
@@ -172,6 +177,9 @@ namespace Map {
 		if (mapMesh[i] != NULL) {
 			MeshLoader::getInstance()->deleteModelByName(meshName(type));
 			mapMesh[i] = NULL;
+			if (type != DECOR) {
+				clearCollisionTree();
+			}
 		}
 		mapMeshFile[i] = "";
 	}
@@ -232,6 +240,49 @@ namespace Map {
 	void HRMap::removeLight(Light* light) {
 		if (Misc::vectorRemoveOneElement(lights, light)) {
 			delete(light);
+		}
+	}
+
+	BSPTree3D* HRMap::getCollisionTree() {
+
+		if (collisionTree == NULL) {
+
+			vector<ObjectSpatial*> collision_triangles;
+
+			BoundingBox3D collision_bound;
+			for (int i = 0; i < NUM_MESHES; i++) {
+				MeshType type = static_cast<MeshType>(i);
+				if (type != DECOR && getMapMesh(type)) {
+					vector<Triangle3D> triangles = getMapMesh(type)->getTriangles();
+					for (unsigned int t = 0; t < triangles.size(); t++) {
+						if (i == 0 && t == 0)
+							collision_bound.setToObject(triangles[i]);
+						else
+							collision_bound.expandToInclude(triangles[i]);
+						collision_triangles.push_back(new Triangle3D(triangles[i]));
+					}
+				}
+			}
+
+			collisionTree = new BSPTree3D(collision_bound, BSPTree3D::MIN_OVERLAP);
+			collisionTree->add(collision_triangles);
+		}
+
+		return collisionTree;
+
+		
+	}
+
+	void HRMap::clearCollisionTree() {
+		if (collisionTree) {
+			vector<ObjectSpatial*> collision_triangles;
+			collisionTree->appendAll(&collision_triangles);
+
+			for (unsigned int i = 0; i < collision_triangles.size(); i++)
+				delete(collision_triangles[i]);
+
+			delete(collisionTree);
+			collisionTree = NULL;
 		}
 	}
 

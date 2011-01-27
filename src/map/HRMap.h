@@ -33,6 +33,8 @@ private:
 	std::vector<Render::Light*> lights;
 	std::vector<Paint::PaintCell*> paintCells;
 
+	Math::BSPTree3D* collisionTree;
+
 public:
 
 	static const int NUM_MESHES = 5;
@@ -47,6 +49,7 @@ public:
 	Render::RenderList* getTrackRenderable() const { return trackRenderable; }
 	Render::TextureCube* getCubeMap() const { return cubeMap; }
 	std::vector<Paint::PaintCell*> getPaintCells() const { return paintCells; }
+	Math::BSPTree3D* getCollisionTree();
 
 	std::vector<Render::Light*> getLights() const { return lights; }
 	void clear();
@@ -62,6 +65,10 @@ public:
 
 	static std::string meshName(MeshType type);
 	static std::string meshTitle(MeshType type);
+
+private:
+
+	void clearCollisionTree();
 
 };
 

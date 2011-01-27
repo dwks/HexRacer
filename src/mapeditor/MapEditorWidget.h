@@ -99,6 +99,7 @@ private:
 
 	void translateSelectedObject(Point translation);
 	void setSelectedObject(MapObject* object);
+	void updateSelectedObjectPosition();
 
 public slots:
 
@@ -115,11 +116,13 @@ public slots:
 	void setMapObjectType(MapObject::ObjectType type);
 	void setEditMode(EditMode mode);
 
+	void deleteSelected();
 	void setSelectedPositionX(double x);
 	void setSelectedPositionY(double y);
 	void setSelectedPositionZ(double z);
-
 	void setSelectedColor(int color_index, Color color);
+	void setLightStrength(double strength);
+	void setLightHasAttenuation(bool has);
 
 signals:
 
