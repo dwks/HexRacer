@@ -28,7 +28,7 @@ namespace Object {
     }
     
     void CameraObject::doAction(unsigned long currentTime) {
-        LOG2(CAMERA, UPDATE, "CameraObject doAction Called\n");
+        //LOG2(CAMERA, UPDATE, "CameraObject doAction Called\n");
         updateCamera();
     }
     
@@ -38,6 +38,11 @@ namespace Object {
         CameraObject::setDestination(playerManager->getPlayer()->getPosition());
         
         camera->setLookPosition(this->destination);
+        
+        // follow right behind the car
+        Math::Point point = playerManager->getPlayer()->getTransformation()
+            * Math::Point(0.0, 3.0, -10.0);
+        camera->setPosition(point);
     }
     
     

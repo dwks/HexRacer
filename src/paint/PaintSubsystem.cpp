@@ -32,7 +32,7 @@ void PaintSubsystem::doAction(unsigned long currentTime) {
         int id = (*i).first;
         Event::TogglePainting::PaintType type = (*i).second;
         
-        switch(type) {
+        /*switch(type) {
         case Event::TogglePainting::ERASING:
             EMIT_EVENT(new Event::PaintEvent(
                 playerManager->getPlayer(id)->getPosition(),
@@ -48,7 +48,7 @@ void PaintSubsystem::doAction(unsigned long currentTime) {
         default:
         case Event::TogglePainting::NOTHING:
             break;
-        }
+        }*/
     }
 }
 
