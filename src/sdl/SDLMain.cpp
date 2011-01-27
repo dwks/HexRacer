@@ -150,17 +150,17 @@ void SDLMain::initRenderer() {
     test_terrain = meshLoader->getModelByName("testTerrain");
     
     paintManager = new Paint::PaintManager();
-
+    
     testPaintColor = 0;
     if(GET_SETTING("render.paint.enabled", 1)) {
         Paint::PaintGenerator paint_gen(test_terrain->getTriangles());
         paintCells = paint_gen.getPaintCells();
         paintManager->setPaintCells(paintCells);
     }
-
+    
     Render::BackgroundRenderable* background = new Render::BackgroundRenderable(cameraObject->camera);
     background->getRenderProperties()->setWantsShaderName("backgroundShader");
-
+    
     rootRenderable->addRenderable(test_terrain);
     rootRenderable->addRenderable(background);
     

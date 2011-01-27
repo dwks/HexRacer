@@ -38,7 +38,7 @@ physics.driving.sidewaysdrag      = 3.0
 ### Rendering settings
 
 # Testing: generate paint cells (takes some time)
-render.paint.enabled = 0
+render.paint.enabled = 1
 
 # Rendering quality
 #    0 = low
