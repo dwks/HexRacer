@@ -39,7 +39,7 @@ public:
     
     void addPlayer(Player *player);
     
-    Player *getPlayer(int p) { return player_list[p]; }
+    Player *getPlayer(int p);
     int getPlayerCount() { return int(player_list.size()); }
     
     IteratorType getIterator() { return IteratorType(player_list); }

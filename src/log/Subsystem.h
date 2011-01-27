@@ -17,6 +17,7 @@ public:
         PHYSICS,
         AUDIO,
         CAMERA,
+        WORLD,
         SUBSYSTEMS
     };
 private:
