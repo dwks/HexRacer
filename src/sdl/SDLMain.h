@@ -4,6 +4,7 @@
 #include "opengl/Trackball.h"
 #include "opengl/SimpleTrackball.h"
 #include "opengl/Camera.h"
+#include "object/CameraObject.h"
 #include "Projector.h"
 #include "JoystickManager.h"
 #include "NetworkPortal.h"
@@ -36,8 +37,9 @@ class SDLMain {
 private:
     //OpenGL::Trackball *trackball;
 	OpenGL::SimpleTrackball *simpleTrackball;
-	OpenGL::Camera  *camera;
-    
+	OpenGL::Camera *camera;
+        Object::CameraObject *cameraObject;
+        
     bool quit;
     
     Projector projector;

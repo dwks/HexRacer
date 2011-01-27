@@ -34,7 +34,6 @@ namespace Project {
 namespace SDL {
 
 void SDLMain::CameraObserver::observe(Event::CameraMovement *event) {
-
     double x = event->getMovement().getX();
     double y = event->getMovement().getY();
     
@@ -42,8 +41,6 @@ void SDLMain::CameraObserver::observe(Event::CameraMovement *event) {
         + camera->getRightDirection() * (x * 0.25f);
     
     camera->translate(translation);
-    
-    //LOG(SDL, "Move camera by " << translation);
 }
 
 void SDLMain::QuitObserver::observe(Event::QuitEvent *event) {
@@ -79,8 +76,8 @@ void SDLMain::resizeGL(int width, int height) {
     // use perspective projection
     //double aspect_ratio = static_cast<double>(width) / height;
     //gluPerspective(FIELD_OF_VIEW, aspect_ratio, 0.01, 100.0);
-	camera->setAspect(static_cast<double>(width)/static_cast<double>(height));
-	camera->glProjection();
+	cameraObject->camera->setAspect(static_cast<double>(width)/static_cast<double>(height));
+	cameraObject->camera->glProjection();
     
     glMatrixMode(GL_MODELVIEW);
 }
@@ -108,10 +105,10 @@ void SDLMain::run() {
 	simpleTrackball = new OpenGL::SimpleTrackball();
     
 	//Initialize the camera
-	camera = new OpenGL::Camera();
-	camera->setFieldOfViewDegrees(60.0f);
-	camera->setPosition(Point(0.0f, 2.0f, -4.0f));
-	camera->setFarPlane(VIEW_DISTANCE);
+        cameraObject = new Object::CameraObject();
+	cameraObject->camera->setFieldOfViewDegrees(60.0f);
+	cameraObject->camera->setPosition(Point(0.0f, 2.0f, -4.0f));
+	cameraObject->camera->setFarPlane(VIEW_DISTANCE);
 	updateCamera();
     
     resizeGL(width, height);
@@ -150,7 +147,7 @@ void SDLMain::run() {
 		paintManager->setPaintCells(paintCells);
     }
 
-	Render::BackgroundRenderable* background = new Render::BackgroundRenderable(camera);
+	Render::BackgroundRenderable* background = new Render::BackgroundRenderable(cameraObject->camera);
 	background->getRenderProperties()->setWantsShaderName("backgroundShader");
 
 	rootRenderable->addRenderable(test_terrain);
@@ -204,7 +201,9 @@ void SDLMain::run() {
     
     inputManager = new InputManager(playerManager);
     
-    ADD_OBSERVER(new CameraObserver(simpleTrackball, camera));
+    cameraObject->setPlayerManager(playerManager);
+    
+    ADD_OBSERVER(new CameraObserver(simpleTrackball, cameraObject->camera));
     ADD_OBSERVER(new QuitObserver(this));
     
     Physics::PhysicsWorld::getInstance()->registerRigidBody(
@@ -246,10 +245,10 @@ void SDLMain::run() {
 						Point2D(event.button.x, event.button.y)));
 				}
 				else if (event.button.button == 2) {  // middle
-					paintManager->colorCellsInRadius(camera->getLookPosition(), 3.0, -1);
+					paintManager->colorCellsInRadius(cameraObject->camera->getLookPosition(), 3.0, -1);
 				}
 				else if (event.button.button == 3) {  // right
-					paintManager->colorCellsInRadius(camera->getLookPosition(), 3.0, testPaintColor);
+					paintManager->colorCellsInRadius(cameraObject->camera->getLookPosition(), 3.0, testPaintColor);
 					testPaintColor++;
 					testPaintColor = testPaintColor % 8;
 				}
@@ -278,6 +277,8 @@ void SDLMain::run() {
         
         handleJoystick();
         inputManager->advanceToNextFrame();
+        
+        cameraObject->doStep(SDL_GetTicks());
         
         {
             static Uint32 lastPhysicsTime = SDL_GetTicks();
@@ -334,10 +335,10 @@ void SDLMain::handleJoystick() {
         //trackball->setMouseStartAt(Math::Point(0.0, 0.0));
         
 		//Camera movement
-		Math::Point translation = camera->getLookDirection()*(-y * 0.25f)
-			+ camera->getRightDirection() * (x * 0.25f);
+		Math::Point translation = cameraObject->camera->getLookDirection()*(-y * 0.25f)
+			+ cameraObject->camera->getRightDirection() * (x * 0.25f);
         
-		camera->translate(translation);
+		cameraObject->camera->translate(translation);
         
         //trackball->setMouseCurrentAt(translation);
     }
@@ -358,7 +359,7 @@ void SDLMain::handleJoystick() {
 }
 
 void SDLMain::updateCamera() {
-	camera->setLookDirection(simpleTrackball->getSpherePoint());
+	cameraObject->camera->setLookDirection(simpleTrackball->getSpherePoint());
 }
 
 void SDLMain::render() {
@@ -369,12 +370,12 @@ void SDLMain::render() {
     
 	OpenGL::Color::glColor(OpenGL::Color::WHITE);
     
-	camera->glLookAt();
+	cameraObject->camera->glLookAt();
     
 	//Activate all lights near the camera's focal point
-	lightManager->activateNearFocalPoint(camera->getLookPosition());
+	lightManager->activateNearFocalPoint(cameraObject->camera->getLookPosition());
 	//Activate all lights visible to the camera
-	lightManager->activateIntersectingLights(*camera->getFrustrum());
+	lightManager->activateIntersectingLights(*cameraObject->camera->getFrustrum());
 
 	//Render the active lights
 	lightManager->drawActiveLightSpheres();
@@ -383,7 +384,7 @@ void SDLMain::render() {
 	glEnable(GL_TEXTURE_2D);
 
 	//Pass the camera to the renderer for culling
-	renderer->setCamera(camera);
+	renderer->setCamera(cameraObject->camera);
 
 	 //Render players
 	playerManager->render(renderer);

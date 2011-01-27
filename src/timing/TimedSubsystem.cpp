@@ -17,6 +17,8 @@ void TimedSubsystem::doStep(unsigned long currentTime) {
     
     while(timeTakenSoFar >= tickTime) {
         lastTime += tickTime;
+        timeTakenSoFar -= tickTime;
+        
         doAction(lastTime);
     }
 }
