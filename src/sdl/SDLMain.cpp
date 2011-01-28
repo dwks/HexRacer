@@ -199,9 +199,6 @@ void SDLMain::initRenderer() {
 void SDLMain::run() {
     initSDL();
     
-    joystick = new JoystickManager();
-    joystick->open();
-    
     initOpenGL();
     initRenderer();
     
@@ -228,6 +225,7 @@ void SDLMain::run() {
     paintSubsystem = new Paint::PaintSubsystem(worldManager, 20);
     
     inputManager = new InputManager(10, clientData, playerManager);
+    inputManager->init();
     
     cameraObject->setPlayerManager(playerManager);
     
@@ -303,7 +301,6 @@ void SDLMain::run() {
         
         network->checkNetwork();
         
-        handleJoystick();
         inputManager->doStep(SDL_GetTicks());
         paintSubsystem->doStep(SDL_GetTicks());
         
@@ -343,48 +340,10 @@ void SDLMain::run() {
     delete soundSystem;
 #endif
     
-    delete joystick;
     delete inputManager;
     delete network;
     
 	//delete background;
-}
-
-void SDLMain::handleJoystick() {
-    double x = joystick->getNormalizedAxisValue(0);
-    double y = joystick->getNormalizedAxisValue(1);
-    
-	double u = joystick->getNormalizedAxisValue(4, 0.0);
-    double v = joystick->getNormalizedAxisValue(3, 0.0);
-    
-    const double DEADZONE = 0.2;
-    
-    if(std::fabs(x) > DEADZONE || std::fabs(y) > DEADZONE) {
-        //LOG(SDL, "Move joystick by " << x << "," << y);
-        //trackball->setMouseStartAt(Math::Point(0.0, 0.0));
-        
-		//Camera movement
-		Math::Point translation = cameraObject->camera->getLookDirection()*(-y * 0.25f)
-			+ cameraObject->camera->getRightDirection() * (x * 0.25f);
-        
-		cameraObject->camera->translate(translation);
-        
-        //trackball->setMouseCurrentAt(translation);
-    }
-    
-	if(std::fabs(u) > DEADZONE || std::fabs(v) > DEADZONE) {
-		simpleTrackball->setMouseStartAt(Math::Point(0.0, 0.0));
-
-		//Look around with the camera
-        Math::Point translation;
-        translation.setX(u * 0.1);
-        translation.setY(-v * 0.1);
-
-		//LOG(SDL, "Joystick moving camera by " << translation);
-        
-        simpleTrackball->setMouseCurrentAt(translation);
-        updateCamera();
-    }
 }
 
 void SDLMain::updateCamera() {

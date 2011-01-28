@@ -27,7 +27,7 @@ namespace SDL {
         
         CameraObject::setCameraDestination(lookAtPosition, cameraPosition);
     }
-
+    
     void CameraObject::setCameraDestination(Math::Point _look, Math::Point _pos){
         destinationLookAt = _look;
         destinationPosition = _pos;
@@ -37,7 +37,6 @@ namespace SDL {
         playerManager = _playerManager;
     }
     
-
     void CameraObject::doAction(unsigned long currentTime) {
         //LOG2(CAMERA, UPDATE, "CameraObject doAction Called\n");
         setDestinationToPlayer();

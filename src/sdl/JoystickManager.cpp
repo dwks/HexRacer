@@ -1,6 +1,6 @@
 #include <climits>
+#include <cmath>
 #include "SDL.h"
-#include <math.h>
 using namespace std;
 
 #include "JoystickManager.h"
@@ -38,11 +38,10 @@ double JoystickManager::getNormalizedAxisValue(int axis, double deadzone) {
     
     double normalized = (double(value) - SHRT_MIN) / (SHRT_MAX - SHRT_MIN);
     normalized = (normalized - 0.5) * 2;
-
-	if (fabs(normalized) < deadzone)
-		return 0.0f;
-	else
-		return normalized;
+    
+    //LOG2(SDL, INPUT, axis << " is at " << normalized);
+    
+    return (std::fabs(normalized) < deadzone) ? 0.0 : normalized;
 }
 
 }  // namespace SDL

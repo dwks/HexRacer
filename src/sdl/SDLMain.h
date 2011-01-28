@@ -6,7 +6,6 @@
 #include "opengl/Camera.h"
 #include "sdl/CameraObject.h"
 #include "Projector.h"
-#include "JoystickManager.h"
 #include "NetworkPortal.h"
 #include "PlayerManager.h"
 #include "InputManager.h"
@@ -47,7 +46,6 @@ private:
     bool quit;
     
     Projector projector;
-    JoystickManager *joystick;
     InputManager *inputManager;
     NetworkPortal *network;
     PlayerManager *playerManager;
@@ -95,7 +93,6 @@ public:
     void doQuit() { quit = true; }
 private:
     void resizeGL(int width, int height);
-    void handleJoystick();
     void render();
     void renderGrid();
 
