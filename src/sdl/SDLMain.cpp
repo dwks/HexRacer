@@ -109,7 +109,7 @@ void SDLMain::initSDL() {
     
     simpleTrackball = new OpenGL::SimpleTrackball();
     
-    cameraObject = new Object::CameraObject();
+    cameraObject = new SDL::CameraObject();
     cameraObject->camera->setFieldOfViewDegrees(60.0f);
     cameraObject->camera->setPosition(Point(0.0f, 2.0f, -4.0f));
     cameraObject->camera->setFarPlane(VIEW_DISTANCE);
