@@ -95,7 +95,8 @@ private:
     void resizeGL(int width, int height);
     void render();
     void renderGrid();
-
+    
+    void handleEvents();
 	void updateCamera();
 private:
     void initSDL();

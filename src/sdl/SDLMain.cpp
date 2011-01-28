@@ -17,9 +17,6 @@
 #include "physics/PhysicsFactory.h"
 #include "physics/PhysicsWorld.h"
 
-#include "math/BoundingBox3D.h"
-#include "opengl/GeometryDrawing.h"
-
 #include "render/ShaderUniformVector4.h"
 #include "render/BackgroundRenderable.h"
 
@@ -165,13 +162,6 @@ void SDLMain::initRenderer() {
     rootRenderable->addRenderable(test_terrain);
     rootRenderable->addRenderable(background);
     
-    /*
-    rootRenderable->getRenderProperties()->setColor(OpenGL::Color::VIOLET);
-    rootRenderable->getRenderProperties()->setColorOverride(true);
-    rootRenderable->getRenderProperties()->setShaderOverride(true);
-    rootRenderable->getRenderProperties()->setTextureOverride(true);
-    */
-    
     Render::TextureCube* background_texture = new Render::TextureCube(
         "models/starfield.png",
         "models/starfield.png",
@@ -248,56 +238,7 @@ void SDLMain::run() {
     
     Uint32 lastTime = SDL_GetTicks();
     while(!quit) {
-        SDL_Event event;
-        while(SDL_PollEvent(&event)) {
-            switch(event.type) {
-            case SDL_QUIT:
-                quit = true;
-                break;
-            case SDL_VIDEORESIZE:
-                SDL_SetVideoMode(event.resize.w, event.resize.h,
-                    0, SDL_INIT_FLAGS);
-                resizeGL(event.resize.w, event.resize.h);
-                projector.setCurrentDimensions(
-                    Point2D(event.resize.w, event.resize.h));
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-				/*
-                LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " pressed "
-                    << "at " << event.button.x << "," << event.button.y);
-				*/
-				if (event.button.button == 1) {  // left
-					simpleTrackball->setMouseStartAt(projector.screenToGL(
-						Point2D(event.button.x, event.button.y)));
-				}
-				else if (event.button.button == 2) {  // middle
-					paintManager->colorCellsInRadius(cameraObject->camera->getLookPosition(), 3.0, -1);
-				}
-				else if (event.button.button == 3) {  // right
-					paintManager->colorCellsInRadius(cameraObject->camera->getLookPosition(), 3.0, testPaintColor);
-					testPaintColor++;
-					testPaintColor = testPaintColor % 8;
-				}
-                break;
-            case SDL_MOUSEMOTION:
-                if(event.motion.state & SDL_BUTTON(1)) {
-                    //LOG2(SDL, INPUT, "Mouse moved to " << event.motion.x << "," << event.motion.y);
-					if (event.button.button == 1) {
-						simpleTrackball->setMouseCurrentAt(projector.screenToGL(
-						Point2D(event.button.x, event.button.y)));
-						updateCamera();
-					}
-                }
-                break;
-            case SDL_MOUSEBUTTONUP:
-                //LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " released");
-                break;
-            case SDL_KEYDOWN:
-            case SDL_KEYUP:
-                inputManager->handleEvent(&event);
-                break;
-            }
-        }
+        handleEvents();
         
         network->checkNetwork();
         
@@ -316,7 +257,6 @@ void SDLMain::run() {
         render();
         playerManager->applySuspension(renderer);
         physicsWorld->render();
-        //renderGrid();
         
         SDL_GL_SwapBuffers();
         
@@ -342,8 +282,48 @@ void SDLMain::run() {
     
     delete inputManager;
     delete network;
-    
-	//delete background;
+}
+
+void SDLMain::handleEvents() {
+    SDL_Event event;
+    while(SDL_PollEvent(&event)) {
+        switch(event.type) {
+        case SDL_QUIT:
+            quit = true;
+            break;
+        case SDL_VIDEORESIZE:
+            SDL_SetVideoMode(event.resize.w, event.resize.h,
+                0, SDL_INIT_FLAGS);
+            resizeGL(event.resize.w, event.resize.h);
+            projector.setCurrentDimensions(
+                Point2D(event.resize.w, event.resize.h));
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            /*LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " pressed "
+                << "at " << event.button.x << "," << event.button.y);*/
+            
+            if(event.button.button == 1) {  // left
+                simpleTrackball->setMouseStartAt(projector.screenToGL(
+                    Point2D(event.button.x, event.button.y)));
+            }
+            break;
+        case SDL_MOUSEMOTION:
+            if(event.motion.state & SDL_BUTTON(1)) {
+                if(event.button.button == 1) {
+                    simpleTrackball->setMouseCurrentAt(projector.screenToGL(
+                    Point2D(event.button.x, event.button.y)));
+                    updateCamera();
+                }
+            }
+            break;
+        case SDL_MOUSEBUTTONUP:
+            break;
+        case SDL_KEYDOWN:
+        case SDL_KEYUP:
+            inputManager->handleEvent(&event);
+            break;
+        }
+    }
 }
 
 void SDLMain::updateCamera() {
@@ -393,23 +373,6 @@ void SDLMain::render() {
 	glDisable(GL_TEXTURE_2D);
     
     glFlush();
-}
-
-void SDLMain::renderGrid() {
-    static const int SIZE = 10;
-    static const double HEIGHT = 1.0;
-    
-    glColor3f(0.5f, 0.0f, 0.0f);
-    
-    glBegin(GL_LINES);
-    for(int i = -SIZE; i < SIZE; i ++) {
-        OpenGL::MathWrapper::glVertex(Math::Point(i, HEIGHT, -SIZE));
-        OpenGL::MathWrapper::glVertex(Math::Point(i, HEIGHT, SIZE));
-        
-        OpenGL::MathWrapper::glVertex(Math::Point(-SIZE, HEIGHT, i));
-        OpenGL::MathWrapper::glVertex(Math::Point(SIZE, HEIGHT, i));
-    }
-    glEnd();
 }
 
 }  // namespace SDL
