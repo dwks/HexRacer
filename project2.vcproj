@@ -209,6 +209,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\object\CameraObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\ClientData.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\ColorConstants.cpp"
 				>
 			</File>
@@ -293,6 +301,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PaintCellsChanged.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\PaintEvent.cpp"
 				>
 			</File>
@@ -302,6 +314,10 @@
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintSubsystem.cpp"
 				>
 			</File>
 			<File
@@ -333,6 +349,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\settings\ProgramSettings.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Ray.cpp"
 				>
 			</File>
@@ -346,6 +366,14 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderableObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderablePlayer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderableWorld.cpp"
 				>
 			</File>
 			<File
@@ -409,6 +437,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\timing\TimedSubsystem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\TogglePainting.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Triangle3D.cpp"
 				>
 			</File>
@@ -418,6 +454,14 @@
 			</File>
 			<File
 				RelativePath=".\src\math\Vertex3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\object\World.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\object\WorldManager.cpp"
 				>
 			</File>
 			<Filter
@@ -759,6 +803,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\object\CameraObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\ClientData.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\ColorConstants.h"
 				>
 			</File>
@@ -839,6 +891,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PaintCellsChanged.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\PaintEvent.h"
 				>
 			</File>
@@ -848,6 +904,10 @@
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintSubsystem.h"
 				>
 			</File>
 			<File
@@ -879,6 +939,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\settings\ProgramSettings.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Ray.h"
 				>
 			</File>
@@ -892,6 +956,14 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderableObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderablePlayer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderableWorld.h"
 				>
 			</File>
 			<File
@@ -959,6 +1031,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\timing\TimedSubsystem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\TogglePainting.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Triangle3D.h"
 				>
 			</File>
@@ -968,6 +1048,14 @@
 			</File>
 			<File
 				RelativePath=".\src\math\Vertex3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\object\World.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\object\WorldManager.h"
 				>
 			</File>
 			<Filter

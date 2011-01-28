@@ -42,7 +42,7 @@ MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget,
 
 	cameraMovedSinceClick = false;
 
-	collisionTree = new BSPTree3D(BoundingBox3D(), BSPTree3D::MIN_OVERLAP);
+	collisionTree = NULL;
 }
 
 MapEditorWidget::~MapEditorWidget() {
@@ -193,8 +193,9 @@ void MapEditorWidget::paintGL() {
 		for (int i = 0; i < 3; i++) {
 
 			glPushMatrix();
-			glTranslatef(r, viewHeight-r*(2*i+1), 0.0f);
+			glTranslatef(r, viewHeight-r*(3*i+1), 0.0f);
 			glScalef(r, r, r);
+			glPushMatrix();
 			
 			Color::glColor(selectedObject->getColor(i));
 			glBegin(GL_POLYGON);
@@ -206,6 +207,21 @@ void MapEditorWidget::paintGL() {
 			glCallList(hudCircleList);
 			glEnd();
 
+			QString color_title;
+			switch (i) {
+				case 0:
+					color_title = "Diffuse";
+					break;
+				case 1:
+					color_title = "Specular";
+					break;
+				case 2:
+					color_title = "Ambient";
+					break;
+			}
+
+			glPopMatrix();
+			renderText(2.5, -0.9, 0.0, color_title);
 			glPopMatrix();
 
 		}
@@ -319,13 +335,20 @@ void MapEditorWidget::mouseDragged(Qt::MouseButton button, Point current_positio
 void MapEditorWidget::mouseReleased(Qt::MouseButton button, Point release_position, Point click_position, Qt::KeyboardModifiers modifiers) {
 	bool moved = cameraMovedSinceClick || (release_position.distanceSquared(click_position) >= MAP_EDITOR_NO_DRAG_CLICK_THRESHHOLD);
 
-	if (button == MAP_EDITOR_EDIT_BUTTON && !moved) {
-		if (modifiers & MAP_EDITOR_CREATE_MODIFIER) {
-			createObject(click_position.getU(), click_position.getV());
+	if (button == MAP_EDITOR_EDIT_BUTTON) {
+		if (!moved) {
+			if (modifiers & MAP_EDITOR_CREATE_MODIFIER) {
+				createObject(click_position.getU(), click_position.getV());
+			}
+			else {
+				selectObject(click_position.getU(), click_position.getV());
+				updateGL();
+			}
 		}
 		else {
-			selectObject(click_position.getU(), click_position.getV());
-			updateGL();
+			if (editMode == EDIT_TRANSLATE) {
+				updateSelectedObjectPosition();
+			}
 		}
 	}
 	
@@ -419,6 +442,7 @@ void MapEditorWidget::translateCamera(Point translation) {
 void MapEditorWidget::newMap() {
 	map->clear();
 	mapLightsChanged();
+	mapCollisionChanged();
 	updateGL();
 }
 
@@ -440,6 +464,9 @@ void MapEditorWidget::saveMapAs(string filename) {
 }
 
 void MapEditorWidget::mapLightsChanged() {
+
+	if (editObjectType == MapObject::LIGHT)
+		selectedObject = NULL;
 
 	//Delete all light objects
 	int type_index = static_cast<int>(MapObject::LIGHT);
@@ -483,32 +510,7 @@ void MapEditorWidget::clearMesh(HRMap::MeshType type) {
 }
 
 void MapEditorWidget::mapCollisionChanged() {
-
-	vector<ObjectSpatial*> collision_triangles;
-	collisionTree->appendAll(&collision_triangles);
-
-	for (unsigned int i = 0; i < collision_triangles.size(); i++)
-		delete(collision_triangles[i]);
-
-	collisionTree->clear();
-	collision_triangles.clear();
-
-	BoundingBox3D collision_bound;
-
-	for (int i = 0; i < HRMap::NUM_MESHES; i++) {
-		HRMap::MeshType type = static_cast<HRMap::MeshType>(i);
-		if (type != HRMap::DECOR && map->getMapMesh(type)) {
-			vector<Triangle3D> triangles = map->getMapMesh(type)->getTriangles();
-			for (unsigned int t = 0; t < triangles.size(); t++) {
-				collision_bound.expandToInclude(triangles[i]);
-				collision_triangles.push_back(new Triangle3D(triangles[i]));
-			}
-		}
-	}
-
-	collisionTree->resize(collision_bound);
-	collisionTree->add(collision_triangles);
-
+	collisionTree = map->getCollisionTree();
 }
 void MapEditorWidget::setAdvancedRendering(bool enabled) {
 	advancedRendering = enabled;
@@ -654,14 +656,32 @@ string MapEditorWidget::editModeTitle(EditMode mode) {
 			return "";
 	}
 }
+void MapEditorWidget::deleteSelected() {
+	if (selectedObject) {
+		switch (editObjectType) {
+			case MapObject::LIGHT:
+				map->removeLight(((LightObject*)selectedObject)->getLight());
+				mapLightsChanged();
+				updateGL();
+				return;
+			default:
+				return;
+		}
+	}
+}
 void MapEditorWidget::translateSelectedObject(Point translation) {
 	selectedObject->translate(translation);
-	Point pos = selectedObject->getPosition();
-	selectedPositionXChanged(pos.getX());
-	selectedPositionYChanged(pos.getY());
-	selectedPositionZChanged(pos.getZ());
+	
 }
 
+void MapEditorWidget::updateSelectedObjectPosition() {
+	if (selectedObject) {
+		Point pos = selectedObject->getPosition();
+		selectedPositionXChanged(pos.getX());
+		selectedPositionYChanged(pos.getY());
+		selectedPositionZChanged(pos.getZ());
+	}
+}
 void MapEditorWidget::setSelectedPositionX(double x) {
 	if (selectedObject) {
 		selectedObject->setPositionCoord(x, X_AXIS);
@@ -702,4 +722,18 @@ void MapEditorWidget::setSelectedColor(int color_index, Color color) {
 		selectedObject->setColor(color_index, color);
 	}
 	updateGL();
+}
+void MapEditorWidget::setLightStrength(double strength) {
+	if (selectedObject && editObjectType == MapObject::LIGHT) {
+		Light* light = ((LightObject*)selectedObject)->getLight();
+		light->setStrength(strength);
+		updateGL();
+	}
+}
+void MapEditorWidget::setLightHasAttenuation(bool has) {
+	if (selectedObject && editObjectType == MapObject::LIGHT) {
+		Light* light = ((LightObject*)selectedObject)->getLight();
+		light->setHasAttenuation(has);
+		updateGL();
+	}
 }

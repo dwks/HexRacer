@@ -381,6 +381,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\mapeditor\PathNodeObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Point.cpp"
 				>
 			</File>
@@ -794,6 +798,10 @@
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintVertex.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\mapeditor\PathNodeObject.h"
 				>
 			</File>
 			<File

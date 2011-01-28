@@ -41,6 +41,7 @@ private:
 
 	QMenuBar* menuBar;
 	QMenu* fileMenu;
+	QMenu* editMenu;
 	QMenu* meshMenu;
 	QMenu* mapMenu;
 
@@ -55,12 +56,18 @@ private:
 
 	QFrame* lightPropertyFrame;
 	
-	
 	QToolBar* objectPropertiesBar;
+
+	//Position
 
 	QDoubleSpinBox* positionXBox;
 	QDoubleSpinBox* positionYBox;
 	QDoubleSpinBox* positionZBox;
+
+	//Light
+
+	QDoubleSpinBox* lightStrengthBox;
+	QCheckBox* lightAttenuationBox;
 
 	//Viewing
 
