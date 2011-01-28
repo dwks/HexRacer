@@ -28,6 +28,7 @@
 #include "SDL_image.h"
 
 #include "settings/SettingsManager.h"
+#include "settings/ProgramSettings.h"
 #include "config.h"
 
 namespace Project {
@@ -218,6 +219,7 @@ void SDLMain::run() {
         network->waitForWorld();
         clientData = new ClientData(network->getID());
         playerManager = new PlayerManager(network->getID(), worldManager);
+        Settings::ProgramSettings::getInstance()->setConnected(true);
     }
     else {
         clientData = new ClientData();

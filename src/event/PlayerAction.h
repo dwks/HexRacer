@@ -22,7 +22,8 @@ public:
     enum MovementType {
         ACCELERATE,
         TURN,
-        JUMP
+        JUMP,
+        FIX_OFF_TRACK
     };
 private:
     MovementType movementType;

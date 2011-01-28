@@ -1,7 +1,7 @@
 #include "Sleeper.h"
 
 #include "boost/date_time/posix_time/posix_time.hpp"
-#include "SDL.h"
+//#include "SDL.h"
 
 #ifdef WIN32
     #include <windows.h>
@@ -15,8 +15,8 @@ namespace Misc {
 unsigned long Sleeper::firstMilliseconds = -1;
 
 void Sleeper::sleep(unsigned milliseconds) {
-    SDL_Delay(milliseconds);
-    return;
+    //SDL_Delay(milliseconds);
+    //return;
     
     // !!! There could also be a Boost version here if we ever start depending
     //     on Boost.Thread.
@@ -28,8 +28,8 @@ void Sleeper::sleep(unsigned milliseconds) {
 }
 
 unsigned long Sleeper::getTimeMilliseconds() {
-    return SDL_GetTicks();
-#if 0
+    //return SDL_GetTicks();
+#if 1
     boost::posix_time::ptime ptime
         = boost::posix_time::microsec_clock::local_time();
     

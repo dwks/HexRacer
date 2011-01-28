@@ -15,8 +15,10 @@
 #include "render/ColorConstants.h"
 
 #include "physics/PhysicsWorld.h"
+#include "physics/PhysicsFactory.h"
 
 #include "settings/SettingsManager.h"
+#include "settings/ProgramSettings.h"
 #include "config.h"
 
 namespace Project {
@@ -24,6 +26,12 @@ namespace SDL {
 
 void PlayerManager::PlayerActionHandler::observe(
     Event::PlayerAction *action) {
+    
+    if(Settings::ProgramSettings::getInstance()->isConnectedClient()
+        && action->getMovementType() != Event::PlayerAction::FIX_OFF_TRACK) {
+        
+        return;
+    }
     
     Object::Player *player = manager->getPlayer();
     
@@ -36,6 +44,12 @@ void PlayerManager::PlayerActionHandler::observe(
         break;
     case Event::PlayerAction::JUMP:
         player->doJump();
+        break;
+    case Event::PlayerAction::FIX_OFF_TRACK:
+        delete player->getPhysicalObject();
+        player->setPhysicalObject(
+            Physics::PhysicsFactory::createPhysicalPlayer(
+                INITIAL_CAR_LOCATION));
         break;
     }
 }

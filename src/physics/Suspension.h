@@ -32,12 +32,14 @@ private:
     private:
         Math::Point suspensionPoint;
         Math::Point axis;
-        double restLength, stretchLength;
+        double minLength, restLength, stretchLength;
         Displacement lastDisplacement;
     public:
         Spring(Math::Point suspensionPoint, Math::Point axis)
             : suspensionPoint(suspensionPoint), axis(axis) {}
         
+        void setMinLength(double minLength)
+            { this->minLength = minLength; }
         void setRestLength(double restLength)
             { this->restLength = restLength; }
         void setStretchLength(double stretchLength)

@@ -80,6 +80,8 @@ void PhysicalPlayer::applyAcceleration(double acceleration) {
     Math::Point orientation = Converter::toPoint(matrix
         * Converter::toVector(Math::Point(0.0, 0.0, 1.0) * constant));
     
+    //LOG(PHYSICS, "accel at " << Misc::Sleeper::getTimeMilliseconds());
+    
     applyForce(orientation * constant * acceleration);
 }
 

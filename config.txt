@@ -1,8 +1,8 @@
 ################
 # Settings for the project
 
+#map = models/testterrain.obj
 map = models/testtrack.obj
-#map = models/terrain2.obj
 
 ########
 ### Display settings
@@ -18,21 +18,22 @@ display.bpp        = 0
 ### Physics settings
 
 # Acceleration and responsiveness of input
-physics.constant.turn             = 0.2
-physics.constant.accel            = 3.0
+physics.constant.turn             = 0.15
+physics.constant.accel            = 2.8
 physics.constant.centripetal      = 1.0
 
 # Vehicle suspension
 physics.driving.enablesuspension  = 1
+physics.driving.minlength         = 0.1
 physics.driving.restlength        = 0.5
-physics.driving.stretchlength     = 1.0
+physics.driving.stretchlength     = 0.8
 physics.driving.constant.k        = 1.0
-physics.driving.constant.c        = 10.0
+physics.driving.constant.c        = 40.0
 
 # Drag forces
 physics.driving.lineardrag        = 0.4
 physics.driving.angulardrag       = 0.5
-physics.driving.sidewaysdrag      = 3.0
+physics.driving.sidewaysdrag      = 10.0
 
 ########
 ### Rendering settings

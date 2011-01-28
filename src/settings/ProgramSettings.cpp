@@ -7,6 +7,7 @@ ProgramSettings *ProgramSettings::instance = 0;
 
 ProgramSettings::ProgramSettings(bool client) {
     this->client = client;
+    connected = false;
     instance = this;
 }
 
