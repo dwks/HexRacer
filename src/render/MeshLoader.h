@@ -26,7 +26,7 @@ public:
 	*/
 	MeshGroup* loadOBJ(string model_name, string filename);
 	
-	MeshGroup* getModelByName(string model_name);
+	MeshGroup* getModelByName(string model_name, bool expectFailure = false);
 
 	/** Delete a loaded model with the name @a model_name
 		Returns true if successful

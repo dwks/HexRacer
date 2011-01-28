@@ -78,6 +78,11 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         case Event::PlayerAction::JUMP:
             player->doJump();
             break;
+        case Event::PlayerAction::FIX_OFF_TRACK:
+            player->setPhysicalObject(
+                Physics::PhysicsFactory::createPhysicalPlayer(
+                    INITIAL_CAR_LOCATION));
+            break;
         }
         
         break;

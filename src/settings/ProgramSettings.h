@@ -11,11 +11,16 @@ public:
     static ProgramSettings *getInstance() { return instance; }
 private:
     bool client;
+    bool connected;
 public:
     ProgramSettings(bool client);
     
     bool isClient() const { return client; }
     bool isServer() const { return !client; }
+    
+    void setConnected(bool connected) { this->connected = connected; }
+    
+    bool isConnectedClient() const { return connected; }
 };
 
 }  // namespace Settings

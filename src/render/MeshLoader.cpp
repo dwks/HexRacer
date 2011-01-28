@@ -17,7 +17,7 @@ MeshLoader *MeshLoader::instance = 0;
 	MeshGroup* MeshLoader::loadOBJ(string model_name, string filename) {
 
 		//Check if a model with the same name already exists
-		MeshGroup* group = getModelByName(model_name);
+		MeshGroup* group = getModelByName(model_name, true);
 		if (group)
 			return group;
 
@@ -148,13 +148,15 @@ MeshLoader *MeshLoader::instance = 0;
 		
 	}
 
-	MeshGroup* MeshLoader::getModelByName(string model_name) {
+	MeshGroup* MeshLoader::getModelByName(string model_name, bool expectFailure) {
 		for (unsigned int i = 0; i < models.size(); i++) {
 			if (models[i]->getName() == model_name) {
 				return models[i];
 			}
 		}
-		LOG(OPENGL, model_name.append(": Model Not Found"));
+		if(!expectFailure) {
+            LOG(OPENGL, model_name.append(": Model Not Found"));
+        }
 		return NULL;
 	}
 

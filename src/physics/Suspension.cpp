@@ -23,14 +23,16 @@ Suspension::Displacement Suspension::Spring::doRaycast() {
     
     bool onGround = true;
     if(length > stretchLength) {  // stretched too far
-        length = restLength;
+        length = stretchLength;
         onGround = false;
     }
-    else if(length < 0.0) {  // compressed too much
-        length = 0.0;
+    else if(length < minLength) {  // compressed too much
+        length = minLength;
     }
     
-    return Displacement(stretchLength - length, onGround);
+    double normalizedLength = length - restLength;
+    
+    return Displacement(normalizedLength, onGround);
 }
 
 double Suspension::Spring::calculateForceFactor(
@@ -52,17 +54,28 @@ double Suspension::Spring::calculateForceFactor(
     
     static const double GRAVITY = 9.81;
     static const double VEHICLE_WEIGHT = 2.0;
-    static const double INITIAL_K = (GRAVITY * VEHICLE_WEIGHT) / (restLength * 4);
+    static const double NORMAL_FORCE = (GRAVITY * VEHICLE_WEIGHT) / 4.0;
+    
+    static const double K_FACTOR = 100.0;
+    static const double INITIAL_K = (K_FACTOR / VEHICLE_WEIGHT / 4.0);
     static const double INITIAL_C = 2 * std::sqrt(INITIAL_K * VEHICLE_WEIGHT);
     
     double K = GET_SETTING("physics.driving.constant.k", 1.0) * INITIAL_K;
     double C = GET_SETTING("physics.driving.constant.c", 1.0) * INITIAL_C;
     
-    double factor
-        = -K * displacement
-        + C * displacementSpeed;
+    //LOG(PHYSICS, "normal: " << -NORMAL_FORCE << ", -K*disp: " << -K*displacement);
+    //LOG(PHYSICS, "C*disp: " << C*displacementSpeed);
     
-    //LOG(PHYSICS, "    " << -K*displacement << ", " << C*displacementSpeed);
+    double factor
+        = -NORMAL_FORCE + (K * displacement)
+        + (-C * displacementSpeed);
+    
+    // prevent springs from sucking the ground in
+    if(factor > 0.0) factor = 0.0;
+    
+    //LOG(PHYSICS, "factor: " << factor);
+    
+    //LOG(PHYSICS, "     " << -K*displacement << ", " << C*displacementSpeed);
     
     return factor;
 }
@@ -71,10 +84,10 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
     // add +0.01 to Y so that suspension points are not usually underground
     // multiply Z by 0.9 to shift suspension points inwards slightly
     static const Math::Point suspensionPoint[] = {
-        Math::Point(0.4, -0.2 + 0.01, 0.8 * 0.9),
-        Math::Point(-0.4, -0.2 + 0.01, 0.8 * 0.9),
-        Math::Point(-0.4, -0.2 + 0.01, -0.8 * 0.9),
-        Math::Point(0.4, -0.2 + 0.01, -0.8 * 0.9),
+        Math::Point(0.4, -0.2 + 0.05, 0.8 * 0.9),
+        Math::Point(-0.4, -0.2 + 0.05, 0.8 * 0.9),
+        Math::Point(-0.4, -0.2 + 0.05, -0.8 * 0.9),
+        Math::Point(0.4, -0.2 + 0.05, -0.8 * 0.9),
     };
     
     for(int wheel = 0; wheel < 4; wheel ++) {
@@ -94,6 +107,8 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
         
         // create a Spring object
         Spring spring(point, axis);
+        spring.setMinLength(
+            GET_SETTING("physics.driving.minlength", 0.0));
         spring.setRestLength(
             GET_SETTING("physics.driving.restlength", 1.0));
         spring.setStretchLength(
@@ -112,10 +127,13 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
         playerSuspension[player->getID()][wheel] = displacement;
         
         // draw a wheel
+        
+        double down = displacement.getDisplacement();
+        
         debugDrawWheel(matrix, suspensionPoint[wheel]
-            + Math::Point(0.0, -1.0, 0.0)
-                * (GET_SETTING("physics.driving.stretchlength", 1.0)
-                    - (displacement.getDisplacement() + WHEEL_DIAMETER)));
+            + Math::Point(0.0, -down - WHEEL_DIAMETER - 0.05, 0.0));
+                //* (GET_SETTING("physics.driving.stretchlength", 1.0)));
+                    //- (displacement.getDisplacement() + WHEEL_DIAMETER)));*/
     }
 }
 
