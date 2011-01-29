@@ -1,29 +1,33 @@
 #pragma once
 
 #include "MapObject.h"
+#include "map/PathNode.h"
 #include <vector>
 using namespace Project;
 using namespace Math;
+using namespace Map;
 using namespace std;
 
 class PathNodeObject
 	: public MapObject
 {
 private:
-	Point position;
-	vector<PathNodeObject*> nextNodes;
+	PathNode* node;
 public:
 
-	PathNodeObject(const Point& _position = Point())
-		: position(_position) {}
+	PathNodeObject(PathNode* _node)
+		: node(_node) {}
 
-	Point getPosition() const { return position; }
-	void setPosition(const Point& new_position) { position = new_position; }
-	void translate(const Point& translation) { position += translation; }
+	Point getPosition() const { return node->getPosition(); }
+	void setPosition(const Point& new_position) { node->moveCentroid(new_position); }
+	void translate(const Point& translation) { node->translate(translation); }
 
-	bool hasColors() const { return false; }
 	BoundingBox3D getBoundingBox() const;
 
-	vector<PathNodeObject*> getNextNodes() const { return nextNodes; }
+	const vector<PathNode*>& getNextNodes() const { return node->getNextNodes(); }
+	PathNode* getNode() { return node; }
+	void linkNode(PathNodeObject* node_object);
+
+	bool hasColors() const { return false; }
 	MapObject::ObjectType getType() const { return MapObject::PATH_NODE; }
 };

@@ -255,6 +255,14 @@ Point Point::operator * (double factor) const {
         getW());
 }
 
+Point Point::coordinateMultiply(const Point &other) const {
+	return Point(
+        getX() * other.getX(),
+        getY() * other.getY(),
+        getZ() * other.getZ(),
+        getW() * other.getW());
+}
+
 Point Point::operator / (double factor) const {
     return Point(
         getX() / factor,

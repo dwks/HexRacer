@@ -110,6 +110,7 @@ public:
 	Point operator - (const Point &other) const;
     
 	Point operator * (double factor) const;
+	Point coordinateMultiply(const Point &other) const;
     
     /**
         Note: no divide-by-zero checking is performed here.

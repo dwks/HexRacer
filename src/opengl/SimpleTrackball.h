@@ -26,6 +26,8 @@ public:
 	void setMouseStartAt(Point point);
 	void setMouseCurrentAt(Point point);
 	Point getSpherePoint();
+	void setLongitude(double _longitude);
+	void setLatitude(double _latitude);
 
 };
 
