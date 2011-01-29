@@ -174,6 +174,12 @@ void ServerMain::run() {
             clientCount ++;
         }
         
+        int disconnected;
+        while((disconnected = clients.nextDisconnectedClient()) >= 0) {
+            LOG2(NETWORK, CONNECT,
+                "Client " << disconnected << " has disconnected");
+        }
+        
         {
             Network::Packet *packet;
             while((packet = clients.nextPacket(&whichSocket))) {

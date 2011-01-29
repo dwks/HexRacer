@@ -24,6 +24,7 @@ public:
     void sendPacket(Network::Packet *packet);
     void sendPacketExcept(Network::Packet *packet, int exception);
     
+    int nextDisconnectedClient();
     Network::Packet *nextPacket(int *whichSocket = NULL);
 };
 

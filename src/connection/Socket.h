@@ -24,6 +24,11 @@ public:
     */
     virtual bool open() = 0;
     
+    /**
+        @return True if this socket is (still) open.
+    */
+    virtual bool isOpen() = 0;
+    
     /** Closes this socket, if it was ever opened. This will automatically be
         called by the destructor.
     */
