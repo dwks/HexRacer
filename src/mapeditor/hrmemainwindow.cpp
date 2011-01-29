@@ -66,6 +66,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	//Map Menu
 	mapMenu = new QMenu("&Map", this);
 	mapMenu->addAction("&Generate Paint Cells",	mapEditor, SLOT(generatePaint()));
+	mapMenu->addAction("&Load Cube Map", mapEditor, SLOT(loadCubeMap()));
 
 	menuBar->addMenu(fileMenu);
 	menuBar->addMenu(editMenu);
@@ -272,7 +273,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
     meshDir = QString::fromStdString(currentPath);
 #endif
 
-	mapType = QString("HexRace Map File (*.hrm *.HRM)");
+	mapType = QString("HexRace Map File (*.hrm *.HRM *.hrx *.HRX)");
 	meshType = QString("Wavefront OBJ (*.obj *.OBJ)");
 
 
@@ -334,7 +335,20 @@ void HRMEMainWindow::selectMapObject(QAction* action) {
 
 	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
 		if (action == mapObjectAction[i]) {
-			mapEditor->setMapObjectType(static_cast<MapObject::ObjectType>(i));
+			MapObject::ObjectType type = static_cast<MapObject::ObjectType>(i);
+			mapEditor->setMapObjectType(type);
+
+			bool change_edit_mode = !MapEditorWidget::editModeCompatible(type, mapEditor->getEditMode());
+
+			for (int j = 0; j < MapEditorWidget::NUM_EDIT_MODES; j++) {
+				MapEditorWidget::EditMode mode = static_cast<MapEditorWidget::EditMode>(j);
+				bool enabled = MapEditorWidget::editModeCompatible(type, mode);
+				editModeAction[j]->setEnabled(enabled);
+				if (change_edit_mode && enabled) {
+					editModeAction[j]->setChecked(true);
+					change_edit_mode = false;
+				}
+			}
 			return;
 		}
 	}

@@ -12,6 +12,7 @@ public:
 
 	RayIntersection() {
 		intersects = false;
+		t = 0.0;
 	} 
 
 	RayIntersection(double _t) {

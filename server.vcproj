@@ -252,10 +252,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\object\CameraObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\opengl\Color.cpp"
 				>
 			</File>
@@ -424,11 +420,31 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\paint\PaintCell.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\PaintCellsChanged.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\event\PaintEvent.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintSubsystem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintVertex.cpp"
 				>
 			</File>
 			<File
@@ -469,6 +485,10 @@
 			</File>
 			<File
 				RelativePath=".\src\network\PointSerializer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\settings\ProgramSettings.cpp"
 				>
 			</File>
 			<File
@@ -525,6 +545,10 @@
 			</File>
 			<File
 				RelativePath=".\src\connection\ServerManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\server\ServerNetworkPortal.cpp"
 				>
 			</File>
 			<File
@@ -790,10 +814,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\object\CameraObject.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\opengl\Color.h"
 				>
 			</File>
@@ -966,11 +986,31 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\paint\PaintCell.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\PaintCellsChanged.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\event\PaintEvent.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintSubsystem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintVertex.h"
 				>
 			</File>
 			<File
@@ -1011,6 +1051,10 @@
 			</File>
 			<File
 				RelativePath=".\src\network\PointSerializer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\settings\ProgramSettings.h"
 				>
 			</File>
 			<File
@@ -1067,6 +1111,10 @@
 			</File>
 			<File
 				RelativePath=".\src\connection\ServerManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\server\ServerNetworkPortal.h"
 				>
 			</File>
 			<File

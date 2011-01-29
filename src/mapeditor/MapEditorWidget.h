@@ -24,8 +24,8 @@ class MapEditorWidget : public MouseSelectorWidget
 
 public:
 
-	static const int NUM_EDIT_MODES = 3;
-	enum EditMode {EDIT_TRANSLATE, EDIT_ROTATE, EDIT_SCALE};
+	static const int NUM_EDIT_MODES = 4;
+	enum EditMode {EDIT_TRANSLATE, EDIT_ROTATE, EDIT_SCALE, EDIT_LINK};
 	static string editModeTitle(EditMode mode);
 
 private:
@@ -67,6 +67,8 @@ public:
 	~MapEditorWidget();
 
 	Color getSelectedColor(int color_index);
+	static bool editModeCompatible(MapObject::ObjectType type, EditMode mode);
+	EditMode getEditMode() const { return editMode; }
 
 	//QSize sizeHint() const;
 	//QSize minimumSize () const;
@@ -85,15 +87,22 @@ private:
 	void updateCamera();
 	void translateCamera(Point translation);
 	void keyPressEvent(QKeyEvent *event);
-
-	void mapLightsChanged();
-	void mapCollisionChanged();
 	//void keyReleaseEvent(QKeyEvent *event);
+
 	void wheelMoved(bool up, Qt::KeyboardModifiers modifiers);
 	void addLight(Point position);
+	void addPathNode(Point position);
+	void addStartPoint(Point position);
+
+	void mapObjectsChanged(MapObject::ObjectType type);
+	void mapLightsChanged();
+	void mapPathNodesChanged();
+	void mapCollisionChanged();
 
 	void createObject(double u, double v);
 	void selectObject(double u, double v, bool rerender = true);
+	MapObject* getClickedObject(double u, double v, bool rerender = true);
+	bool getRaycastPosition(double u, double v, Point& p);
 	void renderObjects(MapObject::ObjectType type, bool object_buffer = false);
 	static void glBufferIndexColor(int buffer_index);
 
@@ -115,6 +124,7 @@ public slots:
 	void generatePaint();
 	void setMapObjectType(MapObject::ObjectType type);
 	void setEditMode(EditMode mode);
+	void loadCubeMap();
 
 	void deleteSelected();
 	void setSelectedPositionX(double x);

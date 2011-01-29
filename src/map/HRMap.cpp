@@ -15,9 +15,10 @@ namespace Map {
 
 	HRMap::HRMap() {
 
+		cubeMapFile = new CubeMapFile();
 		trackRenderable = NULL;
-		cubeMap = NULL;
 		collisionTree = NULL;
+		cubeMap = NULL;
 
 		for (int i = 0; i < NUM_MESHES; i++) {
 			mapMesh[i] = NULL;
@@ -41,6 +42,8 @@ namespace Map {
 		ifstream in_file;
 		in_file.open(filename.c_str());
 		while (!in_file.eof()) {
+
+			bool cube_map = false;
 			
 			string keyword;
 			in_file >> keyword;
@@ -53,24 +56,6 @@ namespace Map {
 				else if (keyword == "version") {
 					in_file >> version;
 				}
-				else if (keyword == "bgimgxpos") {
-					in_file >> bgImageXPos;
-				}
-				else if (keyword == "bgimgxneg") {
-					in_file >> bgImageXNeg;
-				}
-				else if (keyword == "bgimgypos") {
-					in_file >> bgImageYPos;
-				}
-				else if (keyword == "bgimgyneg") {
-					in_file >> bgImageYNeg;
-				}
-				else if (keyword == "bgimgzpos") {
-					in_file >> bgImageZPos;
-				}
-				else if (keyword == "bgimgzneg") {
-					in_file >> bgImageZNeg;
-				}
 				else if (keyword == "light") {
 					Light* light = new Light();
 					char c;
@@ -78,12 +63,23 @@ namespace Map {
 					in_file >> *light;
 					lights.push_back(light);
 				}
-				else {
-					for (int i = 0; i < HRMap::NUM_MESHES; i++) {
-						HRMap::MeshType type = static_cast<HRMap::MeshType>(i);
-						if (keyword == meshName(type)) {
-							in_file >> mapMeshFile[i];
-							break;
+				else  {
+					for (int i = 0; i < 6; i++) {
+						if (keyword == CubeMapFile::getSideName(i)) {
+							string side_file;
+							in_file >> side_file;
+							cubeMapFile->setSideFile(i, DirectoryFunctions::fromRelativeFilename(file_directory, side_file));
+							cube_map = true;
+						}
+					}
+
+					if (!cube_map) {
+						for (int i = 0; i < HRMap::NUM_MESHES; i++) {
+							HRMap::MeshType type = static_cast<HRMap::MeshType>(i);
+							if (keyword == meshName(type)) {
+								in_file >> mapMeshFile[i];
+								break;
+							}
 						}
 					}
 				}
@@ -92,12 +88,6 @@ namespace Map {
 
 		}
 
-		bgImageXPos = DirectoryFunctions::fromRelativeFilename(file_directory, bgImageXPos);
-		bgImageXNeg = DirectoryFunctions::fromRelativeFilename(file_directory, bgImageXNeg);
-		bgImageYPos = DirectoryFunctions::fromRelativeFilename(file_directory, bgImageYPos);
-		bgImageYNeg = DirectoryFunctions::fromRelativeFilename(file_directory, bgImageYNeg);
-		bgImageZPos = DirectoryFunctions::fromRelativeFilename(file_directory, bgImageZPos);
-		bgImageZNeg = DirectoryFunctions::fromRelativeFilename(file_directory, bgImageZNeg);
 		//trackRenderable = new RenderList();
 
 		for (int i = 0; i < NUM_MESHES; i++) {
@@ -106,7 +96,7 @@ namespace Map {
 			loadMapMesh(type, mapMeshFile[i]);
 		}
 
-		cubeMap = new TextureCube(bgImageXPos, bgImageXNeg, bgImageYPos, bgImageYNeg, bgImageZPos, bgImageZNeg);
+		//cubeMap = new TextureCube(bgImageXPos, bgImageXNeg, bgImageYPos, bgImageYNeg, bgImageZPos, bgImageZNeg);
 
 		return true;
 
@@ -126,12 +116,9 @@ namespace Map {
 
 		version = "";
 		filename = "";
-		bgImageXPos = "";
-		bgImageXNeg = "";
-		bgImageYPos = "";
-		bgImageYNeg = "";
-		bgImageZPos = "";
-		bgImageZNeg = "";
+		cubeMapFile->clear();
+
+		clearCubeMap();
 
 		clearCollisionTree();
 
@@ -150,14 +137,9 @@ namespace Map {
 			trackRenderable = NULL;
 		}
 
-		if (cubeMap != NULL) {
-			delete(cubeMap);
-			cubeMap = NULL;
-		}
-
-		for (unsigned int i = 0; i < lights.size(); i++) {
-			delete(lights[i]);
-		}
+		clearLights();
+		clearPathNodes();
+		clearStartPoints();
 
 		clearPaint();
 
@@ -183,7 +165,10 @@ namespace Map {
 		}
 		mapMeshFile[i] = "";
 	}
-
+	void HRMap::setCubeMapFile(const CubeMapFile& file) {
+		cubeMapFile->setToFile(file);
+		clearCubeMap();
+	}
 	string HRMap::meshName(MeshType type) {
 		switch (type) {
 			case HRMap::TRACK:
@@ -218,6 +203,18 @@ namespace Map {
 		}
 	}
 
+	Render::TextureCube* HRMap::getCubeMap() {
+		if (cubeMap == NULL) {
+			cubeMap = new TextureCube(*cubeMapFile);
+		}
+		return cubeMap;
+	}
+	void HRMap::clearCubeMap() {
+		if (cubeMap != NULL) {
+			delete(cubeMap);
+			cubeMap = NULL;
+		}
+	}
 	void HRMap::generatePaint(double cell_radius) {
 
 		clearPaint();
@@ -243,6 +240,43 @@ namespace Map {
 		}
 	}
 
+	void HRMap::clearLights() {
+		for (unsigned int i = 0; i < lights.size(); i++)
+			delete(lights[i]);
+		lights.clear();
+	}
+	void HRMap::addPathNode(PathNode* node) {
+		pathNodes.push_back(node);
+	}
+
+	void HRMap::removePathNode(PathNode* node) {
+		if (Misc::vectorRemoveOneElement(pathNodes, node)) {
+			delete(node);
+		}
+		for (unsigned int i = 0; i < pathNodes.size(); i++) {
+			vector<PathNode*>& linked_nodes = pathNodes[i]->getNextNodes();
+			vectorRemoveOneElement(linked_nodes, node);
+		}
+	}
+	void HRMap::addStartPoint(Vertex3D* point) {
+		startPoints.push_back(point);
+	}
+
+	void HRMap::removeStartPoint(Vertex3D* point) {
+		if (Misc::vectorRemoveOneElement(startPoints, point)) {
+			delete(point);
+		}
+	}
+	void HRMap::clearPathNodes() {
+		for (unsigned int i = 0; i < pathNodes.size(); i++)
+			delete(pathNodes[i]);
+		pathNodes.clear();
+	}
+	void HRMap::clearStartPoints() {
+		for (unsigned int i = 0; i < startPoints.size(); i++)
+			delete(startPoints[i]);
+		startPoints.clear();
+	}
 	BSPTree3D* HRMap::getCollisionTree() {
 
 		if (collisionTree == NULL) {
@@ -256,10 +290,10 @@ namespace Map {
 					vector<Triangle3D> triangles = getMapMesh(type)->getTriangles();
 					for (unsigned int t = 0; t < triangles.size(); t++) {
 						if (i == 0 && t == 0)
-							collision_bound.setToObject(triangles[i]);
+							collision_bound.setToObject(triangles[t]);
 						else
-							collision_bound.expandToInclude(triangles[i]);
-						collision_triangles.push_back(new Triangle3D(triangles[i]));
+							collision_bound.expandToInclude(triangles[t]);
+						collision_triangles.push_back(new Triangle3D(triangles[t]));
 					}
 				}
 			}

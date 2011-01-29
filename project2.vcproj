@@ -209,7 +209,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\object\CameraObject.cpp"
+				RelativePath=".\src\sdl\CameraObject.cpp"
 				>
 			</File>
 			<File
@@ -803,7 +803,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\object\CameraObject.h"
+				RelativePath=".\src\sdl\CameraObject.h"
 				>
 			</File>
 			<File

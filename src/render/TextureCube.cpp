@@ -4,6 +4,17 @@
 namespace Project {
 namespace Render {
 
+	TextureCube::TextureCube(const CubeMapFile& file) {
+		cubeMap = Texture::loadTextureCube(
+			file.getSideFile(0),
+			file.getSideFile(1),
+			file.getSideFile(2),
+			file.getSideFile(3),
+			file.getSideFile(4),
+			file.getSideFile(5)
+		);
+	}
+
 	TextureCube::TextureCube(std::string positive_x_file,
 				std::string negative_x_file,
 				std::string positive_y_file,
@@ -22,7 +33,7 @@ namespace Render {
 	}
 
 	TextureCube::~TextureCube() {
-
+		glDeleteTextures(1, &cubeMap);
 	}
 
 }  // namespace Render
