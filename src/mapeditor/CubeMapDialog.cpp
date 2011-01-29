@@ -1,3 +1,7 @@
+#ifdef CMAKE_BUILD
+    #include "CubeMapDialog.moc"
+#endif
+
 #include "CubeMapDialog.h"
 
 CubeMapDialog::CubeMapDialog(const CubeMapFile& file, QWidget *parent)
