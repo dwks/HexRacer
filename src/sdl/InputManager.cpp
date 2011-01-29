@@ -16,8 +16,8 @@
 namespace Project {
 namespace SDL {
 
-InputManager::InputManager(int ms, ClientData *clientData, PlayerManager *playerManager)
-    : TimedSubsystem(ms), playerManager(playerManager), clientData(clientData) {
+InputManager::InputManager(int ms, ClientData *clientData)
+    : TimedSubsystem(ms), clientData(clientData) {
     
     for(std::size_t x = 0; x < sizeof keyDown / sizeof *keyDown; x ++) {
         keyDown[x] = false;

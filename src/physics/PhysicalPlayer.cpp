@@ -49,8 +49,9 @@ void PhysicalPlayer::constructRigidBody(const Math::Point &position) {
 void PhysicalPlayer::constructRigidBody(const Math::Matrix &transformation) {
     constructRigidBody(Math::Point());
     
-    //rigidBody->setSleepingThresholds(0, 0);
-    //rigidBody->setDeactivationTime(10);
+    rigidBody->setCollisionFlags(rigidBody->getCollisionFlags()
+        | btCollisionObject::CF_KINEMATIC_OBJECT);
+    rigidBody->setActivationState(DISABLE_DEACTIVATION);
     rigidBody->setWorldTransform(
         Converter::toTransform(transformation));
 }

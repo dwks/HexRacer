@@ -16,11 +16,10 @@ namespace SDL {
 class InputManager : public Timing::TimedSubsystem {
 private:
     bool keyDown[SDLK_LAST];
-    PlayerManager *playerManager;
     ClientData *clientData;
     JoystickManager *joystick;
 public:
-    InputManager(int ms, ClientData *clientData, PlayerManager *playerManager);
+    InputManager(int ms, ClientData *clientData);
     ~InputManager();
     
     void init();

@@ -216,7 +216,7 @@ void SDLMain::run() {
     }
     paintSubsystem = new Paint::PaintSubsystem(worldManager, paintManager, 20);
     
-    inputManager = new InputManager(10, clientData, playerManager);
+    inputManager = new InputManager(10, clientData);
     inputManager->init();
     
     cameraObject->setPlayerManager(playerManager);
@@ -297,6 +297,9 @@ void SDLMain::run() {
     delete suspension;
     
     delete accelControl;
+    
+    delete meshLoader;
+    delete physicsWorld;
 }
 
 void SDLMain::handleEvents() {

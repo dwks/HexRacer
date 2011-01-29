@@ -71,19 +71,6 @@ PlayerManager::PlayerManager(int id, Object::WorldManager *worldManager)
     ADD_OBSERVER(new UpdatePlayerListHandler(this));
 }
 
-PlayerManager::~PlayerManager() {
-    
-}
-
-/*void PlayerManager::render(Render::RenderManager *renderManager) {
-    Object::PlayerList::IteratorType it
-        = worldManager->getPlayerList()->getIterator();
-    while(it.hasNext()) {
-        Object::Player *player = it.next();
-        player->getRenderableObject()->render(renderManager);
-    }
-}*/
-
 void PlayerManager::usePlayerList(Object::PlayerList *playerList) {
     worldManager->usePlayerList(playerList);
 }
