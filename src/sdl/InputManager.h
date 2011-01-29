@@ -28,6 +28,8 @@ public:
     void handleEvent(SDL_Event *event);
     
     virtual void doAction(unsigned long currentTime);
+    
+    void doPausedChecks();
 private:
     void handlePaint();
     void handleJoystick();

@@ -35,6 +35,7 @@ void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
         // fall-through
     }
     case Event::EventType::PLAYER_ACTION:
+    case Event::EventType::PAUSE_GAME:
     {
         if(portal->getPortal() == NULL) break;
         

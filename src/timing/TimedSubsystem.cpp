@@ -1,4 +1,5 @@
 #include "TimedSubsystem.h"
+#include "AccelControl.h"
 
 namespace Project {
 namespace Timing {
@@ -12,7 +13,14 @@ void TimedSubsystem::setLastTime(unsigned long timeNow) {
     this->lastTime = timeNow;
 }
 
+void TimedSubsystem::addSkipTime(unsigned long skipTime) {
+    lastTime += skipTime;
+}
+
 void TimedSubsystem::doStep(unsigned long currentTime) {
+    if(AccelControl::getInstance()->getPaused()) return;
+    addSkipTime(AccelControl::getInstance()->getPauseSkip());
+    
     unsigned long timeTakenSoFar = currentTime - lastTime;
     
     while(timeTakenSoFar >= tickTime) {

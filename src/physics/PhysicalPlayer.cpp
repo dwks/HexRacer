@@ -49,6 +49,8 @@ void PhysicalPlayer::constructRigidBody(const Math::Point &position) {
 void PhysicalPlayer::constructRigidBody(const Math::Matrix &transformation) {
     constructRigidBody(Math::Point());
     
+    //rigidBody->setSleepingThresholds(0, 0);
+    //rigidBody->setDeactivationTime(10);
     rigidBody->setWorldTransform(
         Converter::toTransform(transformation));
 }

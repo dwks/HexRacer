@@ -10,13 +10,14 @@
 #include "PlayerManager.h"
 #include "InputManager.h"
 #include "ClientData.h"
-#include "physics/PhysicsWorld.h"
+
 #include "render/RenderManager.h"
 #include "render/Shader.h"
 #include "render/MeshLoader.h"
 #include "render/RenderList.h"
 #include "render/BackgroundRenderable.h"
 
+#include "physics/PhysicsWorld.h"
 #include "physics/Suspension.h"
 
 #include "object/WorldManager.h"
@@ -29,6 +30,8 @@
 #include "event/TypedObserver.h"
 #include "event/CameraMovement.h"
 #include "event/QuitEvent.h"
+
+#include "timing/AccelControl.h"
 
 #define FIELD_OF_VIEW 60
 #define SDL_INIT_FLAGS (SDL_HWSURFACE | SDL_OPENGL | SDL_RESIZABLE)
@@ -67,6 +70,8 @@ private:
 	Paint::PaintManager *paintManager;
 	vector<Paint::PaintCell*> paintCells;
     Paint::PaintSubsystem *paintSubsystem;
+    
+    Timing::AccelControl *accelControl;
 private:
     class CameraObserver : public Event::TypedObserver<Event::CameraMovement> {
     private:

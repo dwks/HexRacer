@@ -27,11 +27,11 @@ namespace SDL {
 void PlayerManager::PlayerActionHandler::observe(
     Event::PlayerAction *action) {
     
-    if(Settings::ProgramSettings::getInstance()->isConnectedClient()
+    /*if(Settings::ProgramSettings::getInstance()->isConnectedClient()
         && action->getMovementType() != Event::PlayerAction::FIX_OFF_TRACK) {
         
         return;
-    }
+    }*/
     
     Object::Player *player = manager->getPlayer();
     

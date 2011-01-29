@@ -20,6 +20,8 @@ public:
     */
     virtual void setLastTime(unsigned long timeNow);
     
+    virtual void addSkipTime(unsigned long skipTime);
+    
     /** Called whenever the main loop can give this subsystem a timeslice.
     */
     virtual void doStep(unsigned long currentTime);

@@ -24,6 +24,7 @@ public:
         PAINT_CELLS_CHANGED,
         TOGGLE_PAINT,
         SET_DEBUG_CAMERA,
+        PAUSE_GAME,
         TYPES
     };
 };

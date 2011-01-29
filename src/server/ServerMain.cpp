@@ -95,6 +95,7 @@ bool ServerMain::ServerObserver::interestedIn(Event::EventType::type_t type) {
     switch(type) {
     case Event::EventType::PAINT_EVENT:
     case Event::EventType::TOGGLE_PAINT:  // handled by PaintSubsystem
+    case Event::EventType::PAUSE_GAME:  // handled by AccelControl
         return false;
     default:
         break;
@@ -123,6 +124,7 @@ ServerMain::~ServerMain() {
 }
 
 void ServerMain::run() {
+    accelControl = new Timing::AccelControl();
     Physics::PhysicsWorld *physicsWorld = new Physics::PhysicsWorld();
     
     Connection::ServerManager server;
@@ -191,9 +193,11 @@ void ServerMain::run() {
         suspension->setData(worldManager->getPlayerList(), NULL);
         suspension->checkForWheelsOnGround();
         
-        {
+        if(!Timing::AccelControl::getInstance()->getPaused()) {
             static unsigned long lastPhysicsTime
                 = Misc::Sleeper::getTimeMilliseconds();
+            lastPhysicsTime += Timing::AccelControl::getInstance()
+                ->getPauseSkip();
             unsigned long thisTime = Misc::Sleeper::getTimeMilliseconds();
             physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
             lastPhysicsTime = thisTime;
@@ -203,11 +207,6 @@ void ServerMain::run() {
         
         if(++loops == 5) {
             loops = 0;
-            
-            /*for(int p = 0; p < clientCount; p ++) {
-                LOG(PHYSICS, "Player " << p << " is at "
-                    << getPlayerList().getPlayer(p)->getPosition());
-            }*/
             
             Event::UpdatePlayerList *update
                 = new Event::UpdatePlayerList(
@@ -229,6 +228,8 @@ void ServerMain::run() {
             //while(lastTime < currentTime) lastTime += 10;
             while(lastTime < currentTime + tosleep) lastTime += 10;
         }
+        
+        accelControl->clearPauseSkip();
     }
     
     delete worldManager;
@@ -236,6 +237,8 @@ void ServerMain::run() {
     
     delete meshLoader;
     delete physicsWorld;
+    
+    delete accelControl;
 }
 
 }  // namespace Server

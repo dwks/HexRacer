@@ -192,6 +192,8 @@ void SDLMain::run() {
     initOpenGL();
     initRenderer();
     
+    accelControl = new Timing::AccelControl();
+    
     // this must happen before Players are created
     physicsWorld = new Physics::PhysicsWorld();
     suspension = new Physics::Suspension(10);
@@ -247,20 +249,23 @@ void SDLMain::run() {
         suspension->checkForWheelsOnGround();
         
         inputManager->doStep(SDL_GetTicks());
+        inputManager->doPausedChecks();
         
-        {
+        if(!Timing::AccelControl::getInstance()->getPaused()) {
             static Uint32 lastPhysicsTime = SDL_GetTicks();
+            lastPhysicsTime += Timing::AccelControl::getInstance()
+                ->getPauseSkip();
             Uint32 thisTime = SDL_GetTicks();
             physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
             lastPhysicsTime = thisTime;
         }
         
-        suspension->doStep(SDL_GetTicks());
-        
         cameraObject->doStep(SDL_GetTicks());
         
         render();
+        suspension->doStep(SDL_GetTicks());
         physicsWorld->render();
+        glFlush();
         
         SDL_GL_SwapBuffers();
         
@@ -277,6 +282,8 @@ void SDLMain::run() {
             }
             while(lastTime < thisTime) lastTime += RATE;
         }
+        
+        accelControl->clearPauseSkip();
     }
     
     LOG2(GLOBAL, PROGRESS, "Exiting main game loop");
@@ -288,6 +295,8 @@ void SDLMain::run() {
     delete inputManager;
     delete network;
     delete suspension;
+    
+    delete accelControl;
 }
 
 void SDLMain::handleEvents() {
@@ -377,8 +386,6 @@ void SDLMain::render() {
 	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
-    
-    glFlush();
 }
 
 }  // namespace SDL
