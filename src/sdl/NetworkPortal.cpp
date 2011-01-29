@@ -107,6 +107,7 @@ void NetworkPortal::waitForWorld() {
             Network::HandshakePacket *handshake
                 = dynamic_cast<Network::HandshakePacket *>(packet);
             id = handshake->getClientID();
+            delete packet;
             break;
         }
         

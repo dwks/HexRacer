@@ -51,10 +51,6 @@ void ServerMain::ServerVisitor::visit(Network::HandshakePacket &packet) {
 void ServerMain::ServerVisitor::visit(Network::EventPacket &packet) {
     // bootstrap into event subsystem
     EMIT_EVENT(packet.getEvent());
-    
-    /*// don't free this Event
-    Event::ObserverList::getInstance().notifyObservers(
-        packet.getEvent(), false);*/
 }
 
 void ServerMain::ServerObserver::observe(Event::EventBase *event) {
@@ -128,7 +124,6 @@ ServerMain::~ServerMain() {
 
 void ServerMain::run() {
     Physics::PhysicsWorld *physicsWorld = new Physics::PhysicsWorld();
-    physicsWorld->createTestScene();
     
     Connection::ServerManager server;
     ClientManager clients;
@@ -166,6 +161,7 @@ void ServerMain::run() {
             Network::StringSerializer stringSerializer(socket);
             stringSerializer.sendString(
                 packetSerializer.packetToString(packet));
+            delete packet;
             
             clients.addClient(socket);
             worldManager->getPlayerList()->addPlayer(
@@ -187,6 +183,7 @@ void ServerMain::run() {
                     << whichSocket << ": " << packet);*/
                 
                 packet->accept(visitor);
+                delete packet;
             }
         }
         
@@ -231,6 +228,10 @@ void ServerMain::run() {
         }
     }
     
+    delete worldManager;
+    delete paintSubsystem;
+    
+    delete meshLoader;
     delete physicsWorld;
 }
 

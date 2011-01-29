@@ -61,6 +61,9 @@ void Player::initialize() {
         renderable = new Render::RenderablePlayer();
         renderable->initialize(getID());
     }
+    else {
+        renderable = NULL;
+    }
 }
 
 }  // namespace Object

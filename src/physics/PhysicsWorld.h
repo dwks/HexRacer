@@ -39,8 +39,6 @@ public:
     void stepWorld(float microseconds);
     void setGravity(float xAccel, float yAccel, float zAccel);
     
-    void createTestScene();
-    
     void registerRigidBody(btRigidBody *body);
     
     /** This does not automatically free the memory for @a body.

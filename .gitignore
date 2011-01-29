@@ -39,6 +39,10 @@ Makefile
 # Windows clutter
 *.db
 
+# Linux profiling
+mem.*
+profile.*
+
 # Objects and meshes and other game data
 /models
 /maps
