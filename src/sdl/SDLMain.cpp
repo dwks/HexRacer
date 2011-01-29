@@ -194,7 +194,6 @@ void SDLMain::run() {
     
     // this must happen before Players are created
     physicsWorld = new Physics::PhysicsWorld();
-    physicsWorld->createTestScene();
     
     worldManager = new Object::WorldManager();
     
@@ -265,12 +264,13 @@ void SDLMain::run() {
 #endif
         
         {
+            static const int RATE = 10;
             Uint32 thisTime = SDL_GetTicks();
             int timeTakenSoFar = static_cast<int>(thisTime - lastTime);
-            if(timeTakenSoFar < 10) {
-                SDL_Delay(10 - timeTakenSoFar);
+            if(timeTakenSoFar < RATE) {
+                SDL_Delay(RATE - timeTakenSoFar);
             }
-            while(lastTime < thisTime) lastTime += 10;
+            while(lastTime < thisTime) lastTime += RATE;
         }
     }
     
