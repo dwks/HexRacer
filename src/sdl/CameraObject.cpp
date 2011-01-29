@@ -42,8 +42,8 @@ namespace SDL {
         setDestinationToPlayer();
         
         //Temp, should be calling slerpCamera when slerp is fixed
-        //setCamera(destinationLookAt, destinationPosition);
-        slerpCamera();
+        setCamera(destinationLookAt, destinationPosition);
+        //slerpCamera();
         
        
     }
