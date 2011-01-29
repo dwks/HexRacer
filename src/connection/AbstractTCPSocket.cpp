@@ -8,6 +8,10 @@
 namespace Project {
 namespace Connection {
 
+bool AbstractTCPSocket::isOpen() {
+    return getSocket().is_open();
+}
+
 bool AbstractTCPSocket::send(const std::string &message) {
     boost::system::error_code error;
     boost::asio::write(getSocket(),

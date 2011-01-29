@@ -8,6 +8,7 @@
 
 #include "PlayerManager.h"
 #include "ClientData.h"
+#include "JoystickManager.h"
 
 namespace Project {
 namespace SDL {
@@ -17,12 +18,19 @@ private:
     bool keyDown[SDLK_LAST];
     PlayerManager *playerManager;
     ClientData *clientData;
+    JoystickManager *joystick;
 public:
     InputManager(int ms, ClientData *clientData, PlayerManager *playerManager);
+    ~InputManager();
+    
+    void init();
     
     void handleEvent(SDL_Event *event);
     
     virtual void doAction(unsigned long currentTime);
+private:
+    void handlePaint();
+    void handleJoystick();
 };
 
 }  // namespace SDL

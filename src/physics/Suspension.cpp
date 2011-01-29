@@ -90,6 +90,14 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
         Math::Point(0.4, -0.2 + 0.05, -0.8 * 0.9),
     };
     
+    // bullet rays appear to have radius 0.01.
+    /*static const Math::Point suspensionPoint[] = {
+        Math::Point(0.4 + 0.010001, +0.2 + 0.1, 0.8 * 0.9),
+        Math::Point(-0.4 - 0.010001, +0.2 + 0.1, 0.8 * 0.9),
+        Math::Point(-0.4 - 0.010001, +0.2 + 0.1, -0.8 * 0.9),
+        Math::Point(0.4 + 0.010001, +0.2 + 0.1, -0.8 * 0.9),
+    };*/
+    
     for(int wheel = 0; wheel < 4; wheel ++) {
         Math::Matrix matrix = player->getTransformation();
         

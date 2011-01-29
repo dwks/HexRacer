@@ -19,6 +19,7 @@ public:
     static MeshLoader *getInstance() { return instance; }
 public:
     MeshLoader() { instance = this; }
+    ~MeshLoader();
     
 	/** Load a Wavefront OBJ file to a model with name @a model_name from
 		the file @a filename

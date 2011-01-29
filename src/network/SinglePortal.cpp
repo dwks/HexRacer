@@ -20,6 +20,10 @@ void SinglePortal::sendPacket(Packet *packet) {
     stringSerializer->sendString(data);
 }
 
+bool SinglePortal::isOpen() {
+    return socket->isOpen();
+}
+
 Packet *SinglePortal::nextPacket() {
     // first grab a string with StringSerializer, then convert to a packet
     std::string data;

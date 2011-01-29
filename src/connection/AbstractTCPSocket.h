@@ -23,6 +23,8 @@ public:
     */
     virtual void close() = 0;
     
+    virtual bool isOpen();
+    
     virtual bool send(const std::string &message);
     virtual bool tryReceive(std::string &message, std::size_t size);
 protected:

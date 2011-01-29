@@ -30,6 +30,8 @@ public:
     */
     void sendPacket(Packet *packet);
     
+    bool isOpen();
+    
     /** Returns the next packet waiting to be read from this socket, or NULL
         if there is no packet currently available.
     */

@@ -42,20 +42,6 @@ void PhysicsWorld::stepWorld(float microseconds) {
     }
 }
 
-void PhysicsWorld::createTestScene(){
-    //The "Plane"
-    //createRigidStaticPlane(Math::Point(0.0,1.0,0.0), Math::Point(0.0,-1.0,0.0));
-    
-	/*
-    LOG2(PHYSICS, CREATE, "Creating test scene");
-    registerRigidBody(PhysicsFactory::createRigidStaticPlane(
-        Math::Point(0.0,1.0,0.0), Math::Point(0.0,-3.0,0.0)));
-	*/
-    
-    //A player
-    //createPlayer(10);
-}
-
 void PhysicsWorld::registerRigidBody(btRigidBody *body) {
     dynamicsWorld->addRigidBody(body);
     
@@ -111,8 +97,6 @@ void PhysicsWorld::setDebug(bool on) {
 }
 
 void PhysicsWorld::render() {
-    //collisionBodies[1]->applyCentralForce(btVector3(2.0f, 0.0f, 0.0f));
-    
     if(debugging) {
         dynamicsWorld->debugDrawWorld();
     }

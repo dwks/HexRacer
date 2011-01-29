@@ -23,6 +23,15 @@ InputManager::InputManager(int ms, ClientData *clientData, PlayerManager *player
     }
 }
 
+InputManager::~InputManager() {
+    delete joystick;
+}
+
+void InputManager::init() {
+    joystick = new JoystickManager();
+    joystick->open();
+}
+
 void InputManager::handleEvent(SDL_Event *event) {
     switch(event->type) {
     case SDL_KEYDOWN:
@@ -89,59 +98,66 @@ void InputManager::doAction(unsigned long currentTime) {
         EMIT_EVENT(new Event::SetDebugDrawing(debug));
     }
     
-    {
-        static int paint = 0;
-        static bool painting = false;
-        static bool erasing = false;
+    handlePaint();
+    handleJoystick();
+}
+
+void InputManager::handlePaint() {
+    static int paint = 0;
+    static bool painting = false;
+    static bool erasing = false;
+    
+    if(keyDown[SDLK_p]) {
+        keyDown[SDLK_p] = false;
         
-        if(keyDown[SDLK_p]) {
-            keyDown[SDLK_p] = false;
-            
-            painting = !painting;
-            erasing = false;
-            paint = (paint + 1) % 8;
-            
-            if(painting) {
-                EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
-                    Event::TogglePainting::PAINTING));
-            }
-            else {
-                EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
-                    Event::TogglePainting::NOTHING));
-            }
-        }
-        if(keyDown[SDLK_o]) {
-            keyDown[SDLK_o] = false;
-            
-            erasing = !erasing;
-            painting = false;
-            
-            if(erasing) {
-                EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
-                    Event::TogglePainting::ERASING));
-            }
-            else {
-                EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
-                    Event::TogglePainting::NOTHING));
-            }
-        }
+        painting = !painting;
+        erasing = false;
+        paint = (paint + 1) % 8;
         
-        static double PAINTING_RADIUS = 1.5;
-        
-        if(GET_SETTING("render.paint.legacypaint", 0)) {
-            if(painting) {
-                EMIT_EVENT(new Event::PaintEvent(
-                    playerManager->getPlayer()->getPosition(),
-                    PAINTING_RADIUS,
-                    paint));
-            }
-            if(erasing) {
-                EMIT_EVENT(new Event::PaintEvent(
-                    playerManager->getPlayer()->getPosition(),
-                    PAINTING_RADIUS,
-                    -1));
-            }
+        if(painting) {
+            EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
+                Event::TogglePainting::PAINTING));
         }
+        else {
+            EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
+                Event::TogglePainting::NOTHING));
+        }
+    }
+    if(keyDown[SDLK_o]) {
+        keyDown[SDLK_o] = false;
+        
+        erasing = !erasing;
+        painting = false;
+        
+        if(erasing) {
+            EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
+                Event::TogglePainting::ERASING));
+        }
+        else {
+            EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
+                Event::TogglePainting::NOTHING));
+        }
+    }
+}
+
+void InputManager::handleJoystick() {
+    const double DEADZONE = 0.2;
+    
+    // left hat
+    double leftX = joystick->getNormalizedAxisValue(0, DEADZONE);
+    double leftY = joystick->getNormalizedAxisValue(1, DEADZONE);
+    
+    // right hat
+    double rightX = joystick->getNormalizedAxisValue(3, DEADZONE);
+    double rightY = -joystick->getNormalizedAxisValue(2, DEADZONE);
+    
+    if(leftX) {
+        EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::TURN, leftX));
+    }
+    
+    if(rightY) {
+        EMIT_EVENT(new Event::PlayerAction(
+            Event::PlayerAction::ACCELERATE, rightY));
     }
 }
 

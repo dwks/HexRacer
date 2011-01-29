@@ -17,9 +17,6 @@
 #include "physics/PhysicsFactory.h"
 #include "physics/PhysicsWorld.h"
 
-#include "math/BoundingBox3D.h"
-#include "opengl/GeometryDrawing.h"
-
 #include "render/ShaderUniformVector4.h"
 #include "render/BackgroundRenderable.h"
 
@@ -165,13 +162,6 @@ void SDLMain::initRenderer() {
     rootRenderable->addRenderable(test_terrain);
     rootRenderable->addRenderable(background);
     
-    /*
-    rootRenderable->getRenderProperties()->setColor(OpenGL::Color::VIOLET);
-    rootRenderable->getRenderProperties()->setColorOverride(true);
-    rootRenderable->getRenderProperties()->setShaderOverride(true);
-    rootRenderable->getRenderProperties()->setTextureOverride(true);
-    */
-    
     Render::TextureCube* background_texture = new Render::TextureCube(
         "models/starfield.png",
         "models/starfield.png",
@@ -199,15 +189,11 @@ void SDLMain::initRenderer() {
 void SDLMain::run() {
     initSDL();
     
-    joystick = new JoystickManager();
-    joystick->open();
-    
     initOpenGL();
     initRenderer();
     
     // this must happen before Players are created
     physicsWorld = new Physics::PhysicsWorld();
-    physicsWorld->createTestScene();
     
     worldManager = new Object::WorldManager();
     
@@ -228,6 +214,7 @@ void SDLMain::run() {
     paintSubsystem = new Paint::PaintSubsystem(worldManager, 20);
     
     inputManager = new InputManager(10, clientData, playerManager);
+    inputManager->init();
     
     cameraObject->setPlayerManager(playerManager);
     
@@ -250,60 +237,10 @@ void SDLMain::run() {
     
     Uint32 lastTime = SDL_GetTicks();
     while(!quit) {
-        SDL_Event event;
-        while(SDL_PollEvent(&event)) {
-            switch(event.type) {
-            case SDL_QUIT:
-                quit = true;
-                break;
-            case SDL_VIDEORESIZE:
-                SDL_SetVideoMode(event.resize.w, event.resize.h,
-                    0, SDL_INIT_FLAGS);
-                resizeGL(event.resize.w, event.resize.h);
-                projector.setCurrentDimensions(
-                    Point2D(event.resize.w, event.resize.h));
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-				/*
-                LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " pressed "
-                    << "at " << event.button.x << "," << event.button.y);
-				*/
-				if (event.button.button == 1) {  // left
-					simpleTrackball->setMouseStartAt(projector.screenToGL(
-						Point2D(event.button.x, event.button.y)));
-				}
-				else if (event.button.button == 2) {  // middle
-					paintManager->colorCellsInRadius(cameraObject->camera->getLookPosition(), 3.0, -1);
-				}
-				else if (event.button.button == 3) {  // right
-					paintManager->colorCellsInRadius(cameraObject->camera->getLookPosition(), 3.0, testPaintColor);
-					testPaintColor++;
-					testPaintColor = testPaintColor % 8;
-				}
-                break;
-            case SDL_MOUSEMOTION:
-                if(event.motion.state & SDL_BUTTON(1)) {
-                    //LOG2(SDL, INPUT, "Mouse moved to " << event.motion.x << "," << event.motion.y);
-					if (event.button.button == 1) {
-						simpleTrackball->setMouseCurrentAt(projector.screenToGL(
-						Point2D(event.button.x, event.button.y)));
-						updateCamera();
-					}
-                }
-                break;
-            case SDL_MOUSEBUTTONUP:
-                //LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " released");
-                break;
-            case SDL_KEYDOWN:
-            case SDL_KEYUP:
-                inputManager->handleEvent(&event);
-                break;
-            }
-        }
+        handleEvents();
         
         network->checkNetwork();
         
-        handleJoystick();
         inputManager->doStep(SDL_GetTicks());
         paintSubsystem->doStep(SDL_GetTicks());
         
@@ -319,7 +256,6 @@ void SDLMain::run() {
         render();
         playerManager->applySuspension(renderer);
         physicsWorld->render();
-        //renderGrid();
         
         SDL_GL_SwapBuffers();
         
@@ -328,12 +264,13 @@ void SDLMain::run() {
 #endif
         
         {
+            static const int RATE = 10;
             Uint32 thisTime = SDL_GetTicks();
             int timeTakenSoFar = static_cast<int>(thisTime - lastTime);
-            if(timeTakenSoFar < 10) {
-                SDL_Delay(10 - timeTakenSoFar);
+            if(timeTakenSoFar < RATE) {
+                SDL_Delay(RATE - timeTakenSoFar);
             }
-            while(lastTime < thisTime) lastTime += 10;
+            while(lastTime < thisTime) lastTime += RATE;
         }
     }
     
@@ -343,47 +280,49 @@ void SDLMain::run() {
     delete soundSystem;
 #endif
     
-    delete joystick;
     delete inputManager;
     delete network;
-    
-	//delete background;
 }
 
-void SDLMain::handleJoystick() {
-    double x = joystick->getNormalizedAxisValue(0);
-    double y = joystick->getNormalizedAxisValue(1);
-    
-	double u = joystick->getNormalizedAxisValue(4, 0.0);
-    double v = joystick->getNormalizedAxisValue(3, 0.0);
-    
-    const double DEADZONE = 0.2;
-    
-    if(std::fabs(x) > DEADZONE || std::fabs(y) > DEADZONE) {
-        //LOG(SDL, "Move joystick by " << x << "," << y);
-        //trackball->setMouseStartAt(Math::Point(0.0, 0.0));
-        
-		//Camera movement
-		Math::Point translation = cameraObject->camera->getLookDirection()*(-y * 0.25f)
-			+ cameraObject->camera->getRightDirection() * (x * 0.25f);
-        
-		cameraObject->camera->translate(translation);
-        
-        //trackball->setMouseCurrentAt(translation);
-    }
-    
-	if(std::fabs(u) > DEADZONE || std::fabs(v) > DEADZONE) {
-		simpleTrackball->setMouseStartAt(Math::Point(0.0, 0.0));
-
-		//Look around with the camera
-        Math::Point translation;
-        translation.setX(u * 0.1);
-        translation.setY(-v * 0.1);
-
-		//LOG(SDL, "Joystick moving camera by " << translation);
-        
-        simpleTrackball->setMouseCurrentAt(translation);
-        updateCamera();
+void SDLMain::handleEvents() {
+    SDL_Event event;
+    while(SDL_PollEvent(&event)) {
+        switch(event.type) {
+        case SDL_QUIT:
+            quit = true;
+            break;
+        case SDL_VIDEORESIZE:
+            SDL_SetVideoMode(event.resize.w, event.resize.h,
+                0, SDL_INIT_FLAGS);
+            resizeGL(event.resize.w, event.resize.h);
+            projector.setCurrentDimensions(
+                Point2D(event.resize.w, event.resize.h));
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            /*LOG2(SDL, INPUT, "Mouse button " << int(event.button.button) << " pressed "
+                << "at " << event.button.x << "," << event.button.y);*/
+            
+            if(event.button.button == 1) {  // left
+                simpleTrackball->setMouseStartAt(projector.screenToGL(
+                    Point2D(event.button.x, event.button.y)));
+            }
+            break;
+        case SDL_MOUSEMOTION:
+            if(event.motion.state & SDL_BUTTON(1)) {
+                if(event.button.button == 1) {
+                    simpleTrackball->setMouseCurrentAt(projector.screenToGL(
+                    Point2D(event.button.x, event.button.y)));
+                    updateCamera();
+                }
+            }
+            break;
+        case SDL_MOUSEBUTTONUP:
+            break;
+        case SDL_KEYDOWN:
+        case SDL_KEYUP:
+            inputManager->handleEvent(&event);
+            break;
+        }
     }
 }
 
@@ -434,23 +373,6 @@ void SDLMain::render() {
 	glDisable(GL_TEXTURE_2D);
     
     glFlush();
-}
-
-void SDLMain::renderGrid() {
-    static const int SIZE = 10;
-    static const double HEIGHT = 1.0;
-    
-    glColor3f(0.5f, 0.0f, 0.0f);
-    
-    glBegin(GL_LINES);
-    for(int i = -SIZE; i < SIZE; i ++) {
-        OpenGL::MathWrapper::glVertex(Math::Point(i, HEIGHT, -SIZE));
-        OpenGL::MathWrapper::glVertex(Math::Point(i, HEIGHT, SIZE));
-        
-        OpenGL::MathWrapper::glVertex(Math::Point(-SIZE, HEIGHT, i));
-        OpenGL::MathWrapper::glVertex(Math::Point(SIZE, HEIGHT, i));
-    }
-    glEnd();
 }
 
 }  // namespace SDL

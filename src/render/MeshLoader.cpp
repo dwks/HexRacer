@@ -12,8 +12,18 @@ using namespace std;
 namespace Project {
 namespace Render {
 
-MeshLoader *MeshLoader::instance = 0;
+    MeshLoader *MeshLoader::instance = 0;
 
+    MeshLoader::~MeshLoader() {
+        for(vector< MeshGroup* >::size_type x = 0; x < models.size(); x ++) {
+            delete models[x];
+        }
+        
+        for(vector< Texture* >::size_type x = 0; x < textures.size(); x ++) {
+            delete textures[x];
+        }
+    }
+    
 	MeshGroup* MeshLoader::loadOBJ(string model_name, string filename) {
 
 		//Check if a model with the same name already exists

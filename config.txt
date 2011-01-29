@@ -27,7 +27,7 @@ physics.driving.enablesuspension  = 1
 physics.driving.minlength         = 0.1
 physics.driving.restlength        = 0.5
 physics.driving.stretchlength     = 0.8
-physics.driving.constant.k        = 1.0
+physics.driving.constant.k        = 2.0
 physics.driving.constant.c        = 40.0
 
 # Drag forces
@@ -40,9 +40,6 @@ physics.driving.sidewaysdrag      = 10.0
 
 # Generate paint cells (takes some time)
 render.paint.enabled = 1
-
-# Testing: enable legacy painting code? (works but is slower)
-render.paint.legacypaint = 0
 
 # Rendering quality
 #    0 = low
