@@ -35,6 +35,9 @@ public:
     Player(int id, const Math::Point &origin);
     virtual ~Player();
     
+    void setOnGround(bool onGround)
+        { physical->setOnGround(onGround); }
+    
     void setPhysicalObject(Physics::PhysicalPlayer *physical)
         { this->physical = physical; }
     virtual Physics::PhysicalObject *getPhysicalObject();

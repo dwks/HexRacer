@@ -187,6 +187,11 @@ void ServerMain::run() {
             }
         }
         
+        suspension->setData(worldManager->getPlayerList(), NULL);
+        suspension->checkForWheelsOnGround();
+        
+        paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
+        
         {
             static unsigned long lastPhysicsTime
                 = Misc::Sleeper::getTimeMilliseconds();
@@ -194,10 +199,8 @@ void ServerMain::run() {
             physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
             lastPhysicsTime = thisTime;
         }
-        suspension->setData(worldManager->getPlayerList(), NULL);
-        suspension->doStep(Misc::Sleeper::getTimeMilliseconds());
         
-        paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
+        suspension->doStep(Misc::Sleeper::getTimeMilliseconds());
         
         if(++loops == 5) {
             loops = 0;

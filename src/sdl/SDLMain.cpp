@@ -242,6 +242,9 @@ void SDLMain::run() {
         
         network->checkNetwork();
         
+        suspension->setData(worldManager->getPlayerList(), renderer);
+        suspension->checkForWheelsOnGround();
+        
         inputManager->doStep(SDL_GetTicks());
         paintSubsystem->doStep(SDL_GetTicks());
         
@@ -251,7 +254,7 @@ void SDLMain::run() {
             physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
             lastPhysicsTime = thisTime;
         }
-        suspension->setData(worldManager->getPlayerList(), renderer);
+        
         suspension->doStep(SDL_GetTicks());
         
         cameraObject->doStep(SDL_GetTicks());

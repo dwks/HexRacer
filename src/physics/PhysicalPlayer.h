@@ -46,10 +46,14 @@ private:
     BOOST_SERIALIZATION_SPLIT_MEMBER()
 private:
     btRigidBody *rigidBody;
+    bool onGround;  // not serialized
 public:
-    PhysicalPlayer() : rigidBody(NULL) {}
+    PhysicalPlayer() : rigidBody(NULL), onGround(false) {}
     PhysicalPlayer(const Math::Point &position);
     virtual ~PhysicalPlayer();
+    
+    void setOnGround(bool onGround)
+        { this->onGround = onGround; }
     
     void destroyRigidBody();
     void constructRigidBody(const Math::Point &position);

@@ -14,6 +14,7 @@ namespace Project {
 namespace Physics {
 
 PhysicalPlayer::PhysicalPlayer(const Math::Point &position) {
+    onGround = false;
     rigidBody = NULL;  // essential, constructRigidBody tries to delete it
     
     constructRigidBody(position);
@@ -72,6 +73,8 @@ Math::Point PhysicalPlayer::getAngularVelocity() const {
 }
 
 void PhysicalPlayer::applyAcceleration(double acceleration) {
+    if(!onGround) return;
+    
     rigidBody->activate();
     
     double constant = GET_SETTING("physics.constant.accel", 1.0);
@@ -87,6 +90,8 @@ void PhysicalPlayer::applyAcceleration(double acceleration) {
 }
 
 void PhysicalPlayer::applyTurning(double amount) {
+    if(!onGround) return;
+    
     rigidBody->activate();
     
     double constant = GET_SETTING("physics.constant.turn", 1.0);
@@ -101,6 +106,12 @@ void PhysicalPlayer::applyTurning(double amount) {
     centripetalAxis.normalize();
     
     double speed = getLinearVelocity().length();
+    
+    // turn in the opposite direction when travelling backwards
+    if(getLinearVelocity().dotProduct(forwardAxis) < 0) {
+        speed = -speed;
+    }
+    
     /*double centripetalSpeed = getLinearVelocity().dotProduct(forwardAxis)
         / getLinearVelocity().length();*/
     

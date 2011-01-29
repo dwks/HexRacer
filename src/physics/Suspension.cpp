@@ -80,6 +80,36 @@ double Suspension::Spring::calculateForceFactor(
     return factor;
 }
 
+void Suspension::checkForWheelsOnGround() {
+    if(!GET_SETTING("physics.driving.enablesuspension", 0)) {
+        return;
+    }
+    
+    Object::PlayerList::IteratorType it = playerList->getIterator();
+    while(it.hasNext()) {
+        Object::Player *player = it.next();
+        
+        int onGround = wheelsOnGround(player->getID());
+        player->setOnGround(onGround > 2);
+    }
+}
+
+int Suspension::wheelsOnGround(int playerID) {
+    int onGround = 0;
+    
+    for(int wheel = 0; wheel < 4; wheel ++) {
+        if(playerSuspension.find(playerID) == playerSuspension.end()) {
+            continue;
+        }
+        
+        if(playerSuspension[playerID][wheel].isOnGround()) {
+            onGround ++;
+        }
+    }
+    
+    return onGround;
+}
+
 void Suspension::doAction(unsigned long currentTime) {
     applySuspension();
 }

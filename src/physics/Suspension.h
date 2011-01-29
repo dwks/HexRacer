@@ -55,13 +55,19 @@ private:
         double calculateForceFactor(const Displacement &thisDisplacement);
     };
 private:
+    // map from player ID to vector of 4 elements,
+    // the last known displacement of each wheel
     typedef std::map<int, std::vector<Displacement> > playerSuspensionType;
     playerSuspensionType playerSuspension;
     
     Object::PlayerList *playerList;
     Render::RenderManager *renderManager;
 public:
-    Suspension(unsigned long tickTime) : TimedSubsystem(tickTime) {}
+    Suspension(unsigned long tickTime) : TimedSubsystem(tickTime),
+        playerList(NULL), renderManager(NULL) {}
+    
+    void checkForWheelsOnGround();
+    int wheelsOnGround(int playerID);
     
     void doAction(unsigned long currentTime);
     
