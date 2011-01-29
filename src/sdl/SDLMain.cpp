@@ -212,7 +212,7 @@ void SDLMain::run() {
         clientData = new ClientData();
         playerManager = new PlayerManager(0, worldManager);
     }
-    paintSubsystem = new Paint::PaintSubsystem(worldManager, 20);
+    paintSubsystem = new Paint::PaintSubsystem(worldManager, paintManager, 20);
     
     inputManager = new InputManager(10, clientData, playerManager);
     inputManager->init();
@@ -242,11 +242,11 @@ void SDLMain::run() {
         
         network->checkNetwork();
         
+        paintSubsystem->doStep(SDL_GetTicks());
         suspension->setData(worldManager->getPlayerList(), renderer);
         suspension->checkForWheelsOnGround();
         
         inputManager->doStep(SDL_GetTicks());
-        paintSubsystem->doStep(SDL_GetTicks());
         
         {
             static Uint32 lastPhysicsTime = SDL_GetTicks();

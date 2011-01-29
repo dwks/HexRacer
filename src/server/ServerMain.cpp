@@ -145,7 +145,7 @@ void ServerMain::run() {
     Physics::Suspension *suspension = new Physics::Suspension(10);
     
     worldManager = new Object::WorldManager();
-    paintSubsystem = new Paint::PaintSubsystem(worldManager, 20);
+    paintSubsystem = new Paint::PaintSubsystem(worldManager, &paintManager, 20);
     
     int loops = 0;
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
@@ -187,10 +187,9 @@ void ServerMain::run() {
             }
         }
         
+        paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
         suspension->setData(worldManager->getPlayerList(), NULL);
         suspension->checkForWheelsOnGround();
-        
-        paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
         
         {
             static unsigned long lastPhysicsTime
