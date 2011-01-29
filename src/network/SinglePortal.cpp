@@ -12,6 +12,7 @@ SinglePortal::SinglePortal(Connection::Socket *socket) {
 
 SinglePortal::~SinglePortal() {
     delete stringSerializer;
+    delete socket;
 }
 
 void SinglePortal::sendPacket(Packet *packet) {
@@ -28,6 +29,7 @@ Packet *SinglePortal::nextPacket() {
     // first grab a string with StringSerializer, then convert to a packet
     std::string data;
     if(stringSerializer->readNextString(data)) {
+        //LOG(NETWORK, "packet of size " << data.size() << " received: " << data);
         return packetSerializer.stringToPacket(data);
     }
     else {

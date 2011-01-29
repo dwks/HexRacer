@@ -30,6 +30,8 @@ public:
     */
     void sendPacket(Packet *packet);
     
+    /** Returns true if the socket behind this portal is still open.
+    */
     bool isOpen();
     
     /** Returns the next packet waiting to be read from this socket, or NULL
