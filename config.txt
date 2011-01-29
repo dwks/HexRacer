@@ -24,11 +24,11 @@ physics.constant.centripetal      = 1.0
 
 # Vehicle suspension
 physics.driving.enablesuspension  = 1
-physics.driving.minlength         = 0.1
+physics.driving.minlength         = 0.0
 physics.driving.restlength        = 0.5
-physics.driving.stretchlength     = 0.8
+physics.driving.stretchlength     = 1.0
 physics.driving.constant.k        = 2.0
-physics.driving.constant.c        = 40.0
+physics.driving.constant.c        = 30.0
 
 # Drag forces
 physics.driving.lineardrag        = 0.4
@@ -39,13 +39,13 @@ physics.driving.sidewaysdrag      = 10.0
 ### Rendering settings
 
 # Generate paint cells (takes some time)
-render.paint.enabled = 0
+render.paint.enabled = 1
 
 # Rendering quality
 #    0 = low
 #    1 = medium
 #    2 = high
-render.quality = 0
+render.quality = 2
 
 ########
 ### Network settings

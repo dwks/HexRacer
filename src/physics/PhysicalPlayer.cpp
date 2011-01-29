@@ -49,9 +49,6 @@ void PhysicalPlayer::constructRigidBody(const Math::Point &position) {
 void PhysicalPlayer::constructRigidBody(const Math::Matrix &transformation) {
     constructRigidBody(Math::Point());
     
-    rigidBody->setCollisionFlags(rigidBody->getCollisionFlags()
-        | btCollisionObject::CF_KINEMATIC_OBJECT);
-    rigidBody->setActivationState(DISABLE_DEACTIVATION);
     rigidBody->setWorldTransform(
         Converter::toTransform(transformation));
 }
@@ -69,6 +66,8 @@ Math::Matrix PhysicalPlayer::getTransformation() const {
 }
 
 Math::Point PhysicalPlayer::getLinearVelocity() const {
+    rigidBody->activate();  // !!! hack to prevent sleeping
+    
     return Converter::toPoint(rigidBody->getLinearVelocity());
 }
 

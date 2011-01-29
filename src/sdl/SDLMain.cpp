@@ -262,12 +262,18 @@ void SDLMain::run() {
         
         cameraObject->doStep(SDL_GetTicks());
         
-        render();
-        suspension->doStep(SDL_GetTicks());
-        physicsWorld->render();
-        glFlush();
-        
-        SDL_GL_SwapBuffers();
+        {
+            render();
+            
+            // suspension does not look good when it is out of sync with rendering
+            suspension->doAction(SDL_GetTicks());
+            //suspension->doStep(SDL_GetTicks());
+            
+            physicsWorld->render();
+            glFlush();
+            
+            SDL_GL_SwapBuffers();
+        }
         
 #ifdef HAVE_OPENAL
         if(soundSystem) soundSystem->doAction(SDL_GetTicks());
