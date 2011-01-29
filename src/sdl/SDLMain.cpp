@@ -292,6 +292,8 @@ void SDLMain::run() {
     delete soundSystem;
 #endif
     
+    delete rootRenderable;
+    
     delete inputManager;
     delete network;
     delete suspension;
