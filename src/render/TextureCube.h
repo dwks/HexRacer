@@ -2,6 +2,7 @@
 #define PROJECT_RENDER__TEXTURE_CUBE_H
 
 #include "opengl/OpenGL.h"
+#include "render/CubeMapFile.h"
 #include <string>
 
 namespace Project {
@@ -11,6 +12,8 @@ class TextureCube {
 private:
 	GLuint cubeMap;
 public:
+
+	TextureCube(const CubeMapFile& file);
 
 	TextureCube(std::string positive_x_file,
 				std::string negative_x_file,

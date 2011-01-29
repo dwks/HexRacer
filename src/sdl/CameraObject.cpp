@@ -66,6 +66,10 @@ namespace SDL {
     }
     
     void CameraObject::slerpCamera(){
+        //What I am doing wrong is that I need to have an initial orientation,
+        //Then using the quaternions I apply that rotation to the original view
+        //And translate it to the position I need... I believe.
+        
         float stepVal = 0.01;
         Math::Point currentLookAt,currentPos,currentViewAxis,destViewAxis,resultPos,resultAxis;
         btQuaternion result;

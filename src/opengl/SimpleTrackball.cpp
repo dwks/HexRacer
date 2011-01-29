@@ -46,3 +46,13 @@ void SimpleTrackball::updateSpherePoint() {
 	spherePoint.setY(sin(latitude));
 	spherePoint.setZ(sin(longitude)*cos(latitude));
 }
+
+void SimpleTrackball::setLongitude(double _longitude) {
+	longitude = smartMod(_longitude, PI*2.0);
+	updateSpherePoint();
+}
+
+void SimpleTrackball::setLatitude(double _latitude) {
+	latitude = bound(_latitude, -PI*0.45, PI*0.45);
+	updateSpherePoint();
+}

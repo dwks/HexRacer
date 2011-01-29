@@ -140,7 +140,7 @@ void SDLMain::initRenderer() {
     //Load the model
     meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
     Render::RenderableObject *object
-        = meshLoader->loadOBJ("playerCube", "models/playercube.obj");
+        = meshLoader->loadOBJ("playerCube", "models/vehicle01.obj");
     object->getRenderProperties()->setTransformation(
         Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0)));
     

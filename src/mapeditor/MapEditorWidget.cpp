@@ -9,7 +9,10 @@
 #include "math/Values.h"
 #include <math.h>
 #include "LightObject.h"
+#include "PathNodeObject.h"
+#include "StartPointObject.h"
 #include "MapEditorConstants.h"
+#include "CubeMapDialog.h"
 using namespace Paint;
 
 MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget, Qt::WindowFlags f)
@@ -148,7 +151,7 @@ void MapEditorWidget::paintGL() {
 	//Draw Paint
 	if (showPaint) {
 		Color::glColor(Color::YELLOW);
-		vector<PaintCell*> paint_cells = map->getPaintCells();
+		const vector<PaintCell*>& paint_cells = map->getPaintCells();
 		for (unsigned int i = 0; i < paint_cells.size(); i++) {
 			PaintCell* cell = paint_cells[i];
 			glBegin(GL_TRIANGLE_FAN);
@@ -180,9 +183,23 @@ void MapEditorWidget::paintGL() {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glOrtho(0.0f, viewWidth, 0.0f, viewHeight, 2.0f, -2.0f);
+	glOrtho(0.0f, viewWidth, 0.0, viewHeight, 2.0f, -2.0f);
 
 	glDepthMask(GL_FALSE);
+	glDisable(GL_DEPTH_TEST);
+
+	Point screen_scale = Point(viewWidth, viewHeight, 0.0);
+
+	//Draw Link Line
+	if (editMode == EDIT_LINK && mouse_pressed[mouseButtonToIndex(MAP_EDITOR_EDIT_BUTTON)]) {
+
+		glBegin(GL_LINES);
+		Color::glColor(MAP_EDITOR_PATHNODE_LINK_START_COLOR);
+		MathWrapper::glVertex(mouse_click_pos[mouseButtonToIndex(MAP_EDITOR_EDIT_BUTTON)].coordinateMultiply(screen_scale));
+		Color::glColor(MAP_EDITOR_PATHNODE_LINK_END_COLOR);
+		MathWrapper::glVertex(mouse_current_pos.coordinateMultiply(screen_scale));
+		glEnd();
+	}
 
 	//Draw Colors
 
@@ -257,6 +274,7 @@ void MapEditorWidget::paintGL() {
 
 
 	glDepthMask(GL_TRUE);
+	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
 	glDisable(GL_POINT_SMOOTH);
 
@@ -286,7 +304,7 @@ void MapEditorWidget::mouseDragged(Qt::MouseButton button, Point current_positio
 
 	if (button == MAP_EDITOR_MAIN_BUTTON) {
 		if (camera->getCameraType() == Camera::ORTHOGRAPHIC) {
-			camera->translate(Point::point2D(-delta.getU(), delta.getV(), CAMERA_ORTHO_PROJECT_AXIS)*orthoHeight*(-0.5));
+			camera->translate(Point::point2D(-delta.getU(), delta.getV(), CAMERA_ORTHO_PROJECT_AXIS)*orthoHeight*(-1.0));
 			updateGL();
 		}
 		else {
@@ -295,9 +313,12 @@ void MapEditorWidget::mouseDragged(Qt::MouseButton button, Point current_positio
 			updateGL();
 		}
 	}
-	else if (button == MAP_EDITOR_EDIT_BUTTON && selectedObject) {
+	else if (button == MAP_EDITOR_EDIT_BUTTON) {
+
 		bool z_edit = (modifiers & MAP_EDITOR_Z_EDIT_MODIFIER);
-		if (editMode == EDIT_TRANSLATE) {
+
+		if (editMode == EDIT_TRANSLATE && selectedObject) {
+			/*TRANSLATION*************************************************************/
 			Point translation;
 			if (z_edit) {
 				if (camera->getCameraType() == Camera::ORTHOGRAPHIC) {
@@ -326,8 +347,11 @@ void MapEditorWidget::mouseDragged(Qt::MouseButton button, Point current_positio
 					+camera->getUpDirection()*delta.getV()*translate_v_scale*precisionScale;
 			}
 			translateSelectedObject(translation);
+			
 		}
+
 		updateGL();
+		
 	}
 
 }
@@ -346,9 +370,27 @@ void MapEditorWidget::mouseReleased(Qt::MouseButton button, Point release_positi
 			}
 		}
 		else {
-			if (editMode == EDIT_TRANSLATE) {
-				updateSelectedObjectPosition();
+			if (editMode == EDIT_LINK) {
+
+				if (editObjectType == MapObject::PATH_NODE) {
+					//Linking Path Nodes
+					PathNodeObject* object = (PathNodeObject*) getClickedObject(
+						click_position.getU(), click_position.getV(), true
+						);
+					PathNodeObject* link_object = (PathNodeObject*) getClickedObject(
+						release_position.getU(), release_position.getV(), false
+						);
+
+					if (object && link_object) {
+						object->linkNode(link_object);
+					}
+					
+				}
+				
 			}
+
+			updateSelectedObjectPosition();
+			updateGL();
 		}
 	}
 	
@@ -441,15 +483,17 @@ void MapEditorWidget::translateCamera(Point translation) {
 
 void MapEditorWidget::newMap() {
 	map->clear();
-	mapLightsChanged();
+	mapObjectsChanged(MapObject::LIGHT);
+	mapObjectsChanged(MapObject::PATH_NODE);
 	mapCollisionChanged();
 	updateGL();
 }
 
 void MapEditorWidget::loadMap(string filename) {
 	map->loadMapFile(filename);
+	mapObjectsChanged(MapObject::LIGHT);
+	mapObjectsChanged(MapObject::PATH_NODE);
 	mapCollisionChanged();
-	mapLightsChanged();
 	updateGL();
 }
 
@@ -463,22 +507,30 @@ void MapEditorWidget::saveMapAs(string filename) {
 
 }
 
-void MapEditorWidget::mapLightsChanged() {
+void MapEditorWidget::mapObjectsChanged(MapObject::ObjectType type) {
 
-	if (editObjectType == MapObject::LIGHT)
+	if (editObjectType == type)
 		selectedObject = NULL;
 
-	//Delete all light objects
-	int type_index = static_cast<int>(MapObject::LIGHT);
+	//Delete all map objects with the given type
+	int type_index = static_cast<int>(type);
 	for (unsigned int i = 0; i < mapObjects[type_index].size(); i++)
 		delete(mapObjects[type_index][i]);
 	mapObjects[type_index].clear();
 
-	lightManager->clear();
-	vector<Light*> lights = map->getLights();
-	for (unsigned int i = 0; i < lights.size(); i++) {
-		lightManager->addLight(lights[i], false, true);
-		mapObjects[type_index].append(new LightObject(lights[i]));
+	if (type == MapObject::LIGHT) {
+		lightManager->clear();
+		const vector<Light*>& lights = map->getLights();
+		for (unsigned int i = 0; i < lights.size(); i++) {
+			lightManager->addLight(lights[i], false, true);
+			mapObjects[type_index].append(new LightObject(lights[i]));
+		}
+	}
+	else if (type == MapObject::PATH_NODE) {
+		const vector<PathNode*>& nodes = map->getPathNodes();
+		for (unsigned int i = 0; i < nodes.size(); i++) {
+			mapObjects[type_index].append(new PathNodeObject(nodes[i]));
+		}
 	}
 
 
@@ -495,6 +547,16 @@ void MapEditorWidget::addLight(Point position) {
 	mapObjects[static_cast<int>(MapObject::LIGHT)].append(new LightObject(new_light));
 }
 
+void MapEditorWidget::addPathNode(Point position) {
+	PathNode* new_node = new PathNode(position);
+	map->addPathNode(new_node);
+	mapObjects[static_cast<int>(MapObject::PATH_NODE)].append(new PathNodeObject(new_node));
+}
+void MapEditorWidget::addStartPoint(Point position) {
+	Vertex3D* new_point = new PathNode(position);
+	map->addStartPoint(new_point);
+	mapObjects[static_cast<int>(MapObject::START_POINT)].append(new StartPointObject(new_point));
+}
 void MapEditorWidget::loadMesh(HRMap::MeshType type, string filename) {
 	map->loadMapMesh(type, filename);
 	if (type != HRMap::DECOR)
@@ -536,10 +598,28 @@ void MapEditorWidget::setOrthoView(bool enabled) {
 		camera->setCameraType(Camera::ORTHOGRAPHIC);
 	}
 	else {
-		Point new_camera_pos = camera->getPosition();
-		new_camera_pos.setCoord(perspectiveCameraHeight, CAMERA_ORTHO_PROJECT_AXIS);
 
-		camera->setPosition(new_camera_pos);
+		bool camera_has_focus = false;
+		Point& camera_focus = Point();
+		if (selectedObject) {
+			camera_focus = selectedObject->getPosition();
+			camera_has_focus = true;
+		} else if (getRaycastPosition(0.5, 0.5, camera_focus)) {
+			camera_has_focus = true;
+		}
+		
+		if (camera_has_focus) {
+			camera->setPosition(camera_focus+CAMERA_DISABLE_ORTHO_OFFSET);
+			trackball->setLongitude(PI*0.5);
+			trackball->setLatitude(-PI*0.15);
+			//camera->setLookPosition(camera_focus);
+		}
+		else {
+			Point new_camera_pos = camera->getPosition();
+			new_camera_pos.setCoord(perspectiveCameraHeight, CAMERA_ORTHO_PROJECT_AXIS);
+			camera->setLookPosition(new_camera_pos);
+		}
+
 		camera->setUpDirection(CAMERA_PERSPECTIVE_UP);
 		camera->setCameraType(Camera::PERSPECTIVE);
 		updateCamera();
@@ -570,10 +650,27 @@ void MapEditorWidget::setEditMode(EditMode mode) {
 	editMode = mode;
 }
 void MapEditorWidget::createObject(double u, double v) {
+
+	Point& create_pos = Point();
+
 	switch (editObjectType) {
 
 		case MapObject::LIGHT:
 			addLight(camera->cameraToWorld(u, v));
+			break;
+
+		case MapObject::PATH_NODE:
+			if (getRaycastPosition(u, v, create_pos)) {
+				create_pos.setY(create_pos.getY()+MAP_EDITOR_PATHNODE_FLOAT_HEIGHT);
+				addPathNode(create_pos);
+			}
+			break;
+
+		case MapObject::START_POINT:
+			if (getRaycastPosition(u, v, create_pos)) {
+				create_pos.setY(create_pos.getY()+MAP_EDITOR_STARTPOINT_FLOAT_HEIGHT);
+				addStartPoint(create_pos);
+			}
 			break;
 
 		default:
@@ -584,6 +681,12 @@ void MapEditorWidget::createObject(double u, double v) {
 	updateGL();
 }
 void MapEditorWidget::selectObject(double u, double v, bool rerender) {
+
+	selectedObject = getClickedObject(u, v, rerender);
+	selectedObjectChanged(selectedObject);
+
+}
+MapObject* MapEditorWidget::getClickedObject(double u, double v, bool rerender) {
 
 	int type_index = static_cast<int>(editObjectType);
 
@@ -602,13 +705,11 @@ void MapEditorWidget::selectObject(double u, double v, bool rerender) {
 	}
 
 	QRgb pixel = objectBuffer.pixel(u*objectBuffer.width(), (1.0-v)*objectBuffer.height());
-	int selected_index = qRed(pixel)*65536 + qGreen(pixel)*256 + qBlue(pixel);
-	if (selected_index >= 0 && selected_index < mapObjects[type_index].size())
-		setSelectedObject(mapObjects[type_index][selected_index]);
+	int click_index = qRed(pixel)*65536 + qGreen(pixel)*256 + qBlue(pixel);
+	if (click_index >= 0 && click_index < mapObjects[type_index].size())
+		return (mapObjects[type_index][click_index]);
 	else
-		selectedObject = NULL;
-
-	selectedObjectChanged(selectedObject);
+		return NULL;
 
 }
 void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buffer) {
@@ -632,6 +733,58 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 				glPopMatrix();
 			}
 			break;
+		
+		case MapObject::PATH_NODE:
+
+			for (unsigned int i = 0; i < mapObjects[type_index].size(); i++) {
+				PathNode* node = ((PathNodeObject*)mapObjects[type_index][i])->getNode();
+
+				if (object_buffer)
+					glBufferIndexColor(i);
+				else
+					Color::glColor(MAP_EDITOR_PATHNODE_COLOR);
+
+				GeometryDrawing::drawBoundingBox3D(
+					BoundingBox3D(MAP_EDITOR_PATHNODE_LENGTH,
+					MAP_EDITOR_PATHNODE_HEIGHT,
+					MAP_EDITOR_PATHNODE_LENGTH,
+					node->getPosition()), false
+					);
+
+				if (!object_buffer) {
+					glLineWidth(MAP_EDITOR_PATHNODE_LINK_WIDTH);
+					glBegin(GL_LINES);
+					const vector<PathNode*>& linked_nodes = node->getNextNodes();
+					for (unsigned int i = 0; i < linked_nodes.size(); i++) {
+						Color::glColor(MAP_EDITOR_PATHNODE_LINK_START_COLOR);
+						MathWrapper::glVertex(node->getPosition());
+						Color::glColor(MAP_EDITOR_PATHNODE_LINK_END_COLOR);
+						MathWrapper::glVertex(linked_nodes[i]->getPosition());
+					}
+					glEnd();
+					glLineWidth(1.0f);
+				}
+			}
+			break;
+
+		case MapObject::START_POINT:
+
+			for (unsigned int i = 0; i < mapObjects[type_index].size(); i++) {
+				StartPointObject* point_object = ((StartPointObject*)mapObjects[type_index][i]);
+
+				if (object_buffer)
+					glBufferIndexColor(i);
+				else
+					Color::glColor(MAP_EDITOR_STARTPOINT_COLOR);
+
+				GeometryDrawing::drawBoundingBox3D(
+					BoundingBox3D(MAP_EDITOR_STARTPOINT_LENGTH,
+					MAP_EDITOR_STARTPOINT_HEIGHT,
+					MAP_EDITOR_STARTPOINT_LENGTH,
+					point_object->getPosition()), false
+					);
+			}
+			break;
 
 		default:
 			break;
@@ -652,21 +805,67 @@ string MapEditorWidget::editModeTitle(EditMode mode) {
 			return "Rotate";
 		case EDIT_SCALE:
 			return "Scale";
+		case EDIT_LINK:
+			return "Link";
 		default:
 			return "";
 	}
 }
+bool MapEditorWidget::editModeCompatible(MapObject::ObjectType type, EditMode mode) {
+	switch (type) {
+
+		case MapObject::LIGHT:
+			switch (mode) {
+				case EDIT_TRANSLATE:
+					return true;
+				default:
+					return false;
+			}
+
+		case MapObject::PATH_NODE:
+			switch (mode) {
+				case EDIT_TRANSLATE: case EDIT_LINK:
+					return true;
+				default:
+					return false;
+			}
+
+		case MapObject::START_POINT:
+			switch (mode) {
+				case EDIT_TRANSLATE:
+					return true;
+				default:
+					return false;
+			}
+
+		case MapObject::MESH_INSTANCE:
+			switch (mode) {
+				case EDIT_TRANSLATE: case EDIT_SCALE: case EDIT_ROTATE:
+					return true;
+				default:
+					return false;
+			}
+
+		default:
+			return false;
+	}
+}
 void MapEditorWidget::deleteSelected() {
 	if (selectedObject) {
+
 		switch (editObjectType) {
 			case MapObject::LIGHT:
 				map->removeLight(((LightObject*)selectedObject)->getLight());
-				mapLightsChanged();
-				updateGL();
-				return;
+				break;
+			case MapObject::PATH_NODE:
+				map->removePathNode(((PathNodeObject*)selectedObject)->getNode());
+				break;
 			default:
 				return;
 		}
+
+		mapObjectsChanged(editObjectType);
+		updateGL();
 	}
 }
 void MapEditorWidget::translateSelectedObject(Point translation) {
@@ -736,4 +935,17 @@ void MapEditorWidget::setLightHasAttenuation(bool has) {
 		light->setHasAttenuation(has);
 		updateGL();
 	}
+}
+bool MapEditorWidget::getRaycastPosition(double u, double v, Point& p) {
+	if (collisionTree) {
+		Ray ray = camera->cameraRay(u, v);
+		RayIntersection intersect = collisionTree->rayIntersection(ray);
+		p = ray.atT(intersect.t);
+		return intersect.intersects;
+	}
+	return false;
+}
+void MapEditorWidget::loadCubeMap() {
+	map->setCubeMapFile( CubeMapDialog::showCubeMapDialog( *map->getCubeMapFile(), this) );
+	updateGL();
 }
