@@ -75,10 +75,6 @@ PlayerManager::~PlayerManager() {
     
 }
 
-void PlayerManager::applySuspension(Render::RenderManager *renderManager) {
-    suspension.applySuspension(worldManager->getPlayerList(), renderManager);
-}
-
 /*void PlayerManager::render(Render::RenderManager *renderManager) {
     Object::PlayerList::IteratorType it
         = worldManager->getPlayerList()->getIterator();

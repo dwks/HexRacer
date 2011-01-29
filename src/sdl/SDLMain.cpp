@@ -194,6 +194,7 @@ void SDLMain::run() {
     
     // this must happen before Players are created
     physicsWorld = new Physics::PhysicsWorld();
+    suspension = new Physics::Suspension(10);
     
     worldManager = new Object::WorldManager();
     
@@ -250,11 +251,12 @@ void SDLMain::run() {
             physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
             lastPhysicsTime = thisTime;
         }
+        suspension->setData(worldManager->getPlayerList(), renderer);
+        suspension->doStep(SDL_GetTicks());
         
         cameraObject->doStep(SDL_GetTicks());
         
         render();
-        playerManager->applySuspension(renderer);
         physicsWorld->render();
         
         SDL_GL_SwapBuffers();
@@ -282,6 +284,7 @@ void SDLMain::run() {
     
     delete inputManager;
     delete network;
+    delete suspension;
 }
 
 void SDLMain::handleEvents() {

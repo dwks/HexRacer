@@ -103,15 +103,11 @@ void PhysicalPlayer::applyTurning(double amount) {
     /*double centripetalSpeed = getLinearVelocity().dotProduct(forwardAxis)
         / getLinearVelocity().length();*/
     
-    //LOG(PHYSICS, "centripetal: " << centripetalSpeed);
-    
     applyForce(centripetalAxis * centripetalConstant * speed * amount);
     applyTorque(Math::Point(0.0, -1.0, 0.0) * constant * speed * amount);
 }
 
 void PhysicalPlayer::doJump() {
-    /*Math::Point upwards = Converter::toPoint(matrix
-        * Converter::toVector(Math::Point(0.0, 1.0, 0.0)));*/
     Math::Point upwards = Math::Point(0.0, 1.0, 0.0);
     applyForce(upwards * 50.0f);
 }

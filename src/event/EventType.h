@@ -23,6 +23,7 @@ public:
         PAINT_EVENT,
         PAINT_CELLS_CHANGED,
         TOGGLE_PAINT,
+        SET_DEBUG_CAMERA,
         TYPES
     };
 };

@@ -23,7 +23,6 @@ class PlayerManager {
 private:
     int id;
     Object::WorldManager *worldManager;
-    Physics::Suspension suspension;
 private:
     class PlayerActionHandler
         : public Event::TypedObserver<Event::PlayerAction> {

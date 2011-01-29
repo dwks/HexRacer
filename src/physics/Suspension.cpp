@@ -80,6 +80,17 @@ double Suspension::Spring::calculateForceFactor(
     return factor;
 }
 
+void Suspension::doAction(unsigned long currentTime) {
+    applySuspension();
+}
+
+void Suspension::setData(Object::PlayerList *playerList,
+    Render::RenderManager *renderManager) {
+    
+    this->playerList = playerList;
+    this->renderManager = renderManager;
+}
+
 void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
     // add +0.01 to Y so that suspension points are not usually underground
     // multiply Z by 0.9 to shift suspension points inwards slightly
@@ -145,9 +156,7 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
     }
 }
 
-void Suspension::applySuspension(Object::PlayerList *playerList,
-    Render::RenderManager *renderManager) {
-    
+void Suspension::applySuspension() {
     if(!GET_SETTING("physics.driving.enablesuspension", 0)) {
         return;
     }

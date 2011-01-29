@@ -142,7 +142,7 @@ void ServerMain::run() {
     
     ADD_OBSERVER(new ServerObserver(this));
     
-    Physics::Suspension suspension;
+    Physics::Suspension *suspension = new Physics::Suspension(10);
     
     worldManager = new Object::WorldManager();
     paintSubsystem = new Paint::PaintSubsystem(worldManager, 20);
@@ -194,9 +194,10 @@ void ServerMain::run() {
             physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
             lastPhysicsTime = thisTime;
         }
+        suspension->setData(worldManager->getPlayerList(), NULL);
+        suspension->doStep(Misc::Sleeper::getTimeMilliseconds());
         
         paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
-        suspension.applySuspension(worldManager->getPlayerList(), NULL);
         
         if(++loops == 5) {
             loops = 0;

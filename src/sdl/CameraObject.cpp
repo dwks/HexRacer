@@ -1,11 +1,21 @@
 #include "CameraObject.h"
+#include "event/ObserverList.h"
 
 namespace Project {
 namespace SDL {
+    
+    void CameraObject::SetDebugCameraHandler::observe(
+        Event::SetDebugCamera *event) {
+        
+        cameraObject->setDebugCamera(event->getOn());
+    }
+    
     CameraObject::CameraObject() : Timing::TimedSubsystem(5){
         LOG2(CAMERA, INIT, "Camera Object has been initialized\n");
         
         camera = new OpenGL::Camera();
+        
+        ADD_OBSERVER(new SetDebugCameraHandler(this));
     }
     
     CameraObject::CameraObject(SDL::PlayerManager *_playerManager) : Timing::TimedSubsystem(5) {
@@ -42,10 +52,12 @@ namespace SDL {
         setDestinationToPlayer();
         
         //Temp, should be calling slerpCamera when slerp is fixed
-        setCamera(destinationLookAt, destinationPosition);
-        //slerpCamera();
         
-       
+        if(!debugCamera) {
+            setCamera(destinationLookAt, destinationPosition);
+        }
+        
+        //slerpCamera();
     }
     
     void CameraObject::setCamera(Math::Point _look, Math::Point _pos){
@@ -72,6 +84,10 @@ namespace SDL {
         resultAxis = Physics::Converter::toPoint(result.getAxis());
         
         setCamera(resultPos + resultAxis, resultPos);
+    }
+    
+    void CameraObject::setDebugCamera(bool debug) {
+        this->debugCamera = debug;
     }
 }  // namespace object
 }  // namespace Project

@@ -7,6 +7,7 @@
 #include "event/SetDebugDrawing.h"
 #include "event/QuitEvent.h"
 #include "event/TogglePainting.h"
+#include "event/SetDebugCamera.h"
 
 #include "event/PaintEvent.h"
 
@@ -96,6 +97,13 @@ void InputManager::doAction(unsigned long currentTime) {
         static bool debug = false;
         debug = !debug;
         EMIT_EVENT(new Event::SetDebugDrawing(debug));
+    }
+    if(keyDown[SDLK_c]) {
+        keyDown[SDLK_c] = false;
+        
+        static bool debug = false;
+        debug = !debug;
+        EMIT_EVENT(new Event::SetDebugCamera(debug));
     }
     
     handlePaint();

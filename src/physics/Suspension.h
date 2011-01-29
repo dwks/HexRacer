@@ -6,6 +6,8 @@
 #include "render/RenderManager.h"
 #include "object/PlayerList.h"
 
+#include "timing/TimedSubsystem.h"
+
 namespace Project {
 namespace Physics {
 
@@ -13,7 +15,7 @@ namespace Physics {
     A bit of a misnomer: this class is currently reponsible for
     suspension, drag force, and turning force (basically all car mechanics).
 */
-class Suspension {
+class Suspension : public Timing::TimedSubsystem {
 private:
     class Displacement {
     private:
@@ -55,12 +57,23 @@ private:
 private:
     typedef std::map<int, std::vector<Displacement> > playerSuspensionType;
     playerSuspensionType playerSuspension;
+    
+    Object::PlayerList *playerList;
+    Render::RenderManager *renderManager;
 public:
-    /** If @a renderManager is NULL, no debug drawing will be done.
+    Suspension(unsigned long tickTime) : TimedSubsystem(tickTime) {}
+    
+    void doAction(unsigned long currentTime);
+    
+    /** This function should be called before doStep().
+        
+        If @a renderManager is NULL, no debug drawing will be done.
     */
-    void applySuspension(Object::PlayerList *playerList,
+    void setData(Object::PlayerList *playerList,
         Render::RenderManager *renderManager);
 private:
+    void applySuspension();
+    
     void calculateSuspensionForPlayer(Object::Player *player);
     void applyDragForce(Object::Player *player);
     

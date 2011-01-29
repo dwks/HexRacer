@@ -17,6 +17,8 @@
 #include "render/RenderList.h"
 #include "render/BackgroundRenderable.h"
 
+#include "physics/Suspension.h"
+
 #include "object/WorldManager.h"
 
 #include "paint/PaintManager.h"
@@ -53,6 +55,7 @@ private:
     Physics::PhysicsWorld *physicsWorld;
     Render::MeshGroup *test_terrain;
     ClientData *clientData;
+    Physics::Suspension *suspension;
     
 	Render::MeshLoader *meshLoader;
 	Render::RenderManager *renderer;
