@@ -600,7 +600,7 @@ void MapEditorWidget::setOrthoView(bool enabled) {
 	else {
 
 		bool camera_has_focus = false;
-		Point& camera_focus = Point();
+		Point camera_focus = Point();
 		if (selectedObject) {
 			camera_focus = selectedObject->getPosition();
 			camera_has_focus = true;
@@ -651,7 +651,7 @@ void MapEditorWidget::setEditMode(EditMode mode) {
 }
 void MapEditorWidget::createObject(double u, double v) {
 
-	Point& create_pos = Point();
+	Point create_pos = Point();
 
 	switch (editObjectType) {
 
