@@ -38,6 +38,8 @@ public:
     
     virtual void setPainting(int id, Event::TogglePainting::PaintType type);
     
+    virtual Event::TogglePainting::PaintType getPainting(int id);
+    
     virtual void doAction(unsigned long currentTime);
 private:
     void calculateBoostSpeeds();

@@ -28,6 +28,17 @@ void PaintSubsystem::setPainting(int id,
     painting[id] = type;
 }
 
+Event::TogglePainting::PaintType PaintSubsystem::getPainting(int id) {
+    PaintingType::iterator found = painting.find(id);
+    
+    if(found == painting.end()) {
+        return Event::TogglePainting::NOTHING;
+    }
+    else {
+        return (*found).second;
+    }
+}
+
 void PaintSubsystem::doAction(unsigned long currentTime) {
     for(PaintingType::iterator i = painting.begin(); i != painting.end();
         ++ i) {
@@ -63,7 +74,7 @@ void PaintSubsystem::calculateBoostSpeeds() {
     while(iterator.hasNext()) {
         Object::Player *player = iterator.next();
         
-        if(painting[player->getID()] == Event::TogglePainting::NOTHING) {
+        if(getPainting(player->getID()) == Event::TogglePainting::NOTHING) {
             double factor = paintManager->weightedCellsInRadius(
                 player->getPosition(),
                 PAINTING_RADIUS,
