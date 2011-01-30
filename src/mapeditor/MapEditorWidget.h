@@ -96,10 +96,15 @@ private:
 	void addLight(Point position);
 	void addPathNode(Point position);
 	void addStartPoint(Point position);
+	void addMeshInstance(Point position);
 
 	void mapObjectsChanged(MapObject::ObjectType type);
+	/*
 	void mapLightsChanged();
 	void mapPathNodesChanged();
+	void mapStartPointsChanged();
+	void mapMeshInstancesChanged();
+	*/
 	void mapCollisionChanged();
 
 	void createObject(double u, double v);
@@ -137,6 +142,7 @@ public slots:
 	void setRotationYaw(double degrees);
 	void setRotationPitch(double degrees);
 	void setRotationRoll(double degrees);
+	void setSelectedScale(double scale);
 	void setSelectedColor(int color_index, Color color);
 	void setLightStrength(double strength);
 	void setLightHasAttenuation(bool has);
@@ -153,6 +159,7 @@ signals:
 	void selectedRotationYawChanged(double);
 	void selectedRotationPitchChanged(double);
 	void selectedRotationRollChanged(double);
+	void selectedScaleChanged(double);
 
 	void propMeshAdded(string prop_mesh_name);
 	void propMeshesChanged(vector<string> prop_mesh_names);

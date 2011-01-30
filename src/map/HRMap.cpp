@@ -147,6 +147,7 @@ namespace Map {
 		clearLights();
 		clearPathNodes();
 		clearStartPoints();
+		clearMeshInstances();
 
 		clearPaint();
 
@@ -295,6 +296,23 @@ namespace Map {
 			delete(startPoints[i]);
 		startPoints.clear();
 	}
+	bool HRMap::addMeshInstance(Render::TransformedMesh* mesh) {
+		if (vectorContains(propMeshNames, mesh->getMeshGroup()->getName())) {
+			meshInstances.push_back(mesh);
+			return true;
+		}
+		else return false;
+	}
+	void HRMap::removeMeshInstance(Render::TransformedMesh* mesh) {
+		if (Misc::vectorRemoveOneElement(meshInstances, mesh)) {
+			delete(mesh);
+		}
+	}
+	void HRMap::clearMeshInstances() {
+		for (unsigned int i = 0; i < meshInstances.size(); i++)
+			delete(meshInstances[i]);
+		meshInstances.clear();
+	}
 	BSPTree3D* HRMap::getCollisionTree() {
 
 		if (collisionTree == NULL) {
@@ -362,5 +380,10 @@ namespace Map {
 	}
 
 
+	std::string HRMap::getPropMeshName(int index) {
+		if (index >= 0 && index < static_cast<int>(propMeshNames.size()))
+			return propMeshNames[index];
+		return "";
+	}
 }  // namespace Map
 }  // namespace Project

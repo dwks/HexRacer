@@ -12,6 +12,7 @@
 #include "PathNodeObject.h"
 #include "StartPointObject.h"
 #include "FinishPlaneObject.h"
+#include "MeshInstanceObject.h"
 #include "MapEditorConstants.h"
 #include "CubeMapDialog.h"
 using namespace Paint;
@@ -132,6 +133,7 @@ void MapEditorWidget::paintGL() {
 	}
 
 	renderer->setCubeMap(map->getCubeMap());
+
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_COLOR_MATERIAL);
 
@@ -150,6 +152,9 @@ void MapEditorWidget::paintGL() {
 	rootRenderable->render(renderer);
 
 	delete(rootRenderable);
+
+	//Render Mesh Instances
+	renderObjects(MapObject::MESH_INSTANCE, false);
 
 	if (map->getCubeMap())
 		background->render(renderer);
@@ -180,6 +185,7 @@ void MapEditorWidget::paintGL() {
 	//Draw box around selected object
 	if (selectedObject) {
 		Color::glColor(SELECTED_OBJECT_BOX_COLOR);
+		MathWrapper::glMultMatrix(selectedObject->getTransformMatrix());
 		GeometryDrawing::drawBoundingBox3D(selectedObject->getBoundingBox(), true);
 	}
 
@@ -370,7 +376,8 @@ void MapEditorWidget::mouseDragged(Qt::MouseButton button, Point current_positio
 					selectedObject->rotate(delta.getU()*rotate_scale, YAW);
 					selectedObject->rotate(delta.getV()*rotate_scale, PITCH);
 				}
-
+			} else if (editMode == EDIT_SCALE) {
+				selectedObject->addToScale(delta.getV()*MAP_EDITOR_SCALE_SCALE*precisionScale);
 			}
 
 		}
@@ -389,10 +396,16 @@ void MapEditorWidget::mouseReleased(Qt::MouseButton button, Point release_positi
 			if (modifiers & MAP_EDITOR_CREATE_MODIFIER) {
 				createObject(click_position.getU(), click_position.getV());
 			}
-			else {
-				selectObject(click_position.getU(), click_position.getV());
-				updateGL();
+			else if (modifiers & MAP_EDITOR_RAYCAST_MOVE_MODIFIER && editMode == EDIT_TRANSLATE && selectedObject) {
+				Point move_pos;
+				if (getRaycastPosition(click_position.getU(), click_position.getV(), move_pos)) {
+					selectedObject->setPosition(move_pos);
+				}
 			}
+			else
+				selectObject(click_position.getU(), click_position.getV());
+
+			updateGL();
 		}
 		else {
 			if (editMode == EDIT_LINK) {
@@ -516,8 +529,10 @@ void MapEditorWidget::newMap() {
 
 void MapEditorWidget::loadMap(string filename) {
 	map->loadMapFile(filename);
-	mapObjectsChanged(MapObject::LIGHT);
-	mapObjectsChanged(MapObject::PATH_NODE);
+	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
+		MapObject::ObjectType type = static_cast<MapObject::ObjectType>(i);
+		mapObjectsChanged(type);
+	}
 	mapCollisionChanged();
 	propMeshesChanged(map->getPropMeshNames());
 	updateGL();
@@ -535,14 +550,18 @@ void MapEditorWidget::saveMapAs(string filename) {
 
 void MapEditorWidget::mapObjectsChanged(MapObject::ObjectType type) {
 
+	if (type == MapObject::FINISH_PLANE)
+		return;
+
 	if (editObjectType == type)
-		selectedObject = NULL;
+		setSelectedObject(NULL);
 
 	//Delete all map objects with the given type
 	int type_index = static_cast<int>(type);
 	for (unsigned int i = 0; i < mapObjects[type_index].size(); i++)
 		delete(mapObjects[type_index][i]);
 	mapObjects[type_index].clear();
+	unsigned int size = mapObjects[type_index].size();
 
 	if (type == MapObject::LIGHT) {
 		lightManager->clear();
@@ -558,6 +577,19 @@ void MapEditorWidget::mapObjectsChanged(MapObject::ObjectType type) {
 			mapObjects[type_index].append(new PathNodeObject(nodes[i]));
 		}
 	}
+	else if (type == MapObject::START_POINT) {
+		const vector<Vertex3D*>& points = map->getStartPoints();
+		for (unsigned int i = 0; i < points.size(); i++) {
+			mapObjects[type_index].append(new StartPointObject(points[i]));
+		}
+	}
+	else if (type == MapObject::MESH_INSTANCE) {
+		const vector<TransformedMesh*>& meshes = map->getMeshInstances();
+		for (unsigned int i = 0; i < meshes.size(); i++) {
+			mapObjects[type_index].append(new MeshInstanceObject(meshes[i]));
+		}
+	}
+
 
 
 }
@@ -582,6 +614,25 @@ void MapEditorWidget::addStartPoint(Point position) {
 	Vertex3D* new_point = new PathNode(position);
 	map->addStartPoint(new_point);
 	mapObjects[static_cast<int>(MapObject::START_POINT)].append(new StartPointObject(new_point));
+}
+void MapEditorWidget::addMeshInstance(Point position) {
+
+	if (propMeshIndex >= 0) {
+		MeshGroup* mesh = MeshLoader::getInstance()->getModelByName(map->getPropMeshName(propMeshIndex));
+		if (mesh) {
+			TransformedMesh* instance = new TransformedMesh(
+				mesh,
+				SimpleTransform(position)
+				);
+			if (map->addMeshInstance(instance)) {
+				mapObjects[static_cast<int>(MapObject::MESH_INSTANCE)].append(new MeshInstanceObject(instance));
+			}
+			else {
+				delete(instance);
+			}
+		}
+	}
+
 }
 void MapEditorWidget::loadMesh(HRMap::MeshType type, string filename) {
 	map->loadMapMesh(type, filename);
@@ -714,6 +765,10 @@ void MapEditorWidget::createObject(double u, double v) {
 			}
 			break;
 
+		case MapObject::MESH_INSTANCE:
+			addMeshInstance(camera->cameraToWorld(u, v, 3.0));
+			break;
+
 		default:
 			break;
 
@@ -838,25 +893,22 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 			break;
 
 		case MapObject::MESH_INSTANCE:
-
-			RenderList* render_list;
-			/*
+			
 			for (unsigned int i = 0; i < mapObjects[type_index].size(); i++) {
-				StartPointObject* point_object = ((StartPointObject*)mapObjects[type_index][i]);
+				RenderList render_list;
+				TransformedMesh* mesh_instance = ((MeshInstanceObject*)mapObjects[type_index][i])->getTransformedMesh();
+				render_list.addRenderable(mesh_instance);
 
-				if (object_buffer)
+				if (object_buffer) {
 					glBufferIndexColor(i);
-				else
-					Color::glColor(MAP_EDITOR_STARTPOINT_COLOR);
+					render_list.getRenderProperties()->setShaderOverride(true);
+					render_list.getRenderProperties()->setTextureOverride(true);
+					render_list.getRenderProperties()->setMaterialOverride(true);
+					render_list.getRenderProperties()->setColorOverride(true);
+				}
 
-				GeometryDrawing::drawBoundingBox3D(
-					BoundingBox3D(MAP_EDITOR_STARTPOINT_LENGTH,
-					MAP_EDITOR_STARTPOINT_HEIGHT,
-					MAP_EDITOR_STARTPOINT_LENGTH,
-					point_object->getPosition()), false
-					);
+				render_list.render(renderer);
 			}
-			*/
 			break;
 
 		default:
@@ -942,6 +994,12 @@ void MapEditorWidget::deleteSelected() {
 			case MapObject::PATH_NODE:
 				map->removePathNode(((PathNodeObject*)selectedObject)->getNode());
 				break;
+			case MapObject::START_POINT:
+				map->removeStartPoint(((StartPointObject*)selectedObject)->getStartPoint());
+				break;
+			case MapObject::MESH_INSTANCE:
+				map->removeMeshInstance(((MeshInstanceObject*)selectedObject)->getTransformedMesh());
+				break;
 			default:
 				return;
 		}
@@ -964,6 +1022,8 @@ void MapEditorWidget::updateSelectedObjectPosition() {
 		selectedRotationYawChanged(radiansToDegrees(selectedObject->getRotation(YAW)));
 		selectedRotationPitchChanged(radiansToDegrees(selectedObject->getRotation(PITCH)));
 		selectedRotationRollChanged(radiansToDegrees(selectedObject->getRotation(ROLL)));
+
+		selectedScaleChanged(selectedObject->getScale());
 	}
 }
 void MapEditorWidget::setSelectedPositionX(double x) {
@@ -999,6 +1059,12 @@ void MapEditorWidget::setRotationPitch(double degrees) {
 void MapEditorWidget::setRotationRoll(double degrees) {
 	if (selectedObject) {
 		selectedObject->setRotation(degreesToRadians(degrees), ROLL);
+		updateGL();
+	}
+}
+void MapEditorWidget::setSelectedScale(double scale) {
+	if (selectedObject) {
+		selectedObject->setScale(scale);
 		updateGL();
 	}
 }

@@ -13,25 +13,30 @@ namespace Math {
 
 		minScale = DBL_MIN;
 		maxScale = DBL_MAX;
+
+		update();
 	}
 
 	void SimpleTransform::update() {
 
-		vector = Point(1.0, 0.0, 0.0);
+		vector = Point(0.0, 0.0, -1.0);
 		//Yaw
 		vector = vector.rotateY(rotationRadians.getX());
 		//Pitch
-		vector = vector.rotateZ(rotationRadians.getY());
+		vector = vector.rotateX(rotationRadians.getY());
 		//Roll
-		vector = vector.rotateY(rotationRadians.getZ());
+		vector = vector.rotateZ(rotationRadians.getZ());
 		vector *= scale;
 
 		matrix.setToIdentity();
 		matrix = matrix*Matrix::getTranslationMatrix(translation);
 		matrix = matrix*Matrix::getScalingMatrix(scale);
-		matrix = matrix*Matrix::getRotationMatrix(Y_AXIS, rotationRadians.getCoord(Y_AXIS));
-		matrix = matrix*Matrix::getRotationMatrix(X_AXIS, rotationRadians.getCoord(X_AXIS));
-		matrix = matrix*Matrix::getRotationMatrix(Z_AXIS, rotationRadians.getCoord(Y_AXIS));
+		//Yaw
+		matrix = matrix*Matrix::getRotationMatrix(Y_AXIS, rotationRadians.getCoord(X_AXIS));
+		//Pitch
+		matrix = matrix*Matrix::getRotationMatrix(X_AXIS, rotationRadians.getCoord(Y_AXIS));
+		//Roll
+		matrix = matrix*Matrix::getRotationMatrix(Z_AXIS, rotationRadians.getCoord(Z_AXIS));
 	}
 
 	void SimpleTransform::boundScale() {
@@ -95,15 +100,15 @@ namespace Math {
 		update();
 	}
 
-	void SimpleTransform::glApply() {
+	void SimpleTransform::glApply() const {
 
 		OpenGL::MathWrapper::glTranslate(translation);
 		//Yaw
 		glRotatef(radiansToDegrees(rotationRadians.getX()), 0.0f, 1.0f, 0.0f);
 		//Pitch
-		glRotatef(radiansToDegrees(rotationRadians.getY()), 0.0f, 0.0f, 1.0f);
+		glRotatef(radiansToDegrees(rotationRadians.getY()), 1.0f, 0.0f, 0.0f);
 		//Roll
-		glRotatef(radiansToDegrees(rotationRadians.getZ()), 0.0f, 1.0f, 0.0f);
+		glRotatef(radiansToDegrees(rotationRadians.getZ()), 0.0f, 0.0f, 1.0f);
 		glScalef(scale, scale, scale);
 
 	}

@@ -26,6 +26,8 @@ public:
 	double getRotation(RotationAxis axis) { return transform.getRotationRadians(axis); }
 	void setRotation(double radians, RotationAxis axis);
 
+	//Matrix getTransformMatrix() const { return transform.getMatrix(); }
+
 	MapObject::ObjectType getType() const { return MapObject::FINISH_PLANE; }
 	bool hasRotation() const { return true; }
 };

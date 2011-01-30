@@ -39,9 +39,9 @@ public:
 	double getRotationRadians(RotationAxis axis) const { return rotationRadians.getCoord(static_cast<Axis>(axis)); }
 	double getRotationDegrees(RotationAxis axis) const { return radiansToDegrees(rotationRadians.getCoord(static_cast<Axis>(axis))); }
 
-	Point getVector() { return vector; }
+	Point getVector() const { return vector; }
 	
-	Matrix getMatrix() { return matrix; }
+	Matrix getMatrix() const { return matrix; }
 
 	void setMinScale(double min_scale);
 
@@ -58,7 +58,7 @@ public:
 	void rotateRadians(double rotation, RotationAxis axis);
 	void rotateDegrees(double rotation, RotationAxis axis);
 
-	void glApply();
+	void glApply() const;
 
 
 };

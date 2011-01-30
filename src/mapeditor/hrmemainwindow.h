@@ -55,6 +55,7 @@ private:
 
 	QFrame* positionPropertyFrame;
 	QFrame* rotationPropertyFrame;
+	QFrame* scalePropertyFrame;
 	QFrame* colorPropertyFrame;
 	QSignalMapper* colorPropertyMapper;
 
@@ -73,6 +74,10 @@ private:
 	QDoubleSpinBox* rotationYawBox;
 	QDoubleSpinBox* rotationPitchBox;
 	QDoubleSpinBox* rotationRollBox;
+
+	//Scale
+
+	QDoubleSpinBox* scaleBox;
 
 	//Light
 

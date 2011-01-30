@@ -23,6 +23,8 @@ public:
 	Math::SimpleTransform getTransformation() const { return transformation; }
 	virtual bool shouldDraw( const Math::BoundingObject& bounding_obj );
 	virtual std::vector<RenderableObject*> getChildren() { return children; }
+	MeshGroup* getMeshGroup() const { return (MeshGroup*) children[0]; }
+	Math::BoundingSphere getBoundingSphere() const { return transformedSphere; }
 
 };
 

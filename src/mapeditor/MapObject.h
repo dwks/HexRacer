@@ -3,6 +3,7 @@
 #include "math/Point.h"
 #include "math/BoundingBox3D.h"
 #include "math/RotationAxis.h"
+#include "math/Matrix.h"
 #include "opengl/Color.h"
 #include <string>
 using namespace Project;
@@ -26,6 +27,12 @@ public:
 	virtual double getRotation(RotationAxis axis) {return 0.0;}
 	virtual void setRotation(double radians, RotationAxis axis) {}
 	virtual void rotate(double radians, RotationAxis axis ) { setRotation(getRotation(axis)+radians, axis); }
+	virtual Matrix getTransformMatrix() const { return Matrix(); }
+
+	virtual bool hasScale() const { return false; }
+	virtual double getScale() const { return 1.0; }
+	virtual void setScale(double scale) {}
+	virtual void addToScale(double scale) { setScale(getScale() + scale); }
 
 	virtual bool hasColors() const { return false; }
 	virtual void setDiffuse(const Color& color) {}

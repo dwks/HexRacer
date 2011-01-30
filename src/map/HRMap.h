@@ -69,20 +69,28 @@ public:
 	bool addPropMesh(std::string name, std::string filename);
 	bool removePropMesh(int index);
 	std::vector<std::string> getPropMeshNames() { return propMeshNames; }
+	std::string getPropMeshName(int index);
 
 	const std::vector<Render::Light*>& getLights() const { return lights; }
 	void addLight(Render::Light* light);
 	void removeLight(Render::Light* light);
 	void clearLights();
+
 	const std::vector<PathNode*>& getPathNodes() const { return pathNodes; }
 	void addPathNode(PathNode* node);
 	void removePathNode(PathNode* node);
 	void clearPathNodes();
+
 	const std::vector<Math::Vertex3D*>& getStartPoints() const { return startPoints; }
 	void addStartPoint(Math::Vertex3D* point);
 	void removeStartPoint(Math::Vertex3D* point);
 	void clearStartPoints();
 	Math::BoundingPlane3D& getFinishPlane() { return finishPlane; }
+
+	const std::vector<Render::TransformedMesh*> getMeshInstances() const { return meshInstances; }
+	bool addMeshInstance(Render::TransformedMesh* mesh);
+	void removeMeshInstance(Render::TransformedMesh* mesh);
+	void clearMeshInstances();
 
 	std::string getFilename() const { return filename; }
 

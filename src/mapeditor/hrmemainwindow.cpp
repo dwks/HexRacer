@@ -88,6 +88,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	orthoCameraAction = new QAction("&Orthographic View", this);
 	orthoCameraAction->setCheckable(true);
+	orthoCameraAction->setShortcut(QKeySequence(Qt::Key_O));
 	connect(orthoCameraAction, SIGNAL(toggled(bool)), mapEditor, SLOT(setOrthoView(bool)));
 
 	showPaintAction = new QAction("&Show Paint", this);
@@ -108,6 +109,28 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		mapObjectAction[i] = new QAction(QString(MapObject::typeTitle(type).c_str()), this);
 		mapObjectAction[i]->setCheckable(true);
 		mapObjectGroup->addAction(mapObjectAction[i]);
+		mapObjectAction[i]->setShortcut(QKeySequence(Qt::Key_1+i));
+		/*
+		switch (type) {
+			case MapObject::LIGHT:
+				mapObjectAction[i]->setShortcut(QKeySequence(Qt::Key_Z));
+				break;
+			case MapObject::MESH_INSTANCE:
+				mapObjectAction[i]->setShortcut(QKeySequence(Qt::Key_X));
+				break;
+			case MapObject::PATH_NODE:
+				mapObjectAction[i]->setShortcut(QKeySequence(Qt::Key_C));
+				break;
+			case MapObject::START_POINT:
+				mapObjectAction[i]->setShortcut(QKeySequence(Qt::Key_V));
+				break;
+			case MapObject::FINISH_PLANE:
+				mapObjectAction[i]->setShortcut(QKeySequence(Qt::Key_B));
+				break;
+			default:
+				break;
+		}
+		*/
 	}
 	
 	//Edit Modes
@@ -119,6 +142,23 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		MapEditorWidget::EditMode mode = static_cast<MapEditorWidget::EditMode>(i);
 		editModeAction[i] = new QAction(QString(MapEditorWidget::editModeTitle(mode).c_str()), this);
 		editModeAction[i]->setCheckable(true);
+		editModeAction[i]->setShortcut(QKeySequence(Qt::Key_1+i));
+		switch (mode) {
+			case MapEditorWidget::EDIT_TRANSLATE:
+				editModeAction[i]->setShortcut(QKeySequence(Qt::Key_T));
+				break;
+			case MapEditorWidget::EDIT_ROTATE:
+				editModeAction[i]->setShortcut(QKeySequence(Qt::Key_R));
+				break;
+			case MapEditorWidget::EDIT_SCALE:
+				editModeAction[i]->setShortcut(QKeySequence(Qt::Key_F));
+				break;
+			case MapEditorWidget::EDIT_LINK:
+				editModeAction[i]->setShortcut(QKeySequence(Qt::Key_G));
+				break;
+			default:
+				break;
+		}
 		if (i == 0)
 			editModeAction[i]->setChecked(true);
 		editModeGroup->addAction(editModeAction[i]);
@@ -241,15 +281,15 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	single_step = 0.5;
 	decimals = 5;
 	rotationYawBox = new QDoubleSpinBox(rotationPropertyFrame);
-	rotationYawBox->setRange(-range, range);
+	rotationYawBox->setRange(0.0, range);
 	rotationYawBox->setDecimals(decimals);
 	rotationYawBox->setSingleStep(single_step);
 	rotationPitchBox = new QDoubleSpinBox(rotationPropertyFrame);
-	rotationPitchBox->setRange(-range, range);
+	rotationPitchBox->setRange(0.0, range);
 	rotationPitchBox->setDecimals(decimals);
 	rotationPitchBox->setSingleStep(single_step);
 	rotationRollBox = new QDoubleSpinBox(rotationPropertyFrame);
-	rotationRollBox->setRange(-range, range);
+	rotationRollBox->setRange(0.0, range);
 	rotationRollBox->setDecimals(decimals);
 	rotationRollBox->setSingleStep(single_step);
 
@@ -271,6 +311,26 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	rotation_layout->addWidget(rotationRollBox, 3, 1);
 
 	rotationPropertyFrame->setLayout(rotation_layout);
+
+	//Scale
+	scalePropertyFrame = new QFrame(this);
+
+	range = 1000;
+	single_step = 0.05;
+	decimals = 5;
+	scaleBox = new QDoubleSpinBox(scalePropertyFrame);
+	scaleBox->setRange(0.0, range);
+	scaleBox->setDecimals(decimals);
+	scaleBox->setSingleStep(single_step);
+
+	connect(scaleBox, SIGNAL(valueChanged(double)), mapEditor, SLOT(setSelectedScale(double)));
+	connect(mapEditor, SIGNAL(selectedScaleChanged(double)), scaleBox, SLOT(setValue(double)));
+
+	QGridLayout* scale_layout = new QGridLayout(scalePropertyFrame);
+	scale_layout->addWidget(new QLabel("Scale", scalePropertyFrame), 0, 0);
+	scale_layout->addWidget(scaleBox);
+
+	scalePropertyFrame->setLayout(scale_layout);
 
 	//Colors
 
@@ -321,6 +381,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	objectPropertiesBar->addWidget(positionPropertyFrame);
 	objectPropertiesBar->addWidget(rotationPropertyFrame);
+	objectPropertiesBar->addWidget(scalePropertyFrame);
 	objectPropertiesBar->addWidget(colorPropertyFrame);
 	objectPropertiesBar->addWidget(lightPropertyFrame);
 
@@ -452,6 +513,7 @@ void HRMEMainWindow::setSelectedObject(MapObject* selected_object) {
 
 	positionPropertyFrame->setEnabled(false);
 	rotationPropertyFrame->setEnabled(false);
+	scalePropertyFrame->setEnabled(false);
 	colorPropertyFrame->setEnabled(false);
 	lightPropertyFrame->setEnabled(false);
 
@@ -472,6 +534,7 @@ void HRMEMainWindow::setSelectedObject(MapObject* selected_object) {
 		positionPropertyFrame->setEnabled(true);
 		colorPropertyFrame->setEnabled(selected_object->hasColors());
 		rotationPropertyFrame->setEnabled(selected_object->hasRotation());
+		scalePropertyFrame->setEnabled(selected_object->hasScale());
 	}
 }
 

@@ -333,6 +333,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\mapeditor\MeshInstanceObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\MeshLoader.cpp"
 				>
 			</File>
@@ -774,6 +778,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\MeshGroup.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\mapeditor\MeshInstanceObject.h"
 				>
 			</File>
 			<File
