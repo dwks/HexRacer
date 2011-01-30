@@ -21,6 +21,5 @@ public:
 
 	BoundingBox3D getBoundingBox() const;
 
-	bool hasColors() const { return false; }
 	MapObject::ObjectType getType() const { return MapObject::START_POINT; }
 };

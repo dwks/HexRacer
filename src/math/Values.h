@@ -62,6 +62,10 @@ double smartMod(double f, double d);
 
 int roundToInt(double f);
 
+double radiansToDegrees(double radians);
+double degreesToRadians(double degrees);
+
+
 }  // namespace Math
 }  // namespace Project
 

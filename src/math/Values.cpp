@@ -22,5 +22,12 @@ double smartMod(double f, double d) {
     return std::fmod(f, d);
 }
 
+double radiansToDegrees(double radians) {
+	return radians/PI*180.0;
+}
+double degreesToRadians(double degrees) {
+	return degrees/180.0*PI;
+}
+
 }  // namespace Math
 }  // namespace Project

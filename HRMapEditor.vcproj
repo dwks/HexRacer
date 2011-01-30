@@ -261,6 +261,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\mapeditor\FinishPlaneObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Geometry.cpp"
 				>
 			</File>
@@ -465,6 +469,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\SimpleTransform.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\SpatialContainer.cpp"
 				>
 			</File>
@@ -494,6 +502,10 @@
 			</File>
 			<File
 				RelativePath=".\src\opengl\Trackball.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TransformedMesh.cpp"
 				>
 			</File>
 			<File
@@ -642,6 +654,10 @@
 			</File>
 			<File
 				RelativePath=".\src\log\FileStream.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\mapeditor\FinishPlaneObject.h"
 				>
 			</File>
 			<File
@@ -923,6 +939,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\SimpleTransform.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\SpatialContainer.h"
 				>
 			</File>
@@ -956,6 +976,10 @@
 			</File>
 			<File
 				RelativePath=".\src\opengl\Trackball.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TransformedMesh.h"
 				>
 			</File>
 			<File

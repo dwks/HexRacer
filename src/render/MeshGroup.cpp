@@ -12,6 +12,7 @@ namespace Render {
 		for (unsigned int i = 0; i < meshes.size(); i++) {
 			this->meshes.push_back(meshes[i]);
 		}
+
 		this->vertices = _vertices;
 		if (vertices.size() > 0) {
 			boundingBox.setToObject(*vertices[0]);

@@ -11,6 +11,7 @@
 #include "LightObject.h"
 #include "PathNodeObject.h"
 #include "StartPointObject.h"
+#include "FinishPlaneObject.h"
 #include "MapEditorConstants.h"
 #include "CubeMapDialog.h"
 using namespace Paint;
@@ -34,10 +35,12 @@ MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget,
 	precisionScale = 1.0;
 	orthoHeight = 20.0;
 	showPaint = false;
+	showInvisible = false;
 
 	perspectiveCameraHeight = 0.0;
 
 	map = new HRMap();
+	mapObjects[static_cast<int>(MapObject::FINISH_PLANE)].push_back(new FinishPlaneObject(map));
 
 	editObjectType = MapObject::LIGHT;
 	selectedObject = NULL;
@@ -52,6 +55,12 @@ MapEditorWidget::~MapEditorWidget() {
 	delete(camera);
 	delete(trackball);
 	delete(background);
+	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
+		for (unsigned int j = 0; j < mapObjects[i].size(); j++) {
+			delete(mapObjects[i][j]);
+		}
+	}
+	delete(map);
 }
 
 void MapEditorWidget::initializeGL() {
@@ -133,7 +142,7 @@ void MapEditorWidget::paintGL() {
 
 	for (int i = 0; i < HRMap::NUM_MESHES; i++) {
 		HRMap::MeshType type = static_cast<HRMap::MeshType>(i);
-		if (map->getMapMesh(type)) {
+		if (map->getMapMesh(type) && (showInvisible || !HRMap::meshIsInvisible(type))) {
 			rootRenderable->addRenderable(map->getMapMesh(type));
 		}
 	}
@@ -187,6 +196,9 @@ void MapEditorWidget::paintGL() {
 
 	glDepthMask(GL_FALSE);
 	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_LINE_SMOOTH);
+	glEnable(GL_POINT_SMOOTH);
+	glEnable(GL_BLEND);
 
 	Point screen_scale = Point(viewWidth, viewHeight, 0.0);
 
@@ -207,19 +219,21 @@ void MapEditorWidget::paintGL() {
 
 		double r = MAP_EDITOR_COLOR_DISPLAY_RADIUS;
 
+		glPointSize(r*2.0);
+
 		for (int i = 0; i < 3; i++) {
 
 			glPushMatrix();
-			glTranslatef(r, viewHeight-r*(3*i+1), 0.0f);
-			glScalef(r, r, r);
+			glTranslatef(r+2, viewHeight-r*(3*i+1)-2, 0.0f);
 			glPushMatrix();
 			
 			Color::glColor(selectedObject->getColor(i));
-			glBegin(GL_POLYGON);
-			glCallList(hudCircleList);
+			glBegin(GL_POINTS);
+			glVertex3f(0.0f, 0.0f, 0.0f);
 			glEnd();
 			Color::glColor(Color::WHITE);
 
+			glScalef(r, r, r);
 			glBegin(GL_LINE_STRIP);
 			glCallList(hudCircleList);
 			glEnd();
@@ -238,30 +252,26 @@ void MapEditorWidget::paintGL() {
 			}
 
 			glPopMatrix();
-			renderText(2.5, -0.9, 0.0, color_title);
+			renderText(r+2.5, -0.9, 0.0, color_title);
 			glPopMatrix();
 
 		}
 
+		glPointSize(1.0f);
+
 	}
 
 	//Draw Precision Scale Filled
-	glEnable(GL_BLEND);
 
 	Color::glColor(PRECISION_SCALE_HUD_DISC_COLOR, 0.5f);
-	glPushMatrix();
-	
-	glTranslatef(viewWidth-40, viewHeight-40, 0.0f);
-	float scale = precisionScale*PRECISION_SCALE_DRAW_SCALE;
-	glScalef(scale, scale, scale);
-
-	glBegin(GL_POLYGON);
-	glCallList(hudCircleList);
+	float scale = precisionScale*PRECISION_SCALE_DRAW_SCALE*2.0;
+	glPointSize(scale);
+	glBegin(GL_POINTS);
+	glVertex3f(viewWidth-40, viewHeight-40, 0.0f);
 	glEnd();
-	glPopMatrix();
+	glPointSize(1.0f);
 
 	//Draw Precision Scale Unit Outline
-
 	Color::glColor(PRECISION_SCALE_HUD_CIRCLE_COLOR);
 	
 	glTranslatef(viewWidth-40, viewHeight-40, 0.0f);
@@ -276,6 +286,7 @@ void MapEditorWidget::paintGL() {
 	glDepthMask(GL_TRUE);
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
+	glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_POINT_SMOOTH);
 
 }
@@ -315,39 +326,53 @@ void MapEditorWidget::mouseDragged(Qt::MouseButton button, Point current_positio
 	}
 	else if (button == MAP_EDITOR_EDIT_BUTTON) {
 
-		bool z_edit = (modifiers & MAP_EDITOR_Z_EDIT_MODIFIER);
+		if (selectedObject) {
 
-		if (editMode == EDIT_TRANSLATE && selectedObject) {
-			/*TRANSLATION*************************************************************/
-			Point translation;
-			if (z_edit) {
-				if (camera->getCameraType() == Camera::ORTHOGRAPHIC) {
-					translation = camera->getLookDirection()
-						*MAP_EDITOR_Z_TRANSLATE_SCALE*delta.getV()*precisionScale;
+			bool z_edit = (modifiers & MAP_EDITOR_Z_EDIT_MODIFIER);
+
+			if (editMode == EDIT_TRANSLATE) {
+				/*TRANSLATION*************************************************************/
+				Point translation;
+				if (z_edit) {
+					if (camera->getCameraType() == Camera::ORTHOGRAPHIC) {
+						translation = camera->getLookDirection()
+							*MAP_EDITOR_Z_TRANSLATE_SCALE*delta.getV()*precisionScale;
+					}
+					else {
+						translation = (selectedObject->getPosition()-camera->getPosition()).normalized()
+							*MAP_EDITOR_Z_TRANSLATE_SCALE*delta.getV()*precisionScale;
+					}
 				}
 				else {
-					translation = (selectedObject->getPosition()-camera->getPosition()).normalized()
-						*MAP_EDITOR_Z_TRANSLATE_SCALE*delta.getV()*precisionScale;
+					double translate_u_scale;
+					double translate_v_scale;
+					if (camera->getCameraType() == Camera::ORTHOGRAPHIC) {
+						translate_u_scale = camera->getOrthoWidth();
+						translate_v_scale = camera->getOrthoHeight();
+					}
+					else {
+						double z = camera->getPosition().distance(selectedObject->getPosition());
+						//double z = (selectedObject->getPosition()-camera->getPosition()).dotProduct(camera->getLookDirection());
+						translate_u_scale = z*camera->getAspect();
+						translate_v_scale = z;
+					}
+					translation = camera->getRightDirection()*delta.getU()*translate_u_scale*precisionScale
+						+camera->getUpDirection()*delta.getV()*translate_v_scale*precisionScale;
 				}
-			}
-			else {
-				double translate_u_scale;
-				double translate_v_scale;
-				if (camera->getCameraType() == Camera::ORTHOGRAPHIC) {
-					translate_u_scale = camera->getOrthoWidth();
-					translate_v_scale = camera->getOrthoHeight();
-				}
+				translateSelectedObject(translation);
+				
+			} else if (editMode == EDIT_ROTATE) {
+
+				double rotate_scale = MAP_EDITOR_ROTATE_SCALE*precisionScale;
+				if (z_edit)
+					selectedObject->rotate(delta.getV()*rotate_scale, ROLL);
 				else {
-					double z = camera->getPosition().distance(selectedObject->getPosition());
-					//double z = (selectedObject->getPosition()-camera->getPosition()).dotProduct(camera->getLookDirection());
-					translate_u_scale = z*camera->getAspect();
-					translate_v_scale = z;
+					selectedObject->rotate(delta.getU()*rotate_scale, YAW);
+					selectedObject->rotate(delta.getV()*rotate_scale, PITCH);
 				}
-				translation = camera->getRightDirection()*delta.getU()*translate_u_scale*precisionScale
-					+camera->getUpDirection()*delta.getV()*translate_v_scale*precisionScale;
+
 			}
-			translateSelectedObject(translation);
-			
+
 		}
 
 		updateGL();
@@ -494,6 +519,7 @@ void MapEditorWidget::loadMap(string filename) {
 	mapObjectsChanged(MapObject::LIGHT);
 	mapObjectsChanged(MapObject::PATH_NODE);
 	mapCollisionChanged();
+	propMeshesChanged(map->getPropMeshNames());
 	updateGL();
 }
 
@@ -634,6 +660,10 @@ void MapEditorWidget::setShowPaint(bool enabled) {
 	updateGL();
 }
 
+void MapEditorWidget::setShowInvisible(bool enabled) {
+	showInvisible = enabled;
+	updateGL();
+}
 void MapEditorWidget::generatePaint() {
 	map->generatePaint(0.5);
 	updateGL();
@@ -643,6 +673,8 @@ void MapEditorWidget::setMapObjectType(MapObject::ObjectType type) {
 	if (type != editObjectType) {
 		setSelectedObject(NULL);
 		editObjectType = type;
+		if (editObjectType == MapObject::FINISH_PLANE)
+			setSelectedObject(mapObjects[static_cast<int>(MapObject::FINISH_PLANE)][0]);
 		updateGL();
 	}
 }
@@ -664,12 +696,21 @@ void MapEditorWidget::createObject(double u, double v) {
 				create_pos.setY(create_pos.getY()+MAP_EDITOR_PATHNODE_FLOAT_HEIGHT);
 				addPathNode(create_pos);
 			}
+			else {
+				addPathNode(camera->cameraToWorld(u, v));
+			}
 			break;
 
 		case MapObject::START_POINT:
 			if (getRaycastPosition(u, v, create_pos)) {
 				create_pos.setY(create_pos.getY()+MAP_EDITOR_STARTPOINT_FLOAT_HEIGHT);
 				addStartPoint(create_pos);
+			}
+			break;
+
+		case MapObject::FINISH_PLANE:
+			if (getRaycastPosition(u, v, create_pos)) {
+				map->getFinishPlane().moveCentroid(create_pos);
 			}
 			break;
 
@@ -682,8 +723,10 @@ void MapEditorWidget::createObject(double u, double v) {
 }
 void MapEditorWidget::selectObject(double u, double v, bool rerender) {
 
-	selectedObject = getClickedObject(u, v, rerender);
-	selectedObjectChanged(selectedObject);
+	if (editObjectType != MapObject::FINISH_PLANE) {
+		selectedObject = getClickedObject(u, v, rerender);
+		selectedObjectChanged(selectedObject);
+	}
 
 }
 MapObject* MapEditorWidget::getClickedObject(double u, double v, bool rerender) {
@@ -786,6 +829,36 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 			}
 			break;
 
+		case MapObject::FINISH_PLANE:
+
+			if (!object_buffer) {
+				Color::glColor(MAP_EDITOR_FINISH_PLANE_COLOR);
+				GeometryDrawing::drawBoundingPlane3D(map->getFinishPlane(), true);
+			}
+			break;
+
+		case MapObject::MESH_INSTANCE:
+
+			RenderList* render_list;
+			/*
+			for (unsigned int i = 0; i < mapObjects[type_index].size(); i++) {
+				StartPointObject* point_object = ((StartPointObject*)mapObjects[type_index][i]);
+
+				if (object_buffer)
+					glBufferIndexColor(i);
+				else
+					Color::glColor(MAP_EDITOR_STARTPOINT_COLOR);
+
+				GeometryDrawing::drawBoundingBox3D(
+					BoundingBox3D(MAP_EDITOR_STARTPOINT_LENGTH,
+					MAP_EDITOR_STARTPOINT_HEIGHT,
+					MAP_EDITOR_STARTPOINT_LENGTH,
+					point_object->getPosition()), false
+					);
+			}
+			*/
+			break;
+
 		default:
 			break;
 	}
@@ -846,12 +919,21 @@ bool MapEditorWidget::editModeCompatible(MapObject::ObjectType type, EditMode mo
 					return false;
 			}
 
+		case MapObject::FINISH_PLANE:
+			switch (mode) {
+				case EDIT_TRANSLATE: case EDIT_ROTATE:
+					return true;
+				default:
+					return false;
+			}
+
+
 		default:
 			return false;
 	}
 }
 void MapEditorWidget::deleteSelected() {
-	if (selectedObject) {
+	if (selectedObject && editObjectType != MapObject::FINISH_PLANE) {
 
 		switch (editObjectType) {
 			case MapObject::LIGHT:
@@ -870,7 +952,6 @@ void MapEditorWidget::deleteSelected() {
 }
 void MapEditorWidget::translateSelectedObject(Point translation) {
 	selectedObject->translate(translation);
-	
 }
 
 void MapEditorWidget::updateSelectedObjectPosition() {
@@ -879,6 +960,10 @@ void MapEditorWidget::updateSelectedObjectPosition() {
 		selectedPositionXChanged(pos.getX());
 		selectedPositionYChanged(pos.getY());
 		selectedPositionZChanged(pos.getZ());
+
+		selectedRotationYawChanged(radiansToDegrees(selectedObject->getRotation(YAW)));
+		selectedRotationPitchChanged(radiansToDegrees(selectedObject->getRotation(PITCH)));
+		selectedRotationRollChanged(radiansToDegrees(selectedObject->getRotation(ROLL)));
 	}
 }
 void MapEditorWidget::setSelectedPositionX(double x) {
@@ -899,14 +984,27 @@ void MapEditorWidget::setSelectedPositionZ(double z) {
 		updateGL();
 	}
 }
+void MapEditorWidget::setRotationYaw(double degrees) {
+	if (selectedObject) {
+		selectedObject->setRotation(degreesToRadians(degrees), YAW);
+		updateGL();
+	}
+}
+void MapEditorWidget::setRotationPitch(double degrees) {
+	if (selectedObject) {
+		selectedObject->setRotation(degreesToRadians(degrees), PITCH);
+		updateGL();
+	}
+}
+void MapEditorWidget::setRotationRoll(double degrees) {
+	if (selectedObject) {
+		selectedObject->setRotation(degreesToRadians(degrees), ROLL);
+		updateGL();
+	}
+}
 void MapEditorWidget::setSelectedObject(MapObject* object) {
 	selectedObject = object;
-	if (selectedObject) {
-		Point pos = selectedObject->getPosition();
-		selectedPositionXChanged(pos.getX());
-		selectedPositionYChanged(pos.getY());
-		selectedPositionZChanged(pos.getZ());
-	}
+	updateSelectedObjectPosition();
 	selectedObjectChanged(object);
 }
 Color MapEditorWidget::getSelectedColor(int color_index) {
@@ -948,4 +1046,14 @@ bool MapEditorWidget::getRaycastPosition(double u, double v, Point& p) {
 void MapEditorWidget::loadCubeMap() {
 	map->setCubeMapFile( CubeMapDialog::showCubeMapDialog( *map->getCubeMapFile(), this) );
 	updateGL();
+}
+
+void MapEditorWidget::setPropMeshIndex(int index) {
+	propMeshIndex = index;
+}
+
+void MapEditorWidget::addPropMesh(string name, string filename) {
+	if (map->addPropMesh(name, filename)) {
+		propMeshAdded(name);
+	}
 }

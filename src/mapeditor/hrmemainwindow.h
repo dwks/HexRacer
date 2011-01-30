@@ -11,6 +11,7 @@ using namespace Project;
 using namespace Render;
 using namespace OpenGL;
 using namespace Settings;
+using namespace std;
 
 class HRMEMainWindow : public QMainWindow
 {
@@ -48,9 +49,12 @@ private:
 	QFrame* optionsFrame;
 	QToolBar* optionsBar;
 
+	QComboBox* propMeshBox;
+
 	//Properties
 
 	QFrame* positionPropertyFrame;
+	QFrame* rotationPropertyFrame;
 	QFrame* colorPropertyFrame;
 	QSignalMapper* colorPropertyMapper;
 
@@ -64,6 +68,12 @@ private:
 	QDoubleSpinBox* positionYBox;
 	QDoubleSpinBox* positionZBox;
 
+	//Rotation
+
+	QDoubleSpinBox* rotationYawBox;
+	QDoubleSpinBox* rotationPitchBox;
+	QDoubleSpinBox* rotationRollBox;
+
 	//Light
 
 	QDoubleSpinBox* lightStrengthBox;
@@ -74,6 +84,7 @@ private:
 	QAction* advancedRenderingAction;
 	QAction* orthoCameraAction;
 	QAction* showPaintAction;
+	QAction* showInvisibleAction;
 
 	QActionGroup* mapObjectGroup;
 	QAction* mapObjectAction[MapObject::NUM_OBJECT_TYPES];
@@ -86,6 +97,7 @@ private:
 	QString saveDir;
 	QString mapType;
 	QString meshDir;
+	QString propMeshDir;
 	QString meshType;
 
 private slots:
@@ -94,12 +106,14 @@ private slots:
 	void saveMapFileAs();
 	void loadMesh(int mesh_index);
 	void clearMesh(int mesh_index);
+	void loadPropMesh();
 	void selectMapObject(QAction* action);
 	void selectEditMode(QAction* action);
 
-	void selectedObjectChanged(MapObject* selected_object);
-
+	void setSelectedObject(MapObject* selected_object);
 	void choosePropertyColor(int color_index);
+	void addPropMesh(string name);
+	void setPropMeshes(vector<string> prop_mesh_names);
 
 };
 

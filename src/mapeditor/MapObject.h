@@ -2,6 +2,7 @@
 
 #include "math/Point.h"
 #include "math/BoundingBox3D.h"
+#include "math/RotationAxis.h"
 #include "opengl/Color.h"
 #include <string>
 using namespace Project;
@@ -12,14 +13,19 @@ using namespace std;
 class MapObject {
 public:
 
-	static const int NUM_OBJECT_TYPES = 4;
-	enum ObjectType {LIGHT, MESH_INSTANCE, PATH_NODE, START_POINT};
+	static const int NUM_OBJECT_TYPES = 5;
+	enum ObjectType {LIGHT, MESH_INSTANCE, PATH_NODE, START_POINT, FINISH_PLANE};
 
 	virtual void translate(const Point& translation) = 0;
 	virtual ObjectType getType() const = 0;
 	virtual BoundingBox3D getBoundingBox() const = 0;
 	virtual Point getPosition() const = 0;
 	virtual void setPosition(const Point& new_position) = 0;
+
+	virtual bool hasRotation() const { return false; }
+	virtual double getRotation(RotationAxis axis) {return 0.0;}
+	virtual void setRotation(double radians, RotationAxis axis) {}
+	virtual void rotate(double radians, RotationAxis axis ) { setRotation(getRotation(axis)+radians, axis); }
 
 	virtual bool hasColors() const { return false; }
 	virtual void setDiffuse(const Color& color) {}

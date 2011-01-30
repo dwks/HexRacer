@@ -37,6 +37,7 @@ public:
 	Point getPosition() const { return position; }
 	double getRadius() const { return radius; }
 	double getRadiusSquared() const { return radiusSquared; }
+	void expandToInclude(const Point& p);
 	void setRadius(double _radius);
 
 };

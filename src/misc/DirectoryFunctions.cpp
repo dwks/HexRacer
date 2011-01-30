@@ -15,13 +15,22 @@ namespace Misc {
 		return exists;
 	}
 
-	string DirectoryFunctions::extractFilename(string str) {
+	string DirectoryFunctions::extractFilename(string str, bool include_extension) {
 		std::string::size_type slashpos = str.find_last_of('/');
-		if (slashpos == str.npos || slashpos+1 == str.length())
-			return str;
+		string return_str;
+
+		if (slashpos == str.npos || slashpos+1 >= str.length())
+			return_str = str;
 		else {
-			return str.substr(slashpos+1, str.length()-slashpos-1);
+			return_str = str.substr(slashpos+1, str.length()-slashpos-1);
 		}
+
+		std::string::size_type dotpos = return_str.find_last_of('.');
+
+		if (include_extension || dotpos+1 >= str.length())
+			return return_str;
+		else 
+			return return_str.substr(0, dotpos);
 	}
 
 	string DirectoryFunctions::extractDirectory(string str) {

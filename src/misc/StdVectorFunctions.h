@@ -50,6 +50,18 @@ static std::vector<Type> vectorAppended(std::vector<Type>& v1, const std::vector
 
 }
 
+template <typename Type>
+static int vectorIndexOfFirst(std::vector<Type>& v, Type element) {
+
+	for (unsigned int i = 0; i < v.size(); i++) {
+		if (v[i] == element) {
+			return static_cast<int>(i);
+		}
+	}
+	return -1;
+
+}
+
 }  // namespace Misc
 }  // namespace Project
 

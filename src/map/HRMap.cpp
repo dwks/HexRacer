@@ -112,6 +112,7 @@ namespace Map {
 		}
 		paintCells.clear();
 	}
+
 	void HRMap::clear() {
 
 		version = "";
@@ -119,8 +120,8 @@ namespace Map {
 		cubeMapFile->clear();
 
 		clearCubeMap();
-
 		clearCollisionTree();
+		finishPlane = BoundingPlane3D();
 
 		for (int i = 0; i < NUM_MESHES; i++) {
 			MeshType type = static_cast<MeshType>(i);
@@ -131,6 +132,12 @@ namespace Map {
 			}
 			mapMeshFile[i] = "";
 		}
+
+		for (unsigned int i = 0; i < propMeshNames.size(); i++) {
+			MeshLoader::getInstance()->deleteModelByName(propMeshNames[i]);
+		}
+		propMeshNames.clear();
+		propMeshFilenames.clear();
 
 		if (trackRenderable != NULL) {
 			delete(trackRenderable);
@@ -200,6 +207,17 @@ namespace Map {
 				return "Decor";
 			default:
 				return "";
+		}
+	}
+
+	bool HRMap::meshIsInvisible(MeshType type) {
+		switch (type) {
+			case HRMap::TRACK: case HRMap::SOLID: case HRMap::DECOR:
+				return false;
+			case HRMap::INVIS_TRACK: case HRMap::INVIS_SOLID:
+				return true;
+			default:
+				return true;
 		}
 	}
 
@@ -319,6 +337,30 @@ namespace Map {
 			collisionTree = NULL;
 		}
 	}
+
+	bool HRMap::addPropMesh(std::string name, std::string filename) {
+
+		if (!vectorContains(propMeshNames, name) && !MeshLoader::getInstance()->getModelByName(name)) {
+			if (MeshLoader::getInstance()->loadOBJ(name, filename)) {
+				propMeshNames.push_back(name);
+				propMeshFilenames.push_back(filename);
+				return true;
+			}
+		}
+
+		return false;
+
+	}
+	bool HRMap::removePropMesh(int index) {
+		if (index >= 0 && index < propMeshNames.size()) {
+			MeshLoader::getInstance()->deleteModelByName(propMeshNames[index]);
+			vectorRemoveAtIndex(propMeshNames, index);
+			vectorRemoveAtIndex(propMeshFilenames, index);
+			return true;
+		}
+		return false;
+	}
+
 
 }  // namespace Map
 }  // namespace Project

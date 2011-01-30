@@ -10,6 +10,8 @@ string MapObject::typeTitle(ObjectType type) {
 			return "Path Node";
 		case START_POINT:
 			return "Start Point";
+		case FINISH_PLANE:
+			return "Finish Plane";
 		default:
 			return "";
 	}

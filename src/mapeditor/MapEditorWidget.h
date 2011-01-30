@@ -38,6 +38,7 @@ private:
 	bool advancedRendering;
 	bool showPaint;
 	bool cameraMovedSinceClick;
+	bool showInvisible;
 
 	GLuint sphereList;
 	GLuint hudCircleList;
@@ -56,6 +57,8 @@ private:
 	QList<MapObject*> mapObjects[MapObject::NUM_OBJECT_TYPES];
 	MapObject* selectedObject;
 	EditMode editMode;
+
+	int propMeshIndex;
 
 	QImage objectBuffer;
 
@@ -121,6 +124,7 @@ public slots:
 	void setAdvancedRendering(bool enabled);
 	void setOrthoView(bool enabled);
 	void setShowPaint(bool enabled);
+	void setShowInvisible(bool enabled);
 	void generatePaint();
 	void setMapObjectType(MapObject::ObjectType type);
 	void setEditMode(EditMode mode);
@@ -130,9 +134,15 @@ public slots:
 	void setSelectedPositionX(double x);
 	void setSelectedPositionY(double y);
 	void setSelectedPositionZ(double z);
+	void setRotationYaw(double degrees);
+	void setRotationPitch(double degrees);
+	void setRotationRoll(double degrees);
 	void setSelectedColor(int color_index, Color color);
 	void setLightStrength(double strength);
 	void setLightHasAttenuation(bool has);
+
+	void setPropMeshIndex(int index);
+	void addPropMesh(string name, string filename);
 
 signals:
 
@@ -140,6 +150,12 @@ signals:
 	void selectedPositionXChanged(double);
 	void selectedPositionYChanged(double);
 	void selectedPositionZChanged(double);
+	void selectedRotationYawChanged(double);
+	void selectedRotationPitchChanged(double);
+	void selectedRotationRollChanged(double);
+
+	void propMeshAdded(string prop_mesh_name);
+	void propMeshesChanged(vector<string> prop_mesh_names);
 
 };
 

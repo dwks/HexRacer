@@ -5,8 +5,11 @@
 #include "render/RenderList.h"
 #include "render/TextureCube.h"
 #include "render/CubeMapFile.h"
+#include "render/MeshGroup.h"
 #include "render/Light.h"
+#include "render/TransformedMesh.h"
 #include "paint/PaintCell.h"
+#include "math/BoundingPlane3D.h"
 #include "PathNode.h"
 #include <string>
 #include <vector>
@@ -31,6 +34,11 @@ private:
 	std::vector<PathNode*> pathNodes;
 	std::vector<Paint::PaintCell*> paintCells;
 	std::vector<Math::Vertex3D*> startPoints;
+	std::vector<Render::TransformedMesh*> meshInstances;
+	Math::BoundingPlane3D finishPlane;
+
+	std::vector<std::string> propMeshNames;
+	std::vector<std::string> propMeshFilenames;
 
 	Math::BSPTree3D* collisionTree;
 
@@ -58,6 +66,10 @@ public:
 	void clearMapMesh(HRMap::MeshType type);
 	void generatePaint(double cell_radius = PAINT_CELL_RADIUS);
 
+	bool addPropMesh(std::string name, std::string filename);
+	bool removePropMesh(int index);
+	std::vector<std::string> getPropMeshNames() { return propMeshNames; }
+
 	const std::vector<Render::Light*>& getLights() const { return lights; }
 	void addLight(Render::Light* light);
 	void removeLight(Render::Light* light);
@@ -70,11 +82,13 @@ public:
 	void addStartPoint(Math::Vertex3D* point);
 	void removeStartPoint(Math::Vertex3D* point);
 	void clearStartPoints();
+	Math::BoundingPlane3D& getFinishPlane() { return finishPlane; }
 
 	std::string getFilename() const { return filename; }
 
 	static std::string meshName(MeshType type);
 	static std::string meshTitle(MeshType type);
+	static bool meshIsInvisible(MeshType type);
 
 private:
 
