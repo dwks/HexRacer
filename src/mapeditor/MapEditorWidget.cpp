@@ -137,21 +137,19 @@ void MapEditorWidget::paintGL() {
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_COLOR_MATERIAL);
 
-	RenderList* rootRenderable = new RenderList();
+	RenderList rootRenderable;
 	if (!advancedRendering) {
-		rootRenderable->getRenderProperties()->setShaderOverride(true);
+		rootRenderable.getRenderProperties()->setShaderOverride(true);
 	}
 
 	for (int i = 0; i < HRMap::NUM_MESHES; i++) {
 		HRMap::MeshType type = static_cast<HRMap::MeshType>(i);
 		if (map->getMapMesh(type) && (showInvisible || !HRMap::meshIsInvisible(type))) {
-			rootRenderable->addRenderable(map->getMapMesh(type));
+			rootRenderable.addRenderable(map->getMapMesh(type));
 		}
 	}
 
-	rootRenderable->render(renderer);
-
-	delete(rootRenderable);
+	rootRenderable.render(renderer);
 
 	//Render Mesh Instances
 	renderObjects(MapObject::MESH_INSTANCE, false);
@@ -762,7 +760,8 @@ void MapEditorWidget::generate2DMap(string filename) {
 
 		map->setMap2DFile(filename);
 		map->setMap2DCenter(Point::point2D(camera->getPosition(), Y_AXIS));
-		map->setMap2DScale(1.0/camera->getOrthoHeight());
+		map->setMap2DWidth(camera->getOrthoWidth());
+		map->setMap2DHeight(camera->getOrthoHeight());
 
 		updateGL();
 

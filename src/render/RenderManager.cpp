@@ -170,7 +170,7 @@ namespace Render {
 					glBindTexture(GL_TEXTURE_2D, texture->getColorMap());
 					setUniformInt(SHADER_COLORMAP_UNIFORM_NAME, colorMapTextureNum);
 					hasColorMap = true;
-					glDisable(GL_COLOR_MATERIAL);
+					//glDisable(GL_COLOR_MATERIAL);
 				}
 
 			}
@@ -207,9 +207,9 @@ namespace Render {
 
 		revertRenderMaterial(properties);
 
-		revertRenderShader(properties);
-
 		revertRenderTexture(properties);
+
+		revertRenderShader(properties);
 
 		//}
 
@@ -273,6 +273,7 @@ namespace Render {
 	}
 
 	void RenderManager::revertRenderTexture(RenderProperties* properties) {
+		glActiveTexture(colorMapTexture);
 		glDisable(GL_TEXTURE_2D);
 		//glEnable(GL_COLOR_MATERIAL);
 		if (properties->getTextureOverride())
