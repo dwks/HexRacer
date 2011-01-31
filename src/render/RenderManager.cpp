@@ -209,6 +209,8 @@ namespace Render {
 
 		revertRenderShader(properties);
 
+		revertRenderTexture(properties);
+
 		//}
 
 	}

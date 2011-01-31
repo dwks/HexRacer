@@ -229,6 +229,7 @@ void GeometryDrawing::drawBoundingPlane3D(const Math::BoundingPlane3D& object, b
 	else
 		tangent = object.getNormal().rotate90CW(Y_AXIS).normalized();
 	bitangent = tangent.crossProduct(object.getNormal()).normalized();
+	tangent = bitangent.crossProduct(object.getNormal()).normalized();
 
 	float plane_size = 20.0f;
 	Point offset_u = tangent*plane_size;

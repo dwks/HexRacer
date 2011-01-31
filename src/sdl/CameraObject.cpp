@@ -1,6 +1,7 @@
 #include "CameraObject.h"
 #include "event/ObserverList.h"
 
+
 namespace Project {
 namespace SDL {
     
@@ -10,28 +11,44 @@ namespace SDL {
         cameraObject->setDebugCamera(event->getOn());
     }
     
-    CameraObject::CameraObject() : Timing::TimedSubsystem(5){
+    CameraObject::CameraObject() : Timing::TimedSubsystem(10){
         LOG2(CAMERA, INIT, "Camera Object has been initialized\n");
         
         camera = new OpenGL::Camera();
+        
+        loadSettings();
         
         ADD_OBSERVER(new SetDebugCameraHandler(this));
     }
     
-    CameraObject::CameraObject(SDL::PlayerManager *_playerManager) : Timing::TimedSubsystem(5) {
+    CameraObject::CameraObject(SDL::PlayerManager *_playerManager) : Timing::TimedSubsystem(10) {
         LOG2(CAMERA, INIT, "Camera Object has been initialized\n");
         
         playerManager = _playerManager;
         camera = new OpenGL::Camera();
+        
+        loadSettings();
+        
+        ADD_OBSERVER(new SetDebugCameraHandler(this));
     }
     
     CameraObject::~CameraObject(){
         delete camera;
     }
 
+    void CameraObject::loadSettings(){
+        defaultOrientation.setX(GET_SETTING("camera.follow.x", 0.0));
+        defaultOrientation.setY(GET_SETTING("camera.follow.y", 0.0));
+        defaultOrientation.setZ(GET_SETTING("camera.follow.z", 0.0));
+        interpolationInc = GET_SETTING("camera.step", 0.0);
+    }
+    
     void CameraObject::setDestinationToPlayer(){
         Math::Point cameraPosition = playerManager->getPlayer()->getTransformation()
-            * Math::Point(0.0, 3.0, -10.0);
+            * Math::Point(defaultOrientation.getX(), 
+                defaultOrientation.getY(),
+                defaultOrientation.getZ()
+                         );
         
         Math::Point lookAtPosition  = playerManager->getPlayer()->getPosition();
         
@@ -48,16 +65,10 @@ namespace SDL {
     }
     
     void CameraObject::doAction(unsigned long currentTime) {
-        //LOG2(CAMERA, UPDATE, "CameraObject doAction Called\n");
-        setDestinationToPlayer();
-        
-        //Temp, should be calling slerpCamera when slerp is fixed
-        
         if(!debugCamera) {
-            setCamera(destinationLookAt, destinationPosition);
+            setDestinationToPlayer();
+            slerpCamera();
         }
-        
-        //slerpCamera();
     }
     
     void CameraObject::setCamera(Math::Point _look, Math::Point _pos){
@@ -66,11 +77,6 @@ namespace SDL {
     }
     
     void CameraObject::slerpCamera(){
-        //What I am doing wrong is that I need to have an initial orientation,
-        //Then using the quaternions I apply that rotation to the original view
-        //And translate it to the position I need... I believe.
-        
-        float stepVal = 0.01;
         Math::Point currentLookAt,currentPos,currentViewAxis,destViewAxis,resultPos,resultAxis;
         btQuaternion result;
         
@@ -80,10 +86,10 @@ namespace SDL {
         currentViewAxis = currentLookAt - currentPos;
         destViewAxis = destinationLookAt - destinationPosition;
         
-        result = btQuaternion(Physics::Converter::toVector(currentViewAxis),0).slerp(
-            btQuaternion(Physics::Converter::toVector(destViewAxis),0),stepVal);
+        result = btQuaternion(Physics::Converter::toVector(destViewAxis),1).slerp(
+            btQuaternion(Physics::Converter::toVector(currentViewAxis),1),interpolationInc);
         
-        resultPos = (1.0)*destinationPosition - (stepVal)*currentPos;
+        resultPos = currentPos + interpolationInc*(destinationPosition - currentPos);
         
         resultAxis = Physics::Converter::toPoint(result.getAxis());
         

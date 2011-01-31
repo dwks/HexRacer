@@ -48,6 +48,22 @@ render.paint.enabled = 1
 render.quality = 2
 
 ########
+### Camera settings
+# step is the Interpolation Increment.
+# This is how fast the
+# camera interpolates between current
+# and destination orientations
+camera.step = 0.1
+
+# The following values let you set the 
+# destination position behind a player.
+# You can modify how the default follow
+# orientation looks here.
+camera.follow.x = 0.0
+camera.follow.y = 2.0
+camera.follow.z = -7.0
+
+########
 ### Network settings
 
 # Network settings for both client and server

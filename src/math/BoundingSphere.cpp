@@ -130,5 +130,12 @@ namespace Math {
 		return false;
 	}
 
+	void BoundingSphere::expandToInclude(const Point& p) {
+		double distSquared = position.distanceSquared(p);
+		if (distSquared > radiusSquared) {
+			setRadius(std::sqrt(distSquared));
+		}
+	}
+
 }  // namespace Math
 }  // namespace Project

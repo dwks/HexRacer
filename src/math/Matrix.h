@@ -21,6 +21,8 @@ public:
     
     static Matrix getTranslationMatrix(const Math::Point &translation);
     static Matrix getScalingMatrix(const Math::Point &scale);
+	static Matrix getScalingMatrix(double scale);
+	static Matrix getRotationMatrix(Axis axis, double angle);
     
     void setToIdentity();
     

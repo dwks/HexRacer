@@ -42,6 +42,9 @@ public:
 
 };
 
+std::ostream &operator << (std::ostream &stream, const Vertex3D &vertex);
+std::istream &operator >> (std::istream &stream, Vertex3D &vertex);
+
 }  // namespace Math
 }  // namespace Project
 

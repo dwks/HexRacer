@@ -29,6 +29,7 @@ namespace Map {
 
 	HRMap::~HRMap() {
 		clear();
+		delete(cubeMapFile);
 	}
 
 	bool HRMap::loadMapFile(string _filename) {
@@ -36,8 +37,9 @@ namespace Map {
 		clear();
 
 		string file_directory = DirectoryFunctions::extractDirectory(_filename);
-
 		filename = _filename;
+
+		vector< vector<int> > pathnode_links;
 
 		ifstream in_file;
 		in_file.open(filename.c_str());
@@ -53,15 +55,67 @@ namespace Map {
 					//If the line starts with #, ignore the entire line
 					in_file.ignore(9999, '\n');
 				}
-				else if (keyword == "version") {
-					in_file >> version;
+				else if (keyword == HRMAP_PAINTCELL_LABEL) {
+					PaintCell* cell = new PaintCell(Point());
+					in_file >> *cell;
+					cell->index = paintCells.size();
+					paintCells.push_back(cell);
 				}
-				else if (keyword == "light") {
+				else if (keyword == HRMAP_PATHNODE_LABEL) {
+					Point p;
+					int num_links;
+					vector<int> links;
+					in_file >> p;
+					in_file >> num_links;
+					while (num_links > 0) {
+						int index;
+						in_file >> index;
+						links.push_back(index);
+						num_links--;
+					}
+					pathNodes.push_back(new PathNode(p));
+					pathnode_links.push_back(links);
+				}
+				else if (keyword == HRMAP_STARTPOINT_LABEL) {
+					Point p;
+					in_file >> p;
+					startPoints.push_back(new Vertex3D(p));
+				}
+				else if (keyword == HRMAP_LIGHT_LABEL) {
 					Light* light = new Light();
-					char c;
-					in_file >> c;
 					in_file >> *light;
 					lights.push_back(light);
+				}
+				else if (keyword == HRMAP_MESHINSTANCE_LABEL) {
+					MeshInstance* instance = new MeshInstance("", SimpleTransform());
+					in_file >> *instance;
+					if (!addMeshInstance(instance)) {
+						delete(instance);
+					}
+				}
+				else if (keyword == HRMAP_PROPMESH_LABEL) {
+					string mesh_name;
+					string mesh_filename;
+					in_file >> mesh_name;
+					in_file >> mesh_filename;
+					mesh_filename = DirectoryFunctions::fromRelativeFilename(file_directory, mesh_filename);
+					addPropMesh(mesh_name, mesh_filename);
+				}
+				else if (keyword == HRMAP_FINISHPLANE_LABEL) {
+					in_file >> finishPlane;
+				}
+				else if (keyword == HRMAP_MAP2DFILE_LABEL) {
+					in_file >> map2DFile;
+					map2DFile = DirectoryFunctions::fromRelativeFilename(file_directory, map2DFile);
+				}
+				else if (keyword == HRMAP_MAP2DCENTER_LABEL) {
+					in_file >> map2DCenter;
+				}
+				else if (keyword == HRMAP_MAP2DSCALE_LABEL) {
+					in_file >> map2DScale;
+				}
+				else if (keyword == HRMAP_VERSION_LABEL) {
+					in_file >> version;
 				}
 				else  {
 					for (int i = 0; i < 6; i++) {
@@ -87,23 +141,118 @@ namespace Map {
 			}
 
 		}
+		in_file.close();
 
-		//trackRenderable = new RenderList();
-
+		//Convert the mesh filenames from relative to absolute
 		for (int i = 0; i < NUM_MESHES; i++) {
-			mapMeshFile[i] = DirectoryFunctions::fromRelativeFilename(file_directory, mapMeshFile[i]);
-			MeshType type = static_cast<MeshType>(i);
-			loadMapMesh(type, mapMeshFile[i]);
+			if (mapMeshFile[i].length() > 0) {
+				mapMeshFile[i] = DirectoryFunctions::fromRelativeFilename(file_directory, mapMeshFile[i]);
+				MeshType type = static_cast<MeshType>(i);
+				loadMapMesh(type, mapMeshFile[i]);
+			}
 		}
 
-		//cubeMap = new TextureCube(bgImageXPos, bgImageXNeg, bgImageYPos, bgImageYNeg, bgImageZPos, bgImageZNeg);
+		//Link all loaded path nodes
+		for (unsigned int i = 0; i < pathnode_links.size(); i++) {
+			for (unsigned int j = 0; j < pathnode_links[i].size(); j++) {
+				pathNodes[i]->getNextNodes().push_back(pathNodes[pathnode_links[i][j]]);
+			}
+		}
 
 		return true;
 
 	}
 
-	bool HRMap::saveMapFile(std::string _filename) const {
-		return false;
+	bool HRMap::saveMapFile(std::string _filename) {
+
+		string save_directory = DirectoryFunctions::extractDirectory(_filename);
+
+		ofstream out_file;
+		out_file.open(_filename.c_str());
+		out_file << "#HR Map File\n";
+		out_file << "version " << HRMAP_VERSION << '\n';
+
+		out_file << "#Map Meshes\n";
+		for (int i = 0; i < NUM_MESHES; i++) {
+			if (mapMeshFile[i].length() > 0) {
+				out_file << meshName(static_cast<MeshType>(i)) << ' '
+					<< DirectoryFunctions::toRelativeFilename(save_directory, mapMeshFile[i])
+						<< '\n';
+			}
+		}
+
+		out_file << "#Background Images\n";
+		for (int i = 0; i < 6; i++) {
+			if (cubeMapFile->getSideFile(i).length() > 0) {
+				out_file << cubeMapFile->getSideName(i) << ' '
+					<< DirectoryFunctions::toRelativeFilename(save_directory, cubeMapFile->getSideFile(i))
+					<< '\n';
+			}
+		}
+
+		out_file << "#2D Map\n";
+		if (map2DFile.length() > 0) {
+			out_file << HRMAP_MAP2DFILE_LABEL << ' '
+				<< DirectoryFunctions::toRelativeFilename(save_directory, map2DFile) << '\n';
+			out_file << HRMAP_MAP2DCENTER_LABEL << ' ' << map2DCenter << '\n';
+			out_file << HRMAP_MAP2DSCALE_LABEL << ' ' << map2DScale << '\n';
+		}
+
+		out_file << "#Prop Meshes\n";
+		for (unsigned int i = 0; i < propMeshNames.size(); i++) {
+			out_file << HRMAP_PROPMESH_LABEL << ' ' << propMeshNames[i] << ' '
+				<< DirectoryFunctions::toRelativeFilename(save_directory, propMeshFilenames[i]) << '\n';
+		}
+
+		out_file << "#Finish Plane\n";
+		out_file << HRMAP_FINISHPLANE_LABEL << ' ' << finishPlane << '\n';
+
+		out_file << "#Lights\n";
+		for (unsigned int i = 0; i < lights.size(); i++) {
+			out_file << HRMAP_LIGHT_LABEL << ' ' << (*lights[i]) << '\n';
+		}
+
+		out_file << "#Path Nodes\n";
+
+		for (unsigned int i = 0; i < pathNodes.size(); i++)
+			pathNodes[i]->index = i;
+
+		for (unsigned int i = 0; i < pathNodes.size(); i++) {
+			out_file << HRMAP_PATHNODE_LABEL << ' ' << (*pathNodes[i]) << ' ';
+			const std::vector<PathNode*>& next_nodes = pathNodes[i]->getNextNodes();
+			out_file << next_nodes.size() << ' ';
+			for (unsigned int i = 0; i < next_nodes.size(); i++) {
+				out_file << next_nodes[i]->index;
+				if (i < next_nodes.size()-1) {
+					out_file << ' ';
+				}
+			}
+			out_file << '\n';
+		}
+
+		out_file << "#Start Points\n";
+		for (unsigned int i = 0; i < startPoints.size(); i++) {
+			out_file << HRMAP_STARTPOINT_LABEL << ' ' << (*startPoints[i]) << '\n';
+		}
+
+		out_file << "#Mesh Instances\n";
+		for (unsigned int i = 0; i < meshInstances.size(); i++) {
+			out_file << HRMAP_MESHINSTANCE_LABEL << ' ' << (*meshInstances[i]) << '\n';
+		}
+
+		out_file << "#Paint Cells\n";
+		for (unsigned int i = 0; i < paintCells.size(); i++) {
+			out_file << HRMAP_PAINTCELL_LABEL << ' ' << (*paintCells[i]) << '\n';
+		}
+
+
+		out_file.close();
+
+		filename = _filename;
+
+		return true;
+
+
 	}
 
 	void HRMap::clearPaint() {
@@ -112,6 +261,7 @@ namespace Map {
 		}
 		paintCells.clear();
 	}
+
 	void HRMap::clear() {
 
 		version = "";
@@ -119,8 +269,8 @@ namespace Map {
 		cubeMapFile->clear();
 
 		clearCubeMap();
-
 		clearCollisionTree();
+		finishPlane = BoundingPlane3D();
 
 		for (int i = 0; i < NUM_MESHES; i++) {
 			MeshType type = static_cast<MeshType>(i);
@@ -132,6 +282,12 @@ namespace Map {
 			mapMeshFile[i] = "";
 		}
 
+		for (unsigned int i = 0; i < propMeshNames.size(); i++) {
+			MeshLoader::getInstance()->deleteModelByName(propMeshNames[i]);
+		}
+		propMeshNames.clear();
+		propMeshFilenames.clear();
+
 		if (trackRenderable != NULL) {
 			delete(trackRenderable);
 			trackRenderable = NULL;
@@ -140,6 +296,7 @@ namespace Map {
 		clearLights();
 		clearPathNodes();
 		clearStartPoints();
+		clearMeshInstances();
 
 		clearPaint();
 
@@ -203,6 +360,25 @@ namespace Map {
 		}
 	}
 
+	bool HRMap::meshIsInvisible(MeshType type) {
+		switch (type) {
+			case HRMap::TRACK: case HRMap::SOLID: case HRMap::DECOR:
+				return false;
+			case HRMap::INVIS_TRACK: case HRMap::INVIS_SOLID:
+				return true;
+			default:
+				return true;
+		}
+	}
+
+	bool HRMap::meshIsSolid(MeshType type) {
+		switch (type) {
+			case HRMap::DECOR:
+				return false;
+			default:
+				return true;
+		}
+	}
 	Render::TextureCube* HRMap::getCubeMap() {
 		if (cubeMap == NULL) {
 			cubeMap = new TextureCube(*cubeMapFile);
@@ -277,6 +453,23 @@ namespace Map {
 			delete(startPoints[i]);
 		startPoints.clear();
 	}
+	bool HRMap::addMeshInstance(MeshInstance* mesh) {
+		if (vectorContains(propMeshNames, mesh->getMeshName())) {
+			meshInstances.push_back(mesh);
+			return true;
+		}
+		else return false;
+	}
+	void HRMap::removeMeshInstance(MeshInstance* mesh) {
+		if (Misc::vectorRemoveOneElement(meshInstances, mesh)) {
+			delete(mesh);
+		}
+	}
+	void HRMap::clearMeshInstances() {
+		for (unsigned int i = 0; i < meshInstances.size(); i++)
+			delete(meshInstances[i]);
+		meshInstances.clear();
+	}
 	BSPTree3D* HRMap::getCollisionTree() {
 
 		if (collisionTree == NULL) {
@@ -286,7 +479,7 @@ namespace Map {
 			BoundingBox3D collision_bound;
 			for (int i = 0; i < NUM_MESHES; i++) {
 				MeshType type = static_cast<MeshType>(i);
-				if (type != DECOR && getMapMesh(type)) {
+				if (meshIsSolid(type) && getMapMesh(type)) {
 					vector<Triangle3D> triangles = getMapMesh(type)->getTriangles();
 					for (unsigned int t = 0; t < triangles.size(); t++) {
 						if (i == 0 && t == 0)
@@ -320,5 +513,39 @@ namespace Map {
 		}
 	}
 
+	bool HRMap::addPropMesh(std::string name, std::string filename) {
+
+		if (!vectorContains(propMeshNames, name) && !MeshLoader::getInstance()->getModelByName(name)) {
+			if (MeshLoader::getInstance()->loadOBJ(name, filename)) {
+				propMeshNames.push_back(name);
+				propMeshFilenames.push_back(filename);
+				return true;
+			}
+		}
+
+		return false;
+
+	}
+	bool HRMap::removePropMesh(int index) {
+		if (index >= 0 && index < propMeshNames.size()) {
+			MeshLoader::getInstance()->deleteModelByName(propMeshNames[index]);
+			for (unsigned int i = 0; i < meshInstances.size(); i++) {
+				if (meshInstances[i]->getMeshName() == propMeshNames[index]) {
+					removeMeshInstance(meshInstances[i]);
+				}
+			}
+			vectorRemoveAtIndex(propMeshNames, index);
+			vectorRemoveAtIndex(propMeshFilenames, index);
+			return true;
+		}
+		return false;
+	}
+
+
+	std::string HRMap::getPropMeshName(int index) {
+		if (index >= 0 && index < static_cast<int>(propMeshNames.size()))
+			return propMeshNames[index];
+		return "";
+	}
 }  // namespace Map
 }  // namespace Project

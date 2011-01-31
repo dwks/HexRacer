@@ -14,6 +14,7 @@ private:
 public:
 	void addRenderable(RenderableObject* renderable);
 	bool removeRenderable(RenderableObject* renderable);
+	void clear() { renderableList.clear(); }
 	vector<RenderableObject*> getChildren();
 };
 

@@ -6,6 +6,12 @@
 #include <stdlib.h>
 #include "MapObject.h"
 #include "LightObject.h"
+#include "MeshInstanceObject.h"
+#include "map/MeshInstance.h"
+#include "misc/DirectoryFunctions.h"
+using namespace Misc;
+using namespace Map;
+#include <vector>
 
 #ifdef WIN32
     #include <direct.h>
@@ -23,7 +29,9 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	mapEditor = new MapEditorWidget();
 	setCentralWidget(mapEditor);
-	connect(mapEditor, SIGNAL(selectedObjectChanged(MapObject*)), this, SLOT(selectedObjectChanged(MapObject*)));
+	connect(mapEditor, SIGNAL(selectedObjectChanged(MapObject*)), this, SLOT(setSelectedObject(MapObject*)));
+	connect(mapEditor, SIGNAL(propMeshAdded(string)), this, SLOT(addPropMesh(string)));
+	connect(mapEditor, SIGNAL(propMeshesChanged(vector<string>)), this, SLOT(setPropMeshes(vector<string>)));
 
 	//
 	settingsManager = new SettingsManager("mapeditorconfig.txt");
@@ -34,14 +42,17 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	//File Menu
 	fileMenu = new QMenu("&File", this);
-	fileMenu->addAction("&New", mapEditor, SLOT(newMap()), QKeySequence("CTRL+N"));
+	QAction* newAction = fileMenu->addAction("&New", mapEditor, SLOT(newMap()), QKeySequence("CTRL+N"));
+	connect(newAction, SIGNAL(triggered()), this, SLOT(newMap()));
 	fileMenu->addAction("&Open", this, SLOT(openMapFile()), QKeySequence("CTRL+O"));
-	fileMenu->addAction("&Save", mapEditor, SLOT(newFile()), QKeySequence("CTRL+S"));
+	saveAction = fileMenu->addAction("&Save", mapEditor, SLOT(saveMap()), QKeySequence("CTRL+S"));
+	saveAction->setDisabled(true);
 	fileMenu->addAction("&Save As", this, SLOT(saveMapFileAs()), QKeySequence("CTRL+ALT+S"));
 
 	//Edit Menu
 	editMenu = new QMenu("&Edit", this);
 	editMenu->addAction("&Delete", mapEditor, SLOT(deleteSelected()), QKeySequence(Qt::Key_Delete));
+	editMenu->addAction("&Delete All", mapEditor, SLOT(deleteAll()), QKeySequence(Qt::Key_Delete));
 
 	//Meshes Menu
 	meshMenu = new QMenu("&Mesh", this);
@@ -66,7 +77,10 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	//Map Menu
 	mapMenu = new QMenu("&Map", this);
 	mapMenu->addAction("&Generate Paint Cells",	mapEditor, SLOT(generatePaint()));
+	mapMenu->addAction("&Generate 2D Map",	this, SLOT(save2DMapImage()));
 	mapMenu->addAction("&Load Cube Map", mapEditor, SLOT(loadCubeMap()));
+	mapMenu->addAction("&Load Prop Mesh", this, SLOT(loadPropMesh()));
+	mapMenu->addAction("&Remove Prop Mesh", mapEditor, SLOT(removePropMesh()));
 
 	menuBar->addMenu(fileMenu);
 	menuBar->addMenu(editMenu);
@@ -78,15 +92,27 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	advancedRenderingAction = new QAction("&Advanced Rendering", this);
 	advancedRenderingAction->setCheckable(true);
+	advancedRenderingAction->setShortcut(QKeySequence(Qt::Key_Z));
+	advancedRenderingAction->setIcon(QIcon("editoricons/iconadvancedrendering.png"));
 	connect(advancedRenderingAction, SIGNAL(toggled(bool)), mapEditor, SLOT(setAdvancedRendering(bool)));
 
 	orthoCameraAction = new QAction("&Orthographic View", this);
 	orthoCameraAction->setCheckable(true);
+	orthoCameraAction->setShortcut(QKeySequence(Qt::Key_X));
+	orthoCameraAction->setIcon(QIcon("editoricons/iconorthoview.png"));
 	connect(orthoCameraAction, SIGNAL(toggled(bool)), mapEditor, SLOT(setOrthoView(bool)));
 
 	showPaintAction = new QAction("&Show Paint", this);
 	showPaintAction->setCheckable(true);
+	showPaintAction->setShortcut(QKeySequence(Qt::Key_C));
+	showPaintAction->setIcon(QIcon("editoricons/iconshowpaint.png"));
 	connect(showPaintAction, SIGNAL(toggled(bool)), mapEditor, SLOT(setShowPaint(bool)));
+
+	showInvisibleAction = new QAction("&Show Invisible", this);
+	showInvisibleAction->setCheckable(true);
+	showInvisibleAction->setShortcut(QKeySequence(Qt::Key_V));
+	showInvisibleAction->setIcon(QIcon("editoricons/iconshowinvisible.png"));
+	connect(showInvisibleAction, SIGNAL(toggled(bool)), mapEditor, SLOT(setShowInvisible(bool)));
 
 	//Map Objects
 	mapObjectGroup = new QActionGroup(this);
@@ -98,6 +124,28 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		mapObjectAction[i] = new QAction(QString(MapObject::typeTitle(type).c_str()), this);
 		mapObjectAction[i]->setCheckable(true);
 		mapObjectGroup->addAction(mapObjectAction[i]);
+		mapObjectAction[i]->setShortcut(QKeySequence(Qt::Key_1+i));
+
+		switch (type) {
+			case MapObject::LIGHT:
+				mapObjectAction[i]->setIcon(QIcon("editoricons/iconlight.png"));
+				break;
+			case MapObject::MESH_INSTANCE:
+				mapObjectAction[i]->setIcon(QIcon("editoricons/iconmeshinstance.png"));
+				break;
+			case MapObject::PATH_NODE:
+				mapObjectAction[i]->setIcon(QIcon("editoricons/iconpathnode.png"));
+				break;
+			case MapObject::START_POINT:
+				mapObjectAction[i]->setIcon(QIcon("editoricons/iconstartpoint.png"));
+				break;
+			case MapObject::FINISH_PLANE:
+				mapObjectAction[i]->setIcon(QIcon("editoricons/iconfinishplane.png"));
+				break;
+				
+			default:
+				break;
+		}
 	}
 	
 	//Edit Modes
@@ -109,6 +157,27 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		MapEditorWidget::EditMode mode = static_cast<MapEditorWidget::EditMode>(i);
 		editModeAction[i] = new QAction(QString(MapEditorWidget::editModeTitle(mode).c_str()), this);
 		editModeAction[i]->setCheckable(true);
+		editModeAction[i]->setShortcut(QKeySequence(Qt::Key_1+i));
+		switch (mode) {
+			case MapEditorWidget::EDIT_TRANSLATE:
+				editModeAction[i]->setShortcut(QKeySequence(Qt::Key_T));
+				editModeAction[i]->setIcon(QIcon("editoricons/icontranslate.png"));
+				break;
+			case MapEditorWidget::EDIT_ROTATE:
+				editModeAction[i]->setShortcut(QKeySequence(Qt::Key_R));
+				editModeAction[i]->setIcon(QIcon("editoricons/iconrotate.png"));
+				break;
+			case MapEditorWidget::EDIT_SCALE:
+				editModeAction[i]->setShortcut(QKeySequence(Qt::Key_F));
+				editModeAction[i]->setIcon(QIcon("editoricons/iconscale.png"));
+				break;
+			case MapEditorWidget::EDIT_LINK:
+				editModeAction[i]->setShortcut(QKeySequence(Qt::Key_G));
+				editModeAction[i]->setIcon(QIcon("editoricons/iconlink.png"));
+				break;
+			default:
+				break;
+		}
 		if (i == 0)
 			editModeAction[i]->setChecked(true);
 		editModeGroup->addAction(editModeAction[i]);
@@ -123,18 +192,29 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	QHBoxLayout* options_layout = new QHBoxLayout(this);
 	QHBoxLayout* objects_layout = new QHBoxLayout(this);
 	QHBoxLayout* edit_mode_layout = new QHBoxLayout(this);
+	QHBoxLayout* prop_mesh_layout = new QHBoxLayout(this);
 	
 	//Viewing buttons
 	QToolButton* advancedRenderingButton = new QToolButton(this);
 	advancedRenderingButton->setDefaultAction(advancedRenderingAction);
+	advancedRenderingButton->setIconSize(QSize(32, 32));
+
 	QToolButton* orthoCameraButton = new QToolButton(this);
 	orthoCameraButton->setDefaultAction(orthoCameraAction);
+	orthoCameraButton->setIconSize(QSize(32, 32));
+
 	QToolButton* showPaintButton = new QToolButton(this);
 	showPaintButton->setDefaultAction(showPaintAction);
+	showPaintButton->setIconSize(QSize(32, 32));
+
+	QToolButton* showInvisibleButton = new QToolButton(this);
+	showInvisibleButton->setDefaultAction(showInvisibleAction);
+	showInvisibleButton->setIconSize(QSize(32, 32));
 
 	viewing_layout->addWidget(advancedRenderingButton);
 	viewing_layout->addWidget(orthoCameraButton);
 	viewing_layout->addWidget(showPaintButton);
+	viewing_layout->addWidget(showInvisibleButton);
 
 	viewing_layout->setAlignment(Qt::AlignLeft);
 
@@ -143,6 +223,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		QToolButton* object_button = new QToolButton(this);
 		object_button->setDefaultAction(mapObjectAction[i]);
 		objects_layout->addWidget(object_button);
+		object_button->setIconSize(QSize(32, 32));
 	}
 
 	//Edit Mode Buttons
@@ -150,15 +231,30 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		QToolButton* edit_mode_button = new QToolButton(this);
 		edit_mode_button->setDefaultAction(editModeAction[i]);
 		edit_mode_layout->addWidget(edit_mode_button);
+		edit_mode_button->setIconSize(QSize(32, 32));
 	}
 
+	//Prop Mesh Box
+
+	propMeshBox = new QComboBox(this);
+	connect(propMeshBox, SIGNAL(currentIndexChanged(int)), mapEditor, SLOT(setPropMeshIndex(int)));
+	propMeshBox->setMinimumContentsLength(30);
+
+	prop_mesh_layout->addWidget(new QLabel("Prop Mesh:", this));
+	prop_mesh_layout->addWidget(propMeshBox);
+	
+	//Toolbar Setup
+
 	objects_layout->setAlignment(Qt::AlignRight);
+	objects_layout->setContentsMargins(0,0,0,0);
 
 	options_layout->addLayout(viewing_layout);
-	options_layout->addSpacing(10);
+	options_layout->addSpacing(15);
 	options_layout->addLayout(objects_layout);
-	options_layout->addSpacing(10);
+	options_layout->addSpacing(15);
 	options_layout->addLayout(edit_mode_layout);
+	options_layout->addSpacing(15);
+	options_layout->addLayout(prop_mesh_layout);
 
 	optionsFrame->setLayout(options_layout);
 	optionsBar->addWidget(optionsFrame);
@@ -207,6 +303,64 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	positionPropertyFrame->setLayout(position_layout);
 
+	//Rotation
+	rotationPropertyFrame = new QFrame(this);
+
+	range = 360;
+	single_step = 0.5;
+	decimals = 5;
+	rotationYawBox = new QDoubleSpinBox(rotationPropertyFrame);
+	rotationYawBox->setRange(0.0, range);
+	rotationYawBox->setDecimals(decimals);
+	rotationYawBox->setSingleStep(single_step);
+	rotationPitchBox = new QDoubleSpinBox(rotationPropertyFrame);
+	rotationPitchBox->setRange(0.0, range);
+	rotationPitchBox->setDecimals(decimals);
+	rotationPitchBox->setSingleStep(single_step);
+	rotationRollBox = new QDoubleSpinBox(rotationPropertyFrame);
+	rotationRollBox->setRange(0.0, range);
+	rotationRollBox->setDecimals(decimals);
+	rotationRollBox->setSingleStep(single_step);
+
+	connect(rotationYawBox, SIGNAL(valueChanged(double)), mapEditor, SLOT(setRotationYaw(double)));
+	connect(rotationPitchBox, SIGNAL(valueChanged(double)), mapEditor, SLOT(setRotationPitch(double)));
+	connect(rotationRollBox, SIGNAL(valueChanged(double)), mapEditor, SLOT(setRotationRoll(double)));
+
+	connect(mapEditor, SIGNAL(selectedRotationYawChanged(double)), rotationYawBox, SLOT(setValue(double)));
+	connect(mapEditor, SIGNAL(selectedRotationPitchChanged(double)), rotationPitchBox, SLOT(setValue(double)));
+	connect(mapEditor, SIGNAL(selectedRotationRollChanged(double)), rotationRollBox, SLOT(setValue(double)));
+
+	QGridLayout* rotation_layout = new QGridLayout(rotationPropertyFrame);
+	rotation_layout->addWidget(new QLabel("Rotation", rotationPropertyFrame), 0, 0);
+	rotation_layout->addWidget(new QLabel("Yaw", rotationPropertyFrame), 1, 0);
+	rotation_layout->addWidget(rotationYawBox, 1, 1);
+	rotation_layout->addWidget(new QLabel("Pitch", rotationPropertyFrame), 2, 0);
+	rotation_layout->addWidget(rotationPitchBox, 2, 1);
+	rotation_layout->addWidget(new QLabel("Roll", rotationPropertyFrame), 3, 0);
+	rotation_layout->addWidget(rotationRollBox, 3, 1);
+
+	rotationPropertyFrame->setLayout(rotation_layout);
+
+	//Scale
+	scalePropertyFrame = new QFrame(this);
+
+	range = 1000;
+	single_step = 0.05;
+	decimals = 5;
+	scaleBox = new QDoubleSpinBox(scalePropertyFrame);
+	scaleBox->setRange(0.0, range);
+	scaleBox->setDecimals(decimals);
+	scaleBox->setSingleStep(single_step);
+
+	connect(scaleBox, SIGNAL(valueChanged(double)), mapEditor, SLOT(setSelectedScale(double)));
+	connect(mapEditor, SIGNAL(selectedScaleChanged(double)), scaleBox, SLOT(setValue(double)));
+
+	QGridLayout* scale_layout = new QGridLayout(scalePropertyFrame);
+	scale_layout->addWidget(new QLabel("Scale", scalePropertyFrame), 0, 0);
+	scale_layout->addWidget(scaleBox);
+
+	scalePropertyFrame->setLayout(scale_layout);
+
 	//Colors
 
 	colorPropertyFrame = new QFrame(this);
@@ -239,7 +393,13 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	lightPropertyFrame = new QFrame(this);
 	QGridLayout* light_layout = new QGridLayout(lightPropertyFrame);
 
+	range = 1000;
+	single_step = 0.05;
+	decimals = 2;
 	lightStrengthBox = new QDoubleSpinBox(lightPropertyFrame);
+	lightStrengthBox->setRange(1.0, range);
+	lightStrengthBox->setDecimals(decimals);
+	lightStrengthBox->setSingleStep(single_step);
 	connect(lightStrengthBox, SIGNAL(valueChanged(double)), mapEditor, SLOT(setLightStrength(double)));
 	lightAttenuationBox = new QCheckBox(lightPropertyFrame);
 	connect(lightAttenuationBox, SIGNAL(toggled(bool)), mapEditor, SLOT(setLightHasAttenuation(bool)));
@@ -252,11 +412,32 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	lightPropertyFrame->setLayout(light_layout);
 
+	//Mesh Instances
+
+	meshInstancePropertyFrame = new QFrame(this);
+	QGridLayout* mesh_instance_layout = new QGridLayout(meshInstancePropertyFrame);
+	instanceTypeBox = new QComboBox(meshInstancePropertyFrame);
+	instanceTypeBox->setMinimumContentsLength(15);
+
+	for (int i = 0; i < MeshInstance::NUM_INSTANCE_TYPES; i++) {
+		instanceTypeBox->addItem(
+			QString(MeshInstance::getTypeTitle(static_cast<MeshInstance::InstanceType>(i)).c_str())
+			);
+	}
+	connect(instanceTypeBox, SIGNAL(currentIndexChanged(int)), mapEditor, SLOT(setMeshInstanceType(int)));
+
+	mesh_instance_layout->addWidget(new QLabel("Mesh Instance Type", meshInstancePropertyFrame), 0, 0);
+	mesh_instance_layout->addWidget(instanceTypeBox, 1, 0);
+
+
 	//
 
 	objectPropertiesBar->addWidget(positionPropertyFrame);
+	objectPropertiesBar->addWidget(rotationPropertyFrame);
+	objectPropertiesBar->addWidget(scalePropertyFrame);
 	objectPropertiesBar->addWidget(colorPropertyFrame);
 	objectPropertiesBar->addWidget(lightPropertyFrame);
+	objectPropertiesBar->addWidget(meshInstancePropertyFrame);
 
 	addToolBar(Qt::LeftToolBarArea, objectPropertiesBar);
 
@@ -267,20 +448,23 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	getcwd(currentPath, _MAX_PATH);
     saveDir = QString(currentPath);
     meshDir = QString(currentPath);
+	propMeshDir = QString(currentPath);
 #else
     std::string currentPath = boost::filesystem::current_path().string();
     saveDir = QString::fromStdString(currentPath);
     meshDir = QString::fromStdString(currentPath);
+	propMeshDir = QString::fromStdString(currentPath);
 #endif
 
-	mapType = QString("HexRace Map File (*.hrm *.HRM *.hrx *.HRX)");
+	mapType = QString("HexRace Map File (*.hrm *.HRM)");
 	meshType = QString("Wavefront OBJ (*.obj *.OBJ)");
+	pngType = QString("Portable Network Graphics (*.png)");
 
 
 	//Initialize
-
 	mapObjectAction[0]->setChecked(true);
-	selectedObjectChanged(NULL);
+	selectMapObject(mapObjectAction[0]);
+	setSelectedObject(NULL);
 }
 
 HRMEMainWindow::~HRMEMainWindow()
@@ -288,6 +472,9 @@ HRMEMainWindow::~HRMEMainWindow()
 
 }
 
+void HRMEMainWindow::newMap() {
+	saveAction->setDisabled(true);
+}
 void HRMEMainWindow::openMapFile() {
 
 	QString qfilename = QFileDialog::getOpenFileName (0,
@@ -298,6 +485,7 @@ void HRMEMainWindow::openMapFile() {
 	if (!qfilename.isNull()) {
 		saveDir = qfilename;
 		mapEditor->loadMap(qfilename.toStdString());
+		saveAction->setDisabled(false);
 	}
 
 }
@@ -312,6 +500,7 @@ void HRMEMainWindow::saveMapFileAs() {
 	if (!qfilename.isNull()) {
 		saveDir = qfilename;
 		mapEditor->saveMapAs(qfilename.toStdString());
+		saveAction->setDisabled(false);
 	}
 
 }
@@ -327,6 +516,33 @@ void HRMEMainWindow::loadMesh(int mesh_index) {
 		mapEditor->loadMesh(static_cast<HRMap::MeshType>(mesh_index), qfilename.toStdString());
 	}
 }
+
+void HRMEMainWindow::loadPropMesh() {
+	QString qfilename = QFileDialog::getOpenFileName (0,
+		tr("Load Prop Mesh"),
+		propMeshDir,
+		meshType);
+
+	if (!qfilename.isNull()) {
+		propMeshDir = qfilename;
+		string filename = qfilename.toStdString();
+		string name = DirectoryFunctions::extractFilename(filename, false);
+		mapEditor->addPropMesh(name, filename);
+	}
+}
+
+void HRMEMainWindow::save2DMapImage() {
+
+	QString qfilename = QFileDialog::getSaveFileName (0,
+		tr("Save 2D Map"),
+		saveDir,
+		pngType);
+
+	if (!qfilename.isNull()) {
+		mapEditor->generate2DMap(qfilename.toStdString());
+	}
+}
+
 void HRMEMainWindow::clearMesh(int mesh_index) {
 	mapEditor->clearMesh(static_cast<HRMap::MeshType>(mesh_index));
 }
@@ -346,6 +562,7 @@ void HRMEMainWindow::selectMapObject(QAction* action) {
 				editModeAction[j]->setEnabled(enabled);
 				if (change_edit_mode && enabled) {
 					editModeAction[j]->setChecked(true);
+					mapEditor->setEditMode(mode);
 					change_edit_mode = false;
 				}
 			}
@@ -364,13 +581,17 @@ void HRMEMainWindow::selectEditMode(QAction* action) {
 	}
 }
 
-void HRMEMainWindow::selectedObjectChanged(MapObject* selected_object) {
+void HRMEMainWindow::setSelectedObject(MapObject* selected_object) {
 
 	positionPropertyFrame->setEnabled(false);
+	rotationPropertyFrame->setEnabled(false);
+	scalePropertyFrame->setEnabled(false);
 	colorPropertyFrame->setEnabled(false);
 	lightPropertyFrame->setEnabled(false);
+	meshInstancePropertyFrame->setEnabled(false);
 
 	Light* light;
+	MeshInstance* instance;
 
 	if (selected_object) {
 		switch (selected_object->getType()) {
@@ -381,11 +602,19 @@ void HRMEMainWindow::selectedObjectChanged(MapObject* selected_object) {
 				lightPropertyFrame->setEnabled(true);
 				break;
 
+			case MapObject::MESH_INSTANCE:
+				instance = ((MeshInstanceObject*)selected_object)->getMeshInstance();
+				meshInstancePropertyFrame->setEnabled(true);
+				instanceTypeBox->setCurrentIndex(static_cast<int>(instance->getType()));
+				;break;
+
 			default:
 				break;
 		}
-		colorPropertyFrame->setEnabled(selected_object->hasColors());
 		positionPropertyFrame->setEnabled(true);
+		colorPropertyFrame->setEnabled(selected_object->hasColors());
+		rotationPropertyFrame->setEnabled(selected_object->hasRotation());
+		scalePropertyFrame->setEnabled(selected_object->hasScale());
 	}
 }
 
@@ -394,5 +623,16 @@ void HRMEMainWindow::choosePropertyColor(int color_index) {
 
 	if (color.isValid()) {
 		mapEditor->setSelectedColor(color_index, QColorToColor(color));
+	}
+}
+
+void HRMEMainWindow::addPropMesh(string name) {
+	propMeshBox->addItem(QString(name.c_str()));
+}
+
+void HRMEMainWindow::setPropMeshes(vector<string> prop_mesh_names) {
+	propMeshBox->clear();
+	for (unsigned int i = 0; i < prop_mesh_names.size(); i++) {
+		propMeshBox->addItem(QString(prop_mesh_names[i].c_str()));
 	}
 }

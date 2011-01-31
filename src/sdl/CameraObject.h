@@ -5,12 +5,17 @@
 #include "log/Logger.h"
 #include "opengl/Camera.h"
 #include "math/Point.h"
+#include "math/Matrix.h"
 #include "physics/Converter.h"
 #include "sdl/PlayerManager.h"
 #include "object/Player.h"
 #include "timing/TimedSubsystem.h"
 #include "event/SetDebugCamera.h"
 #include "event/TypedObserver.h"
+
+#include "settings/SettingsManager.h"
+#include "settings/ProgramSettings.h"
+#include "config.h"
 
 namespace Project {
 namespace SDL {
@@ -40,6 +45,7 @@ public:
     OpenGL::Camera *playerCamera;
     
 private:
+    void loadSettings();
     void slerpCamera();
     void setCamera(Math::Point _look, Math::Point _pos);
     void setDestinationToPlayer();
@@ -49,7 +55,9 @@ private:
     void setDebugCamera(bool debug);
     
     bool debugMode;
+    float interpolationInc;
     SDL::PlayerManager *playerManager;
+    Math::Point defaultOrientation;
     Math::Point destinationLookAt;
     Math::Point destinationPosition;
     

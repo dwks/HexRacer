@@ -12,10 +12,10 @@ class PathNode
 private:
 	std::vector<PathNode*> nextNodes;
 public:
-	PathNode(Math::Point position = Math::Point())
-		: Math::Vertex3D(position) {}
-	PathNode(double x, double y, double z)
-		: Math::Vertex3D(x, y, z) {}
+	PathNode(Math::Point position = Math::Point());
+	PathNode(double x, double y, double z);
+
+	int index;
 
 	std::vector<PathNode*>& getNextNodes() { return nextNodes; }
 	const std::vector<PathNode*>& getNextNodes() const { return nextNodes; }

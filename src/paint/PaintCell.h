@@ -35,6 +35,9 @@ public:
 
 };
 
+std::ostream &operator << (std::ostream &stream, const PaintCell& cell);
+std::istream &operator >> (std::istream &stream, PaintCell& cell);
+
 }  // namespace Paint
 }  // namespace Project
 

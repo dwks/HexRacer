@@ -19,8 +19,9 @@ public:
 	void setPosition(const Point& new_position) { point->moveCentroid(new_position); }
 	void translate(const Point& translation) { point->translate(translation); }
 
+	Vertex3D* getStartPoint() { return point; }
+
 	BoundingBox3D getBoundingBox() const;
 
-	bool hasColors() const { return false; }
 	MapObject::ObjectType getType() const { return MapObject::START_POINT; }
 };

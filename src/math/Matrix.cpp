@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include "../opengl/OpenGL.h"
+#include <math.h>
 
 #include "Matrix.h"
 
@@ -35,6 +36,49 @@ Matrix Matrix::getScalingMatrix(const Math::Point &scale) {
     m.set(2, 2, scale.getZ());
     
     return m;
+}
+
+Matrix Matrix::getScalingMatrix(double scale) {
+    Matrix m;  // identity by default
+    m.set(0, 0, scale);
+    m.set(1, 1, scale);
+    m.set(2, 2, scale);
+    
+    return m;
+}
+
+Matrix Matrix::getRotationMatrix(Axis axis, double angle) {
+	Matrix m;
+
+	double cos_a = cos(angle);
+	double sin_a = sin(angle);
+
+	switch (axis) {
+
+		case X_AXIS:
+			m.set(1, 1, cos_a);
+			m.set(1, 2, -sin_a);
+			m.set(2, 1, sin_a);
+			m.set(2, 2, cos_a);
+			return m;
+
+		case Y_AXIS:
+			m.set(0, 0, cos_a);
+			m.set(0, 2, sin_a);
+			m.set(2, 0, -sin_a);
+			m.set(2, 2, cos_a);
+			return m;
+
+		case Z_AXIS:
+			m.set(0, 0, cos_a);
+			m.set(0, 1, -sin_a);
+			m.set(1, 0, sin_a);
+			m.set(1, 1, cos_a);
+			return m;
+
+		default:
+			return m;
+	}
 }
 
 void Matrix::setToIdentity() {

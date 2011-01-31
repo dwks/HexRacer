@@ -28,6 +28,5 @@ public:
 	PathNode* getNode() { return node; }
 	void linkNode(PathNodeObject* node_object);
 
-	bool hasColors() const { return false; }
 	MapObject::ObjectType getType() const { return MapObject::PATH_NODE; }
 };

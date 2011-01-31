@@ -176,7 +176,7 @@ Point Point::rotateY(double angle) const {
     return Point(
         (getX() * c) + (getZ() * s),
         getY(),
-        (getX() * -s) + (getZ() * s),
+        (getX() * -s) + (getZ() * c),
         getW());
 }
 

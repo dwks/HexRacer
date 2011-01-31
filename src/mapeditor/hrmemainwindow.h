@@ -11,6 +11,7 @@ using namespace Project;
 using namespace Render;
 using namespace OpenGL;
 using namespace Settings;
+using namespace std;
 
 class HRMEMainWindow : public QMainWindow
 {
@@ -39,6 +40,8 @@ private:
 	QSignalMapper* meshLoadMapper;
 	QSignalMapper* meshClearMapper;
 
+	QAction* saveAction;
+
 	QMenuBar* menuBar;
 	QMenu* fileMenu;
 	QMenu* editMenu;
@@ -48,13 +51,18 @@ private:
 	QFrame* optionsFrame;
 	QToolBar* optionsBar;
 
+	QComboBox* propMeshBox;
+
 	//Properties
 
 	QFrame* positionPropertyFrame;
+	QFrame* rotationPropertyFrame;
+	QFrame* scalePropertyFrame;
 	QFrame* colorPropertyFrame;
 	QSignalMapper* colorPropertyMapper;
 
 	QFrame* lightPropertyFrame;
+	QFrame* meshInstancePropertyFrame;
 	
 	QToolBar* objectPropertiesBar;
 
@@ -64,16 +72,31 @@ private:
 	QDoubleSpinBox* positionYBox;
 	QDoubleSpinBox* positionZBox;
 
+	//Rotation
+
+	QDoubleSpinBox* rotationYawBox;
+	QDoubleSpinBox* rotationPitchBox;
+	QDoubleSpinBox* rotationRollBox;
+
+	//Scale
+
+	QDoubleSpinBox* scaleBox;
+
 	//Light
 
 	QDoubleSpinBox* lightStrengthBox;
 	QCheckBox* lightAttenuationBox;
+
+	//Mesh Instance
+
+	QComboBox* instanceTypeBox;
 
 	//Viewing
 
 	QAction* advancedRenderingAction;
 	QAction* orthoCameraAction;
 	QAction* showPaintAction;
+	QAction* showInvisibleAction;
 
 	QActionGroup* mapObjectGroup;
 	QAction* mapObjectAction[MapObject::NUM_OBJECT_TYPES];
@@ -86,20 +109,26 @@ private:
 	QString saveDir;
 	QString mapType;
 	QString meshDir;
+	QString propMeshDir;
 	QString meshType;
+	QString pngType;
 
 private slots:
 
+	void newMap();
 	void openMapFile();
 	void saveMapFileAs();
 	void loadMesh(int mesh_index);
 	void clearMesh(int mesh_index);
+	void loadPropMesh();
 	void selectMapObject(QAction* action);
 	void selectEditMode(QAction* action);
+	void save2DMapImage();
 
-	void selectedObjectChanged(MapObject* selected_object);
-
+	void setSelectedObject(MapObject* selected_object);
 	void choosePropertyColor(int color_index);
+	void addPropMesh(string name);
+	void setPropMeshes(vector<string> prop_mesh_names);
 
 };
 
