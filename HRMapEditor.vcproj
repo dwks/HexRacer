@@ -333,6 +333,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\MeshInstance.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mapeditor\MeshInstanceObject.cpp"
 				>
 			</File>
@@ -781,6 +785,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\MeshInstance.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mapeditor\MeshInstanceObject.h"
 				>
 			</File>
@@ -916,6 +924,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderSettings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\RotationAxis.h"
 				>
 			</File>
 			<File

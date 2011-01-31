@@ -1154,8 +1154,8 @@ void MapEditorWidget::addPropMesh(string name, string filename) {
 }
 void MapEditorWidget::removePropMesh() {
 	if (map->removePropMesh(propMeshIndex)) {
-		propMeshesChanged(map->getPropMeshNames());
 		mapObjectsChanged(MapObject::MESH_INSTANCE);
+		propMeshesChanged(map->getPropMeshNames());
 		updateGL();
 	}
 }

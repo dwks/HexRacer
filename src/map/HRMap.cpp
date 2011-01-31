@@ -511,6 +511,11 @@ namespace Map {
 	bool HRMap::removePropMesh(int index) {
 		if (index >= 0 && index < propMeshNames.size()) {
 			MeshLoader::getInstance()->deleteModelByName(propMeshNames[index]);
+			for (unsigned int i = 0; i < meshInstances.size(); i++) {
+				if (meshInstances[i]->getMeshName() == propMeshNames[index]) {
+					removeMeshInstance(meshInstances[i]);
+				}
+			}
 			vectorRemoveAtIndex(propMeshNames, index);
 			vectorRemoveAtIndex(propMeshFilenames, index);
 			return true;

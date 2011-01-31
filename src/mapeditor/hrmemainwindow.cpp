@@ -91,19 +91,26 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	advancedRenderingAction = new QAction("&Advanced Rendering", this);
 	advancedRenderingAction->setCheckable(true);
+	advancedRenderingAction->setShortcut(QKeySequence(Qt::Key_Z));
+	advancedRenderingAction->setIcon(QIcon("editoricons/iconadvancedrendering.png"));
 	connect(advancedRenderingAction, SIGNAL(toggled(bool)), mapEditor, SLOT(setAdvancedRendering(bool)));
 
 	orthoCameraAction = new QAction("&Orthographic View", this);
 	orthoCameraAction->setCheckable(true);
-	orthoCameraAction->setShortcut(QKeySequence(Qt::Key_O));
+	orthoCameraAction->setShortcut(QKeySequence(Qt::Key_X));
+	orthoCameraAction->setIcon(QIcon("editoricons/iconorthoview.png"));
 	connect(orthoCameraAction, SIGNAL(toggled(bool)), mapEditor, SLOT(setOrthoView(bool)));
 
 	showPaintAction = new QAction("&Show Paint", this);
 	showPaintAction->setCheckable(true);
+	showPaintAction->setShortcut(QKeySequence(Qt::Key_C));
+	showPaintAction->setIcon(QIcon("editoricons/iconshowpaint.png"));
 	connect(showPaintAction, SIGNAL(toggled(bool)), mapEditor, SLOT(setShowPaint(bool)));
 
 	showInvisibleAction = new QAction("&Show Invisible", this);
 	showInvisibleAction->setCheckable(true);
+	showInvisibleAction->setShortcut(QKeySequence(Qt::Key_V));
+	showInvisibleAction->setIcon(QIcon("editoricons/iconshowinvisible.png"));
 	connect(showInvisibleAction, SIGNAL(toggled(bool)), mapEditor, SLOT(setShowInvisible(bool)));
 
 	//Map Objects
@@ -117,6 +124,27 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		mapObjectAction[i]->setCheckable(true);
 		mapObjectGroup->addAction(mapObjectAction[i]);
 		mapObjectAction[i]->setShortcut(QKeySequence(Qt::Key_1+i));
+
+		switch (type) {
+			case MapObject::LIGHT:
+				mapObjectAction[i]->setIcon(QIcon("editoricons/iconlight.png"));
+				break;
+			case MapObject::MESH_INSTANCE:
+				mapObjectAction[i]->setIcon(QIcon("editoricons/iconmeshinstance.png"));
+				break;
+			case MapObject::PATH_NODE:
+				mapObjectAction[i]->setIcon(QIcon("editoricons/iconpathnode.png"));
+				break;
+			case MapObject::START_POINT:
+				mapObjectAction[i]->setIcon(QIcon("editoricons/iconstartpoint.png"));
+				break;
+			case MapObject::FINISH_PLANE:
+				mapObjectAction[i]->setIcon(QIcon("editoricons/iconfinishplane.png"));
+				break;
+				
+			default:
+				break;
+		}
 	}
 	
 	//Edit Modes
@@ -132,15 +160,19 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		switch (mode) {
 			case MapEditorWidget::EDIT_TRANSLATE:
 				editModeAction[i]->setShortcut(QKeySequence(Qt::Key_T));
+				editModeAction[i]->setIcon(QIcon("editoricons/icontranslate.png"));
 				break;
 			case MapEditorWidget::EDIT_ROTATE:
 				editModeAction[i]->setShortcut(QKeySequence(Qt::Key_R));
+				editModeAction[i]->setIcon(QIcon("editoricons/iconrotate.png"));
 				break;
 			case MapEditorWidget::EDIT_SCALE:
 				editModeAction[i]->setShortcut(QKeySequence(Qt::Key_F));
+				editModeAction[i]->setIcon(QIcon("editoricons/iconscale.png"));
 				break;
 			case MapEditorWidget::EDIT_LINK:
 				editModeAction[i]->setShortcut(QKeySequence(Qt::Key_G));
+				editModeAction[i]->setIcon(QIcon("editoricons/iconlink.png"));
 				break;
 			default:
 				break;
@@ -164,12 +196,19 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	//Viewing buttons
 	QToolButton* advancedRenderingButton = new QToolButton(this);
 	advancedRenderingButton->setDefaultAction(advancedRenderingAction);
+	advancedRenderingButton->setIconSize(QSize(32, 32));
+
 	QToolButton* orthoCameraButton = new QToolButton(this);
 	orthoCameraButton->setDefaultAction(orthoCameraAction);
+	orthoCameraButton->setIconSize(QSize(32, 32));
+
 	QToolButton* showPaintButton = new QToolButton(this);
 	showPaintButton->setDefaultAction(showPaintAction);
+	showPaintButton->setIconSize(QSize(32, 32));
+
 	QToolButton* showInvisibleButton = new QToolButton(this);
 	showInvisibleButton->setDefaultAction(showInvisibleAction);
+	showInvisibleButton->setIconSize(QSize(32, 32));
 
 	viewing_layout->addWidget(advancedRenderingButton);
 	viewing_layout->addWidget(orthoCameraButton);
@@ -183,6 +222,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		QToolButton* object_button = new QToolButton(this);
 		object_button->setDefaultAction(mapObjectAction[i]);
 		objects_layout->addWidget(object_button);
+		object_button->setIconSize(QSize(32, 32));
 	}
 
 	//Edit Mode Buttons
@@ -190,6 +230,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		QToolButton* edit_mode_button = new QToolButton(this);
 		edit_mode_button->setDefaultAction(editModeAction[i]);
 		edit_mode_layout->addWidget(edit_mode_button);
+		edit_mode_button->setIconSize(QSize(32, 32));
 	}
 
 	//Prop Mesh Box
@@ -204,13 +245,14 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	//Toolbar Setup
 
 	objects_layout->setAlignment(Qt::AlignRight);
+	objects_layout->setContentsMargins(0,0,0,0);
 
 	options_layout->addLayout(viewing_layout);
-	options_layout->addSpacing(10);
+	options_layout->addSpacing(15);
 	options_layout->addLayout(objects_layout);
-	options_layout->addSpacing(10);
+	options_layout->addSpacing(15);
 	options_layout->addLayout(edit_mode_layout);
-	options_layout->addSpacing(10);
+	options_layout->addSpacing(15);
 	options_layout->addLayout(prop_mesh_layout);
 
 	optionsFrame->setLayout(options_layout);
@@ -350,7 +392,13 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	lightPropertyFrame = new QFrame(this);
 	QGridLayout* light_layout = new QGridLayout(lightPropertyFrame);
 
+	range = 1000;
+	single_step = 0.05;
+	decimals = 2;
 	lightStrengthBox = new QDoubleSpinBox(lightPropertyFrame);
+	lightStrengthBox->setRange(1.0, range);
+	lightStrengthBox->setDecimals(decimals);
+	lightStrengthBox->setSingleStep(single_step);
 	connect(lightStrengthBox, SIGNAL(valueChanged(double)), mapEditor, SLOT(setLightStrength(double)));
 	lightAttenuationBox = new QCheckBox(lightPropertyFrame);
 	connect(lightAttenuationBox, SIGNAL(toggled(bool)), mapEditor, SLOT(setLightHasAttenuation(bool)));
