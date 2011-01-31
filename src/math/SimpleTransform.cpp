@@ -1,6 +1,6 @@
 #include "SimpleTransform.h"
 #include <float.h>
-#include "opengl/OpenGl.h"
+#include "opengl/OpenGL.h"
 #include "opengl/MathWrapper.h"
 #include <istream>
 #include <ostream>
