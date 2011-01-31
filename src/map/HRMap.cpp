@@ -104,6 +104,16 @@ namespace Map {
 				else if (keyword == HRMAP_FINISHPLANE_LABEL) {
 					in_file >> finishPlane;
 				}
+				else if (keyword == HRMAP_MAP2DFILE_LABEL) {
+					in_file >> map2DFile;
+					map2DFile = DirectoryFunctions::fromRelativeFilename(file_directory, map2DFile);
+				}
+				else if (keyword == HRMAP_MAP2DCENTER_LABEL) {
+					in_file >> map2DCenter;
+				}
+				else if (keyword == HRMAP_MAP2DSCALE_LABEL) {
+					in_file >> map2DScale;
+				}
 				else if (keyword == HRMAP_VERSION_LABEL) {
 					in_file >> version;
 				}
@@ -178,6 +188,14 @@ namespace Map {
 					<< DirectoryFunctions::toRelativeFilename(save_directory, cubeMapFile->getSideFile(i))
 					<< '\n';
 			}
+		}
+
+		out_file << "#2D Map\n";
+		if (map2DFile.length() > 0) {
+			out_file << HRMAP_MAP2DFILE_LABEL << ' '
+				<< DirectoryFunctions::toRelativeFilename(save_directory, map2DFile) << '\n';
+			out_file << HRMAP_MAP2DCENTER_LABEL << ' ' << map2DCenter << '\n';
+			out_file << HRMAP_MAP2DSCALE_LABEL << ' ' << map2DScale << '\n';
 		}
 
 		out_file << "#Prop Meshes\n";

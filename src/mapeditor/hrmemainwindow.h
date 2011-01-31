@@ -111,6 +111,7 @@ private:
 	QString meshDir;
 	QString propMeshDir;
 	QString meshType;
+	QString pngType;
 
 private slots:
 
@@ -122,6 +123,7 @@ private slots:
 	void loadPropMesh();
 	void selectMapObject(QAction* action);
 	void selectEditMode(QAction* action);
+	void save2DMapImage();
 
 	void setSelectedObject(MapObject* selected_object);
 	void choosePropertyColor(int color_index);

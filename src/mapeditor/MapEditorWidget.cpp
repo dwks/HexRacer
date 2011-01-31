@@ -189,6 +189,13 @@ void MapEditorWidget::paintGL() {
 		GeometryDrawing::drawBoundingBox3D(selectedObject->getBoundingBox(), true);
 	}
 
+	/*
+	if (map->getMapMesh(HRMap::TRACK)) {
+		Color::glColor(Color::WHITE);
+		GeometryDrawing::drawBoundingBox3D(map->getMapMesh(HRMap::TRACK)->getBoundingBox(), true);
+	}
+	*/
+
 	lightManager->resetLights();
 
 	/*HUD Elements************************************************************/
@@ -719,6 +726,49 @@ void MapEditorWidget::generatePaint() {
 	updateGL();
 }
 
+void MapEditorWidget::generate2DMap(string filename) {
+
+	MeshGroup* track_mesh = map->getMapMesh(HRMap::TRACK);
+	MeshGroup* invis_track_mesh = map->getMapMesh(HRMap::INVIS_TRACK);
+
+	if (track_mesh || invis_track_mesh) {
+
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		camera->glProjection();
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		camera->glLookAt();
+
+		Color::glColor(Color::WHITE);
+
+		RenderList render_list;
+		render_list.getRenderProperties()->setTransformation(Matrix());
+		render_list.getRenderProperties()->setColorOverride(true);
+		render_list.getRenderProperties()->setTextureOverride(true);
+		render_list.getRenderProperties()->setMaterialOverride(true);
+		render_list.getRenderProperties()->setShaderOverride(true);
+
+		if (track_mesh)
+			render_list.addRenderable(track_mesh);
+		if (invis_track_mesh)
+			render_list.addRenderable(invis_track_mesh);
+		render_list.render(renderer);
+
+		QImage map_image = grabFrameBuffer();
+		map_image.save(filename.c_str());
+
+		map->setMap2DFile(filename);
+		map->setMap2DCenter(Point::point2D(camera->getPosition(), Y_AXIS));
+		map->setMap2DScale(1.0/camera->getOrthoHeight());
+
+		updateGL();
+
+	}
+
+}
 void MapEditorWidget::setMapObjectType(MapObject::ObjectType type) {
 	if (type != editObjectType) {
 		setSelectedObject(NULL);

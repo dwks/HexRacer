@@ -77,6 +77,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	//Map Menu
 	mapMenu = new QMenu("&Map", this);
 	mapMenu->addAction("&Generate Paint Cells",	mapEditor, SLOT(generatePaint()));
+	mapMenu->addAction("&Generate 2D Map",	this, SLOT(save2DMapImage()));
 	mapMenu->addAction("&Load Cube Map", mapEditor, SLOT(loadCubeMap()));
 	mapMenu->addAction("&Load Prop Mesh", this, SLOT(loadPropMesh()));
 	mapMenu->addAction("&Remove Prop Mesh", mapEditor, SLOT(removePropMesh()));
@@ -457,6 +458,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	mapType = QString("HexRace Map File (*.hrm *.HRM)");
 	meshType = QString("Wavefront OBJ (*.obj *.OBJ)");
+	pngType = QString("Portable Network Graphics (*.png)");
 
 
 	//Initialize
@@ -526,6 +528,18 @@ void HRMEMainWindow::loadPropMesh() {
 		string filename = qfilename.toStdString();
 		string name = DirectoryFunctions::extractFilename(filename, false);
 		mapEditor->addPropMesh(name, filename);
+	}
+}
+
+void HRMEMainWindow::save2DMapImage() {
+
+	QString qfilename = QFileDialog::getSaveFileName (0,
+		tr("Save 2D Map"),
+		saveDir,
+		pngType);
+
+	if (!qfilename.isNull()) {
+		mapEditor->generate2DMap(qfilename.toStdString());
 	}
 }
 

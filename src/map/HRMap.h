@@ -25,6 +25,9 @@
 #define HRMAP_MESHINSTANCE_LABEL "meshInstance"
 #define HRMAP_FINISHPLANE_LABEL "finishPlane"
 #define HRMAP_PAINTCELL_LABEL "paintCell"
+#define HRMAP_MAP2DFILE_LABEL "map2DFile"
+#define HRMAP_MAP2DCENTER_LABEL "map2DCenter"
+#define HRMAP_MAP2DSCALE_LABEL "map2DScale"
 
 namespace Project {
 namespace Map {
@@ -49,6 +52,10 @@ private:
 
 	std::vector<std::string> propMeshNames;
 	std::vector<std::string> propMeshFilenames;
+
+	std::string map2DFile;
+	Math::Point map2DCenter;
+	double map2DScale;
 
 	Math::BSPTree3D* collisionTree;
 
@@ -75,6 +82,14 @@ public:
 	void loadMapMesh(HRMap::MeshType type, string filename);
 	void clearMapMesh(HRMap::MeshType type);
 	void generatePaint(double cell_radius = PAINT_CELL_RADIUS);
+
+	std::string getMap2DFile() const { return map2DFile; }
+	Math::Point getMap2DCenter() const { return map2DCenter; }
+	double getMap2DScale() const { return map2DScale; }
+
+	void setMap2DFile(std::string file) { map2DFile = file; }
+	void setMap2DCenter(Math::Point center) { map2DCenter = center; }
+	void setMap2DScale(double scale) { map2DScale = scale; }
 
 	bool addPropMesh(std::string name, std::string filename);
 	bool removePropMesh(int index);
