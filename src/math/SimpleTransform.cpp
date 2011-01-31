@@ -2,6 +2,8 @@
 #include <float.h>
 #include "opengl/OpenGl.h"
 #include "opengl/MathWrapper.h"
+#include <istream>
+#include <ostream>
 
 namespace Project {
 namespace Math {
@@ -113,6 +115,19 @@ namespace Math {
 
 	}
 
+	std::ostream &operator << (std::ostream &stream, const SimpleTransform &transform) {
+		stream << transform.getTranslation() << ' ' << transform.getScale() << ' ' << transform.getRotationRadians();
+		return stream;
+	}
+
+	std::istream &operator >> (std::istream &stream, SimpleTransform &transform) {
+		Point translation;
+		double scale;
+		Point rotation;
+		stream >> translation >> scale >> rotation;
+		transform = SimpleTransform(translation, scale, rotation);
+		return stream;
+	}
 
 }  // namespace Math
 }  // namespace Project

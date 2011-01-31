@@ -40,6 +40,8 @@ private:
 	QSignalMapper* meshLoadMapper;
 	QSignalMapper* meshClearMapper;
 
+	QAction* saveAction;
+
 	QMenuBar* menuBar;
 	QMenu* fileMenu;
 	QMenu* editMenu;
@@ -60,6 +62,7 @@ private:
 	QSignalMapper* colorPropertyMapper;
 
 	QFrame* lightPropertyFrame;
+	QFrame* meshInstancePropertyFrame;
 	
 	QToolBar* objectPropertiesBar;
 
@@ -84,6 +87,10 @@ private:
 	QDoubleSpinBox* lightStrengthBox;
 	QCheckBox* lightAttenuationBox;
 
+	//Mesh Instance
+
+	QComboBox* instanceTypeBox;
+
 	//Viewing
 
 	QAction* advancedRenderingAction;
@@ -107,6 +114,7 @@ private:
 
 private slots:
 
+	void newMap();
 	void openMapFile();
 	void saveMapFileAs();
 	void loadMesh(int mesh_index);

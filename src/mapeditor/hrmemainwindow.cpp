@@ -6,8 +6,11 @@
 #include <stdlib.h>
 #include "MapObject.h"
 #include "LightObject.h"
+#include "MeshInstanceObject.h"
+#include "map/MeshInstance.h"
 #include "misc/DirectoryFunctions.h"
 using namespace Misc;
+using namespace Map;
 #include <vector>
 
 #ifdef WIN32
@@ -39,14 +42,17 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	//File Menu
 	fileMenu = new QMenu("&File", this);
-	fileMenu->addAction("&New", mapEditor, SLOT(newMap()), QKeySequence("CTRL+N"));
+	QAction* newAction = fileMenu->addAction("&New", mapEditor, SLOT(newMap()), QKeySequence("CTRL+N"));
+	connect(newAction, SIGNAL(triggered()), this, SLOT(newMap()));
 	fileMenu->addAction("&Open", this, SLOT(openMapFile()), QKeySequence("CTRL+O"));
-	fileMenu->addAction("&Save", mapEditor, SLOT(newFile()), QKeySequence("CTRL+S"));
+	saveAction = fileMenu->addAction("&Save", mapEditor, SLOT(saveMap()), QKeySequence("CTRL+S"));
+	saveAction->setDisabled(true);
 	fileMenu->addAction("&Save As", this, SLOT(saveMapFileAs()), QKeySequence("CTRL+ALT+S"));
 
 	//Edit Menu
 	editMenu = new QMenu("&Edit", this);
 	editMenu->addAction("&Delete", mapEditor, SLOT(deleteSelected()), QKeySequence(Qt::Key_Delete));
+	editMenu->addAction("&Delete All", mapEditor, SLOT(deleteAll()), QKeySequence(Qt::Key_Delete));
 
 	//Meshes Menu
 	meshMenu = new QMenu("&Mesh", this);
@@ -73,6 +79,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	mapMenu->addAction("&Generate Paint Cells",	mapEditor, SLOT(generatePaint()));
 	mapMenu->addAction("&Load Cube Map", mapEditor, SLOT(loadCubeMap()));
 	mapMenu->addAction("&Load Prop Mesh", this, SLOT(loadPropMesh()));
+	mapMenu->addAction("&Remove Prop Mesh", mapEditor, SLOT(removePropMesh()));
 
 	menuBar->addMenu(fileMenu);
 	menuBar->addMenu(editMenu);
@@ -110,27 +117,6 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		mapObjectAction[i]->setCheckable(true);
 		mapObjectGroup->addAction(mapObjectAction[i]);
 		mapObjectAction[i]->setShortcut(QKeySequence(Qt::Key_1+i));
-		/*
-		switch (type) {
-			case MapObject::LIGHT:
-				mapObjectAction[i]->setShortcut(QKeySequence(Qt::Key_Z));
-				break;
-			case MapObject::MESH_INSTANCE:
-				mapObjectAction[i]->setShortcut(QKeySequence(Qt::Key_X));
-				break;
-			case MapObject::PATH_NODE:
-				mapObjectAction[i]->setShortcut(QKeySequence(Qt::Key_C));
-				break;
-			case MapObject::START_POINT:
-				mapObjectAction[i]->setShortcut(QKeySequence(Qt::Key_V));
-				break;
-			case MapObject::FINISH_PLANE:
-				mapObjectAction[i]->setShortcut(QKeySequence(Qt::Key_B));
-				break;
-			default:
-				break;
-		}
-		*/
 	}
 	
 	//Edit Modes
@@ -377,6 +363,24 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	lightPropertyFrame->setLayout(light_layout);
 
+	//Mesh Instances
+
+	meshInstancePropertyFrame = new QFrame(this);
+	QGridLayout* mesh_instance_layout = new QGridLayout(meshInstancePropertyFrame);
+	instanceTypeBox = new QComboBox(meshInstancePropertyFrame);
+	instanceTypeBox->setMinimumContentsLength(15);
+
+	for (int i = 0; i < MeshInstance::NUM_INSTANCE_TYPES; i++) {
+		instanceTypeBox->addItem(
+			QString(MeshInstance::getTypeTitle(static_cast<MeshInstance::InstanceType>(i)).c_str())
+			);
+	}
+	connect(instanceTypeBox, SIGNAL(currentIndexChanged(int)), mapEditor, SLOT(setMeshInstanceType(int)));
+
+	mesh_instance_layout->addWidget(new QLabel("Mesh Instance Type", meshInstancePropertyFrame), 0, 0);
+	mesh_instance_layout->addWidget(instanceTypeBox, 1, 0);
+
+
 	//
 
 	objectPropertiesBar->addWidget(positionPropertyFrame);
@@ -384,6 +388,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	objectPropertiesBar->addWidget(scalePropertyFrame);
 	objectPropertiesBar->addWidget(colorPropertyFrame);
 	objectPropertiesBar->addWidget(lightPropertyFrame);
+	objectPropertiesBar->addWidget(meshInstancePropertyFrame);
 
 	addToolBar(Qt::LeftToolBarArea, objectPropertiesBar);
 
@@ -402,13 +407,13 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	propMeshDir = QString::fromStdString(currentPath);
 #endif
 
-	mapType = QString("HexRace Map File (*.hrm *.HRM *.hrx *.HRX)");
+	mapType = QString("HexRace Map File (*.hrm *.HRM)");
 	meshType = QString("Wavefront OBJ (*.obj *.OBJ)");
 
 
 	//Initialize
-
 	mapObjectAction[0]->setChecked(true);
+	selectMapObject(mapObjectAction[0]);
 	setSelectedObject(NULL);
 }
 
@@ -417,6 +422,9 @@ HRMEMainWindow::~HRMEMainWindow()
 
 }
 
+void HRMEMainWindow::newMap() {
+	saveAction->setDisabled(true);
+}
 void HRMEMainWindow::openMapFile() {
 
 	QString qfilename = QFileDialog::getOpenFileName (0,
@@ -427,6 +435,7 @@ void HRMEMainWindow::openMapFile() {
 	if (!qfilename.isNull()) {
 		saveDir = qfilename;
 		mapEditor->loadMap(qfilename.toStdString());
+		saveAction->setDisabled(false);
 	}
 
 }
@@ -441,6 +450,7 @@ void HRMEMainWindow::saveMapFileAs() {
 	if (!qfilename.isNull()) {
 		saveDir = qfilename;
 		mapEditor->saveMapAs(qfilename.toStdString());
+		saveAction->setDisabled(false);
 	}
 
 }
@@ -464,7 +474,7 @@ void HRMEMainWindow::loadPropMesh() {
 		meshType);
 
 	if (!qfilename.isNull()) {
-		meshDir = qfilename;
+		propMeshDir = qfilename;
 		string filename = qfilename.toStdString();
 		string name = DirectoryFunctions::extractFilename(filename, false);
 		mapEditor->addPropMesh(name, filename);
@@ -516,8 +526,10 @@ void HRMEMainWindow::setSelectedObject(MapObject* selected_object) {
 	scalePropertyFrame->setEnabled(false);
 	colorPropertyFrame->setEnabled(false);
 	lightPropertyFrame->setEnabled(false);
+	meshInstancePropertyFrame->setEnabled(false);
 
 	Light* light;
+	MeshInstance* instance;
 
 	if (selected_object) {
 		switch (selected_object->getType()) {
@@ -527,6 +539,12 @@ void HRMEMainWindow::setSelectedObject(MapObject* selected_object) {
 				lightAttenuationBox->setChecked(light->getHasAttenuation());
 				lightPropertyFrame->setEnabled(true);
 				break;
+
+			case MapObject::MESH_INSTANCE:
+				instance = ((MeshInstanceObject*)selected_object)->getMeshInstance();
+				meshInstancePropertyFrame->setEnabled(true);
+				instanceTypeBox->setCurrentIndex(static_cast<int>(instance->getType()));
+				;break;
 
 			default:
 				break;

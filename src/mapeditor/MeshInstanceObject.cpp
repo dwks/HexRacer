@@ -1,13 +1,20 @@
 #include "MeshInstanceObject.h"
 
-MeshInstanceObject::MeshInstanceObject(TransformedMesh* transformed_mesh)
+MeshInstanceObject::MeshInstanceObject(MeshInstance* mesh_instance, TransformedMesh* transformed_mesh)
 {
+	meshInstance = mesh_instance;
 	transformedMesh = transformed_mesh;
-	transformation = transformedMesh->getTransformation();
+	transformation = mesh_instance->getTransformation();
+	transformed_mesh->setTransformation(transformation);
+}
+
+MeshInstanceObject::~MeshInstanceObject() {
+	delete(transformedMesh);
 }
 
 void MeshInstanceObject::update() {
 	transformedMesh->setTransformation(transformation);
+	meshInstance->setTransformation(transformation);
 }
 
 void MeshInstanceObject::setPosition(const Point& new_position) {

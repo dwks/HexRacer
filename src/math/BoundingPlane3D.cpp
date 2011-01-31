@@ -4,6 +4,8 @@
 #include "BoundingBox3D.h"
 #include "Triangle3D.h"
 #include "Geometry.h"
+#include <istream>
+#include <ostream>
 
 namespace Project {
 namespace Math {
@@ -30,6 +32,19 @@ namespace Math {
 
 	void BoundingPlane3D::translate(const Point& translation) {
 		origin += translation;
+	}
+
+	std::ostream &operator << (std::ostream &stream, const BoundingPlane3D &plane) {
+		stream << plane.centroid() << ' ' << plane.getNormal();
+		return stream;
+	}
+
+	std::istream &operator >> (std::istream &stream, BoundingPlane3D &plane) {
+		Point origin;
+		Point normal;
+		stream >> origin >> normal;
+		plane = BoundingPlane3D(origin, normal);
+		return stream;
 	}
 
 

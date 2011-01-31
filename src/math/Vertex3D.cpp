@@ -1,6 +1,8 @@
 #include "Vertex3D.h"
 #include "BoundingObject3D.h"
 #include "Vertex2D.h"
+#include <istream>
+#include <ostream>
 
 namespace Project {
 namespace Math {
@@ -37,6 +39,18 @@ namespace Math {
 	}
 	void Vertex3D::translate(const Point& translation) {
 		position += translation;
+	}
+
+	std::ostream &operator << (std::ostream &stream, const Vertex3D &vertex) {
+		stream << vertex.centroid();
+		return stream;
+	}
+
+	std::istream &operator >> (std::istream &stream, Vertex3D &vertex) {
+		Point p;
+		stream >> p;
+		vertex.moveCentroid(p);
+		return stream;
 	}
 
 }  // namespace Math

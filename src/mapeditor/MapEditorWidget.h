@@ -99,12 +99,6 @@ private:
 	void addMeshInstance(Point position);
 
 	void mapObjectsChanged(MapObject::ObjectType type);
-	/*
-	void mapLightsChanged();
-	void mapPathNodesChanged();
-	void mapStartPointsChanged();
-	void mapMeshInstancesChanged();
-	*/
 	void mapCollisionChanged();
 
 	void createObject(double u, double v);
@@ -136,6 +130,7 @@ public slots:
 	void loadCubeMap();
 
 	void deleteSelected();
+	void deleteAll();
 	void setSelectedPositionX(double x);
 	void setSelectedPositionY(double y);
 	void setSelectedPositionZ(double z);
@@ -146,9 +141,11 @@ public slots:
 	void setSelectedColor(int color_index, Color color);
 	void setLightStrength(double strength);
 	void setLightHasAttenuation(bool has);
+	void setMeshInstanceType(int type);
 
 	void setPropMeshIndex(int index);
 	void addPropMesh(string name, string filename);
+	void removePropMesh();
 
 signals:
 

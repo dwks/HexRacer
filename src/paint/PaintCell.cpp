@@ -1,6 +1,8 @@
 #include "PaintCell.h"
 #include "math/Geometry.h"
 #include "math/Values.h"
+#include <ostream>
+#include <istream>
 using namespace Project;
 using namespace Math;
 
@@ -12,6 +14,7 @@ namespace Project {
 namespace Paint {
 
 	PaintCell::PaintCell(Point _center) {
+		index = -1;
 		playerColor = -1;
 		center = _center;
 		for (int i = 0; i < CELL_VERTICES; i++) {
@@ -104,5 +107,28 @@ namespace Paint {
 		}
 	}
 
+	std::ostream &operator << (std::ostream &stream, const PaintCell& cell) {
+
+		stream << cell.center << ' ';
+		for (int i = 0; i < Project::Paint::PaintCell::CELL_VERTICES; i++) {
+			stream << cell.vertex[i] << ' ';
+		}
+		stream << cell.normal;
+		return stream;
+
+	}
+
+	std::istream &operator >> (std::istream &stream, PaintCell& cell) {
+		char c;
+		stream >> cell.center;
+		//stream >> c;
+		for (int i = 0; i < Project::Paint::PaintCell::CELL_VERTICES; i++) {
+			stream >> cell.vertex[i];
+			//stream >> c;
+		}
+		stream >> cell.normal;
+		cell.setBoundingDimensions();
+		return stream;
+	}
 }  // namespace Paint
 }  // namespace Project

@@ -60,8 +60,10 @@ public:
 
 	void glApply() const;
 
-
 };
+
+std::ostream &operator << (std::ostream &stream, const SimpleTransform &transform);
+std::istream &operator >> (std::istream &stream, SimpleTransform &transform);
 
 }  // namespace Math
 }  // namespace Project

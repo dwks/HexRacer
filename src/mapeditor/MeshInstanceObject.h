@@ -3,23 +3,28 @@
 #include "MapObject.h"
 #include "render/TransformedMesh.h"
 #include "math/SimpleTransform.h"
+#include "map/MeshInstance.h"
 using namespace Project;
 using namespace Render;
 using namespace Math;
+using namespace Map;
 
 class MeshInstanceObject
 	: public MapObject
 {
 private:
 
+	MeshInstance* meshInstance;
 	TransformedMesh* transformedMesh;
 	SimpleTransform transformation;
 	void update();
 
 public:
 
-	MeshInstanceObject(TransformedMesh* transformed_mesh);
+	MeshInstanceObject(MeshInstance* mesh_instance, TransformedMesh* transformed_mesh);
+	~MeshInstanceObject();
 
+	MeshInstance* getMeshInstance() { return meshInstance; }
 	TransformedMesh* getTransformedMesh() { return transformedMesh; }
 
 	Point getPosition() const { return transformation.getTranslation(); }

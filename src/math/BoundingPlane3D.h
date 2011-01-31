@@ -41,6 +41,9 @@ public:
 
 };
 
+std::ostream &operator << (std::ostream &stream, const BoundingPlane3D &plane);
+std::istream &operator >> (std::istream &stream, BoundingPlane3D &plane);
+
 }  // namespace Math
 }  // namespace Project
 

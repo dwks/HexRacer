@@ -14,7 +14,9 @@ void PathNodeObject::linkNode(PathNodeObject* node_object) {
 	if (node_object) {
 		PathNode* link_node = node_object->getNode();
 		if (link_node && link_node != node) {
-			if (!vectorRemoveOneElement(node->getNextNodes(), link_node)) {
+			//If the two nodes are already linked, remove the link, otherwise link them
+			if (!vectorRemoveOneElement(node->getNextNodes(), link_node)
+				&& !vectorRemoveOneElement(link_node->getNextNodes(), node)) {
 				node->getNextNodes().push_back(link_node);
 			}
 		}

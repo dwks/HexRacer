@@ -11,10 +11,20 @@
 #include "paint/PaintCell.h"
 #include "math/BoundingPlane3D.h"
 #include "PathNode.h"
+#include "MeshInstance.h"
 #include <string>
 #include <vector>
 
 #define HRMAP_NUM_MESHES 5
+#define HRMAP_VERSION "0.0.2"
+#define HRMAP_VERSION_LABEL "version"
+#define HRMAP_PROPMESH_LABEL "propMesh"
+#define HRMAP_LIGHT_LABEL "light"
+#define HRMAP_PATHNODE_LABEL "pathNode"
+#define HRMAP_STARTPOINT_LABEL "startPoint"
+#define HRMAP_MESHINSTANCE_LABEL "meshInstance"
+#define HRMAP_FINISHPLANE_LABEL "finishPlane"
+#define HRMAP_PAINTCELL_LABEL "paintCell"
 
 namespace Project {
 namespace Map {
@@ -34,7 +44,7 @@ private:
 	std::vector<PathNode*> pathNodes;
 	std::vector<Paint::PaintCell*> paintCells;
 	std::vector<Math::Vertex3D*> startPoints;
-	std::vector<Render::TransformedMesh*> meshInstances;
+	std::vector<MeshInstance*> meshInstances;
 	Math::BoundingPlane3D finishPlane;
 
 	std::vector<std::string> propMeshNames;
@@ -51,7 +61,7 @@ public:
 	HRMap();
 	~HRMap();
 	bool loadMapFile(std::string _filename);
-	bool saveMapFile(std::string _filename) const;
+	bool saveMapFile(std::string _filename);
 	Render::MeshGroup* getMapMesh(MeshType type) const { return mapMesh[static_cast<int>(type)]; }
 	Render::RenderList* getTrackRenderable() const { return trackRenderable; }
 	Render::TextureCube* getCubeMap();
@@ -87,9 +97,9 @@ public:
 	void clearStartPoints();
 	Math::BoundingPlane3D& getFinishPlane() { return finishPlane; }
 
-	const std::vector<Render::TransformedMesh*> getMeshInstances() const { return meshInstances; }
-	bool addMeshInstance(Render::TransformedMesh* mesh);
-	void removeMeshInstance(Render::TransformedMesh* mesh);
+	const std::vector<MeshInstance*> getMeshInstances() const { return meshInstances; }
+	bool addMeshInstance(MeshInstance* mesh);
+	void removeMeshInstance(MeshInstance* mesh);
 	void clearMeshInstances();
 
 	std::string getFilename() const { return filename; }
@@ -97,6 +107,7 @@ public:
 	static std::string meshName(MeshType type);
 	static std::string meshTitle(MeshType type);
 	static bool meshIsInvisible(MeshType type);
+	static bool meshIsSolid(MeshType type);
 
 private:
 
