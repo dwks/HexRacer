@@ -8,16 +8,16 @@
 #include "event/QuitEvent.h"
 #include "event/TogglePainting.h"
 #include "event/SetDebugCamera.h"
-
 #include "event/PaintEvent.h"
+#include "event/PauseGame.h"
 
 #include "settings/SettingsManager.h"
 
 namespace Project {
 namespace SDL {
 
-InputManager::InputManager(int ms, ClientData *clientData, PlayerManager *playerManager)
-    : TimedSubsystem(ms), playerManager(playerManager), clientData(clientData) {
+InputManager::InputManager(int ms, ClientData *clientData)
+    : TimedSubsystem(ms), clientData(clientData) {
     
     for(std::size_t x = 0; x < sizeof keyDown / sizeof *keyDown; x ++) {
         keyDown[x] = false;
@@ -45,8 +45,6 @@ void InputManager::handleEvent(SDL_Event *event) {
 }
 
 void InputManager::doAction(unsigned long currentTime) {
-    static const double CAMERA_FACTOR = 0.8;
-    
     if(keyDown[SDLK_LEFT]) {
         EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::TURN, -1.0));
     }
@@ -65,6 +63,45 @@ void InputManager::doAction(unsigned long currentTime) {
         EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::JUMP, 0.0));
     }
     
+    if(keyDown[SDLK_h]) {
+        EMIT_EVENT(new Event::PlayerAction(
+            Event::PlayerAction::FIX_OFF_TRACK, 0.0));
+    }
+    
+    handlePaint();
+    handleJoystick();
+}
+
+void InputManager::doPausedChecks() {
+    if(keyDown[SDLK_ESCAPE]) {
+        EMIT_EVENT(new Event::QuitEvent());
+    }
+    if(keyDown[SDLK_F1]) {
+        keyDown[SDLK_F1] = false;
+        
+        static bool pause = false;
+        pause = !pause;
+        
+        LOG2(SDL, INPUT, (pause ? "Game paused" : "Game unpaused"));
+        
+        EMIT_EVENT(new Event::PauseGame(pause));
+    }
+    if(keyDown[SDLK_RETURN]) {
+        keyDown[SDLK_RETURN] = false;
+        
+        static bool debug = false;
+        debug = !debug;
+        EMIT_EVENT(new Event::SetDebugDrawing(debug));
+    }
+    if(keyDown[SDLK_c]) {
+        keyDown[SDLK_c] = false;
+        
+        static bool debug = false;
+        debug = !debug;
+        EMIT_EVENT(new Event::SetDebugCamera(debug));
+    }
+    
+    static const double CAMERA_FACTOR = 0.8;
     if(keyDown[SDLK_w]) {
         EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
             * Math::Point(0.0, 1.0)));
@@ -81,33 +118,6 @@ void InputManager::doAction(unsigned long currentTime) {
         EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
             * Math::Point(+1.0, 0.0)));
     }
-    
-    if(keyDown[SDLK_ESCAPE]) {
-        EMIT_EVENT(new Event::QuitEvent());
-    }
-    
-    if(keyDown[SDLK_h]) {
-        EMIT_EVENT(new Event::PlayerAction(
-            Event::PlayerAction::FIX_OFF_TRACK, 0.0));
-    }
-    
-    if(keyDown[SDLK_RETURN]) {
-        keyDown[SDLK_RETURN] = false;
-        
-        static bool debug = false;
-        debug = !debug;
-        EMIT_EVENT(new Event::SetDebugDrawing(debug));
-    }
-    if(keyDown[SDLK_c]) {
-        keyDown[SDLK_c] = false;
-        
-        static bool debug = false;
-        debug = !debug;
-        EMIT_EVENT(new Event::SetDebugCamera(debug));
-    }
-    
-    handlePaint();
-    handleJoystick();
 }
 
 void InputManager::handlePaint() {

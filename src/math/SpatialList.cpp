@@ -12,6 +12,12 @@ SpatialList::SpatialList(bool use_bounding_box)
 
 SpatialList::~SpatialList(void)
 {
+    for (unsigned int i = 0; i < objectList.size(); i++) {
+        delete objectList[i];
+    }
+    
+    // !!! why doesn't this work?
+    //delete boundingBox;
 }
 
 bool SpatialList::add(ObjectSpatial* object) {

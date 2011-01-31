@@ -11,6 +11,7 @@
 #include "event/MultiObserver.h"
 
 #include "ServerNetworkPortal.h"
+#include "timing/AccelControl.h"
 
 namespace Project {
 namespace Server {
@@ -46,6 +47,7 @@ private:
     Paint::PaintSubsystem *paintSubsystem;
     ServerVisitor visitor;
     ServerNetworkPortal *networkPortal;
+    Timing::AccelControl *accelControl;
 public:
     ServerMain();
     ~ServerMain();

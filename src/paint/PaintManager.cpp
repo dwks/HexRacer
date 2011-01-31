@@ -129,25 +129,45 @@ namespace Paint {
 	}
 
 	double PaintManager::weightedCellsInRadius(Point centroid, double radius, int color) {
-
 		double weighted_score = 0.0;
-
+        int cell_count = 0;
+        
 		BoundingSphere query_sphere(centroid, radius);
 		vector<ObjectSpatial*> candidate_cells;
 		coloredPaintTree->appendQuery(&candidate_cells, query_sphere, SpatialContainer::NEARBY);
-
-		for (unsigned int i = 0; i < candidate_cells.size(); i++) {
-
-			PaintCell* cell = (PaintCell*) candidate_cells[i];
-			double dist_squared = cell->center.distanceSquared(centroid);
-
-			if (dist_squared <= query_sphere.getRadiusSquared()) {
-				weighted_score += (query_sphere.getRadiusSquared()-dist_squared)/query_sphere.getRadiusSquared();
+        
+		for(int i = 0; i < int(candidate_cells.size()); i++) {
+			PaintCell *cell = static_cast<PaintCell *>(candidate_cells[i]);
+			double dist = cell->center.distance(centroid);
+            
+			if(dist <= query_sphere.getRadius()) {
+                cell_count ++;
+                double colour_factor;
+                
+                if(cell->playerColor == color) {
+                    colour_factor = 1.0;
+                }
+                else if(cell->playerColor < 0) {
+                    colour_factor = 0.0;
+                    continue;
+                }
+                else {
+                    colour_factor = -0.5;
+                }
+                
+                double distance_weight = (query_sphere.getRadius() - dist)
+                    / query_sphere.getRadius();
+                
+                weighted_score += colour_factor * distance_weight;
 			}
-
 		}
-
-		return weighted_score;
+        
+        if(!cell_count) {
+            return 1.0;
+        }
+        else {
+            return 1.0 + weighted_score / cell_count;
+        }
 	}
 
 	bool PaintManager::colorCell(PaintCell* cell, int new_color) {

@@ -73,6 +73,8 @@ public:
 
 	/** Returns a number representing the concentration of paint cells of color @a color
 		inside the given radius. Increasing from zero depending on proximity and quantity.
+		
+		This number will be in the range [0.5, 2.0].
 	*/
 	double weightedCellsInRadius(Math::Point centroid, double radius, int color);
 	

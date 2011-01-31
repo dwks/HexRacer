@@ -37,6 +37,8 @@ public:
     
     void setOnGround(bool onGround)
         { physical->setOnGround(onGround); }
+    void setSpeedBoost(double speedBoost)
+        { physical->setSpeedBoost(speedBoost); }
     
     void setPhysicalObject(Physics::PhysicalPlayer *physical)
         { this->physical = physical; }

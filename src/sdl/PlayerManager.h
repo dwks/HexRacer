@@ -45,10 +45,6 @@ private:
     };
 public:
     PlayerManager(int id, Object::WorldManager *worldManager);
-    ~PlayerManager();
-    
-    void applySuspension(Render::RenderManager *renderManager);
-    
 protected:
     void usePlayerList(Object::PlayerList *playerList);
 public:

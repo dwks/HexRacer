@@ -27,11 +27,11 @@ namespace SDL {
 void PlayerManager::PlayerActionHandler::observe(
     Event::PlayerAction *action) {
     
-    if(Settings::ProgramSettings::getInstance()->isConnectedClient()
+    /*if(Settings::ProgramSettings::getInstance()->isConnectedClient()
         && action->getMovementType() != Event::PlayerAction::FIX_OFF_TRACK) {
         
         return;
-    }
+    }*/
     
     Object::Player *player = manager->getPlayer();
     
@@ -70,19 +70,6 @@ PlayerManager::PlayerManager(int id, Object::WorldManager *worldManager)
     ADD_OBSERVER(new PlayerActionHandler(this));
     ADD_OBSERVER(new UpdatePlayerListHandler(this));
 }
-
-PlayerManager::~PlayerManager() {
-    
-}
-
-/*void PlayerManager::render(Render::RenderManager *renderManager) {
-    Object::PlayerList::IteratorType it
-        = worldManager->getPlayerList()->getIterator();
-    while(it.hasNext()) {
-        Object::Player *player = it.next();
-        player->getRenderableObject()->render(renderManager);
-    }
-}*/
 
 void PlayerManager::usePlayerList(Object::PlayerList *playerList) {
     worldManager->usePlayerList(playerList);

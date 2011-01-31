@@ -25,7 +25,7 @@ void ClientManager::sendPacket(Network::Packet *packet) {
 
 void ClientManager::sendPacketExcept(Network::Packet *packet, int exception) {
     for(portal_list_t::size_type i = 0; i < portal_list.size(); ++ i) {
-        if(i != exception) {
+        if(int(i) != exception) {
             portal_list[i]->sendPacket(packet);
         }
     }

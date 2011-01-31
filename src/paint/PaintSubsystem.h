@@ -8,6 +8,8 @@
 #include "event/TogglePainting.h"
 #include "event/TypedObserver.h"
 
+#include "paint/PaintManager.h"
+
 #include "object/WorldManager.h"
 
 namespace Project {
@@ -29,12 +31,18 @@ private:
     typedef std::map<int, Event::TogglePainting::PaintType> PaintingType;
     PaintingType painting;
     Object::WorldManager *worldManager;
+    Paint::PaintManager *paintManager;
 public:
-    PaintSubsystem(Object::WorldManager *worldManager, unsigned long tickTime);
+    PaintSubsystem(Object::WorldManager *worldManager,
+        Paint::PaintManager *paintManager, unsigned long tickTime);
     
     virtual void setPainting(int id, Event::TogglePainting::PaintType type);
     
+    virtual Event::TogglePainting::PaintType getPainting(int id);
+    
     virtual void doAction(unsigned long currentTime);
+private:
+    void calculateBoostSpeeds();
 };
 
 }  // namespace Paint

@@ -251,6 +251,8 @@ void Suspension::debugDrawWheel(const Math::Matrix &transform,
         Math::Matrix::getTranslationMatrix(centre));
     glRotated(90.0, 0.0, 1.0, 0.0);
     
+    //LOG(PHYSICS, "debug wheel at " << centre);
+    
     glCallList(diskID);
     
     glPopMatrix();

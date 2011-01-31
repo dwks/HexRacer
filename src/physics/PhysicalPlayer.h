@@ -47,13 +47,16 @@ private:
 private:
     btRigidBody *rigidBody;
     bool onGround;  // not serialized
+    double speedBoost;  // not serialized
 public:
-    PhysicalPlayer() : rigidBody(NULL), onGround(false) {}
+    PhysicalPlayer() : rigidBody(NULL), onGround(false), speedBoost(1.0) {}
     PhysicalPlayer(const Math::Point &position);
     virtual ~PhysicalPlayer();
     
     void setOnGround(bool onGround)
         { this->onGround = onGround; }
+    void setSpeedBoost(double speedBoost)
+        { this->speedBoost = speedBoost; }
     
     void destroyRigidBody();
     void constructRigidBody(const Math::Point &position);

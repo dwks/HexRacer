@@ -3,6 +3,8 @@
 #include "event/PaintEvent.h"
 #include "event/ObserverList.h"
 
+#include "config.h"
+
 namespace Project {
 namespace Paint {
 
@@ -13,8 +15,9 @@ void PaintSubsystem::TogglePaintingHandler::observe(
 }
 
 PaintSubsystem::PaintSubsystem(Object::WorldManager *worldManager,
-    unsigned long tickTime)
-    : TimedSubsystem(tickTime), worldManager(worldManager) {
+    Paint::PaintManager *paintManager, unsigned long tickTime)
+    : TimedSubsystem(tickTime), worldManager(worldManager),
+    paintManager(paintManager) {
     
     ADD_OBSERVER(new TogglePaintingHandler(this));
 }
@@ -25,11 +28,20 @@ void PaintSubsystem::setPainting(int id,
     painting[id] = type;
 }
 
+Event::TogglePainting::PaintType PaintSubsystem::getPainting(int id) {
+    PaintingType::iterator found = painting.find(id);
+    
+    if(found == painting.end()) {
+        return Event::TogglePainting::NOTHING;
+    }
+    else {
+        return (*found).second;
+    }
+}
+
 void PaintSubsystem::doAction(unsigned long currentTime) {
     for(PaintingType::iterator i = painting.begin(); i != painting.end();
         ++ i) {
-        
-        static double PAINTING_RADIUS = 1.5;
         
         int id = (*i).first;
         Event::TogglePainting::PaintType type = (*i).second;
@@ -50,6 +62,31 @@ void PaintSubsystem::doAction(unsigned long currentTime) {
         default:
         case Event::TogglePainting::NOTHING:
             break;
+        }
+    }
+    
+    calculateBoostSpeeds();
+}
+
+void PaintSubsystem::calculateBoostSpeeds() {
+    Object::PlayerList::IteratorType iterator
+        = worldManager->getPlayerList()->getIterator();
+    while(iterator.hasNext()) {
+        Object::Player *player = iterator.next();
+        
+        if(getPainting(player->getID()) == Event::TogglePainting::NOTHING) {
+            double factor = paintManager->weightedCellsInRadius(
+                player->getPosition(),
+                PAINTING_RADIUS,
+                player->getID());
+            
+            //LOG(PAINT, "factor " << factor);
+            
+            player->setSpeedBoost(factor);
+        }
+        else {
+            // if painting or erasing, slow down the player no matter what
+            player->setSpeedBoost(0.8);
         }
     }
 }

@@ -15,6 +15,7 @@ namespace Physics {
 
 PhysicalPlayer::PhysicalPlayer(const Math::Point &position) {
     onGround = false;
+    speedBoost = 1.0;
     rigidBody = NULL;  // essential, constructRigidBody tries to delete it
     
     constructRigidBody(position);
@@ -65,6 +66,8 @@ Math::Matrix PhysicalPlayer::getTransformation() const {
 }
 
 Math::Point PhysicalPlayer::getLinearVelocity() const {
+    rigidBody->activate();  // !!! hack to prevent sleeping
+    
     return Converter::toPoint(rigidBody->getLinearVelocity());
 }
 
@@ -86,7 +89,7 @@ void PhysicalPlayer::applyAcceleration(double acceleration) {
     
     //LOG(PHYSICS, "accel at " << Misc::Sleeper::getTimeMilliseconds());
     
-    applyForce(orientation * constant * acceleration);
+    applyForce(orientation * constant * acceleration * speedBoost);
 }
 
 void PhysicalPlayer::applyTurning(double amount) {

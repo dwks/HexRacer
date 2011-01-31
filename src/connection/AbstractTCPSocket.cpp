@@ -22,11 +22,22 @@ bool AbstractTCPSocket::send(const std::string &message) {
 }
 
 bool AbstractTCPSocket::tryReceive(std::string &message, std::size_t size) {
-    if(getSocket().available() < size) return false;
+    boost::system::error_code error;
+    std::size_t available = getSocket().available(error);
+    
+    if(error) {
+        LOG2(NETWORK, ERROR, "TCPSocket::tryReceive() error: " << error);
+        return false;
+    }
+    
+    // not enough data yet
+    if(available < size) {
+        return false;
+    }
     
     std::vector<char> tempBuffer(size);
     
-    boost::system::error_code error;
+    // reuse error variable
     boost::asio::read(getSocket(),
         boost::asio::buffer(tempBuffer, size),
         boost::asio::transfer_all(), error);
