@@ -12,10 +12,11 @@ namespace Render {
 class RenderableWorld : public CompositeRenderable {
 private:
     std::vector<Object::ObjectBase *> &objects;
+	std::vector<RenderableObject*> renderableObjects;
 public:
     RenderableWorld(std::vector<Object::ObjectBase *> &objects);
     
-    virtual std::vector<RenderableObject*> getChildren();
+    virtual const std::vector<RenderableObject*>& getChildren();
 };
 
 }  // namespace Render

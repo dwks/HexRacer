@@ -43,7 +43,7 @@ physics.driving.sidewaysdrag      = 10.0
 #    1 = low
 #    2 = medium
 #    3 = high
-render.quality = 2
+render.quality = 3
 render.shaderoutput = 1
 
 render.minimap.enable = 1

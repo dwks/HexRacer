@@ -1,4 +1,4 @@
-// Color map, normal map and glow map with gouraud shading + phong shading specularity
+// Background reflection with phong specularity
 
 varying vec3 eyeNormal;
 varying vec3 objectNormal;
@@ -7,8 +7,9 @@ varying vec4 position;
 //varying vec3 eyeTangent; 
 //varying vec3 eyeBitangent;
 
-varying vec4 diffuseColor;
-varying vec4 ambientColor;
+varying vec4 vertexColor;
+//varying vec4 diffuseColor;
+//varying vec4 ambientColor;
 varying mat3 cameraNormalMatrix;
 
 attribute vec3 tangent;
@@ -29,9 +30,9 @@ void main()
 	//eyeTangent = normalize(gl_NormalMatrix * tangent);
 	//eyeBitangent = normalize(gl_NormalMatrix * bitangent);
 	
-	//Calculate Diffuse and Ambient Lighting-------------------------------------------------------===
-	diffuseColor = vec4(0.0, 0.0, 0.0, 1.0);
-	ambientColor = vec4(0.0, 0.0, 0.0, 0.0);
+	//Calculate Diffuse and Ambient Lighting----------------------------------------------------------
+	vec4 diffuseColor = vec4(0.0, 0.0, 0.0, 1.0);
+	vec4 ambientColor = vec4(0.0, 0.0, 0.0, 0.0);
 	
 	if (numLights > 0) {
 		float light_dist = length((position-gl_LightSource[0].position).xyz);
@@ -63,6 +64,8 @@ void main()
 			ambientColor += gl_LightSource[1].ambient*attenuation;
 		}
 	}
+	
+	vertexColor = diffuseColor + ambientColor;
 	
 	cameraNormalMatrix[0][0] = -cameraMatrix[0][0];
 	cameraNormalMatrix[0][1] = cameraMatrix[0][1];

@@ -1,4 +1,4 @@
-// Background reflection with Normal Mapping
+// Background reflection with phong specularity
 
 varying vec3 eyeNormal;
 varying vec3 objectNormal;
@@ -7,8 +7,9 @@ varying vec4 position;
 //varying vec3 eyeTangent; 
 //varying vec3 eyeBitangent;
 
-varying vec4 diffuseColor;
-varying vec4 ambientColor;
+varying vec4 vertexColor;
+//varying vec4 diffuseColor;
+//varying vec4 ambientColor;
 
 varying mat3 cameraNormalMatrix;
 
@@ -32,9 +33,9 @@ void main() {
 	vec3 reflection = normalize(reflect(view, normal));
 	vec3 worldReflect = normalize(cameraNormalMatrix * reflection);
 	
-	vec4 diffuse_color = diffuseColor;
+	//vec4 diffuse_color = diffuseColor;
 	vec4 specular_color = vec4(0.0, 0.0, 0.0, 0.0);
-	vec4 ambient_color = ambientColor;
+	//vec4 ambient_color = ambientColor;
 	
 	//Specular calculations----------------------------------------------------------------------------------------
 	
@@ -56,9 +57,9 @@ void main() {
 	else
 		diffuse_base = gl_FrontMaterial.diffuse;
 	
-	diffuse_color *= diffuse_base;
+	//diffuse_color *= diffuse_base;
 	specular_color *= gl_FrontMaterial.specular;
-	ambient_color *= diffuse_base;
+	//ambient_color *= diffuse_base;
 	
 	float krefl = (gl_FrontMaterial.shininess-1.0)/12.0;
 	//if (hasTexture[1] == 1) {
@@ -67,5 +68,5 @@ void main() {
 	//	krefl *= shine_factor;
 	//}
 	
-	gl_FragColor = (diffuse_color + ambient_color)*(1.0-krefl) + textureCube(cubeMap, worldReflect)*krefl + specular_color;
+	gl_FragColor = (vertexColor * diffuse_base)*(1.0-krefl) + textureCube(cubeMap, worldReflect)*krefl + specular_color;
 }

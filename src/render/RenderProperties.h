@@ -47,7 +47,7 @@ public:
 		transformation = _transform;
 		transformationSet = true;
 	}
-	Project::Math::Matrix getTransformation() const { return transformation; }
+	const Project::Math::Matrix& getTransformation() const { return transformation; }
 
 	bool hasColor() const { return colorSet; }
 	void clearColor() { colorSet = false; }
@@ -55,7 +55,7 @@ public:
 		color = _color;
 		colorSet = true;
 	}
-	Project::OpenGL::Color getColor() const { return color; }
+	const Project::OpenGL::Color& getColor() const { return color; }
 	bool getColorOverride() const { return colorOverrideChildren; }
 	void setColorOverride(bool override_children) { colorOverrideChildren = override_children; }
 
@@ -88,6 +88,8 @@ public:
 	std::vector<ShaderParameter*> getShaderParams() const;
 	void setShaderParams(std::vector<ShaderParameter*> params);
 	void addShaderParameter(ShaderParameter* param);
+
+	bool empty() const { return (!hasTransformation() && !hasColor() && !hasMaterial() && !hasTexture() && !hasShader() && !wantsShader() && !hasShaderParams()); }
 
 };
 
