@@ -5,6 +5,8 @@
 #include "opengl/OpenGL.h"
 #include "GL/glu.h"
 
+#include "opengl/Color.h"
+
 #include "SDLMain.h"
 #include "log/Logger.h"
 
@@ -184,6 +186,47 @@ void SDLMain::initRenderer() {
     renderer->setCubeMap(map->getCubeMap());
 }
 
+void SDLMain::loadMap() {
+    //Process map meshes
+    for (int i = 0; i < Map::HRMap::NUM_MESHES; i++) {
+        Map::HRMap::MeshType type = static_cast<Map::HRMap::MeshType>(i);
+        if (map->getMapMesh(type)) {
+
+            //Add visible meshes to the map renderable
+            if (!Map::HRMap::meshIsInvisible(type)) {
+                mapRenderable->addRenderable(map->getMapMesh(type));
+            }
+
+            //Add solid meshes to the physics
+            if (Map::HRMap::meshIsSolid(type)) {
+                Physics::PhysicsWorld::getInstance()->registerRigidBody(
+                    Physics::PhysicsFactory::createRigidTriMesh(map->getMapMesh(type)->getTriangles())
+                    );
+            }
+
+        }
+        
+    }
+    
+    //Process mesh instances
+    vector<Map::MeshInstance*> instances = map->getMeshInstances();
+    for (unsigned i = 0; i < instances.size(); i++) {
+        
+        Render::TransformedMesh* transformed_mesh = new Render::TransformedMesh(
+            instances[i]->getMeshGroup(), instances[i]->getTransformation()
+            );
+        //Add the mesh to the map renderable
+        mapRenderable->addRenderable(transformed_mesh);
+        
+        //If the instance is solid static, add it to the physics
+        if (instances[i]->getType() == Map::MeshInstance::SOLID_STATIC) {
+            Physics::PhysicsWorld::getInstance()->registerRigidBody(
+                    Physics::PhysicsFactory::createRigidTriMesh(transformed_mesh->getTransformedTriangles())
+                    );
+        }
+    }
+}
+
 void SDLMain::run() {
     initSDL();
     
@@ -221,47 +264,9 @@ void SDLMain::run() {
     
     ADD_OBSERVER(new CameraObserver(simpleTrackball, cameraObject->camera));
     ADD_OBSERVER(new QuitObserver(this));
-
-	//Process map meshes
-	for (int i = 0; i < Map::HRMap::NUM_MESHES; i++) {
-		Map::HRMap::MeshType type = static_cast<Map::HRMap::MeshType>(i);
-		if (map->getMapMesh(type)) {
-
-			//Add visible meshes to the map renderable
-			if (!Map::HRMap::meshIsInvisible(type)) {
-				mapRenderable->addRenderable(map->getMapMesh(type));
-			}
-
-			//Add solid meshes to the physics
-			if (Map::HRMap::meshIsSolid(type)) {
-				Physics::PhysicsWorld::getInstance()->registerRigidBody(
-					Physics::PhysicsFactory::createRigidTriMesh(map->getMapMesh(type)->getTriangles())
-					);
-			}
-
-		}
-		
-	}
-
-	//Process mesh instances
-	vector<Map::MeshInstance*> instances = map->getMeshInstances();
-	for (unsigned i = 0; i < instances.size(); i++) {
-
-		Render::TransformedMesh* transformed_mesh = new Render::TransformedMesh(
-			instances[i]->getMeshGroup(), instances[i]->getTransformation()
-			);
-		//Add the mesh to the map renderable
-		mapRenderable->addRenderable(transformed_mesh);
-
-		//If the instance is solid static, add it to the physics
-		if (instances[i]->getType() == Map::MeshInstance::SOLID_STATIC) {
-			Physics::PhysicsWorld::getInstance()->registerRigidBody(
-					Physics::PhysicsFactory::createRigidTriMesh(transformed_mesh->getTransformedTriangles())
-					);
-		}
-	}
-
-
+    
+    loadMap();
+    
 #ifdef HAVE_OPENAL
     Sound::SoundSystem *soundSystem = new Sound::SoundSystem();
     if(!soundSystem->initialize()) {
@@ -442,9 +447,11 @@ void SDLMain::render() {
 	//glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
-
+    
 	//Render the paint
 	paintManager->render(renderer);
+    
+    renderAIDebug();
 }
 
 void SDLMain::renderMinimap(int minimap_draw_width, int minimap_draw_height) {
@@ -520,6 +527,45 @@ void SDLMain::renderMinimap(int minimap_draw_width, int minimap_draw_height) {
 
 	glViewport(0, 0, viewWidth, viewHeight);
 
+}
+
+void SDLMain::renderAIDebug() {
+    // code cloned from MapEditorWidget
+    
+#define MAP_EDITOR_PATHNODE_LENGTH 0.4
+#define MAP_EDITOR_PATHNODE_HEIGHT 0.2
+#define MAP_EDITOR_PATHNODE_FLOAT_HEIGHT 0.05
+#define MAP_EDITOR_PATHNODE_COLOR OpenGL::Color::BLUE
+#define MAP_EDITOR_PATHNODE_LINK_WIDTH 2.0f
+#define MAP_EDITOR_PATHNODE_LINK_START_COLOR OpenGL::Color::WHITE
+#define MAP_EDITOR_PATHNODE_LINK_END_COLOR OpenGL::Color::BLUE
+    
+    std::vector<Map::PathNode *> nodeList = map->getPathNodes();
+    
+    for (unsigned int i = 0; i < nodeList.size(); i++) {
+        Map::PathNode* node = nodeList[i];
+        
+        OpenGL::Color::glColor(MAP_EDITOR_PATHNODE_COLOR);
+        
+        OpenGL::GeometryDrawing::drawBoundingBox3D(
+            BoundingBox3D(MAP_EDITOR_PATHNODE_LENGTH,
+            MAP_EDITOR_PATHNODE_HEIGHT,
+            MAP_EDITOR_PATHNODE_LENGTH,
+            node->getPosition()), false
+            );
+        
+        glLineWidth(MAP_EDITOR_PATHNODE_LINK_WIDTH);
+        glBegin(GL_LINES);
+        const vector<Map::PathNode*>& linked_nodes = node->getNextNodes();
+        for (unsigned int i = 0; i < linked_nodes.size(); i++) {
+            OpenGL::Color::glColor(MAP_EDITOR_PATHNODE_LINK_START_COLOR);
+            OpenGL::MathWrapper::glVertex(node->getPosition());
+            OpenGL::Color::glColor(MAP_EDITOR_PATHNODE_LINK_END_COLOR);
+            OpenGL::MathWrapper::glVertex(linked_nodes[i]->getPosition());
+        }
+        glEnd();
+        glLineWidth(1.0f);
+    }
 }
 
 }  // namespace SDL

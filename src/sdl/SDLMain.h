@@ -111,6 +111,7 @@ private:
     void render();
     void renderGrid();
 	void renderMinimap(int minimap_width, int minimap_height);
+    void renderAIDebug();
     
     void handleEvents();
 	void updateCamera();
@@ -118,6 +119,7 @@ private:
     void initSDL();
     void initOpenGL();
     void initRenderer();
+    void loadMap();
 };
 
 }  // namespace SDL
