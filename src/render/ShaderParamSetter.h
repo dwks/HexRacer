@@ -12,10 +12,19 @@ class RenderManager;
 /** An accessor for setting shader parameters
 */
 class ShaderParamSetter {
+
+private:
+
+	bool hasTangentSpace;
+	RenderManager* manager;
+
 public:
 
 	ShaderParamSetter();
 	ShaderParamSetter(RenderManager* manager);
+
+	void setHasTangentSpace(bool has) { hasTangentSpace = has; }
+	bool getHasTangentSpace() const { return hasTangentSpace; }
 
 	void setUniformInt(const char *name, GLint value);
 	void setUniformIntArray(const char *name, GLint values[], int num_values);
@@ -24,10 +33,7 @@ public:
 	void setUniformMatrix4(const char *name, GLboolean transpose, const GLfloat* matrix);
 	void setAttributeVector3(const char *name, Project::Math::Point point);
 	void setAttributeVector4(const char *name, Project::OpenGL::Color color);
-
-private:
-
-	RenderManager* manager;
+	void setTangents(Math::Point tangent, Math::Point bitangent);
 
 };
 

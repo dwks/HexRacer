@@ -22,6 +22,9 @@ namespace Render {
 		numShaderOverrides = 0;
 		numTextureOverrides = 0;
 
+		texturesEnabled = true;
+		shadersEnabled = true;
+
 		numTransformations = 0;
 
 		camera = NULL;
@@ -186,6 +189,10 @@ namespace Render {
 			//glEnable(GL_COLOR_MATERIAL);
 		}
 
+		if (!hasNormalMap) {
+			paramSetter.setHasTangentSpace(false);
+		}
+
 		//Tell the shader which textures exist
 		int has_tex_values[3] = {(int) hasColorMap, (int) hasNormalMap, (int) hasGlowMap};
 		setUniformIntArray(SHADER_HASTEXTURE_UNIFORM_NAME, has_tex_values, 3);
@@ -333,12 +340,13 @@ namespace Render {
 
 			//Temporary solution to Attribute problem
 			//Preload potential vertex shader attribute locations
-			int loc = new_shader->getAttrLoc("tangent");
+			int loc = new_shader->getAttrLoc(SHADER_TANGENT_ATTRIBUTE_NAME);
 			if (loc > -1)
-				attributes.push_back(ShaderAttributeLocation("tangent", loc));
-			loc = new_shader->getAttrLoc("bitangent");
+				attributes.push_back(ShaderAttributeLocation(SHADER_TANGENT_ATTRIBUTE_NAME, loc));
+
+			loc = new_shader->getAttrLoc(SHADER_BITANGENT_ATTRIBUTE_NAME);
 			if (loc > -1)
-				attributes.push_back(ShaderAttributeLocation("bitangent", loc));
+				attributes.push_back(ShaderAttributeLocation(SHADER_BITANGENT_ATTRIBUTE_NAME, loc));
 
 			LOG(OPENGL, "Shader loaded: " << name);
 			LOG(OPENGL, "	Fragment Shader: " << fragment_file);
@@ -365,6 +373,7 @@ namespace Render {
 		if (shader_index == enabledShaderIndex)
 			enabledShaderIndex = -1;
 		shader[shader_index]->turnShaderOff();
+		paramSetter.setHasTangentSpace(false);
 	}
 
 	Shader* RenderManager::getShaderByIndex(int shader_index) {
@@ -434,6 +443,10 @@ namespace Render {
 		}
 	}
 
+	void RenderManager::setTangents(Math::Point tangent, Math::Point bitangent) {
+		glVertexAttrib3f(tangentLocation, tangent.getX(), tangent.getY(), tangent.getZ());
+		glVertexAttrib3f(bitangentLocation, bitangent.getX(), bitangent.getY(), bitangent.getZ());
+	}
 	int RenderManager::getShaderAttributeLocation(int shader_index, string name) {
 		if (shader_index < 0 || static_cast<unsigned int>(shader_index) > shader.size())
 			return -1;
@@ -450,12 +463,19 @@ namespace Render {
 		return (shader[shader_index]->getUniLoc(name));
 	}
 	void RenderManager::setShaderParameters() {
-		ShaderParamSetter setter = getShaderParamSetter();
+
 		for (unsigned int i = 0; i < shaderParams.size(); i++) {
 			for (unsigned int j = 0; j < shaderParams[i].size(); j++) {
-				shaderParams[i][j]->setShaderParameters(setter);
+				shaderParams[i][j]->setShaderParameters(paramSetter);
 			}
 		}
+
+		//Get tangent space locations
+		tangentLocation = getShaderAttributeLocation(enabledShaderIndex, SHADER_TANGENT_ATTRIBUTE_NAME);
+		bitangentLocation = getShaderAttributeLocation(enabledShaderIndex, SHADER_BITANGENT_ATTRIBUTE_NAME);
+		paramSetter.setHasTangentSpace( tangentLocation >= 0 || bitangentLocation >= 0 );
+
+
 		//Set standard parameters
 		setUniformInt(SHADER_NUMLIGHTS_UNIFORM_NAME, lightManager->getNumActiveLights());
 		if (cubeMap && camera) {
@@ -466,6 +486,7 @@ namespace Render {
 			setUniformInt(SHADER_CUBEMAP_UNIFORM_NAME, cubeMapTextureNum);
 			setUniformMatrix4(SHADER_CAMERA_MATRIX_UNIFORM_NAME, GL_FALSE, camera->getCameraMatrix());
 		}
+
 	}
 	const BoundingObject* RenderManager::getBoundingObject() const {
 		if (camera)

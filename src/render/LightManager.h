@@ -8,7 +8,6 @@
 #include <vector>
 
 #define LIGHT_MANAGER_DRAW_LIGHT_SCALE 0.1f
-#define LIGHT_MANAGER_ATTENUATION_THRESHHOLD 0.01
 
 namespace Project {
 namespace Render {
@@ -24,15 +23,16 @@ private:
 	unsigned int maxActiveLights;
 	GLuint sphereID;
 
-	void activateStaticLights(Math::BSPTree* light_tree, const Math::BoundingObject& object);
+	void activateStaticLights(Math::BSPTree3D* light_tree, const Math::BoundingObject& object);
 	void activateDynamicLights(std::vector<LightManagerNode*>& lights, const Math::BoundingObject& object);
 	void activateLight(LightManagerNode* light_node);
+	void addStaticLight(Math::BSPTree3D* light_tree, LightManagerNode* light_node);
 
 public:
 	LightManager(int max_active_lights = 8);
 
 	void addLight(Light* light, bool high_priorty = false, bool dynamic = true);
-	void drawActiveLightSpheres();
+	void drawActiveLightSpheres(bool show_influence_radius = false);
 	void setSceneBoundingBox(Math::BoundingBox3D bounding_box);
 	void activateNearFocalPoint(Math::Point focal_point, double radius = 0.0);
 	void activateIntersectingLights(const Math::BoundingObject& bounding_obj);

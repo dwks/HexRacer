@@ -1,4 +1,5 @@
 #include "LightManager.h"
+#include "opengl/GeometryDrawing.h"
 #include "misc/StdVectorFunctions.h"
 #include <math.h>
 using namespace Project;
@@ -35,13 +36,13 @@ namespace Render {
 		}
 		else {
 			if (high_priorty)
-				priorityStaticLightTree->add(new_node);
+				addStaticLight(priorityStaticLightTree, new_node);
 			else
-				staticLightTree->add(new_node);
+				addStaticLight(staticLightTree, new_node);
 		}
 	}
 
-	void LightManager::drawActiveLightSpheres() {
+	void LightManager::drawActiveLightSpheres(bool show_influence_radius) {
 
 		for (unsigned int i = 0; i < activeLights.size(); i++) {
 
@@ -55,21 +56,29 @@ namespace Render {
 			float radius = LIGHT_MANAGER_DRAW_LIGHT_SCALE;
 			glTranslatef(light_pos.getX(), light_pos.getY(), light_pos.getZ());
 			glScalef(radius, radius, radius);
+
 			glCallList(sphereID);
+
+			if (show_influence_radius) {
+				radius = activeLights[i]->getRadius()/radius;
+				glScalef(radius, radius, radius);
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+				glCallList(sphereID);
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
 
 			glPopMatrix();
 		}
 
 	}
 
-	void activateIntersectingLights(Math::BoundingObject& bounding_obj);
-
-	void LightManager::activateStaticLights(Math::BSPTree* light_tree, const Math::BoundingObject& object) {
+	void LightManager::activateStaticLights(Math::BSPTree3D* light_tree, const Math::BoundingObject& object) {
 		if (activeLights.size() >= maxActiveLights)
 			return;
 
 		vector<ObjectSpatial*> visible_lights;
 		light_tree->appendQuery(&visible_lights, object, SpatialContainer::INTERSECT);
+		//light_tree->appendAll(&visible_lights);
 		for (unsigned int i = 0; i < visible_lights.size() && activeLights.size() < maxActiveLights; i++) {
 			LightManagerNode* light_node = (LightManagerNode*) visible_lights[i];
 			if (!light_node->active) {
@@ -147,5 +156,16 @@ namespace Render {
 
 	}
 
+	void LightManager::addStaticLight(Math::BSPTree3D* light_tree, LightManagerNode* light_node) {
+
+		BoundingBox3D light_bounding_box = BoundingBox3D((const BoundingBox3D&)light_tree->getBoundingObject());
+		if (!light_node->isInside(light_bounding_box)) {
+			light_bounding_box.expandToInclude(*light_node);
+			light_tree->resize(light_bounding_box);
+		}
+
+		light_tree->add(light_node);
+
+	}
 }  // namespace Render
 }  // namespace Project

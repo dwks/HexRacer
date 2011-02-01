@@ -42,26 +42,30 @@ void main() {
 	vec4 specular_color = vec4(0.0, 0.0, 0.0, 0.0);
 	vec4 ambient_color = vec4(0.0, 0.0, 0.0, 0.0);
 	
-	for (int i = 0; i < numLights; i++) {
+	for (int i = 0; i < 8; i++) {
 	
-		float light_dist = length((position-gl_LightSource[i].position).xyz);
-		
-		float attenuation = 1.0/(gl_LightSource[i].constantAttenuation + gl_LightSource[i].quadraticAttenuation*light_dist*light_dist);
-		if (attenuation >= 0.004) {
-		
-			attenuation = min(attenuation, 1.0);
-			vec3 light = normalize((position-gl_LightSource[i].position).xyz);
+		if (i < numLights) {
+	
+			float light_dist = length((position-gl_LightSource[i].position).xyz);
+			
+			float attenuation = 1.0/(gl_LightSource[i].constantAttenuation + gl_LightSource[i].quadraticAttenuation*light_dist*light_dist);
+			if (attenuation >= 0.004) {
+			
+				attenuation = min(attenuation, 1.0);
+				vec3 light = normalize((position-gl_LightSource[i].position).xyz);
 
-			float kdiff = -dot(light, normal);
-			kdiff = max(kdiff, 0.0);
+				float kdiff = -dot(light, normal);
+				kdiff = max(kdiff, 0.0);
+				
+				float kspec =-dot(reflection,light);
+				kspec = max(kspec, 0.0);
+				kspec = pow(kspec, gl_FrontMaterial.shininess);
+				
+				diffuse_color += gl_LightSource[i].diffuse*kdiff*attenuation;
+				specular_color += gl_LightSource[i].specular*kspec*attenuation;
+				ambient_color += gl_LightSource[i].ambient*attenuation;
+			}
 			
-			float kspec =-dot(reflection,light);
-			kspec = max(kspec, 0.0);
-			kspec = pow(kspec, gl_FrontMaterial.shininess);
-			
-			diffuse_color += gl_LightSource[i].diffuse*kdiff*attenuation;
-			specular_color += gl_LightSource[i].specular*kspec*attenuation;
-			ambient_color += gl_LightSource[i].ambient*attenuation;
 		}
 		
 	}

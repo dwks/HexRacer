@@ -10,6 +10,7 @@
 
 #include "math/Point.h"
 #include "opengl/MathWrapper.h"
+#include "opengl/GeometryDrawing.h"
 #include "render/TextureCube.h"
 
 #include "event/ObserverList.h"
@@ -20,6 +21,7 @@
 #include "render/ShaderUniformVector4.h"
 #include "render/BackgroundRenderable.h"
 #include "render/TransformedMesh.h"
+#include "render/ColorConstants.h"
 
 #include "sound/SoundSystem.h"
 
@@ -62,6 +64,9 @@ SDLMain::~SDLMain() {
 void SDLMain::resizeGL(int width, int height) {
     // in case of divide by zero
     if(height == 0) height = 1;
+
+	viewWidth = width;
+	viewHeight = height;
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -135,6 +140,13 @@ void SDLMain::initRenderer() {
     renderer = new Render::RenderManager();
     lightManager = renderer->getLightManager();
     mapRenderable = new Render::RenderList();
+
+	//Minimap camera
+	minimapCamera = new OpenGL::Camera(OpenGL::Camera::ORTHOGRAPHIC);
+	minimapCamera->setUpDirection(Math::Point(0.0, 0.0, 1.0));
+	minimapCamera->setLookDirection(Math::Point(0.0, -1.0, 0.0));
+	minimapCamera->setNearPlane(-20.0);
+	minimapCamera->setFarPlane(20.0);
     
     renderer->loadShadersFile("shaders.txt");
     
@@ -162,18 +174,12 @@ void SDLMain::initRenderer() {
 		lightManager->addLight(map_lights[i], !map_lights[i]->getHasAttenuation(), false);
 	}
 
-	/*
-    testPaintColor = 0;
-    if(GET_SETTING("render.paint.enabled", 1)) {
-        Paint::PaintGenerator paint_gen(test_terrain->getTriangles());
-        paintCells = paint_gen.getPaintCells();
-        paintManager->setPaintCells(paintCells);
-    }
-	*/
-    
+    //Set background shader
     Render::BackgroundRenderable* background = new Render::BackgroundRenderable(cameraObject->camera);
     background->getRenderProperties()->setWantsShaderName("backgroundShader");
     mapRenderable->addRenderable(background);
+
+	minimapTexture = Render::Texture::loadTexture2D(map->getMap2DFile());
     
     renderer->setCubeMap(map->getCubeMap());
 }
@@ -292,12 +298,21 @@ void SDLMain::run() {
         
         {
             render();
-            
-            // suspension does not look good when it is out of sync with rendering
+
+			// suspension does not look good when it is out of sync with rendering
             suspension->doAction(SDL_GetTicks());
             //suspension->doStep(SDL_GetTicks());
-            
-            physicsWorld->render();
+
+			physicsWorld->render();
+
+			if (GET_SETTING("render.minimap.enable", true)) {
+				double minimap_draw_height = viewHeight*GET_SETTING("render.minimap.drawheight", 0.2);
+				renderMinimap(
+					minimap_draw_height*GET_SETTING("render.minimap.drawaspect", 1.0),
+					minimap_draw_height
+					);
+			}
+       
             glFlush();
             
             SDL_GL_SwapBuffers();
@@ -336,6 +351,7 @@ void SDLMain::run() {
     
     delete meshLoader;
     delete physicsWorld;
+	delete minimapCamera;
 }
 
 void SDLMain::handleEvents() {
@@ -385,6 +401,9 @@ void SDLMain::updateCamera() {
 }
 
 void SDLMain::render() {
+
+	cameraObject->camera->glProjection();
+
     glMatrixMode(GL_MODELVIEW);
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -393,9 +412,9 @@ void SDLMain::render() {
 	OpenGL::Color::glColor(OpenGL::Color::WHITE);
     
 	cameraObject->camera->glLookAt();
-    
-	//Activate all lights near the camera's focal point
-	lightManager->activateNearFocalPoint(cameraObject->camera->getLookPosition());
+  
+	//Activate all lights near the camera focal point
+	lightManager->activateNearFocalPoint(cameraObject->camera->getLookPosition(), 10.0);
 	//Activate all lights visible to the camera
 	lightManager->activateIntersectingLights(*cameraObject->camera->getFrustrum());
 
@@ -408,23 +427,98 @@ void SDLMain::render() {
 	//Pass the camera to the renderer for culling
 	renderer->setCamera(cameraObject->camera);
 
-    //Render most of the world
+	 //Render most of the world
     worldManager->getWorld()->preRender();
     worldManager->getWorld()->getRenderableObject()->render(renderer);
 	
 	//Render the map
 	mapRenderable->render(renderer);
 
-	//Render the paint
-	paintManager->render(renderer);
-
 	//Reset the lights
 	lightManager->resetLights();
     
 	//Revert the rendering state
-	glDisable(GL_COLOR_MATERIAL);
+	//glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
+
+	//Render the paint
+	paintManager->render(renderer);
+}
+
+void SDLMain::renderMinimap(int minimap_draw_width, int minimap_draw_height) {
+
+	glViewport(viewWidth-minimap_draw_width, 0, minimap_draw_width, minimap_draw_height);
+	float minimap_aspect = (float) minimap_draw_width / (float) minimap_draw_height;
+
+	Math::Point player_pos = Math::Point::point2D(playerManager->getPlayer()->getPosition(), Y_AXIS);
+
+	float minimap_image_half_height = map->getMap2DHeight()*0.5;
+	float minimap_image_half_width = map->getMap2DWidth()*0.5;
+	Math::Point minimap_image_center = map->getMap2DCenter();
+
+	minimapCamera->setAspect(minimap_aspect);
+	minimapCamera->setOrthoHeight(GET_SETTING("render.minimap.height", 40.0));
+	minimapCamera->setPosition(Math::Point(player_pos.getX(), 1.0f, player_pos.getZ()));
+
+	minimapCamera->glProjection();
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	minimapCamera->glLookAt();
+
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, minimapTexture);
+	glEnable(GL_BLEND);
+	glDepthMask(GL_FALSE);
+	glDisable(GL_DEPTH_TEST);
+	
+	//Draw the map texture
+	OpenGL::Color::glColor(OpenGL::Color::WHITE, 0.5);
+	glBegin(GL_QUADS);
+
+	glTexCoord2f(1.0, 1.0);
+	glVertex3f(minimap_image_center.getX()-minimap_image_half_width, 0.0f, minimap_image_center.getZ()-minimap_image_half_height);
+	glTexCoord2f(0.0, 1.0);
+	glVertex3f(minimap_image_center.getX()+minimap_image_half_width, 0.0f, minimap_image_center.getZ()-minimap_image_half_height);
+	glTexCoord2f(0.0, 0.0);
+	glVertex3f(minimap_image_center.getX()+minimap_image_half_width, 0.0f, minimap_image_center.getZ()+minimap_image_half_height);
+	glTexCoord2f(1.0, 0.0);
+	glVertex3f(minimap_image_center.getX()-minimap_image_half_width, 0.0f, minimap_image_center.getZ()+minimap_image_half_height);
+
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+
+	OpenGL::Color::glColor(Render::ColorConstants::playerColor(playerManager->getPlayer()->getID()));
+
+	//Draw a point representing the player
+	glPointSize(5.0f);
+	glBegin(GL_POINTS);
+	OpenGL::MathWrapper::glVertex(player_pos);
+	glEnd();
+	glPointSize(1.0f);
+
+	//Draw the paint
+	Math::Point camera_diagonal = Math::Point(minimapCamera->getOrthoWidth()*0.5, 0.0, minimapCamera->getOrthoHeight()*0.5);
+	Math::BoundingBox2D minimap_box = BoundingBox2D(player_pos-camera_diagonal, player_pos+camera_diagonal, Y_AXIS);
+
+	if (GET_SETTING("render.minimap.drawpaint", true)) {
+		paintManager->minimapRender(minimap_box, 0.5f);
+	}
+
+	//Draw a border around the minimap
+	OpenGL::Color::glColor(OpenGL::Color::WHITE, 0.5);
+	glLineWidth(2.0f);
+	OpenGL::GeometryDrawing::drawBoundingBox2D(minimap_box, true);
+	glLineWidth(1.0f);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
+
+	glViewport(0, 0, viewWidth, viewHeight);
+
 }
 
 }  // namespace SDL

@@ -24,7 +24,7 @@ namespace Render {
         }
     }
     
-	MeshGroup* MeshLoader::loadOBJ(string model_name, string filename) {
+	MeshGroup* MeshLoader::loadOBJ(string model_name, string filename, bool cullable) {
 
 		//Check if a model with the same name already exists
 		MeshGroup* group = getModelByName(model_name, true);
@@ -130,7 +130,7 @@ namespace Render {
 				vert_index += 3;
 			}
 
-			Mesh* sub_mesh = new Mesh(face_list, mat);
+			Mesh* sub_mesh = new Mesh(face_list, mat, cullable);
 			RenderProperties* properties = sub_mesh->getRenderProperties();
 			if (mat) {
 				properties->setMaterial(mat);

@@ -9,10 +9,12 @@ namespace Render {
 
 	ShaderParamSetter::ShaderParamSetter() {
 		this->manager = 0;
+		hasTangentSpace = false;
 	}
 
 	ShaderParamSetter::ShaderParamSetter(RenderManager* manager) {
 		this->manager = manager;
+		hasTangentSpace = false;
 	}
 
 	void ShaderParamSetter::setUniformInt(const char *name, GLint value) {
@@ -39,6 +41,10 @@ namespace Render {
 
 	void ShaderParamSetter::setAttributeVector4(const char *name, Color color) {
 		manager->setAttributeVector4(name, color);
+	}
+
+	void ShaderParamSetter::setTangents(Math::Point tangent, Math::Point bitangent) {
+		manager->setTangents(tangent, bitangent);
 	}
 
 }  // namespace Render

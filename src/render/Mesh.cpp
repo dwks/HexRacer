@@ -14,20 +14,25 @@ namespace Render {
 		triangleTree = NULL;
 		cullingObject = NULL;
 		material = NULL;
-		queryType = SpatialContainer::BOX_INTERSECT;
+		displayList = 0;
 	}
 
-	Mesh::Mesh(vector< MeshTriangle* > _triangles, Material* _material) {
+	Mesh::Mesh(vector< MeshTriangle* > _triangles, Material* _material, bool cullable) {
+
 		triangles = _triangles;
 		material = _material;
 
 		triangleTree = NULL;
 		cullingObject = NULL;
-		queryType = SpatialContainer::BOX_INTERSECT;
+		displayList = 0;
 
-		if (triangles.size() >= MIN_TREE_SIZE) {
+		if (cullable) {
 			generateTriangleTree();
 		}
+		else {
+			generateDisplayList();
+		}
+
 	}
 
 	Mesh::~Mesh() {
@@ -58,24 +63,57 @@ namespace Render {
 
 	}
 
-	void Mesh::renderGeometry(ShaderParamSetter& setter, const BoundingObject* bounding_object) {
+	void Mesh::generateDisplayList() {
+
+		displayList = glGenLists(1);
+		glNewList(displayList, GL_COMPILE);
 
 		glBegin(GL_TRIANGLES);
+		for (unsigned int i = 0; i < triangles.size(); i++) {
+			for (short j = 0; j < 3; j++) {
+				MeshVertex* vert = triangles[i]->getMeshVertex(j);
+				MathWrapper::glNormal(vert->getNormal());
+				glTexCoord2d(vert->getTexCoordU(), vert->getTexCoordV());
+				MathWrapper::glVertex(vert->getPosition());
+			}
+		}
+		glEnd();
+
+		glEndList();
+
+	}
+
+	void Mesh::renderGeometry(ShaderParamSetter& setter, const BoundingObject* bounding_object) {
+
 
 		if (bounding_object == NULL || triangleTree == NULL) {
-			for (unsigned int i = 0; i < triangles.size(); i++) {
-				drawTriangle(triangles[i], setter);
+
+			if (setter.getHasTangentSpace() || displayList == 0) {
+
+				glBegin(GL_TRIANGLES);
+				for (unsigned int i = 0; i < triangles.size(); i++) {
+					drawTriangle(triangles[i], setter);
+				}
+				glEnd();
+
 			}
+			else {
+				glCallList(displayList);
+			}
+
 		}
 		else {
 			vector<ObjectSpatial*> culled_triangles;
 			triangleTree->appendQuery(&culled_triangles, *bounding_object, CULLING_QUERY_TYPE);
+
+			glBegin(GL_TRIANGLES);
 			for (unsigned int i = 0; i < culled_triangles.size(); i++) {
 				drawTriangle((MeshTriangle*) culled_triangles[i], setter);
 			}
+			glEnd();
 		}
 
-		glEnd();
+		
 
 	}
 
@@ -83,8 +121,7 @@ namespace Render {
 		for (short j = 0; j < 3; j++) {
 			MeshVertex* vert = triangle->getMeshVertex(j);
 			MathWrapper::glNormal(vert->getNormal());
-			setter.setAttributeVector3("tangent", vert->getTangent());
-			setter.setAttributeVector3("bitangent", vert->getBitangent());
+			setter.setTangents(vert->getTangent(), vert->getBitangent());
 			glTexCoord2d(vert->getTexCoordU(), vert->getTexCoordV());
 			MathWrapper::glVertex(vert->getPosition());
 		}

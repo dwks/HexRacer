@@ -4,6 +4,8 @@
 varying vec4 position;
 varying float kOrient;
 
+varying vec4 vertColor;
+
 void main()
 {
 	vec3 eyeNormal = normalize(gl_NormalMatrix * gl_Normal);
@@ -15,5 +17,7 @@ void main()
 	kOrient *= 1.5;
 	kOrient = pow(kOrient, 0.5);
 	kOrient = min(kOrient, 1.0);
+	
+	vertColor = gl_Color*kOrient;
 
 }

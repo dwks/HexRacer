@@ -76,27 +76,52 @@ namespace Paint {
 		for (unsigned int i = 0; i < visible_cells.size(); i++) {
 
 			PaintCell* cell = (PaintCell*) visible_cells[i];
-			if (cell->playerColor >= 0) {
-
-				if (lastDrawnColor != cell->playerColor) {
-					setter.setUniformVector4("playerColor", ColorConstants::playerColor(cell->playerColor));
-					lastDrawnColor = cell->playerColor;
-				}
-				glBegin(GL_TRIANGLE_FAN);
-				OpenGL::MathWrapper::glNormal(cell->normal);
-				OpenGL::MathWrapper::glVertex(cell->center);
-				for (int j = 0; j < Paint::PaintCell::CELL_VERTICES; j++) {
-					OpenGL::MathWrapper::glVertex(cell->vertex[j]);
-				}
-				OpenGL::MathWrapper::glVertex(cell->vertex[0]);
-				glEnd();
-
+			/*
+			if (lastDrawnColor != cell->playerColor) {
+				setter.setUniformVector4("playerColor", ColorConstants::playerColor(cell->playerColor));
+				lastDrawnColor = cell->playerColor;
 			}
+			*/
+			OpenGL::Color::glColor(ColorConstants::playerColor(cell->playerColor));
 
+			glBegin(GL_TRIANGLE_FAN);
+			OpenGL::MathWrapper::glNormal(cell->normal);
+			OpenGL::MathWrapper::glVertex(cell->center);
+			for (int j = 0; j < Paint::PaintCell::CELL_VERTICES; j++) {
+				OpenGL::MathWrapper::glVertex(cell->vertex[j]);
+			}
+			OpenGL::MathWrapper::glVertex(cell->vertex[0]);
+			glEnd();
 		}
 
 	}
 
+	void PaintManager::minimapRender(const Math::BoundingBox2D& bounding_box, float alpha) {
+
+		vector<ObjectSpatial*> visible_cells;
+
+		coloredPaintTree->appendQuery(&visible_cells, bounding_box, SpatialContainer::INSIDE);
+
+		glBegin(GL_QUADS);
+		for (unsigned int i = 0; i < visible_cells.size(); i++) {
+
+			PaintCell* cell = (PaintCell*) visible_cells[i];
+			OpenGL::Color::glColor(ColorConstants::playerColor(cell->playerColor), alpha);
+			
+			OpenGL::MathWrapper::glVertex(cell->getCorner(false, false, false));
+			OpenGL::MathWrapper::glVertex(cell->getCorner(true, false, false));
+			OpenGL::MathWrapper::glVertex(cell->getCorner(true, false, true));
+			OpenGL::MathWrapper::glVertex(cell->getCorner(false, false, true));
+
+			/*
+			for (int j = 0; j < Paint::PaintCell::CELL_VERTICES; j += 2)
+				OpenGL::MathWrapper::glVertex(cell->vertex[j]);
+				*/
+			
+		}
+		glEnd();
+
+	}
 	void PaintManager::colorCellsByIndex(const vector<int> &cell_indices, int new_color) {
 		for (unsigned int i = 0; i < cell_indices.size(); i++) {
 			colorCell(paintList[cell_indices[i]], new_color);

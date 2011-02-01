@@ -1,6 +1,7 @@
 #include "LightManagerNode.h"
 #include <math.h>
 #include <float.h>
+#include "config.h"
 
 namespace Project {
 namespace Render {
@@ -17,6 +18,7 @@ namespace Render {
 		//Set the radius to where the light influence passes below the threshhold
 		if (!light->getHasAttenuation()) {
 			setRadius(FLT_MAX);
+			prevQuadAttenuation = light->getQuadraticAttenuation();
 		}
 		else {
 			if (light->getQuadraticAttenuation() != prevQuadAttenuation) {

@@ -314,7 +314,7 @@ namespace Map {
 
 	void HRMap::loadMapMesh(HRMap::MeshType type, string filename) {
 		MeshLoader::getInstance()->deleteModelByName(meshName(type));
-		mapMesh[static_cast<int>(type)] = MeshLoader::getInstance()->loadOBJ(meshName(type), filename);
+		mapMesh[static_cast<int>(type)] = MeshLoader::getInstance()->loadOBJ(meshName(type), filename, true);
 		mapMeshFile[static_cast<int>(type)] = filename;
 		if (type != DECOR)
 			clearCollisionTree();

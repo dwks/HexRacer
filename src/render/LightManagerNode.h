@@ -4,8 +4,6 @@
 #include "Light.h"
 #include "math/BoundingSphere.h"
 
-#define LIGHT_MANAGER_MIN_ATTENUATION_THRESHHOLD 0.004
-
 namespace Project {
 namespace Render {
 

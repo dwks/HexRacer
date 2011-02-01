@@ -7,6 +7,7 @@
 
 #include "render/BaseRenderable.h"
 #include "math/BSPTree3D.h"
+#include "math/BoundingBox2D.h"
 
 #include "event/PaintEvent.h"
 #include "event/PaintCellsChanged.h"
@@ -45,8 +46,8 @@ private:
 	Math::BSPTree3D* coloredPaintTree;
 	int lastDrawnColor;
 
-	static const int TREE_SPLIT_SIZE = 10;
-	static const Math::BSPTree3D::SplitMethod TREE_SPLIT_METHOD = Math::BSPTree3D::MIN_OVERLAP;
+	static const int TREE_SPLIT_SIZE = 20;
+	static const Math::BSPTree3D::SplitMethod TREE_SPLIT_METHOD = Math::BSPTree3D::LARGEST_AXIS;
 
 	bool colorCell(PaintCell* cell, int new_color);
 
@@ -58,6 +59,8 @@ public:
 	void setPaintCells(const std::vector<PaintCell*>& paint_cells);
 
 	void renderGeometry(Render::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object = NULL);
+
+	void minimapRender(const Math::BoundingBox2D& bounding_box, float alpha = 1.0f);
 
 	/** Color paint cells by their numerical index
 		@param cell_indices A vector with the indices of all paint cells to color

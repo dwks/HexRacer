@@ -4,8 +4,10 @@
 varying vec4 position;
 varying float kOrient;
 
-uniform vec4 playerColor;
+varying vec4 vertColor;
+
+//uniform vec4 playerColor;
 
 void main() {
-	gl_FragColor = playerColor * kOrient;
+	gl_FragColor = vertColor;
 }

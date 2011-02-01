@@ -25,7 +25,7 @@ public:
 		the file @a filename
 		Returns a pointer to the mesh group object if successful, 0 otherwise
 	*/
-	MeshGroup* loadOBJ(string model_name, string filename);
+	MeshGroup* loadOBJ(string model_name, string filename, bool cullable = false);
 	
 	MeshGroup* getModelByName(string model_name, bool expectFailure = false);
 

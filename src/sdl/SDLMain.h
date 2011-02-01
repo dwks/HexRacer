@@ -46,8 +46,11 @@ class SDLMain {
 private:
 
 	OpenGL::SimpleTrackball *simpleTrackball;
-	OpenGL::Camera *camera;
+	OpenGL::Camera *minimapCamera;
     SDL::CameraObject *cameraObject;
+
+	int viewWidth;
+	int viewHeight;
     
     bool quit;
     
@@ -67,6 +70,7 @@ private:
 	Render::LightManager *lightManager;
 
 	Map::HRMap* map;
+	GLuint minimapTexture;
 
 	int testPaintColor;
 
@@ -106,6 +110,7 @@ private:
     void resizeGL(int width, int height);
     void render();
     void renderGrid();
+	void renderMinimap(int minimap_width, int minimap_height);
     
     void handleEvents();
 	void updateCamera();
