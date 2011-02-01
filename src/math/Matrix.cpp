@@ -117,6 +117,12 @@ Point Matrix::operator * (const Point &point) const {
     return result;
 }
 
+Triangle3D Matrix::operator * (const Triangle3D &triangle) const {
+	return Triangle3D((*this)*triangle.getVertex(0),
+		(*this)*triangle.getVertex(1),
+		(*this)*triangle.getVertex(2));
+}
+
 Matrix Matrix::operator * (const Matrix &other) const {
     Matrix result;
     

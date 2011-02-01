@@ -6,7 +6,8 @@ using namespace std;
 namespace Project {
 namespace Render {
 
-	MeshGroup::MeshGroup(string _name, vector<Mesh*> meshes, vector<MeshVertex*> _vertices) {
+	MeshGroup::MeshGroup(string _name, vector<Mesh*> meshes, vector<MeshVertex*> _vertices,
+		std::vector<Triangle3D>* collision_mask) {
 
 		this->name = _name;
 		for (unsigned int i = 0; i < meshes.size(); i++) {
@@ -20,6 +21,8 @@ namespace Render {
 				boundingBox.expandToInclude(*vertices[i]);
 			}
 		}
+
+		collisionMask = collision_mask;
 	}
 
 	MeshGroup::~MeshGroup() {
@@ -27,6 +30,8 @@ namespace Render {
 			delete(meshes[i]);
 		for (unsigned int i = 0; i < vertices.size(); i++)
 			delete(vertices[i]);
+		if (collisionMask)
+			delete(collisionMask);
 	}
 
 	vector<RenderableObject*> MeshGroup::getChildren() {
@@ -34,6 +39,9 @@ namespace Render {
 	}
 
 	vector<Triangle3D> MeshGroup::getTriangles() {
+		if (collisionMask)
+			return *collisionMask;
+
 		if (meshes.size() == 1) {
 			return ((Mesh*)meshes[0])->getTriangles();
 		}

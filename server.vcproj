@@ -184,6 +184,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\timing\AccelControl.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\log\AliasStream.cpp"
 				>
 			</File>
@@ -373,6 +377,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\model_obj.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\MotionState.cpp"
 				>
 			</File>
 			<File
@@ -746,6 +754,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\timing\AccelControl.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\log\AliasStream.h"
 				>
 			</File>
@@ -935,6 +947,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\model_obj.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\MotionState.h"
 				>
 			</File>
 			<File

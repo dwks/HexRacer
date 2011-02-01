@@ -19,11 +19,13 @@ private:
 	std::string name;
 	std::vector<RenderableObject*> meshes;
 	std::vector<MeshVertex*> vertices;
+	std::vector<Math::Triangle3D>* collisionMask;
 	Math::BoundingBox3D boundingBox;
 
 public:
 
-	MeshGroup(std::string _name, std::vector<Mesh*> meshes, std::vector<MeshVertex*> _vertices);
+	MeshGroup(std::string _name, std::vector<Mesh*> meshes, std::vector<MeshVertex*> _vertices,
+		std::vector<Math::Triangle3D>* collison_mask = NULL);
 	~MeshGroup();
 	std::string getName() { return name; }
 	std::vector<RenderableObject*> getChildren();

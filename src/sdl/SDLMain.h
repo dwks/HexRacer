@@ -1,7 +1,6 @@
 #ifndef PROJECT_SDL__SDLMAIN_H
 #define PROJECT_SDL__SDLMAIN_H
 
-#include "opengl/Trackball.h"
 #include "opengl/SimpleTrackball.h"
 #include "opengl/Camera.h"
 #include "sdl/CameraObject.h"
@@ -31,6 +30,8 @@
 #include "event/CameraMovement.h"
 #include "event/QuitEvent.h"
 
+#include "map/HRMap.h"
+
 #include "timing/AccelControl.h"
 
 #define FIELD_OF_VIEW 60
@@ -43,7 +44,7 @@ namespace SDL {
 
 class SDLMain {
 private:
-    //OpenGL::Trackball *trackball;
+
 	OpenGL::SimpleTrackball *simpleTrackball;
 	OpenGL::Camera *camera;
     SDL::CameraObject *cameraObject;
@@ -62,8 +63,10 @@ private:
     
 	Render::MeshLoader *meshLoader;
 	Render::RenderManager *renderer;
-	Render::RenderList* rootRenderable;
+	Render::RenderList* mapRenderable;
 	Render::LightManager *lightManager;
+
+	Map::HRMap* map;
 
 	int testPaintColor;
 

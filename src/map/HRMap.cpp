@@ -43,6 +43,11 @@ namespace Map {
 
 		ifstream in_file;
 		in_file.open(filename.c_str());
+
+		if (!in_file) {
+			return false;
+		}
+
 		while (!in_file.eof()) {
 
 			bool cube_map = false;
@@ -519,7 +524,7 @@ namespace Map {
 
 	bool HRMap::addPropMesh(std::string name, std::string filename) {
 
-		if (!vectorContains(propMeshNames, name) && !MeshLoader::getInstance()->getModelByName(name)) {
+		if (!vectorContains(propMeshNames, name) && !MeshLoader::getInstance()->getModelByName(name, true)) {
 			if (MeshLoader::getInstance()->loadOBJ(name, filename)) {
 				propMeshNames.push_back(name);
 				propMeshFilenames.push_back(filename);
@@ -531,7 +536,7 @@ namespace Map {
 
 	}
 	bool HRMap::removePropMesh(int index) {
-		if (index >= 0 && index < propMeshNames.size()) {
+		if (index >= 0 && index < static_cast<int>(propMeshNames.size())) {
 			MeshLoader::getInstance()->deleteModelByName(propMeshNames[index]);
 			for (unsigned int i = 0; i < meshInstances.size(); i++) {
 				if (meshInstances[i]->getMeshName() == propMeshNames[index]) {

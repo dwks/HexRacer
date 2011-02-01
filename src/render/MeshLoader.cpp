@@ -141,18 +141,41 @@ namespace Render {
 
 			mesh_list.push_back(sub_mesh);
 		}
-
-		/*
-		float width = obj_file.getWidth()*0.5f;
-		float height = obj_file.getHeight()*0.5f;
-		float length = obj_file.getLength()*0.5f;
-		obj_file.destroy();
-		*/
-
-		MeshGroup* new_group = new MeshGroup(model_name, mesh_list, vert_list);
-		models.push_back(new_group);
-
 		obj_file.destroy(); //Unload the obj file content
+
+		vector<Triangle3D>* collision_triangles = NULL;
+
+		//Load the mesh's collision mask if it has one
+		string mask_filename = filename.insert(filename.length()-4, "_c");
+		ModelOBJ mask_file;
+		if (mask_file.import(mask_filename.c_str(), true)) {
+
+			collision_triangles = new vector<Triangle3D>();
+			const int* index = mask_file.getIndexBuffer();
+			
+			for (int i = 0; i < mask_file.getNumberOfMeshes(); i++) {
+
+				ModelOBJ::Mesh mesh = mask_file.getMesh(i);
+				for (int j = 0; j < mesh.triangleCount; j++) {
+					int vert_index = mesh.startIndex;
+					for (int j = 0; j < mesh.triangleCount; j++) {
+
+						Point vertex[3];
+						for (int i = 0; i < 3; i++) {
+							ModelOBJ::Vertex v = mask_file.getVertex(index[vert_index+i]);
+							vertex[i] = Point(v.position[0], v.position[1], v.position[2]);
+						}
+						collision_triangles->push_back(Triangle3D(vertex[0], vertex[1], vertex[2]));
+		
+						vert_index += 3;
+					}
+				}
+			}
+        }
+		mask_file.destroy();
+
+		MeshGroup* new_group = new MeshGroup(model_name, mesh_list, vert_list, collision_triangles);
+		models.push_back(new_group);
 
 		return new_group;
 		

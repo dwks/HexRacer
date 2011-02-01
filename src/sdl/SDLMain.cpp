@@ -19,6 +19,7 @@
 
 #include "render/ShaderUniformVector4.h"
 #include "render/BackgroundRenderable.h"
+#include "render/TransformedMesh.h"
 
 #include "sound/SoundSystem.h"
 
@@ -133,57 +134,48 @@ void SDLMain::initRenderer() {
     meshLoader = new Render::MeshLoader();
     renderer = new Render::RenderManager();
     lightManager = renderer->getLightManager();
-    rootRenderable = new Render::RenderList();
+    mapRenderable = new Render::RenderList();
     
     renderer->loadShadersFile("shaders.txt");
     
-    //Load the model
-    meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
+    //Load the vehicle model
     Render::RenderableObject *object
         = meshLoader->loadOBJ("playerCube", "models/vehicle01.obj");
     object->getRenderProperties()->setTransformation(
         Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0)));
-    
-    //Add the test terrain
-    test_terrain = meshLoader->getModelByName("testTerrain");
-    
-    paintManager = new Paint::PaintManager();
-    
+
+	//Instantiate the map
+	map = new Map::HRMap();
+	if (map->loadMapFile(GET_SETTING("map", "maps/testtrack.hrm"))) {
+		LOG(WORLD, "Loaded Map File " << GET_SETTING("map", "maps/testtrack.hrm"));
+	}
+	else {
+		LOG(WORLD, "Unable to load map " << GET_SETTING("map", "maps/testtrack.hrm"));
+	}
+ 
+	paintManager = new Paint::PaintManager();
+	paintManager->setPaintCells(map->getPaintCells());
+
+	//Add the map lights to the light manager
+	vector<Render::Light*> map_lights = map->getLights();
+	for (unsigned i = 0; i < map_lights.size(); i++) {
+		lightManager->addLight(map_lights[i], !map_lights[i]->getHasAttenuation(), false);
+	}
+
+	/*
     testPaintColor = 0;
     if(GET_SETTING("render.paint.enabled", 1)) {
         Paint::PaintGenerator paint_gen(test_terrain->getTriangles());
         paintCells = paint_gen.getPaintCells();
         paintManager->setPaintCells(paintCells);
     }
+	*/
     
     Render::BackgroundRenderable* background = new Render::BackgroundRenderable(cameraObject->camera);
     background->getRenderProperties()->setWantsShaderName("backgroundShader");
+    mapRenderable->addRenderable(background);
     
-    rootRenderable->addRenderable(test_terrain);
-    rootRenderable->addRenderable(background);
-    
-    Render::TextureCube* background_texture = new Render::TextureCube(
-        "models/starfield.png",
-        "models/starfield.png",
-        "models/starfield.png",
-        "models/starfield.png",
-        "models/starfield.png",
-        "models/starfield.png");
-
-    renderer->setCubeMap(background_texture);
-    
-    //Create some lights
-    Render::Light* light = new Render::Light(Math::Point(1.0f, 2.0f, -1.0f));
-    light->setHasAttenuation(false);
-    light->setAmbient(OpenGL::Color(0.5, 0.5, 0.5));
-    light->setStrength(20.0f);
-    lightManager->addLight(light);
-
-    light = new Render::Light(Math::Point(7.0f, 2.5f, 3.0f));
-    light->setDiffuse(OpenGL::Color::INDIGO);
-    light->setSpecular(OpenGL::Color::INDIGO);
-    light->setStrength(10.0f);
-    lightManager->addLight(light);
+    renderer->setCubeMap(map->getCubeMap());
 }
 
 void SDLMain::run() {
@@ -191,7 +183,7 @@ void SDLMain::run() {
     
     initOpenGL();
     initRenderer();
-    
+
     accelControl = new Timing::AccelControl();
     
     // this must happen before Players are created
@@ -223,11 +215,47 @@ void SDLMain::run() {
     
     ADD_OBSERVER(new CameraObserver(simpleTrackball, cameraObject->camera));
     ADD_OBSERVER(new QuitObserver(this));
-    
-    Physics::PhysicsWorld::getInstance()->registerRigidBody(
-        Physics::PhysicsFactory::createRigidTriMesh(
-            test_terrain->getTriangles()));
-    
+
+	//Process map meshes
+	for (int i = 0; i < Map::HRMap::NUM_MESHES; i++) {
+		Map::HRMap::MeshType type = static_cast<Map::HRMap::MeshType>(i);
+		if (map->getMapMesh(type)) {
+
+			//Add visible meshes to the map renderable
+			if (!Map::HRMap::meshIsInvisible(type)) {
+				mapRenderable->addRenderable(map->getMapMesh(type));
+			}
+
+			//Add solid meshes to the physics
+			if (Map::HRMap::meshIsSolid(type)) {
+				Physics::PhysicsWorld::getInstance()->registerRigidBody(
+					Physics::PhysicsFactory::createRigidTriMesh(map->getMapMesh(type)->getTriangles())
+					);
+			}
+
+		}
+		
+	}
+
+	//Process mesh instances
+	vector<Map::MeshInstance*> instances = map->getMeshInstances();
+	for (unsigned i = 0; i < instances.size(); i++) {
+
+		Render::TransformedMesh* transformed_mesh = new Render::TransformedMesh(
+			instances[i]->getMeshGroup(), instances[i]->getTransformation()
+			);
+		//Add the mesh to the map renderable
+		mapRenderable->addRenderable(transformed_mesh);
+
+		//If the instance is solid static, add it to the physics
+		if (instances[i]->getType() == Map::MeshInstance::SOLID_STATIC) {
+			Physics::PhysicsWorld::getInstance()->registerRigidBody(
+					Physics::PhysicsFactory::createRigidTriMesh(transformed_mesh->getTransformedTriangles())
+					);
+		}
+	}
+
+
 #ifdef HAVE_OPENAL
     Sound::SoundSystem *soundSystem = new Sound::SoundSystem();
     if(!soundSystem->initialize()) {
@@ -298,7 +326,7 @@ void SDLMain::run() {
     delete soundSystem;
 #endif
     
-    delete rootRenderable;
+    delete mapRenderable;
     
     delete inputManager;
     delete network;
@@ -384,8 +412,8 @@ void SDLMain::render() {
     worldManager->getWorld()->preRender();
     worldManager->getWorld()->getRenderableObject()->render(renderer);
 	
-	//Render the scene
-	rootRenderable->render(renderer);
+	//Render the map
+	mapRenderable->render(renderer);
 
 	//Render the paint
 	paintManager->render(renderer);

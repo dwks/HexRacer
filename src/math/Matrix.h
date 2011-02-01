@@ -4,6 +4,7 @@
 #include <iosfwd>
 
 #include "Point.h"
+#include "Triangle3D.h"
 
 namespace Project {
 namespace Math {
@@ -35,6 +36,7 @@ public:
     void operator = (const Matrix &other);
     
     Point operator * (const Point &point) const;
+	Triangle3D operator * (const Triangle3D &triangle) const;
     Matrix operator * (const Matrix &other) const;
     
     bool operator == (const Matrix &other) const;

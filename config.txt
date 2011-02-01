@@ -2,7 +2,7 @@
 # Settings for the project
 
 #map = models/testterrain.obj
-map = models/testtrack.obj
+map = maps/testtrack.hrm
 
 ########
 ### Display settings
@@ -42,10 +42,12 @@ physics.driving.sidewaysdrag      = 10.0
 render.paint.enabled = 1
 
 # Rendering quality
-#    0 = low
-#    1 = medium
-#    2 = high
-render.quality = 2
+#	 0 = very low
+#    1 = low
+#    2 = medium
+#    3 = high
+render.quality = 1
+render.shaderoutput = 1
 
 ########
 ### Camera settings

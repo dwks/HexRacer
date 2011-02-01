@@ -25,6 +25,7 @@ public:
 	virtual std::vector<RenderableObject*> getChildren() { return children; }
 	MeshGroup* getMeshGroup() const { return (MeshGroup*) children[0]; }
 	Math::BoundingSphere getBoundingSphere() const { return transformedSphere; }
+	vector<Math::Triangle3D> getTransformedTriangles() const;
 
 };
 

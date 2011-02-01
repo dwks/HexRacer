@@ -177,6 +177,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\timing\AccelControl.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\BackgroundRenderable.cpp"
 				>
 			</File>
@@ -229,11 +233,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\CubeMapFile.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\DebugDrawer.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\misc\DirectoryFunctions.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\HRMap.cpp"
 				>
 			</File>
 			<File
@@ -277,6 +289,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\MeshInstance.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\MeshLoader.cpp"
 				>
 			</File>
@@ -290,6 +306,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\model_obj.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\MotionState.cpp"
 				>
 			</File>
 			<File
@@ -322,6 +342,10 @@
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintVertex.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\PathNode.cpp"
 				>
 			</File>
 			<File
@@ -425,6 +449,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\SimpleTransform.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc\Sleeper.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\Suspension.cpp"
 				>
 			</File>
@@ -442,6 +474,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\TogglePainting.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TransformedMesh.cpp"
 				>
 			</File>
 			<File
@@ -771,6 +807,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\timing\AccelControl.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\BackgroundRenderable.h"
 				>
 			</File>
@@ -827,11 +867,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\CubeMapFile.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\DebugDrawer.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\misc\DirectoryFunctions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\HRMap.h"
 				>
 			</File>
 			<File
@@ -863,6 +911,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\MeshInstance.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\MeshLoader.h"
 				>
 			</File>
@@ -876,6 +928,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\model_obj.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\MotionState.h"
 				>
 			</File>
 			<File
@@ -912,6 +968,10 @@
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintVertex.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\PathNode.h"
 				>
 			</File>
 			<File
@@ -983,6 +1043,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\RotationAxis.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\SetDebugDrawing.h"
 				>
 			</File>
@@ -1015,6 +1079,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\SimpleTransform.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc\Sleeper.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\StdVectorFunctions.h"
 				>
 			</File>
@@ -1036,6 +1108,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\TogglePainting.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TransformedMesh.h"
 				>
 			</File>
 			<File

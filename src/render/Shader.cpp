@@ -4,6 +4,7 @@
 
 #include "Shader.h"
 #include "log/Logger.h"
+#include "settings/SettingsManager.h"
 
 using namespace Project;
 using namespace Render;
@@ -34,16 +35,19 @@ Shader::Shader(GLchar *fs, GLchar *vs) { // Built the shader program
 	int charsWritten  = 0;
 	char *infoLog;
 
-	glGetProgramiv(p, GL_INFO_LOG_LENGTH,&infologLength);
-	if (infologLength > 0)
-	{
-		infoLog = (char *)malloc(infologLength);
-		glGetProgramInfoLog(p, infologLength, &charsWritten, infoLog);
-		//printf("%s\n",infoLog);
-        //if(*infoLog != 0) {
-            LOG(OPENGL, infoLog);
-        //}
-		free(infoLog);
+	if (GET_SETTING("render.shaderoutput", false)) {
+		glGetProgramiv(p, GL_INFO_LOG_LENGTH,&infologLength);
+		if (infologLength > 0)
+		{
+
+			infoLog = (char *)malloc(infologLength);
+			glGetProgramInfoLog(p, infologLength, &charsWritten, infoLog);
+			//printf("%s\n",infoLog);
+			//if(*infoLog != 0) {
+				LOG(OPENGL, infoLog);
+			//}
+			free(infoLog);
+		}
 	}
 }
 

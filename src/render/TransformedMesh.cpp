@@ -32,5 +32,15 @@ namespace Render {
 		return (transformedSphere.intersects(bounding_obj));
 	}
 
+	vector<Math::Triangle3D> TransformedMesh::getTransformedTriangles() const {
+		std::vector<Math::Triangle3D> return_triangles;
+		std::vector<Math::Triangle3D> triangles = getMeshGroup()->getTriangles();
+		Math::Matrix matrix = transformation.getMatrix();
+		for (unsigned int i = 0; i < triangles.size(); i++) {
+			return_triangles.push_back(matrix*triangles[i]);
+		}
+		return return_triangles;
+	}
+
 }  // namespace Render
 }  // namespace Project

@@ -285,6 +285,9 @@ namespace Render {
 
 	void RenderManager::loadShadersFile(string filename) {
 
+		if (settings->getGraphicsQuality() == GRAPHICS_VERY_LOW)
+			return;
+
 		string directory = DirectoryFunctions::extractDirectory(filename);
 		LOG(OPENGL, "Loading Shader File " << filename);
 
@@ -293,6 +296,10 @@ namespace Render {
 		while (!in_file.eof()) {
 			string shader_type;
 			in_file >> shader_type;
+			if (shader_type[0] == '#') {
+				//Ignore lines starting with #
+				in_file.ignore(9999,'\n');
+			}
 			if (shader_type == "all"
 				|| (shader_type == "high" && settings->getGraphicsQuality() >= GRAPHICS_HIGH)
 				|| (shader_type == "med" && settings->getGraphicsQuality() == GRAPHICS_MED)
@@ -312,6 +319,10 @@ namespace Render {
 		
 	}
 	void RenderManager::loadShader(string name, string fragment_file, string vertex_file) {
+
+		if (settings->getGraphicsQuality() == GRAPHICS_VERY_LOW)
+			return;
+
 		if (name.length() > 0) {
 			Shader* new_shader = new Shader((GLchar*) fragment_file.c_str(),(GLchar*) vertex_file.c_str());
 			new_shader->turnShaderOff();

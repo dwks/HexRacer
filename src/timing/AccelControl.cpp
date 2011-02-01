@@ -13,6 +13,8 @@ void AccelControl::PauseGameHandler::observe(Event::PauseGame *pause) {
 }
 
 AccelControl::AccelControl() {
+	pauseStart = 0;
+	pauseSkip = 0;
     paused = false;
     instance = this;
     
