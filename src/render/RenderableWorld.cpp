@@ -8,9 +8,9 @@ RenderableWorld::RenderableWorld(std::vector<Object::ObjectBase *> &objects)
     
 }
 
-std::vector<RenderableObject*> RenderableWorld::getChildren() {
-    std::vector<RenderableObject*> renderableObjects;
-    
+const std::vector<RenderableObject*>& RenderableWorld::getChildren() {
+
+    renderableObjects.clear();
     for(std::vector<Object::ObjectBase *>::size_type x = 0; x < objects.size();
         x ++) {
         

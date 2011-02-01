@@ -19,9 +19,5 @@ namespace Render {
 		return false;
 	}
 
-	vector<RenderableObject*> RenderList::getChildren() {
-		return renderableList;
-	}
-
 }  // namespace Render
 }  // namespace Project

@@ -341,6 +341,7 @@ void SDLMain::run() {
     delete soundSystem;
 #endif
     
+	delete map;
     delete mapRenderable;
     
     delete inputManager;

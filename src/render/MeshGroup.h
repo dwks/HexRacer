@@ -28,7 +28,7 @@ public:
 		std::vector<Math::Triangle3D>* collison_mask = NULL);
 	~MeshGroup();
 	std::string getName() { return name; }
-	std::vector<RenderableObject*> getChildren();
+	const std::vector<RenderableObject*>& getChildren() { return meshes; }
 	std::vector<Math::Triangle3D> getTriangles();
 	Math::BoundingBox3D getBoundingBox() { return boundingBox; }
 

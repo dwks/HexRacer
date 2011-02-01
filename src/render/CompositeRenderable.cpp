@@ -12,7 +12,7 @@ namespace Render {
     }
     
 	void CompositeRenderable::subRender(RenderManager* manager) {
-		vector<RenderableObject*> children = getChildren();
+		const vector<RenderableObject*>& children = getChildren();
 		for (unsigned int i = 0; i < children.size(); i++) {
 			children[i]->render(manager);
 		}

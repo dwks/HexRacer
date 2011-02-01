@@ -34,10 +34,6 @@ namespace Render {
 			delete(collisionMask);
 	}
 
-	vector<RenderableObject*> MeshGroup::getChildren() {
-		return meshes;
-	}
-
 	vector<Triangle3D> MeshGroup::getTriangles() {
 		if (collisionMask)
 			return *collisionMask;

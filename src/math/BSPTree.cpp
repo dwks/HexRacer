@@ -100,10 +100,16 @@ bool BSPTree::remove(ObjectSpatial* object) {
 
 	if (!leaf) {
 		if (object->isInside(child[0]->getBoundingObject())) {
-			return child[0]->remove(object);
+			if (child[0]->remove(object)) {
+				subtreeSize--;
+				return true;
+			}
 		}
 		else if (object->isInside(child[1]->getBoundingObject())) {
-			return child[1]->remove(object);
+			if (child[1]->remove(object)) {
+				subtreeSize--;
+				return true;
+			}
 		}
 	}
 

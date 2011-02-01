@@ -15,7 +15,7 @@ class CompositeRenderable
     virtual void preRenderUpdate(const Math::Matrix &transformation);
     
 	void subRender(RenderManager* manager);
-	virtual std::vector<RenderableObject*> getChildren() = 0;
+	virtual const std::vector<RenderableObject*>& getChildren() = 0;
 
 };
 

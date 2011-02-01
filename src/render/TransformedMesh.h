@@ -21,8 +21,8 @@ public:
 
 	void setTransformation(Math::SimpleTransform transform);
 	Math::SimpleTransform getTransformation() const { return transformation; }
-	virtual bool shouldDraw( const Math::BoundingObject& bounding_obj );
-	virtual std::vector<RenderableObject*> getChildren() { return children; }
+	bool shouldDraw( const Math::BoundingObject& bounding_obj );
+	const std::vector<RenderableObject*>& getChildren() { return children; }
 	MeshGroup* getMeshGroup() const { return (MeshGroup*) children[0]; }
 	Math::BoundingSphere getBoundingSphere() const { return transformedSphere; }
 	vector<Math::Triangle3D> getTransformedTriangles() const;

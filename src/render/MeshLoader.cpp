@@ -204,6 +204,7 @@ namespace Render {
 		LOG(OPENGL, model_name.append(": Model Not Found"));
 		return false;
 	}
+
 	/*
 	Material* MeshLoader::getMaterialByName(string name) {
 		for (unsigned int i = 0; i < materials.size(); i++) {

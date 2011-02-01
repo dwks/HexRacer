@@ -58,9 +58,10 @@ namespace Render {
 
 	void RenderManager::setRenderProperties(RenderableObject* renderable) {
 
-		//if (renderable->hasRenderProperties()) {
-
 		RenderProperties* properties = renderable->getRenderProperties();
+
+		if (properties->empty())
+			return;
 		
 		if (properties->hasTransformation()) {
 			glPushMatrix(); //Save previous transformation
@@ -69,14 +70,9 @@ namespace Render {
 		}
 
 		setRenderColor(properties);
-
 		setRenderMaterial(properties);
-
 		setRenderShader(properties);
-		
 		setRenderTexture(properties);
-
-		//}
 
 	}
 
@@ -201,9 +197,10 @@ namespace Render {
 
 	void RenderManager::revertRenderProperties(RenderableObject* renderable) {
 
-		//if (renderable->hasRenderProperties()) {
-
 		RenderProperties* properties = renderable->getRenderProperties();
+
+		if (properties->empty())
+			return;
 		
 		if (properties->hasTransformation()) {
 			glPopMatrix(); //Restore old transformation
@@ -211,14 +208,9 @@ namespace Render {
 		}
 
 		revertRenderColor(properties);
-
 		revertRenderMaterial(properties);
-
 		revertRenderTexture(properties);
-
 		revertRenderShader(properties);
-
-		//}
 
 	}
 

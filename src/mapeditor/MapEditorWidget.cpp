@@ -720,7 +720,7 @@ void MapEditorWidget::setShowInvisible(bool enabled) {
 	updateGL();
 }
 void MapEditorWidget::generatePaint() {
-	map->generatePaint(MAP_EDITOR_PAINT_CELL_RADIUS);
+	map->generatePaint();
 	updateGL();
 }
 
