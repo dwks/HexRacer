@@ -8,8 +8,6 @@ varying vec4 position;
 //varying vec3 eyeBitangent;
 
 varying vec4 vertexColor;
-//varying vec4 diffuseColor;
-//varying vec4 ambientColor;
 varying mat3 cameraNormalMatrix;
 
 attribute vec3 tangent;
@@ -26,9 +24,6 @@ void main()
 	objectNormal = normalize(gl_Normal);
 	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 	position = gl_ModelViewMatrix * gl_Vertex;
-	
-	//eyeTangent = normalize(gl_NormalMatrix * tangent);
-	//eyeBitangent = normalize(gl_NormalMatrix * bitangent);
 	
 	//Calculate Diffuse and Ambient Lighting----------------------------------------------------------
 	vec4 diffuseColor = vec4(0.0, 0.0, 0.0, 1.0);
