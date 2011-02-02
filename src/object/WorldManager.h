@@ -34,10 +34,11 @@ public:
     typedef PlayerList::IteratorType PlayerIteratorType;
 public:
     WorldManager();
-    WorldManager(World *world);
+    WorldManager(World *world, PlayerList *playerList);
     ~WorldManager();
     
     World *getWorld() { return world; }
+    PlayerList *getPlayerList() { return playerList; }
     
     void addPlayer(Player *player);
     Player *getPlayer(int id);

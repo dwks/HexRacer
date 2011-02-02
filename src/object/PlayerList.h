@@ -10,10 +10,9 @@
 namespace Project {
 namespace Object {
 
-/** Players added to this list are automatically freed when this PlayerList
-    is destroyed.
-    
-    This object should not be accessed by code outside of the Object namespace;
+class WorldManager;
+
+/** This object should not be accessed by code outside of the Object namespace;
     use WorldManager instead.
 */
 class PlayerList {
@@ -24,28 +23,35 @@ class PlayerList {
         ar & player_list;
     }
 private:
-    typedef std::vector<Player *> player_list_t;
+    typedef std::vector<int> player_list_t;
     player_list_t player_list;
+    
+    WorldManager *worldManager;
 public:
     class IteratorType {
     private:
+        WorldManager *worldManager;
         player_list_t::iterator it, end;
     public:
-        IteratorType(player_list_t &player_list)
-            : it(player_list.begin()), end(player_list.end()) {}
+        IteratorType(WorldManager *worldManager, player_list_t &player_list)
+            : worldManager(worldManager),
+            it(player_list.begin()), end(player_list.end()) {}
         
-        Player *next() { return *it ++; }
+        Player *next();
         bool hasNext() const { return it != end; }
     };
 public:
-    ~PlayerList();
+    PlayerList(WorldManager *worldManager = 0) : worldManager(worldManager) {}
+    
+    void setWorldManager(WorldManager *worldManager)
+        { this->worldManager = worldManager; }
     
     void addPlayer(Player *player);
     
-    Player *getPlayer(int p);
     int getPlayerCount() { return int(player_list.size()); }
     
-    IteratorType getIterator() { return IteratorType(player_list); }
+    IteratorType getIterator()
+        { return IteratorType(worldManager, player_list); }
 };
 
 }  // namespace Object

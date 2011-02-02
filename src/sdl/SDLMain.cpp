@@ -246,21 +246,25 @@ void SDLMain::run() {
     physicsWorld = new Physics::PhysicsWorld();
     suspension = new Physics::Suspension(10);
     
-    worldManager = new Object::WorldManager();
-    
     network = new NetworkPortal();
     bool isConnectedToNetwork;
     if(network->connectTo(
         GET_SETTING("network.host", "localhost").c_str(),
         GET_SETTING("network.port", 1820))) {
         
-        network->waitForWorld();
+        Object::World *world;
+        Object::PlayerList *playerList;
+        
+        network->waitForWorld(world, playerList);
+        
+        worldManager = new Object::WorldManager(world, playerList);
         clientData = new ClientData(network->getID());
         playerManager = new PlayerManager(network->getID(), worldManager);
         Settings::ProgramSettings::getInstance()->setConnected(true);
         isConnectedToNetwork = true;
     }
     else {
+        worldManager = new Object::WorldManager();
         clientData = new ClientData();
         playerManager = new PlayerManager(0, worldManager);
         isConnectedToNetwork = false;

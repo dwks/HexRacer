@@ -3,6 +3,7 @@
 
 #include "EventBase.h"
 #include "object/World.h"
+#include "object/PlayerList.h"
 
 namespace Project {
 namespace Event {
@@ -15,14 +16,18 @@ private:
     void serialize(Archive &ar, const unsigned version) {
         ar & boost::serialization::base_object<EventBase>(*this);
         ar & world;
+        ar & playerList;
     }
 private:
     Object::World *world;
+    Object::PlayerList *playerList;
 public:
     EntireWorld() : world(0) {}
-    EntireWorld(Object::World *world) : world(world) {}
+    EntireWorld(Object::World *world, Object::PlayerList *playerList)
+        : world(world), playerList(playerList) {}
     
     Object::World *getWorld() { return world; }
+    Object::PlayerList *getPlayerList() { return playerList; }
     
     virtual EventType::type_t getType() const
         { return EventType::ENTIRE_WORLD; }

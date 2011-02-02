@@ -18,6 +18,7 @@
 #include "event/CreateObject.h"
 #include "event/UpdateObject.h"
 #include "event/UpdateWorld.h"
+#include "event/EntireWorld.h"
 
 #include "event/ObserverList.h"
 
@@ -186,7 +187,16 @@ void ServerMain::run() {
             
             clients.addClient(socket);
             Object::Player *player = new Object::Player(clientCount, location);
-            //worldManager->addPlayer(player);
+            worldManager->addPlayer(player);
+            
+            Event::EntireWorld *entireWorld = new Event::EntireWorld(
+                worldManager->getWorld(), worldManager->getPlayerList());
+            packet = new Network::EventPacket(entireWorld);
+            stringSerializer.sendString(
+                packetSerializer.packetToString(packet));
+            delete entireWorld;
+            delete packet;
+            
             EMIT_EVENT(new Event::CreateObject(player));
             
             clientCount ++;

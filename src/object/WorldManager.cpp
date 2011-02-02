@@ -62,6 +62,8 @@ void WorldManager::WorldHandler::observe(Event::EventBase *event) {
             Object::ObjectBase *object
                 = worldManager->getWorld()->getObject(updateObject->getID());
             
+            LOG(WORLD, "Updating " << updateObject->getID() << ", " << object);
+            
             // we don't know about this object
             if(!object) continue;
             
@@ -94,13 +96,17 @@ bool WorldManager::WorldHandler::interestedIn(Event::EventType::type_t type) {
 
 WorldManager::WorldManager() {
     world = new World();
-    playerList = new PlayerList();
+    playerList = new PlayerList(this);
     
     ADD_OBSERVER(new WorldHandler(this));
 }
 
-WorldManager::WorldManager(World *world) : world(world) {
-    playerList = new PlayerList();
+WorldManager::WorldManager(World *world, PlayerList *playerList)
+    : world(world), playerList(playerList) {
+    
+    playerList->setWorldManager(this);
+    
+    ADD_OBSERVER(new WorldHandler(this));
 }
 
 WorldManager::~WorldManager() {
@@ -109,6 +115,8 @@ WorldManager::~WorldManager() {
 }
 
 void WorldManager::addPlayer(Player *player) {
+    if(world->getObject(player->getID())) return;
+    
     world->addObject(player);
     playerList->addPlayer(player);
 }

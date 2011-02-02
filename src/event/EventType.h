@@ -29,6 +29,7 @@ public:
         DESTROY_OBJECT,
         UPDATE_OBJECT,
         UPDATE_WORLD,
+        ENTIRE_WORLD,
         TYPES
     };
 };
