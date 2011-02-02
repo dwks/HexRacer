@@ -157,7 +157,7 @@ void SDLMain::initRenderer() {
         = meshLoader->loadOBJ("playerCube", "models/vehicle01.obj");
     object->getRenderProperties()->setTransformation(
         Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0)));
-
+    
 	//Instantiate the map
 	map = new Map::HRMap();
 	if (map->loadMapFile(GET_SETTING("map", "maps/testtrack.hrm"))) {
@@ -169,13 +169,13 @@ void SDLMain::initRenderer() {
     
 	paintManager = new Paint::PaintManager();
 	paintManager->setPaintCells(map->getPaintCells());
-
+    
 	//Add the map lights to the light manager
 	vector<Render::Light*> map_lights = map->getLights();
 	for (unsigned i = 0; i < map_lights.size(); i++) {
 		lightManager->addLight(map_lights[i], !map_lights[i]->getHasAttenuation(), false);
 	}
-
+    
     //Set background shader
     // !!! this is not freed
     Render::BackgroundRenderable* background = new Render::BackgroundRenderable(cameraObject->camera);
@@ -245,7 +245,6 @@ void SDLMain::run() {
     worldManager = new Object::WorldManager();
     
     network = new NetworkPortal();
-    int actualID;
     if(network->connectTo(
         GET_SETTING("network.host", "localhost").c_str(),
         GET_SETTING("network.port", 1820))) {
@@ -253,13 +252,11 @@ void SDLMain::run() {
         network->waitForWorld();
         clientData = new ClientData(network->getID());
         playerManager = new PlayerManager(network->getID(), worldManager);
-        actualID = network->getID();
         Settings::ProgramSettings::getInstance()->setConnected(true);
     }
     else {
         clientData = new ClientData();
         playerManager = new PlayerManager(0, worldManager);
-        actualID = 0;
     }
     paintSubsystem = new Paint::PaintSubsystem(worldManager, paintManager, 20);
     
@@ -273,8 +270,8 @@ void SDLMain::run() {
     
     loadMap();
     
-    worldManager->initForClient(actualID,
-        raceManager->startingPointForPlayer(actualID));
+    worldManager->initForClient(clientData->getPlayerID(),
+        raceManager->startingPointForPlayer(clientData->getPlayerID()));
     
 #ifdef HAVE_OPENAL
     Sound::SoundSystem *soundSystem = new Sound::SoundSystem();

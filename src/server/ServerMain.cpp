@@ -134,13 +134,22 @@ void ServerMain::run() {
     
     networkPortal = new ServerNetworkPortal(&clients);
     
-    /*Render::MeshLoader *meshLoader = new Render::MeshLoader();
-    meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
+    Render::MeshLoader *meshLoader = new Render::MeshLoader();
+    /*meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
     Render::MeshGroup *test_terrain = meshLoader->getModelByName("testTerrain");
     
     Physics::PhysicsWorld::getInstance()->registerRigidBody(
         Physics::PhysicsFactory::createRigidTriMesh(
             test_terrain->getTriangles()));*/
+    
+    //Instantiate the map
+    map = new Map::HRMap();
+    if (map->loadMapFile(GET_SETTING("map", "maps/testtrack.hrm"))) {
+        LOG(WORLD, "Loaded Map File " << GET_SETTING("map", "maps/testtrack.hrm"));
+    }
+    else {
+        LOG(WORLD, "Unable to load map " << GET_SETTING("map", "maps/testtrack.hrm"));
+    }
     
     ADD_OBSERVER(new ServerObserver(this));
     
@@ -241,7 +250,7 @@ void ServerMain::run() {
     delete worldManager;
     delete paintSubsystem;
     
-    //delete meshLoader;
+    delete meshLoader;
     delete physicsWorld;
     
     delete accelControl;
