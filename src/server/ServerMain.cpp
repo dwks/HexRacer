@@ -134,13 +134,13 @@ void ServerMain::run() {
     
     networkPortal = new ServerNetworkPortal(&clients);
     
-    Render::MeshLoader *meshLoader = new Render::MeshLoader();
+    /*Render::MeshLoader *meshLoader = new Render::MeshLoader();
     meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
     Render::MeshGroup *test_terrain = meshLoader->getModelByName("testTerrain");
     
     Physics::PhysicsWorld::getInstance()->registerRigidBody(
         Physics::PhysicsFactory::createRigidTriMesh(
-            test_terrain->getTriangles()));
+            test_terrain->getTriangles()));*/
     
     ADD_OBSERVER(new ServerObserver(this));
     
@@ -148,6 +148,8 @@ void ServerMain::run() {
     
     worldManager = new Object::WorldManager();
     paintSubsystem = new Paint::PaintSubsystem(worldManager, &paintManager, 20);
+    
+    loadMap();
     
     int loops = 0;
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
@@ -235,10 +237,51 @@ void ServerMain::run() {
     delete worldManager;
     delete paintSubsystem;
     
-    delete meshLoader;
+    //delete meshLoader;
     delete physicsWorld;
     
     delete accelControl;
+}
+
+void ServerMain::loadMap() {
+    //Process map meshes
+    for(int i = 0; i < Map::HRMap::NUM_MESHES; i++) {
+        Map::HRMap::MeshType type = static_cast<Map::HRMap::MeshType>(i);
+        if (map->getMapMesh(type)) {
+
+            //Add visible meshes to the map renderable
+            /*if (!Map::HRMap::meshIsInvisible(type)) {
+                mapRenderable->addRenderable(map->getMapMesh(type));
+            }*/
+
+            //Add solid meshes to the physics
+            if (Map::HRMap::meshIsSolid(type)) {
+                Physics::PhysicsWorld::getInstance()->registerRigidBody(
+                    Physics::PhysicsFactory::createRigidTriMesh(map->getMapMesh(type)->getTriangles())
+                    );
+            }
+
+        }
+        
+    }
+    
+    //Process mesh instances
+    vector<Map::MeshInstance*> instances = map->getMeshInstances();
+    for (unsigned i = 0; i < instances.size(); i++) {
+        
+        Render::TransformedMesh* transformed_mesh = new Render::TransformedMesh(
+            instances[i]->getMeshGroup(), instances[i]->getTransformation()
+            );
+        //Add the mesh to the map renderable
+        //mapRenderable->addRenderable(transformed_mesh);
+        
+        //If the instance is solid static, add it to the physics
+        if (instances[i]->getType() == Map::MeshInstance::SOLID_STATIC) {
+            Physics::PhysicsWorld::getInstance()->registerRigidBody(
+                    Physics::PhysicsFactory::createRigidTriMesh(transformed_mesh->getTransformedTriangles())
+                    );
+        }
+    }
 }
 
 }  // namespace Server

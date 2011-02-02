@@ -13,6 +13,8 @@
 #include "ServerNetworkPortal.h"
 #include "timing/AccelControl.h"
 
+#include "map/HRMap.h"
+
 namespace Project {
 namespace Server {
 
@@ -48,6 +50,7 @@ private:
     ServerVisitor visitor;
     ServerNetworkPortal *networkPortal;
     Timing::AccelControl *accelControl;
+    Map::HRMap *map;
 public:
     ServerMain();
     ~ServerMain();
@@ -60,6 +63,8 @@ public:
     Object::PlayerList &getPlayerList()
         { return *worldManager->getPlayerList(); }
     Paint::PaintManager &getPaintManager() { return paintManager; }
+private:
+    void loadMap();
 };
 
 }  // namespace Server

@@ -166,7 +166,7 @@ void SDLMain::initRenderer() {
 	else {
 		LOG(WORLD, "Unable to load map " << GET_SETTING("map", "maps/testtrack.hrm"));
 	}
- 
+    
 	paintManager = new Paint::PaintManager();
 	paintManager->setPaintCells(map->getPaintCells());
 
