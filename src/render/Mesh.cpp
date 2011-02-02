@@ -12,7 +12,6 @@ namespace Render {
 	Mesh::Mesh() {
 
 		triangleTree = NULL;
-		cullingObject = NULL;
 		material = NULL;
 		displayList = 0;
 	}
@@ -23,7 +22,6 @@ namespace Render {
 		material = _material;
 
 		triangleTree = NULL;
-		cullingObject = NULL;
 		displayList = 0;
 
 		if (cullable) {
@@ -36,10 +34,18 @@ namespace Render {
 	}
 
 	Mesh::~Mesh() {
+
 		for (unsigned int i = 0; i < triangles.size(); i++)
 			delete(triangles[i]);
+
 		if (material != NULL)
 			delete(material);
+
+		if (triangleTree)
+			delete(triangleTree);
+
+		if (displayList > 0)
+			glDeleteLists(displayList, 1);
 	}
 
 	void Mesh::generateTriangleTree() {

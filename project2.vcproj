@@ -345,6 +345,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\PathManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\PathNode.cpp"
 				>
 			</File>
@@ -968,6 +972,10 @@
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintVertex.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\PathManager.h"
 				>
 			</File>
 			<File

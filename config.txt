@@ -42,7 +42,7 @@ physics.driving.sidewaysdrag      = 10.0
 #    1 = low
 #    2 = medium
 #    3 = high
-render.quality = 1
+render.quality = 2
 render.shaderoutput = 1
 
 render.minimap.enable = 1
@@ -50,6 +50,8 @@ render.minimap.drawheight = 0.25
 render.minimap.drawaspect = 1.0
 render.minimap.height = 50.0
 render.minimap.drawpaint = 1
+
+render.drawpathnodes = 0
 
 ########
 ### Camera settings

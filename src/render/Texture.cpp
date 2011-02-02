@@ -50,7 +50,8 @@ namespace Render {
 
 	GLuint Texture::loadTexture2D(std::string filename,
 		GLint wrap_s, GLint wrap_t,
-		GLint filter_min, GLint filter_mag) {
+		GLint filter_min, GLint filter_mag,
+		bool generate_mipmaps) {
 
 		SDL_Surface* surface = IMG_Load(filename.c_str());
 		if (surface) {
@@ -63,7 +64,8 @@ namespace Render {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter_min);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter_mag);
-			glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+			if (generate_mipmaps)
+				glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 
 			GLint image_format = toGLFormat(surface->format->BytesPerPixel);
 

@@ -54,6 +54,7 @@ private:
 public:
 
 	PaintManager();
+	~PaintManager();
     
 	/** Set the paint cells that this class will manage
 	*/

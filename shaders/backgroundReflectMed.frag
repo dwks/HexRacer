@@ -21,17 +21,32 @@ void main() {
 	vec3 worldReflect = normalize(cameraNormalMatrix * reflection);
 	
 	vec4 specular_color = vec4(0.0, 0.0, 0.0, 0.0);
+	float light_dist;
+	float attenuation;
+	vec3 light;
+	float kspec;
 	
 	//Specular calculations----------------------------------------------------------------------------------------
 	
 	if (numLights > 0) {
-		float light_dist = length((position-gl_LightSource[0].position).xyz);
-		float attenuation = min(1.0/(gl_LightSource[0].constantAttenuation + gl_LightSource[0].quadraticAttenuation*light_dist*light_dist), 1.0);
+		light_dist = length((position-gl_LightSource[0].position).xyz);
+		attenuation = min(1.0/(gl_LightSource[0].constantAttenuation + gl_LightSource[0].quadraticAttenuation*light_dist*light_dist), 1.0);
 		if (attenuation >= 0.004) {
-			vec3 light = normalize((position-gl_LightSource[0].position).xyz);
-			float kspec =-dot(reflection,light);
+			light = normalize((position-gl_LightSource[0].position).xyz);
+			kspec =-dot(reflection,light);
 			kspec = max(pow(kspec, gl_FrontMaterial.shininess),0.0);
 			specular_color += gl_LightSource[0].specular*kspec*attenuation;
+		}
+	}
+	
+	if (numLights > 0) {
+		light_dist = length((position-gl_LightSource[1].position).xyz);
+		attenuation = min(1.0/(gl_LightSource[1].constantAttenuation + gl_LightSource[1].quadraticAttenuation*light_dist*light_dist), 1.0);
+		if (attenuation >= 0.004) {
+			light = normalize((position-gl_LightSource[1].position).xyz);
+			kspec =-dot(reflection,light);
+			kspec = max(pow(kspec, gl_FrontMaterial.shininess),0.0);
+			specular_color += gl_LightSource[1].specular*kspec*attenuation;
 		}
 	}
 	

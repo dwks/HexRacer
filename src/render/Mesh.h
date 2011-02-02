@@ -19,7 +19,6 @@ private:
 	std::vector< MeshTriangle* > triangles;
 	Project::Math::BSPTree3D* triangleTree;
 	Material* material;
-	const Project::Math::BoundingObject* cullingObject;
 	GLuint displayList;
 
 	void generateTriangleTree();

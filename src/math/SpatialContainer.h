@@ -36,6 +36,11 @@ public:
 	virtual int size() const = 0;
 	virtual void clear() = 0;
 
+	ObjectSpatial* nearest(const Point& point) const;
+	ObjectSpatial* nearest(const Point& point, double max_distance) const;
+
+	virtual ObjectSpatial* nearestSquared(const Point& point, double max_distance_squared, bool bounded) const = 0;
+
 protected:
 
 	/** Returns true if @a object interacts with @a bounding object as specified by @a query_type
@@ -45,6 +50,7 @@ protected:
 	*/
 	virtual void appendQuery(vector<ObjectSpatial*>* result_list, const BoundingObject& bounding_object, QueryType query_type) const = 0;
 	virtual void appendAll(vector<ObjectSpatial*>* result_list) const = 0;
+
 
 };
 

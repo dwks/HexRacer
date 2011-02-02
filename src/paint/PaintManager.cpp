@@ -35,6 +35,11 @@ namespace Paint {
         ADD_OBSERVER(new PaintCellsChangedHandler(this));
 	}
 
+	PaintManager::~PaintManager() {
+        delete(neutralPaintTree);
+		delete(coloredPaintTree);
+    }
+
 	void PaintManager::setPaintCells(const std::vector<PaintCell*>& paint_cells) {
 
 		neutralPaintTree->clear();
@@ -76,12 +81,7 @@ namespace Paint {
 		for (unsigned int i = 0; i < visible_cells.size(); i++) {
 
 			PaintCell* cell = (PaintCell*) visible_cells[i];
-			/*
-			if (lastDrawnColor != cell->playerColor) {
-				setter.setUniformVector4("playerColor", ColorConstants::playerColor(cell->playerColor));
-				lastDrawnColor = cell->playerColor;
-			}
-			*/
+
 			OpenGL::Color::glColor(ColorConstants::playerColor(cell->playerColor));
 
 			glBegin(GL_TRIANGLE_FAN);
@@ -112,11 +112,6 @@ namespace Paint {
 			OpenGL::MathWrapper::glVertex(cell->getCorner(true, false, false));
 			OpenGL::MathWrapper::glVertex(cell->getCorner(true, false, true));
 			OpenGL::MathWrapper::glVertex(cell->getCorner(false, false, true));
-
-			/*
-			for (int j = 0; j < Paint::PaintCell::CELL_VERTICES; j += 2)
-				OpenGL::MathWrapper::glVertex(cell->vertex[j]);
-				*/
 			
 		}
 		glEnd();
@@ -161,7 +156,7 @@ namespace Paint {
 		vector<ObjectSpatial*> candidate_cells;
 		coloredPaintTree->appendQuery(&candidate_cells, query_sphere, SpatialContainer::NEARBY);
         
-		for(int i = 0; i < int(candidate_cells.size()); i++) {
+		for (unsigned int i = 0; i < candidate_cells.size(); i++) {
 			PaintCell *cell = static_cast<PaintCell *>(candidate_cells[i]);
 			double dist = cell->center.distance(centroid);
             

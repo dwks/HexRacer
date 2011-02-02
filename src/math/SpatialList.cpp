@@ -12,16 +12,8 @@ SpatialList::SpatialList(bool use_bounding_box)
 
 SpatialList::~SpatialList(void)
 {
-	/*
-    for (unsigned int i = 0; i < objectList.size(); i++) {
-        delete objectList[i];
-    }
-	*/
-    
-	/*
-	if (boundingBox)
-		delete boundingBox;
-	*/
+	//if (boundingBox)
+	//	delete(boundingBox);
 }
 
 bool SpatialList::add(ObjectSpatial* object) {
@@ -97,6 +89,21 @@ vector<ObjectSpatial*> SpatialList::all() const {
 	return objectList;
 }
 
+ObjectSpatial* SpatialList::nearestSquared(const Point& point, double max_distance_squared, bool bounded) const {
+
+	ObjectSpatial* nearest = NULL;
+
+	for (unsigned int i = 0; i < objectList.size(); i++) {
+		double dist_squared = point.distanceSquared(objectList[i]->centroid());
+		if ((!bounded && i == 0) || dist_squared < max_distance_squared) {
+			nearest = objectList[i];
+			max_distance_squared = dist_squared;
+		}
+	}
+
+	return nearest;
+
+}
 RayIntersection SpatialList::rayIntersection(Ray ray) const {
 	if (objectList.size() == 0 || (boundingBox && !boundingBox->rayIntersection(ray).intersects))
 		return RayIntersection();
