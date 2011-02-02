@@ -3,6 +3,7 @@
 #include "opengl/MathWrapper.h"
 #include "math/Matrix.h"
 #include "RenderManager.h"
+#include "log/Logger.h"
 using namespace Project;
 using namespace OpenGL;
 using namespace Math;
@@ -13,12 +14,10 @@ namespace Render {
 	RenderableObject::RenderableObject(bool has_properties) {
 
 		renderProperties = new RenderProperties();
-		//createdRenderProperties = renderProperties;
 		renderingEnabled = true;
 	}
 
 	RenderableObject::~RenderableObject() {
-		//if (createdRenderProperties != NULL)
 		delete(renderProperties);
 	}
 
@@ -39,29 +38,12 @@ namespace Render {
 		manager->revertRenderProperties(this);
 	}
 
-	/*
-	bool RenderableObject::hasRenderProperties() const {
-		return (renderProperties != NULL);
-	}
-	*/
-
 	RenderProperties* RenderableObject::getRenderProperties() const {
 		return renderProperties;
 	}
-	/*
-	void RenderableObject::setRenderProperties(RenderProperties* properties) {
-		renderProperties = properties;
-	}
-	*/
 
-	void RenderableObject::clearRenderProperties() {
-		/*
-		if (renderProperties == createdRenderProperties
-			&& createdRenderProperties != NULL) {
-			delete(createdRenderProperties);
-		}
-		renderProperties = NULL;
-		*/
+	void RenderableObject::preRenderUpdate(const Math::Matrix &transformation) {
+		LOG(OPENGL, "Warning: preRenderUpdate() called on a renderable without a definition");
 	}
 
 }  // namespace Render

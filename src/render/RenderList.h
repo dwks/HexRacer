@@ -1,21 +1,22 @@
 #ifndef PROJECT_RENDER__RENDER_LIST_H
 #define PROJECT_RENDER__RENDER_LIST_H
 
-#include "CompositeRenderable.h"
+#include "RenderableObject.h"
 #include <vector>
 
 namespace Project {
 namespace Render {
 
 class RenderList
-	: public CompositeRenderable {
+	: public RenderableObject {
 private:
 	vector<RenderableObject*> renderableList;
 public:
 	void addRenderable(RenderableObject* renderable);
 	bool removeRenderable(RenderableObject* renderable);
 	void clear() { renderableList.clear(); }
-	const std::vector<RenderableObject*>& getChildren() { return renderableList; }
+
+	void subRender(RenderManager* manager);
 };
 
 }  // namespace Render

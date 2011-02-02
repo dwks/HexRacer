@@ -10,7 +10,7 @@ namespace Render {
 		for (int i = 0; i < 8; i++)
 			meshGroupSphere.expandToInclude(mesh_group->getBoundingBox().getCorner(i));
 
-		children.push_back(mesh_group);
+		meshGroup = mesh_group;
 
 		setTransformation(transform);
 	}
