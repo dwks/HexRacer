@@ -303,7 +303,7 @@ void SDLMain::run() {
         cameraObject->doStep(SDL_GetTicks());
         
         {
-            //render();
+            render();
 
 			// suspension does not look good when it is out of sync with rendering
             suspension->doAction(SDL_GetTicks());

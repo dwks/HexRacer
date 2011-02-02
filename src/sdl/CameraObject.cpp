@@ -15,6 +15,7 @@ namespace SDL {
         LOG2(CAMERA, INIT, "Camera Object has been initialized\n");
         
         camera = new OpenGL::Camera();
+        debugCamera = false;
         
         loadSettings();
         
