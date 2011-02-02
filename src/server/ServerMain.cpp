@@ -13,9 +13,12 @@
 
 #include "event/QuitEvent.h"
 #include "event/PlayerAction.h"
-#include "event/UpdatePlayerList.h"
 #include "event/PaintEvent.h"
 #include "event/PaintCellsChanged.h"
+#include "event/CreateObject.h"
+#include "event/UpdateObject.h"
+#include "event/UpdateWorld.h"
+#include "event/EntireWorld.h"
 
 #include "event/ObserverList.h"
 
@@ -61,8 +64,8 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
     case Event::EventType::PLAYER_ACTION: {
         Event::PlayerAction *action
             = dynamic_cast<Event::PlayerAction *>(event);
-        Object::Player *player = main->getPlayerList()
-            .getPlayer(main->getWhichSocket());
+        Object::Player *player = main->getWorldManager()
+            ->getPlayer(main->getWhichSocket());
         
         switch(action->getMovementType()) {
         case Event::PlayerAction::ACCELERATE:
@@ -96,6 +99,9 @@ bool ServerMain::ServerObserver::interestedIn(Event::EventType::type_t type) {
     case Event::EventType::PAINT_EVENT:
     case Event::EventType::TOGGLE_PAINT:  // handled by PaintSubsystem
     case Event::EventType::PAUSE_GAME:  // handled by AccelControl
+        return false;
+    case Event::EventType::CREATE_OBJECT:
+    case Event::EventType::DESTROY_OBJECT:
         return false;
     default:
         break;
@@ -135,12 +141,21 @@ void ServerMain::run() {
     networkPortal = new ServerNetworkPortal(&clients);
     
     Render::MeshLoader *meshLoader = new Render::MeshLoader();
-    meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
+    /*meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
     Render::MeshGroup *test_terrain = meshLoader->getModelByName("testTerrain");
     
     Physics::PhysicsWorld::getInstance()->registerRigidBody(
         Physics::PhysicsFactory::createRigidTriMesh(
-            test_terrain->getTriangles()));
+            test_terrain->getTriangles()));*/
+    
+    //Instantiate the map
+    map = new Map::HRMap();
+    if (map->loadMapFile(GET_SETTING("map", "maps/testtrack.hrm"))) {
+        LOG(WORLD, "Loaded Map File " << GET_SETTING("map", "maps/testtrack.hrm"));
+    }
+    else {
+        LOG(WORLD, "Unable to load map " << GET_SETTING("map", "maps/testtrack.hrm"));
+    }
     
     ADD_OBSERVER(new ServerObserver(this));
     
@@ -149,7 +164,9 @@ void ServerMain::run() {
     worldManager = new Object::WorldManager();
     paintSubsystem = new Paint::PaintSubsystem(worldManager, &paintManager, 20);
     
-    int loops = 0;
+    loadMap();
+    raceManager = new Map::RaceManager(map);
+    
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
     quit = false;
     while(!quit) {
@@ -165,9 +182,22 @@ void ServerMain::run() {
                 packetSerializer.packetToString(packet));
             delete packet;
             
+            Math::Point location
+                = raceManager->startingPointForPlayer(clientCount);
+            
             clients.addClient(socket);
-            worldManager->getPlayerList()->addPlayer(
-                new Object::Player(clientCount, INITIAL_CAR_LOCATION));
+            Object::Player *player = new Object::Player(clientCount, location);
+            worldManager->addPlayer(player);
+            
+            Event::EntireWorld *entireWorld = new Event::EntireWorld(
+                worldManager->getWorld(), worldManager->getPlayerList());
+            packet = new Network::EventPacket(entireWorld);
+            stringSerializer.sendString(
+                packetSerializer.packetToString(packet));
+            delete entireWorld;
+            delete packet;
+            
+            EMIT_EVENT(new Event::CreateObject(player));
             
             clientCount ++;
         }
@@ -190,7 +220,7 @@ void ServerMain::run() {
         }
         
         paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
-        suspension->setData(worldManager->getPlayerList(), NULL);
+        suspension->setData(worldManager, NULL);
         suspension->checkForWheelsOnGround();
         
         if(!Timing::AccelControl::getInstance()->getPaused()) {
@@ -205,13 +235,14 @@ void ServerMain::run() {
         
         suspension->doStep(Misc::Sleeper::getTimeMilliseconds());
         
+        static int loops = 0;
         if(++loops == 5) {
             loops = 0;
             
-            Event::UpdatePlayerList *update
-                = new Event::UpdatePlayerList(
+            Event::UpdateWorld *update
+                = new Event::UpdateWorld(
                     Misc::Sleeper::getTimeMilliseconds(),
-                    worldManager->getPlayerList());
+                    worldManager);
             Network::Packet *packet = new Network::EventPacket(update);
             clients.sendPacket(packet);
             delete packet;
@@ -239,6 +270,47 @@ void ServerMain::run() {
     delete physicsWorld;
     
     delete accelControl;
+}
+
+void ServerMain::loadMap() {
+    //Process map meshes
+    for(int i = 0; i < Map::HRMap::NUM_MESHES; i++) {
+        Map::HRMap::MeshType type = static_cast<Map::HRMap::MeshType>(i);
+        if (map->getMapMesh(type)) {
+
+            //Add visible meshes to the map renderable
+            /*if (!Map::HRMap::meshIsInvisible(type)) {
+                mapRenderable->addRenderable(map->getMapMesh(type));
+            }*/
+
+            //Add solid meshes to the physics
+            if (Map::HRMap::meshIsSolid(type)) {
+                Physics::PhysicsWorld::getInstance()->registerRigidBody(
+                    Physics::PhysicsFactory::createRigidTriMesh(map->getMapMesh(type)->getTriangles())
+                    );
+            }
+
+        }
+        
+    }
+    
+    //Process mesh instances
+    vector<Map::MeshInstance*> instances = map->getMeshInstances();
+    for (unsigned i = 0; i < instances.size(); i++) {
+        
+        Render::TransformedMesh* transformed_mesh = new Render::TransformedMesh(
+            instances[i]->getMeshGroup(), instances[i]->getTransformation()
+            );
+        //Add the mesh to the map renderable
+        //mapRenderable->addRenderable(transformed_mesh);
+        
+        //If the instance is solid static, add it to the physics
+        if (instances[i]->getType() == Map::MeshInstance::SOLID_STATIC) {
+            Physics::PhysicsWorld::getInstance()->registerRigidBody(
+                    Physics::PhysicsFactory::createRigidTriMesh(transformed_mesh->getTransformedTriangles())
+                    );
+        }
+    }
 }
 
 }  // namespace Server

@@ -94,7 +94,6 @@ namespace Render {
 		Color ambient;
 		bool has_attenuation;
 		float strength;
-		char c;
 
 		stream >> position >> diffuse  >> specular
 			 >> ambient >> has_attenuation >> strength;

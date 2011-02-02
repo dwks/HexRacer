@@ -69,8 +69,8 @@ void PaintSubsystem::doAction(unsigned long currentTime) {
 }
 
 void PaintSubsystem::calculateBoostSpeeds() {
-    Object::PlayerList::IteratorType iterator
-        = worldManager->getPlayerList()->getIterator();
+    Object::WorldManager::PlayerIteratorType iterator
+        = worldManager->getPlayerIterator();
     while(iterator.hasNext()) {
         Object::Player *player = iterator.next();
         

@@ -3,7 +3,6 @@
 #include "Suspension.h"
 
 #include "object/Player.h"
-#include "object/PlayerList.h"
 #include "settings/SettingsManager.h"
 
 #include "opengl/OpenGL.h"
@@ -85,7 +84,8 @@ void Suspension::checkForWheelsOnGround() {
         return;
     }
     
-    Object::PlayerList::IteratorType it = playerList->getIterator();
+    Object::WorldManager::PlayerIteratorType it
+        = worldManager->getPlayerIterator();
     while(it.hasNext()) {
         Object::Player *player = it.next();
         
@@ -114,10 +114,10 @@ void Suspension::doAction(unsigned long currentTime) {
     applySuspension();
 }
 
-void Suspension::setData(Object::PlayerList *playerList,
+void Suspension::setData(Object::WorldManager *worldManager,
     Render::RenderManager *renderManager) {
     
-    this->playerList = playerList;
+    this->worldManager = worldManager;
     this->renderManager = renderManager;
 }
 
@@ -191,7 +191,8 @@ void Suspension::applySuspension() {
         return;
     }
     
-    Object::PlayerList::IteratorType it = playerList->getIterator();
+    Object::WorldManager::PlayerIteratorType it
+        = worldManager->getPlayerIterator();
     while(it.hasNext()) {
         Object::Player *player = it.next();
         

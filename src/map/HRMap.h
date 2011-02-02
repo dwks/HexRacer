@@ -63,9 +63,7 @@ private:
 
 public:
 
-	static const int NUM_MESHES = 5;
-
-	enum MeshType {TRACK, INVIS_TRACK, SOLID, INVIS_SOLID, DECOR};
+	enum MeshType {TRACK, INVIS_TRACK, SOLID, INVIS_SOLID, DECOR, NUM_MESHES};
 
 	HRMap();
 	~HRMap();

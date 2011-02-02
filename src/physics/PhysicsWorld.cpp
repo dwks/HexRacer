@@ -26,18 +26,19 @@ PhysicsWorld::PhysicsWorld() {
 }
 
 PhysicsWorld::~PhysicsWorld() {
+    for(std::vector<btRigidBody*>::iterator i = collisionBodies.begin();
+        i != collisionBodies.end(); ++ i) {
+        
+        destroyRigidBody(*i);
+        delete (*i);
+    }
+    
     // delete in reverse order of allocation, more or less
     delete dynamicsWorld;
     delete constraintSolver;
     delete collisionConfiguration;
     delete collisionDispatcher;
     delete broadPhaseInterface;
-    
-    for(std::vector<btRigidBody*>::iterator i = collisionBodies.begin();
-        i != collisionBodies.end(); ++ i) {
-        
-        delete (*i);
-    }
 }
 
 void PhysicsWorld::stepWorld(float microseconds) {

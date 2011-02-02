@@ -39,6 +39,13 @@ void ServerNetworkPortal::EventPropagator::observe(Event::EventBase *event) {
         
         break;
     }
+    case Event::EventType::CREATE_OBJECT: {
+        Network::Packet *packet = new Network::EventPacket(event);
+        portal->getClientManager()->sendPacket(packet);
+        delete packet;
+        
+        break;
+    }
     default:
         /*LOG2(NETWORK, PACKET, "ServerEventPropagator: Not propagating "
             << typeid(*event).name());*/

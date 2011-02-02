@@ -4,7 +4,7 @@
 #include <map>
 
 #include "render/RenderManager.h"
-#include "object/PlayerList.h"
+#include "object/WorldManager.h"
 
 #include "timing/TimedSubsystem.h"
 
@@ -60,11 +60,11 @@ private:
     typedef std::map<int, std::vector<Displacement> > playerSuspensionType;
     playerSuspensionType playerSuspension;
     
-    Object::PlayerList *playerList;
+    Object::WorldManager *worldManager;
     Render::RenderManager *renderManager;
 public:
     Suspension(unsigned long tickTime) : TimedSubsystem(tickTime),
-        playerList(NULL), renderManager(NULL) {}
+        worldManager(NULL), renderManager(NULL) {}
     
     void checkForWheelsOnGround();
     int wheelsOnGround(int playerID);
@@ -75,7 +75,7 @@ public:
         
         If @a renderManager is NULL, no debug drawing will be done.
     */
-    void setData(Object::PlayerList *playerList,
+    void setData(Object::WorldManager *worldManager,
         Render::RenderManager *renderManager);
 private:
     void applySuspension();

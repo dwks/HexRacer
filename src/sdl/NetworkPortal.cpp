@@ -15,6 +15,7 @@
 #include "event/ObserverList.h"
 #include "event/PacketReceived.h"
 #include "event/TogglePainting.h"
+#include "event/EntireWorld.h"
 
 namespace Project {
 namespace SDL {
@@ -99,7 +100,9 @@ void NetworkPortal::disconnectFrom() {
     portal = NULL;
 }
 
-void NetworkPortal::waitForWorld() {
+void NetworkPortal::waitForWorld(Object::World *&world,
+    Object::PlayerList *&playerList) {
+    
     LOG2(NETWORK, CONNECT, "Waiting for HandshakePacket . . .");
     
     for(;;) {
@@ -116,6 +119,27 @@ void NetworkPortal::waitForWorld() {
     }
     
     LOG2(NETWORK, CONNECT, "Got HandshakePacket with ID " << id);
+    LOG2(NETWORK, CONNECT, "Waiting for EntireWorld . . .");
+    
+    for(;;) {
+        Network::Packet *packet = portal->nextPacket();
+        if(packet) {
+            Network::EventPacket *event
+                = dynamic_cast<Network::EventPacket *>(packet);
+            Event::EntireWorld *entireWorld
+                = dynamic_cast<Event::EntireWorld *>(event->getEvent());
+            world = entireWorld->getWorld();
+            playerList = entireWorld->getPlayerList();
+            delete entireWorld;
+            delete packet;
+            
+            break;
+        }
+        
+        SDL_Delay(10);
+    }
+    
+    LOG2(NETWORK, CONNECT, "Got EntireWorld from server");
 }
 
 void NetworkPortal::checkNetwork() {
