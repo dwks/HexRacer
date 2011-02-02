@@ -155,7 +155,7 @@ void SDLMain::initRenderer() {
         = meshLoader->loadOBJ("playerCube", "models/vehicle01.obj");
     object->getRenderProperties()->setTransformation(
         Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0)));
-
+    
 	//Instantiate the map
 	map = new Map::HRMap();
 	if (map->loadMapFile(GET_SETTING("map", "maps/testtrack.hrm"))) {
@@ -164,16 +164,16 @@ void SDLMain::initRenderer() {
 	else {
 		LOG(WORLD, "Unable to load map " << GET_SETTING("map", "maps/testtrack.hrm"));
 	}
- 
+    
 	paintManager = new Paint::PaintManager();
 	paintManager->setPaintCells(map->getPaintCells());
-
+    
 	//Add the map lights to the light manager
 	vector<Render::Light*> map_lights = map->getLights();
 	for (unsigned i = 0; i < map_lights.size(); i++) {
 		lightManager->addLight(map_lights[i], !map_lights[i]->getHasAttenuation(), false);
 	}
-
+    
     //Set background shader
     // !!! this is not freed
     Render::BackgroundRenderable* background = new Render::BackgroundRenderable(cameraObject->camera);
@@ -230,6 +230,8 @@ void SDLMain::loadMap() {
                     );
         }
     }
+    
+    raceManager = new Map::RaceManager(map);
 }
 
 void SDLMain::run() {
@@ -244,21 +246,28 @@ void SDLMain::run() {
     physicsWorld = new Physics::PhysicsWorld();
     suspension = new Physics::Suspension(10);
     
-    worldManager = new Object::WorldManager();
-    
     network = new NetworkPortal();
+    bool isConnectedToNetwork;
     if(network->connectTo(
         GET_SETTING("network.host", "localhost").c_str(),
         GET_SETTING("network.port", 1820))) {
         
-        network->waitForWorld();
+        Object::World *world;
+        Object::PlayerList *playerList;
+        
+        network->waitForWorld(world, playerList);
+        
+        worldManager = new Object::WorldManager(world, playerList);
         clientData = new ClientData(network->getID());
         playerManager = new PlayerManager(network->getID(), worldManager);
         Settings::ProgramSettings::getInstance()->setConnected(true);
+        isConnectedToNetwork = true;
     }
     else {
+        worldManager = new Object::WorldManager();
         clientData = new ClientData();
         playerManager = new PlayerManager(0, worldManager);
+        isConnectedToNetwork = false;
     }
     paintSubsystem = new Paint::PaintSubsystem(worldManager, paintManager, 20);
     
@@ -271,6 +280,11 @@ void SDLMain::run() {
     ADD_OBSERVER(new QuitObserver(this));
     
     loadMap();
+    
+    if(!isConnectedToNetwork) {
+        worldManager->initForClient(clientData->getPlayerID(),
+            raceManager->startingPointForPlayer(clientData->getPlayerID()));
+    }
     
 #ifdef HAVE_OPENAL
     Sound::SoundSystem *soundSystem = new Sound::SoundSystem();
@@ -289,7 +303,7 @@ void SDLMain::run() {
         network->checkNetwork();
         
         paintSubsystem->doStep(SDL_GetTicks());
-        suspension->setData(worldManager->getPlayerList(), renderer);
+        suspension->setData(worldManager, renderer);
         suspension->checkForWheelsOnGround();
         
         inputManager->doStep(SDL_GetTicks());

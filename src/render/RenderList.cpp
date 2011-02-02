@@ -1,4 +1,5 @@
 #include "RenderList.h"
+#include "misc/StdVectorFunctions.h"
 
 namespace Project {
 namespace Render {
@@ -9,14 +10,13 @@ namespace Render {
 	}
 
 	bool RenderList::removeRenderable(RenderableObject* renderable) {
+		return Misc::vectorRemoveOneElement(renderableList, renderable);
+	}
+
+	void RenderList::subRender(RenderManager* manager) {
 		for (unsigned int i = 0; i < renderableList.size(); i++) {
-			if (renderableList[i] == renderable) {
-				renderableList[i] = renderableList[renderableList.size()-1];
-				renderableList.resize(renderableList.size()-1);
-				return true;
-			}
+			renderableList[i]->render(manager);
 		}
-		return false;
 	}
 
 }  // namespace Render

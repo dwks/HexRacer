@@ -8,16 +8,11 @@ RenderableWorld::RenderableWorld(std::vector<Object::ObjectBase *> &objects)
     
 }
 
-const std::vector<RenderableObject*>& RenderableWorld::getChildren() {
-
-    renderableObjects.clear();
-    for(std::vector<Object::ObjectBase *>::size_type x = 0; x < objects.size();
+void RenderableWorld::subRender(RenderManager* manager) {
+	for(std::vector<Object::ObjectBase *>::size_type x = 0; x < objects.size();
         x ++) {
-        
-        renderableObjects.push_back(objects[x]->getRenderableObject());
+        objects[x]->getRenderableObject()->render(manager);
     }
-    
-    return renderableObjects;
 }
 
 }  // namespace Render

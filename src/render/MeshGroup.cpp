@@ -6,13 +6,12 @@ using namespace std;
 namespace Project {
 namespace Render {
 
-	MeshGroup::MeshGroup(string _name, vector<Mesh*> meshes, vector<MeshVertex*> _vertices,
+	MeshGroup::MeshGroup(string _name, vector<Mesh*> _meshes, vector<MeshVertex*> _vertices,
 		std::vector<Triangle3D>* collision_mask) {
 
 		this->name = _name;
-		for (unsigned int i = 0; i < meshes.size(); i++) {
-			this->meshes.push_back(meshes[i]);
-		}
+	
+		meshes = _meshes;
 
 		this->vertices = _vertices;
 		if (vertices.size() > 0) {
@@ -49,6 +48,12 @@ namespace Render {
 			}
 		}
 		return return_list;
+	}
+
+	void MeshGroup::subRender(RenderManager* manager) {
+		for (unsigned int i = 0; i < meshes.size(); i++) {
+			meshes[i]->render(manager);
+		}
 	}
 
 }  // namespace Render

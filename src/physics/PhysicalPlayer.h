@@ -64,9 +64,8 @@ public:
     
     virtual Math::Point getOrigin() const;
     virtual Math::Matrix getTransformation() const;
-    
-    Math::Point getLinearVelocity() const;
-    Math::Point getAngularVelocity() const;
+    virtual Math::Point getLinearVelocity() const;
+    virtual Math::Point getAngularVelocity() const;
     
     /** Applies acceleration in the range [-1.0,+1.0], where +1.0 is full
         throttle forwards and -1.0 is backwards.
@@ -85,6 +84,10 @@ public:
     void applyForce(const Math::Point &force);
     void applyForce(const Math::Point &force, const Math::Point &at);
     void applyTorque(const Math::Point &torque);
+    
+    virtual void setData(const Math::Matrix &transform,
+        const Math::Point &linearVelocity,
+        const Math::Point &angularVelocity);
 };
 
 }  // namespace Physics

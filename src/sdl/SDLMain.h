@@ -31,6 +31,7 @@
 #include "event/QuitEvent.h"
 
 #include "map/HRMap.h"
+#include "map/RaceManager.h"
 
 #include "timing/AccelControl.h"
 
@@ -70,6 +71,7 @@ private:
 	Render::LightManager *lightManager;
 
 	Map::HRMap* map;
+    Map::RaceManager *raceManager;
 	GLuint minimapTexture;
 
 	int testPaintColor;

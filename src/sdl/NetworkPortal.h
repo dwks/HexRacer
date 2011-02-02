@@ -8,6 +8,9 @@
 #include "event/TypedObserver.h"
 #include "event/MultiObserver.h"
 
+#include "object/World.h"
+#include "object/PlayerList.h"
+
 namespace Project {
 namespace SDL {
 
@@ -56,7 +59,7 @@ public:
     /** Called immediately after a successful connect. Waits for any necessary
         packets from the server.
     */
-    void waitForWorld();
+    void waitForWorld(Object::World *&world, Object::PlayerList *&playerList);
     
     /** It is safe to call this function even if connectTo() has not been
         called, or if connectTo() failed.

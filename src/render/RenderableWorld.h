@@ -4,19 +4,18 @@
 #include <vector>
 #include "object/ObjectBase.h"
 
-#include "CompositeRenderable.h"
+#include "RenderableObject.h"
 
 namespace Project {
 namespace Render {
 
-class RenderableWorld : public CompositeRenderable {
+class RenderableWorld : public RenderableObject {
 private:
     std::vector<Object::ObjectBase *> &objects;
-	std::vector<RenderableObject*> renderableObjects;
 public:
     RenderableWorld(std::vector<Object::ObjectBase *> &objects);
-    
-    virtual const std::vector<RenderableObject*>& getChildren();
+
+	void subRender(RenderManager* manager);
 };
 
 }  // namespace Render

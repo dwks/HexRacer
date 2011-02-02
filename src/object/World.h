@@ -30,6 +30,8 @@ public:
     void addObject(ObjectBase *object);
     void removeObject(ObjectBase *object);
     
+    ObjectBase *getObject(int id);
+    
     virtual void preRender();
     
     virtual Physics::PhysicalObject *getPhysicalObject()

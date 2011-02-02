@@ -1,7 +1,6 @@
 #ifndef PROJECT_SERVER__SERVER_MAIN_H
 #define PROJECT_SERVER__SERVER_MAIN_H
 
-#include "object/PlayerList.h"
 #include "paint/PaintManager.h"
 #include "paint/PaintSubsystem.h"
 
@@ -12,6 +11,9 @@
 
 #include "ServerNetworkPortal.h"
 #include "timing/AccelControl.h"
+
+#include "map/HRMap.h"
+#include "map/RaceManager.h"
 
 namespace Project {
 namespace Server {
@@ -48,6 +50,8 @@ private:
     ServerVisitor visitor;
     ServerNetworkPortal *networkPortal;
     Timing::AccelControl *accelControl;
+    Map::HRMap *map;
+    Map::RaceManager *raceManager;
 public:
     ServerMain();
     ~ServerMain();
@@ -57,9 +61,11 @@ public:
     void setQuit() { quit = true; }
     
     int getWhichSocket() const { return whichSocket; }
-    Object::PlayerList &getPlayerList()
-        { return *worldManager->getPlayerList(); }
+    Object::World *getWorld() { return worldManager->getWorld(); }
+    Object::WorldManager *getWorldManager() { return worldManager; }
     Paint::PaintManager &getPaintManager() { return paintManager; }
+private:
+    void loadMap();
 };
 
 }  // namespace Server

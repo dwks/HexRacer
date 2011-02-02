@@ -660,10 +660,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\event\UpdatePlayerList.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\math\Values.cpp"
 				>
 			</File>
@@ -1231,10 +1227,6 @@
 			</File>
 			<File
 				RelativePath=".\src\log\TypeRegistry.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\event\UpdatePlayerList.h"
 				>
 			</File>
 			<File

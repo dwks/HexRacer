@@ -5,6 +5,8 @@
 #include "Player.h"
 #include "PlayerList.h"
 
+#include "event/MultiObserver.h"
+
 namespace Project {
 namespace Object {
 
@@ -17,6 +19,19 @@ class WorldManager {
 private:
     World *world;
     PlayerList *playerList;
+private:
+    class WorldHandler : public Event::MultiObserver {
+    private:
+        WorldManager *worldManager;
+    public:
+        WorldHandler(WorldManager *worldManager)
+            : worldManager(worldManager) {}
+        
+        virtual void observe(Event::EventBase *event);
+        virtual bool interestedIn(Event::EventType::type_t type);
+    };
+public:
+    typedef PlayerList::IteratorType PlayerIteratorType;
 public:
     WorldManager();
     WorldManager(World *world, PlayerList *playerList);
@@ -25,10 +40,13 @@ public:
     World *getWorld() { return world; }
     PlayerList *getPlayerList() { return playerList; }
     
+    void addPlayer(Player *player);
     Player *getPlayer(int id);
     
-    void usePlayerList(PlayerList *playerList);
-    void initForClient(int id);
+    void initForClient(int id, const Math::Point &location);
+    
+    PlayerIteratorType getPlayerIterator()
+        { return playerList->getIterator(); }
 };
 
 }  // namespace Object

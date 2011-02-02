@@ -119,7 +119,6 @@ namespace Paint {
 	}
 
 	std::istream &operator >> (std::istream &stream, PaintCell& cell) {
-		char c;
 		stream >> cell.center;
 		//stream >> c;
 		for (int i = 0; i < Project::Paint::PaintCell::CELL_VERTICES; i++) {

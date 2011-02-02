@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "CompositeRenderable.h"
+#include "RenderableObject.h"
 #include "Mesh.h"
 #include "math/BoundingBox3D.h"
 
@@ -13,22 +13,22 @@ namespace Render {
 /** A group of triangle-meshes
 */
 class MeshGroup
-	: public CompositeRenderable {
+	: public RenderableObject {
 private:
 
 	std::string name;
-	std::vector<RenderableObject*> meshes;
+	std::vector<Mesh*> meshes;
 	std::vector<MeshVertex*> vertices;
 	std::vector<Math::Triangle3D>* collisionMask;
 	Math::BoundingBox3D boundingBox;
 
 public:
 
-	MeshGroup(std::string _name, std::vector<Mesh*> meshes, std::vector<MeshVertex*> _vertices,
+	MeshGroup(std::string _name, std::vector<Mesh*> _meshes, std::vector<MeshVertex*> _vertices,
 		std::vector<Math::Triangle3D>* collison_mask = NULL);
 	~MeshGroup();
 	std::string getName() { return name; }
-	const std::vector<RenderableObject*>& getChildren() { return meshes; }
+	void subRender(RenderManager* manager);
 	std::vector<Math::Triangle3D> getTriangles();
 	Math::BoundingBox3D getBoundingBox() { return boundingBox; }
 

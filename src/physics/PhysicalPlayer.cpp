@@ -143,5 +143,17 @@ void PhysicalPlayer::applyTorque(const Math::Point &torque) {
     rigidBody->applyTorque(Converter::toVector(torque));
 }
 
+void PhysicalPlayer::setData(const Math::Matrix &transform,
+    const Math::Point &linearVelocity,
+    const Math::Point &angularVelocity) {
+    
+    rigidBody->setWorldTransform(
+        Physics::Converter::toTransform(transform));
+    rigidBody->setLinearVelocity(
+        Physics::Converter::toVector(linearVelocity));
+    rigidBody->setAngularVelocity(
+        Physics::Converter::toVector(angularVelocity));
+}
+
 }  // namespace Physics
 }  // namespace Project
