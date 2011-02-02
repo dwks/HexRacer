@@ -12,6 +12,9 @@ namespace Object {
 
 /** Players added to this list are automatically freed when this PlayerList
     is destroyed.
+    
+    This object should not be accessed by code outside of the Object namespace;
+    use WorldManager instead.
 */
 class PlayerList {
     friend class boost::serialization::access;

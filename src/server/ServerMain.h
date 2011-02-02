@@ -1,7 +1,6 @@
 #ifndef PROJECT_SERVER__SERVER_MAIN_H
 #define PROJECT_SERVER__SERVER_MAIN_H
 
-#include "object/PlayerList.h"
 #include "paint/PaintManager.h"
 #include "paint/PaintSubsystem.h"
 
@@ -62,8 +61,8 @@ public:
     void setQuit() { quit = true; }
     
     int getWhichSocket() const { return whichSocket; }
-    Object::PlayerList &getPlayerList()
-        { return *worldManager->getPlayerList(); }
+    Object::World *getWorld() { return worldManager->getWorld(); }
+    Object::WorldManager *getWorldManager() { return worldManager; }
     Paint::PaintManager &getPaintManager() { return paintManager; }
 private:
     void loadMap();

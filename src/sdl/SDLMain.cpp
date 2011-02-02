@@ -249,6 +249,7 @@ void SDLMain::run() {
     worldManager = new Object::WorldManager();
     
     network = new NetworkPortal();
+    bool isConnectedToNetwork;
     if(network->connectTo(
         GET_SETTING("network.host", "localhost").c_str(),
         GET_SETTING("network.port", 1820))) {
@@ -257,10 +258,12 @@ void SDLMain::run() {
         clientData = new ClientData(network->getID());
         playerManager = new PlayerManager(network->getID(), worldManager);
         Settings::ProgramSettings::getInstance()->setConnected(true);
+        isConnectedToNetwork = true;
     }
     else {
         clientData = new ClientData();
         playerManager = new PlayerManager(0, worldManager);
+        isConnectedToNetwork = false;
     }
     paintSubsystem = new Paint::PaintSubsystem(worldManager, paintManager, 20);
     
@@ -274,8 +277,10 @@ void SDLMain::run() {
     
     loadMap();
     
-    worldManager->initForClient(clientData->getPlayerID(),
-        raceManager->startingPointForPlayer(clientData->getPlayerID()));
+    if(!isConnectedToNetwork) {
+        worldManager->initForClient(clientData->getPlayerID(),
+            raceManager->startingPointForPlayer(clientData->getPlayerID()));
+    }
     
 #ifdef HAVE_OPENAL
     Sound::SoundSystem *soundSystem = new Sound::SoundSystem();
@@ -294,7 +299,7 @@ void SDLMain::run() {
         network->checkNetwork();
         
         paintSubsystem->doStep(SDL_GetTicks());
-        suspension->setData(worldManager->getPlayerList(), renderer);
+        suspension->setData(worldManager, renderer);
         suspension->checkForWheelsOnGround();
         
         inputManager->doStep(SDL_GetTicks());

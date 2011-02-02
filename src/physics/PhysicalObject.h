@@ -15,6 +15,8 @@ public:
     
     virtual Math::Point getOrigin() const = 0;
     virtual Math::Matrix getTransformation() const = 0;
+    virtual Math::Point getLinearVelocity() const = 0;
+    virtual Math::Point getAngularVelocity() const = 0;
     
     virtual void setData(const Math::Matrix &transform,
         const Math::Point &linearVelocity,

@@ -28,6 +28,7 @@ public:
         CREATE_OBJECT,
         DESTROY_OBJECT,
         UPDATE_OBJECT,
+        UPDATE_WORLD,
         TYPES
     };
 };

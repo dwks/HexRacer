@@ -54,31 +54,18 @@ void PlayerManager::PlayerActionHandler::observe(
     }
 }
 
-void PlayerManager::UpdatePlayerListHandler::observe(
-    Event::UpdatePlayerList *update) {
-    
-    /*LOG(GLOBAL, "Replacing with PlayerList of "
-        << update->getPlayerList()->getPlayerCount() << " players");*/
-    manager->usePlayerList(update->getPlayerList());
-}
-
 PlayerManager::PlayerManager(int id, Object::WorldManager *worldManager)
     : id(id), worldManager(worldManager) {
     
     ADD_OBSERVER(new PlayerActionHandler(this));
-    ADD_OBSERVER(new UpdatePlayerListHandler(this));
-}
-
-void PlayerManager::usePlayerList(Object::PlayerList *playerList) {
-    worldManager->usePlayerList(playerList);
 }
 
 Object::Player *PlayerManager::getPlayer() {
-    return worldManager->getPlayerList()->getPlayer(id);
+    return worldManager->getPlayer(id);
 }
 
 Object::Player *PlayerManager::getPlayer(int id) {
-    return worldManager->getPlayerList()->getPlayer(id);
+    return worldManager->getPlayer(id);
 }
 
 }  // namespace SDL

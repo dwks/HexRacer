@@ -19,6 +19,7 @@ private:
     template <typename Archive>
     void serialize(Archive &ar, const unsigned version) {
         ar & boost::serialization::base_object<EventBase>(*this);
+        ar & id;
         ar & transformation;
         ar & linearVelocity;
         ar & angularVelocity;

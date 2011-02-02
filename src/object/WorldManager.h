@@ -5,10 +5,7 @@
 #include "Player.h"
 #include "PlayerList.h"
 
-#include "event/CreateObject.h"
-#include "event/DestroyObject.h"
-#include "event/UpdateObject.h"
-#include "event/TypedObserver.h"
+#include "event/MultiObserver.h"
 
 namespace Project {
 namespace Object {
@@ -23,50 +20,32 @@ private:
     World *world;
     PlayerList *playerList;
 private:
-    class CreateObjectHandler
-        : public Event::TypedObserver<Event::CreateObject> {
+    class WorldHandler : public Event::MultiObserver {
     private:
         WorldManager *worldManager;
     public:
-        CreateObjectHandler(WorldManager *worldManager)
+        WorldHandler(WorldManager *worldManager)
             : worldManager(worldManager) {}
         
-        virtual void observe(Event::CreateObject *createObject);
-    };
-    
-    class DestroyObjectHandler
-        : public Event::TypedObserver<Event::DestroyObject> {
-    private:
-        WorldManager *worldManager;
-    public:
-        DestroyObjectHandler(WorldManager *worldManager)
-            : worldManager(worldManager) {}
-        
-        virtual void observe(Event::DestroyObject *destroyObject);
-    };
-    
-    class UpdateObjectHandler
-        : public Event::TypedObserver<Event::UpdateObject> {
-    private:
-        WorldManager *worldManager;
-    public:
-        UpdateObjectHandler(WorldManager *worldManager)
-            : worldManager(worldManager) {}
-        
-        virtual void observe(Event::UpdateObject *updateObject);
+        virtual void observe(Event::EventBase *event);
+        virtual bool interestedIn(Event::EventType::type_t type);
     };
 public:
+    typedef PlayerList::IteratorType PlayerIteratorType;
+public:
     WorldManager();
-    WorldManager(World *world, PlayerList *playerList);
+    WorldManager(World *world);
     ~WorldManager();
     
     World *getWorld() { return world; }
-    PlayerList *getPlayerList() { return playerList; }
     
+    void addPlayer(Player *player);
     Player *getPlayer(int id);
     
-    void usePlayerList(PlayerList *playerList);
     void initForClient(int id, const Math::Point &location);
+    
+    PlayerIteratorType getPlayerIterator()
+        { return playerList->getIterator(); }
 };
 
 }  // namespace Object

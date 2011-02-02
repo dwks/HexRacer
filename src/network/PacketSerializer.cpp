@@ -8,11 +8,17 @@
 #include "EventPacket.h"
 
 #include "event/PlayerAction.h"
-#include "event/UpdatePlayerList.h"
 #include "event/PaintEvent.h"
 #include "event/PaintCellsChanged.h"
 #include "event/TogglePainting.h"
 #include "event/PauseGame.h"
+#include "event/CreateObject.h"
+#include "event/DestroyObject.h"
+#include "event/UpdateObject.h"
+#include "event/UpdateWorld.h"
+#include "event/EntireWorld.h"
+
+#include "object/Player.h"
 
 #include "PacketSerializer.h"
 #include "PointSerializer.h"
@@ -29,11 +35,17 @@ std::string PacketSerializer::packetToString(Packet *packet) {
     out.register_type<EventPacket>();
     
     out.register_type<Event::PlayerAction>();
-    out.register_type<Event::UpdatePlayerList>();
     out.register_type<Event::PaintEvent>();
     out.register_type<Event::PaintCellsChanged>();
     out.register_type<Event::TogglePainting>();
     out.register_type<Event::PauseGame>();
+    out.register_type<Event::CreateObject>();
+    out.register_type<Event::DestroyObject>();
+    out.register_type<Event::UpdateObject>();
+    out.register_type<Event::UpdateWorld>();
+    out.register_type<Event::EntireWorld>();
+    
+    out.register_type<Object::Player>();
     
     try {
         out << packet;
@@ -56,11 +68,17 @@ Packet *PacketSerializer::stringToPacket(const std::string &string) {
     in.register_type<EventPacket>();
     
     in.register_type<Event::PlayerAction>();
-    in.register_type<Event::UpdatePlayerList>();
     in.register_type<Event::PaintEvent>();
     in.register_type<Event::PaintCellsChanged>();
     in.register_type<Event::TogglePainting>();
     in.register_type<Event::PauseGame>();
+    in.register_type<Event::CreateObject>();
+    in.register_type<Event::DestroyObject>();
+    in.register_type<Event::UpdateObject>();
+    in.register_type<Event::UpdateWorld>();
+    in.register_type<Event::EntireWorld>();
+    
+    in.register_type<Object::Player>();
     
     Packet *packet;
     try {

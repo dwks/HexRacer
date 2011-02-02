@@ -13,9 +13,11 @@
 
 #include "event/QuitEvent.h"
 #include "event/PlayerAction.h"
-#include "event/UpdatePlayerList.h"
 #include "event/PaintEvent.h"
 #include "event/PaintCellsChanged.h"
+#include "event/CreateObject.h"
+#include "event/UpdateObject.h"
+#include "event/UpdateWorld.h"
 
 #include "event/ObserverList.h"
 
@@ -61,8 +63,8 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
     case Event::EventType::PLAYER_ACTION: {
         Event::PlayerAction *action
             = dynamic_cast<Event::PlayerAction *>(event);
-        Object::Player *player = main->getPlayerList()
-            .getPlayer(main->getWhichSocket());
+        Object::Player *player = main->getWorldManager()
+            ->getPlayer(main->getWhichSocket());
         
         switch(action->getMovementType()) {
         case Event::PlayerAction::ACCELERATE:
@@ -96,6 +98,9 @@ bool ServerMain::ServerObserver::interestedIn(Event::EventType::type_t type) {
     case Event::EventType::PAINT_EVENT:
     case Event::EventType::TOGGLE_PAINT:  // handled by PaintSubsystem
     case Event::EventType::PAUSE_GAME:  // handled by AccelControl
+        return false;
+    case Event::EventType::CREATE_OBJECT:
+    case Event::EventType::DESTROY_OBJECT:
         return false;
     default:
         break;
@@ -161,7 +166,6 @@ void ServerMain::run() {
     loadMap();
     raceManager = new Map::RaceManager(map);
     
-    int loops = 0;
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
     quit = false;
     while(!quit) {
@@ -181,8 +185,9 @@ void ServerMain::run() {
                 = raceManager->startingPointForPlayer(clientCount);
             
             clients.addClient(socket);
-            worldManager->getPlayerList()->addPlayer(
-                new Object::Player(clientCount, location));
+            Object::Player *player = new Object::Player(clientCount, location);
+            //worldManager->addPlayer(player);
+            EMIT_EVENT(new Event::CreateObject(player));
             
             clientCount ++;
         }
@@ -205,7 +210,7 @@ void ServerMain::run() {
         }
         
         paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
-        suspension->setData(worldManager->getPlayerList(), NULL);
+        suspension->setData(worldManager, NULL);
         suspension->checkForWheelsOnGround();
         
         if(!Timing::AccelControl::getInstance()->getPaused()) {
@@ -220,13 +225,14 @@ void ServerMain::run() {
         
         suspension->doStep(Misc::Sleeper::getTimeMilliseconds());
         
+        static int loops = 0;
         if(++loops == 5) {
             loops = 0;
             
-            Event::UpdatePlayerList *update
-                = new Event::UpdatePlayerList(
+            Event::UpdateWorld *update
+                = new Event::UpdateWorld(
                     Misc::Sleeper::getTimeMilliseconds(),
-                    worldManager->getPlayerList());
+                    worldManager);
             Network::Packet *packet = new Network::EventPacket(update);
             clients.sendPacket(packet);
             delete packet;

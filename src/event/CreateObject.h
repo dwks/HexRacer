@@ -9,7 +9,7 @@ namespace Event {
 
 /** Contains an object to be created and added to the World.
 */
-class CreateObject {
+class CreateObject : public EventBase {
 private:
     friend class boost::serialization::access;
     
