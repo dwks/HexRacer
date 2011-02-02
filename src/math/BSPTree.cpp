@@ -1,7 +1,9 @@
 #include "BSPTree.h"
 #include "BoundingObject3D.h"
 #include "BoundingObject2D.h"
+#include "BoundingSphere.h"
 #include "Values.h"
+#include <math.h>
 using namespace Project;
 using namespace Math;
 
@@ -145,6 +147,41 @@ vector<ObjectSpatial*> BSPTree::all() const {
 	vector<ObjectSpatial*> return_list;
 	appendAll(&return_list);
 	return return_list;
+}
+
+ObjectSpatial* BSPTree::nearestSquared(const Point& point, double max_distance_squared, bool bounded) const {
+
+	ObjectSpatial* nearest = list.nearestSquared(point, max_distance_squared, bounded);
+
+	if (nearest) {
+		max_distance_squared = point.distanceSquared(nearest->centroid());
+		bounded = true;
+	}
+
+	if (!leaf) {
+		BoundingSphere sphere = BoundingSphere(point, sqrt(max_distance_squared));
+
+		if (sphere.intersects(child[0]->getBoundingObject())) {
+			ObjectSpatial* child_nearest = child[0]->nearestSquared(point, max_distance_squared, bounded);
+			if (child_nearest) {
+				nearest = child_nearest;
+				max_distance_squared = point.distanceSquared(nearest->centroid());
+				bounded = true;
+				sphere.setRadius(sqrt(max_distance_squared));
+			}
+		}
+
+		if (sphere.intersects(child[1]->getBoundingObject())) {
+			ObjectSpatial* child_nearest = child[1]->nearestSquared(point, max_distance_squared, bounded);
+			if (child_nearest) {
+				nearest = child_nearest;
+			}
+		}
+
+	}
+
+	return nearest;
+
 }
 
 RayIntersection BSPTree::rayIntersection(Ray ray) const {

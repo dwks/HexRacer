@@ -40,12 +40,6 @@ namespace Render {
 		values[3] = ambient.alphaf();
 		glLightfv(light, GL_AMBIENT, values);
 
-		values[0] = ambient.redf();
-		values[1] = ambient.greenf();
-		values[2] = ambient.bluef();
-		values[3] = ambient.alphaf();
-		glLightfv(light, GL_AMBIENT, values);
-
 		values[0] = getPosition().getX();
 		values[1] = getPosition().getY();
 		values[2] = getPosition().getZ();
@@ -54,7 +48,6 @@ namespace Render {
 
 		glLightf(light, GL_QUADRATIC_ATTENUATION, quadAttenuation);
 		glLightf(light, GL_CONSTANT_ATTENUATION, getConstantAttenuation());
-			
 	}
 
 	void Light::setStrength(float _strength) {

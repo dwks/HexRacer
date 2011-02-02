@@ -1,7 +1,6 @@
 // Background reflection with phong specularity
 
 varying vec3 eyeNormal;
-varying vec3 objectNormal;
 varying vec4 position;
 
 //varying vec3 eyeTangent; 
@@ -21,46 +20,35 @@ void main()
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	
 	eyeNormal = normalize(gl_NormalMatrix * gl_Normal);
-	objectNormal = normalize(gl_Normal);
 	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 	position = gl_ModelViewMatrix * gl_Vertex;
 	
 	//Calculate Diffuse and Ambient Lighting----------------------------------------------------------
-	vec4 diffuseColor = vec4(0.0, 0.0, 0.0, 1.0);
-	vec4 ambientColor = vec4(0.0, 0.0, 0.0, 0.0);
+	
+	vertexColor = vec4(0.0, 0.0, 0.0, 0.0);
+	float light_dist;
+	float attenuation;
+	vec3 light;
+	float kdiff;
 	
 	if (numLights > 0) {
-		float light_dist = length((position-gl_LightSource[0].position).xyz);
-		float attenuation = 1.0/(gl_LightSource[0].constantAttenuation + gl_LightSource[0].quadraticAttenuation*light_dist*light_dist);
+		light_dist = length((position-gl_LightSource[0].position).xyz);
+		attenuation = min(1.0/(gl_LightSource[0].constantAttenuation + gl_LightSource[0].quadraticAttenuation*light_dist*light_dist), 1.0);
 		if (attenuation >= 0.004) {
-		
-			attenuation = min(attenuation, 1.0);
-			vec3 light = normalize((position-gl_LightSource[0].position).xyz);
-			
-			float kdiff = -dot(light, eyeNormal);
-			kdiff = max(kdiff, 0.0);
-			
-			diffuseColor += gl_LightSource[0].diffuse*kdiff*attenuation;
-			ambientColor += gl_LightSource[0].ambient*attenuation;
+			light = normalize((position-gl_LightSource[0].position).xyz);
+			kdiff = max(-dot(light, eyeNormal), 0.0);
+			vertexColor += (gl_LightSource[0].diffuse*kdiff + gl_LightSource[0].ambient) *attenuation;
 		}
 	}
 	if (numLights > 1) {
-		float light_dist = length((position-gl_LightSource[1].position).xyz);
-		float attenuation = 1.0/(gl_LightSource[1].constantAttenuation + gl_LightSource[1].quadraticAttenuation*light_dist*light_dist);
+		light_dist = length((position-gl_LightSource[1].position).xyz);
+		attenuation = min(1.0/(gl_LightSource[1].constantAttenuation + gl_LightSource[1].quadraticAttenuation*light_dist*light_dist), 1.0);
 		if (attenuation >= 0.004) {
-		
-			attenuation = min(attenuation, 1.0);
-			vec3 light = normalize((position-gl_LightSource[1].position).xyz);
-			
-			float kdiff = -dot(light, eyeNormal);
-			kdiff = max(kdiff, 0.0);
-			
-			diffuseColor += gl_LightSource[1].diffuse*kdiff*attenuation;
-			ambientColor += gl_LightSource[1].ambient*attenuation;
+			light = normalize((position-gl_LightSource[1].position).xyz);
+			kdiff = max(-dot(light, eyeNormal), 0.0);
+			vertexColor += (gl_LightSource[1].diffuse*kdiff + gl_LightSource[1].ambient) *attenuation;
 		}
 	}
-	
-	vertexColor = diffuseColor + ambientColor;
 	
 	cameraNormalMatrix[0][0] = -cameraMatrix[0][0];
 	cameraNormalMatrix[0][1] = cameraMatrix[0][1];

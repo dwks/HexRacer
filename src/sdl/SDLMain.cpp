@@ -132,8 +132,6 @@ void SDLMain::initOpenGL() {
     glEnable(GL_RESCALE_NORMAL);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
 }
 
 void SDLMain::initRenderer() {
@@ -182,7 +180,13 @@ void SDLMain::initRenderer() {
     background->getRenderProperties()->setWantsShaderName("backgroundShader");
     mapRenderable->addRenderable(background);
 
-	minimapTexture = Render::Texture::loadTexture2D(map->getMap2DFile());
+	minimapTexture = Render::Texture::loadTexture2D(
+		map->getMap2DFile(),
+		GL_CLAMP_TO_EDGE,
+		GL_CLAMP_TO_EDGE,
+		GL_LINEAR,
+		GL_LINEAR,
+		false);
     
     renderer->setCubeMap(map->getCubeMap());
 }
@@ -351,6 +355,8 @@ void SDLMain::run() {
 #ifdef HAVE_OPENAL
     delete soundSystem;
 #endif
+
+	glDeleteTextures(1, &minimapTexture);
     
 	delete map;
     delete mapRenderable;
@@ -467,7 +473,9 @@ void SDLMain::render() {
 	//Render the paint
 	paintManager->render(renderer);
     
-    renderAIDebug();
+	if (GET_SETTING("render.drawpathnodes", false)) {
+		renderAIDebug();
+	}
 }
 
 void SDLMain::renderMinimap(int minimap_draw_width, int minimap_draw_height) {

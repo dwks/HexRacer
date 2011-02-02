@@ -46,7 +46,7 @@ private:
 	Math::BSPTree3D* coloredPaintTree;
 	int lastDrawnColor;
 
-	static const int TREE_SPLIT_SIZE = 20;
+	static const int TREE_SPLIT_SIZE = 30;
 	static const Math::BSPTree3D::SplitMethod TREE_SPLIT_METHOD = Math::BSPTree3D::LARGEST_AXIS;
 
 	bool colorCell(PaintCell* cell, int new_color);
@@ -54,6 +54,7 @@ private:
 public:
 
 	PaintManager();
+	~PaintManager();
     
 	/** Set the paint cells that this class will manage
 	*/

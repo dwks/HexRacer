@@ -35,3 +35,10 @@ bool SpatialContainer::queryTypeFilter(ObjectSpatial* object, const BoundingObje
 	return false;
 
 }
+
+ObjectSpatial* SpatialContainer::nearest(const Point& point) const {
+	return nearestSquared(point, 0.0, false);
+}
+ObjectSpatial* SpatialContainer::nearest(const Point& point, double max_distance) const {
+	return nearestSquared(point, max_distance*max_distance, true);
+}
