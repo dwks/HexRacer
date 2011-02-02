@@ -32,6 +32,12 @@ PhysicsWorld::~PhysicsWorld() {
     delete collisionConfiguration;
     delete collisionDispatcher;
     delete broadPhaseInterface;
+    
+    for(std::vector<btRigidBody*>::iterator i = collisionBodies.begin();
+        i != collisionBodies.end(); ++ i) {
+        
+        delete (*i);
+    }
 }
 
 void PhysicsWorld::stepWorld(float microseconds) {

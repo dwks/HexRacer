@@ -54,6 +54,7 @@ private:
 public:
 
 	PaintManager();
+    
 	/** Set the paint cells that this class will manage
 	*/
 	void setPaintCells(const std::vector<PaintCell*>& paint_cells);

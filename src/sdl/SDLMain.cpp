@@ -177,6 +177,7 @@ void SDLMain::initRenderer() {
 	}
 
     //Set background shader
+    // !!! this is not freed
     Render::BackgroundRenderable* background = new Render::BackgroundRenderable(cameraObject->camera);
     background->getRenderProperties()->setWantsShaderName("backgroundShader");
     mapRenderable->addRenderable(background);
@@ -302,7 +303,7 @@ void SDLMain::run() {
         cameraObject->doStep(SDL_GetTicks());
         
         {
-            render();
+            //render();
 
 			// suspension does not look good when it is out of sync with rendering
             suspension->doAction(SDL_GetTicks());
@@ -355,9 +356,19 @@ void SDLMain::run() {
     
     delete accelControl;
     
+    delete paintSubsystem;
+    delete paintManager;
+    
     delete meshLoader;
     delete physicsWorld;
 	delete minimapCamera;
+    
+    delete simpleTrackball;
+    delete cameraObject;
+    delete renderer;
+    
+    delete clientData;
+    delete playerManager;
 }
 
 void SDLMain::handleEvents() {
@@ -432,14 +443,14 @@ void SDLMain::render() {
 
 	//Pass the camera to the renderer for culling
 	renderer->setCamera(cameraObject->camera);
-
-	 //Render most of the world
+    
+    //Render most of the world
     worldManager->getWorld()->preRender();
     worldManager->getWorld()->getRenderableObject()->render(renderer);
-	
+    
 	//Render the map
 	mapRenderable->render(renderer);
-
+    
 	//Reset the lights
 	lightManager->resetLights();
     
@@ -511,7 +522,7 @@ void SDLMain::renderMinimap(int minimap_draw_width, int minimap_draw_height) {
 	Math::Point camera_diagonal = Math::Point(minimapCamera->getOrthoWidth()*0.5, 0.0, minimapCamera->getOrthoHeight()*0.5);
 	Math::BoundingBox2D minimap_box = BoundingBox2D(player_pos-camera_diagonal, player_pos+camera_diagonal, Y_AXIS);
 
-	if (GET_SETTING("render.minimap.drawpaint", true)) {
+	if(GET_SETTING("render.minimap.drawpaint", true)) {
 		paintManager->minimapRender(minimap_box, 0.5f);
 	}
 
