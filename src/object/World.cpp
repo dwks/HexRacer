@@ -28,6 +28,7 @@ void World::preRender() {
 
 void World::addObject(ObjectBase *object) {
     objectList.push_back(object);
+    LOG(WORLD, "Adding object " << object->getID());
 }
 
 void World::removeObject(ObjectBase *object) {

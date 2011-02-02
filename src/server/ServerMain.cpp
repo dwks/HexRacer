@@ -187,7 +187,7 @@ void ServerMain::run() {
             
             clients.addClient(socket);
             Object::Player *player = new Object::Player(clientCount, location);
-            worldManager->addPlayer(player);
+            //worldManager->addPlayer(player);
             
             Event::EntireWorld *entireWorld = new Event::EntireWorld(
                 worldManager->getWorld(), worldManager->getPlayerList());

@@ -62,7 +62,7 @@ void WorldManager::WorldHandler::observe(Event::EventBase *event) {
             Object::ObjectBase *object
                 = worldManager->getWorld()->getObject(updateObject->getID());
             
-            LOG(WORLD, "Updating " << updateObject->getID() << ", " << object);
+            //LOG(WORLD, "Updating " << updateObject->getID() << ", " << object);
             
             // we don't know about this object
             if(!object) continue;

@@ -1,0 +1,7 @@
+- refactor SDLMain into subsystems
+- make RenderableObject::render() recursive (don't return vector)
+- PhysicalObject needs getDirection() etc.
+- refactor HRMap
+- create ObjectCollision event for sound
+- add friction
+
