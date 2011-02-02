@@ -1,7 +1,7 @@
 // Color map, normal map and glow map with phong shading
 
 varying vec3 eyeNormal;
-varying vec3 objectNormal;
+//varying vec3 objectNormal;
 varying vec4 position;
 
 varying vec3 eyeTangent; 
@@ -15,7 +15,7 @@ void main()
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	
 	eyeNormal = normalize(gl_NormalMatrix * gl_Normal);
-	objectNormal = normalize(gl_Normal);
+	//objectNormal = normalize(gl_Normal);
 	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 	position = gl_ModelViewMatrix * gl_Vertex;
 	

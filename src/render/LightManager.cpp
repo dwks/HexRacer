@@ -120,6 +120,8 @@ namespace Render {
 	}
 
 	void LightManager::activateIntersectingLights(const Math::BoundingObject& bounding_obj) {
+		if (activeLights.size() >= maxActiveLights)
+			return;
 		activateDynamicLights(priorityDynamicLights, bounding_obj);
 		activateStaticLights(priorityStaticLightTree, bounding_obj);
 		activateDynamicLights(dynamicLights, bounding_obj);

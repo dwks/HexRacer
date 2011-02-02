@@ -1,7 +1,6 @@
 // Background reflection with Normal Mapping
 
 varying vec3 eyeNormal;
-varying vec3 objectNormal;
 varying vec4 position;
 
 varying vec3 eyeTangent; 

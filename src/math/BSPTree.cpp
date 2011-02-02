@@ -3,6 +3,7 @@
 #include "BoundingObject2D.h"
 #include "BoundingSphere.h"
 #include "Values.h"
+#include <math.h>
 using namespace Project;
 using namespace Math;
 
@@ -166,6 +167,7 @@ ObjectSpatial* BSPTree::nearestSquared(const Point& point, double max_distance_s
 				nearest = child_nearest;
 				max_distance_squared = point.distanceSquared(nearest->centroid());
 				bounded = true;
+				sphere.setRadius(sqrt(max_distance_squared));
 			}
 		}
 
@@ -173,8 +175,6 @@ ObjectSpatial* BSPTree::nearestSquared(const Point& point, double max_distance_s
 			ObjectSpatial* child_nearest = child[1]->nearestSquared(point, max_distance_squared, bounded);
 			if (child_nearest) {
 				nearest = child_nearest;
-				//max_distance_squared = point.distanceSquared(nearest->centroid());
-				//bounded = true;
 			}
 		}
 
