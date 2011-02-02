@@ -226,6 +226,8 @@ void SDLMain::loadMap() {
                     );
         }
     }
+    
+    raceManager = new Map::RaceManager(map);
 }
 
 void SDLMain::run() {
@@ -243,6 +245,7 @@ void SDLMain::run() {
     worldManager = new Object::WorldManager();
     
     network = new NetworkPortal();
+    int actualID;
     if(network->connectTo(
         GET_SETTING("network.host", "localhost").c_str(),
         GET_SETTING("network.port", 1820))) {
@@ -250,11 +253,13 @@ void SDLMain::run() {
         network->waitForWorld();
         clientData = new ClientData(network->getID());
         playerManager = new PlayerManager(network->getID(), worldManager);
+        actualID = network->getID();
         Settings::ProgramSettings::getInstance()->setConnected(true);
     }
     else {
         clientData = new ClientData();
         playerManager = new PlayerManager(0, worldManager);
+        actualID = 0;
     }
     paintSubsystem = new Paint::PaintSubsystem(worldManager, paintManager, 20);
     
@@ -267,6 +272,9 @@ void SDLMain::run() {
     ADD_OBSERVER(new QuitObserver(this));
     
     loadMap();
+    
+    worldManager->initForClient(actualID,
+        raceManager->startingPointForPlayer(actualID));
     
 #ifdef HAVE_OPENAL
     Sound::SoundSystem *soundSystem = new Sound::SoundSystem();

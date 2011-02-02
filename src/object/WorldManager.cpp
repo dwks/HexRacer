@@ -41,8 +41,8 @@ void WorldManager::usePlayerList(PlayerList *playerList) {
     }
 }
 
-void WorldManager::initForClient(int id) {
-    Object::Player *player = new Object::Player(id, INITIAL_CAR_LOCATION);
+void WorldManager::initForClient(int id, const Math::Point &location) {
+    Object::Player *player = new Object::Player(id, location);
     
     playerList->addPlayer(player);
     world->addObject(player);

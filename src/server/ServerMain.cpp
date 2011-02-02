@@ -150,6 +150,7 @@ void ServerMain::run() {
     paintSubsystem = new Paint::PaintSubsystem(worldManager, &paintManager, 20);
     
     loadMap();
+    raceManager = new Map::RaceManager(map);
     
     int loops = 0;
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
@@ -167,9 +168,12 @@ void ServerMain::run() {
                 packetSerializer.packetToString(packet));
             delete packet;
             
+            Math::Point location
+                = raceManager->startingPointForPlayer(clientCount);
+            
             clients.addClient(socket);
             worldManager->getPlayerList()->addPlayer(
-                new Object::Player(clientCount, INITIAL_CAR_LOCATION));
+                new Object::Player(clientCount, location));
             
             clientCount ++;
         }

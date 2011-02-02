@@ -65,8 +65,6 @@ void PlayerManager::UpdatePlayerListHandler::observe(
 PlayerManager::PlayerManager(int id, Object::WorldManager *worldManager)
     : id(id), worldManager(worldManager) {
     
-    worldManager->initForClient(id);
-    
     ADD_OBSERVER(new PlayerActionHandler(this));
     ADD_OBSERVER(new UpdatePlayerListHandler(this));
 }

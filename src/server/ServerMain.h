@@ -14,6 +14,7 @@
 #include "timing/AccelControl.h"
 
 #include "map/HRMap.h"
+#include "map/RaceManager.h"
 
 namespace Project {
 namespace Server {
@@ -51,6 +52,7 @@ private:
     ServerNetworkPortal *networkPortal;
     Timing::AccelControl *accelControl;
     Map::HRMap *map;
+    Map::RaceManager *raceManager;
 public:
     ServerMain();
     ~ServerMain();

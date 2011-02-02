@@ -28,7 +28,7 @@ public:
     Player *getPlayer(int id);
     
     void usePlayerList(PlayerList *playerList);
-    void initForClient(int id);
+    void initForClient(int id, const Math::Point &location);
 };
 
 }  // namespace Object
