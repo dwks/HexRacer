@@ -10,15 +10,15 @@ namespace Project {
 namespace Physics {
 
 class PhysicalObject {
-protected:
-    btRigidBody* primaryRigidBody; 
 public:
     virtual ~PhysicalObject() {}
     
     virtual Math::Point getOrigin() const = 0;
     virtual Math::Matrix getTransformation() const = 0;
     
-	virtual btRigidBody* getPrimaryRigidBody() { return primaryRigidBody; }
+    virtual void setData(const Math::Matrix &transform,
+        const Math::Point &linearVelocity,
+        const Math::Point &angularVelocity) = 0;
 };
 
 }  // namespace Physics

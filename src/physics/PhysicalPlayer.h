@@ -85,6 +85,10 @@ public:
     void applyForce(const Math::Point &force);
     void applyForce(const Math::Point &force, const Math::Point &at);
     void applyTorque(const Math::Point &torque);
+    
+    virtual void setData(const Math::Matrix &transform,
+        const Math::Point &linearVelocity,
+        const Math::Point &angularVelocity);
 };
 
 }  // namespace Physics

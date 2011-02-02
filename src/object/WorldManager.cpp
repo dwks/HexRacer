@@ -1,12 +1,45 @@
 #include "WorldManager.h"
 #include "config.h"
 
+#include "event/ObserverList.h"
+
+#include "physics/Converter.h"
+
 namespace Project {
 namespace Object {
+
+void WorldManager::CreateObjectHandler
+    ::observe(Event::CreateObject *createObject) {
+    
+    worldManager->getWorld()->addObject(createObject->getObject());
+}
+
+void WorldManager::DestroyObjectHandler
+    ::observe(Event::DestroyObject *destroyObject) {
+    
+    worldManager->getWorld()->removeObject(
+        worldManager->getWorld()->getObject(destroyObject->getID()));
+}
+
+void WorldManager::UpdateObjectHandler
+    ::observe(Event::UpdateObject *updateObject) {
+    
+    Object::ObjectBase *object
+        = worldManager->getWorld()->getObject(updateObject->getID());
+    
+    object->getPhysicalObject()->setData(
+        updateObject->getTransformation(),
+        updateObject->getLinearVelocity(),
+        updateObject->getAngularVelocity());
+}
 
 WorldManager::WorldManager() {
     world = new World();
     playerList = new PlayerList();
+    
+    ADD_OBSERVER(new CreateObjectHandler(this));
+    ADD_OBSERVER(new DestroyObjectHandler(this));
+    ADD_OBSERVER(new UpdateObjectHandler(this));
 }
 
 WorldManager::WorldManager(World *world, PlayerList *playerList)

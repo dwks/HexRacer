@@ -25,6 +25,9 @@ public:
         TOGGLE_PAINT,
         SET_DEBUG_CAMERA,
         PAUSE_GAME,
+        CREATE_OBJECT,
+        DESTROY_OBJECT,
+        UPDATE_OBJECT,
         TYPES
     };
 };

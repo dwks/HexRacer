@@ -57,7 +57,7 @@ MapEditorWidget::~MapEditorWidget() {
 	delete(trackball);
 	delete(background);
 	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
-		for (unsigned int j = 0; j < mapObjects[i].size(); j++) {
+		for (int j = 0; j < mapObjects[i].size(); j++) {
 			delete(mapObjects[i][j]);
 		}
 	}
@@ -563,10 +563,9 @@ void MapEditorWidget::mapObjectsChanged(MapObject::ObjectType type) {
 
 	//Delete all map objects with the given type
 	int type_index = static_cast<int>(type);
-	for (unsigned int i = 0; i < mapObjects[type_index].size(); i++)
+	for (int i = 0; i < mapObjects[type_index].size(); i++)
 		delete(mapObjects[type_index][i]);
 	mapObjects[type_index].clear();
-	unsigned int size = mapObjects[type_index].size();
 
 	if (type == MapObject::LIGHT) {
 		lightManager->clear();
@@ -597,8 +596,6 @@ void MapEditorWidget::mapObjectsChanged(MapObject::ObjectType type) {
 			}
 		}
 	}
-
-
 
 }
 
@@ -863,7 +860,7 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 	switch (type) {
 		case MapObject::LIGHT:
 
-			for (unsigned int i = 0; i < mapObjects[type_index].size(); i++) {
+			for (int i = 0; i < mapObjects[type_index].size(); i++) {
 				Light* light = ((LightObject*)mapObjects[type_index][i])->getLight();
 
 				if (object_buffer)
@@ -880,7 +877,7 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 		
 		case MapObject::PATH_NODE:
 
-			for (unsigned int i = 0; i < mapObjects[type_index].size(); i++) {
+			for (int i = 0; i < mapObjects[type_index].size(); i++) {
 				PathNode* node = ((PathNodeObject*)mapObjects[type_index][i])->getNode();
 
 				if (object_buffer)
@@ -913,7 +910,7 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 
 		case MapObject::START_POINT:
 
-			for (unsigned int i = 0; i < mapObjects[type_index].size(); i++) {
+			for (int i = 0; i < mapObjects[type_index].size(); i++) {
 				StartPointObject* point_object = ((StartPointObject*)mapObjects[type_index][i]);
 
 				if (object_buffer)
@@ -940,7 +937,7 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 
 		case MapObject::MESH_INSTANCE:
 			
-			for (unsigned int i = 0; i < mapObjects[type_index].size(); i++) {
+			for (int i = 0; i < mapObjects[type_index].size(); i++) {
 				RenderList render_list;
 				TransformedMesh* mesh_instance = ((MeshInstanceObject*)mapObjects[type_index][i])->getTransformedMesh();
 				render_list.addRenderable(mesh_instance);

@@ -3,6 +3,8 @@
 #include "World.h"
 #include "settings/ProgramSettings.h"
 
+#include "log/Logger.h"
+
 namespace Project {
 namespace Object {
 
@@ -33,6 +35,19 @@ void World::removeObject(ObjectBase *object) {
         = std::find(objectList.begin(), objectList.end(), object);
     
     objectList.erase(found);
+}
+
+ObjectBase *World::getObject(int id) {
+    // !!! linear search
+    for(objectListType::iterator i = objectList.begin(); i != objectList.end();
+        ++ i) {
+        
+        if((*i)->getID() == id) return *i;
+    }
+    
+    LOG2(WORLD, WARNING, "No such object " << id);
+    
+    return NULL;
 }
 
 }  // namespace Object
