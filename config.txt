@@ -2,7 +2,8 @@
 # Settings for the project
 
 #map = data/testtrack.hrm
-map = data/testtrack2.hrm
+#map = data/testtrack2.hrm
+map = data/testtrack3.hrm
 
 ########
 ### Display settings

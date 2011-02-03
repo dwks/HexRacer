@@ -443,7 +443,7 @@ void SDLMain::render() {
 	//Render the paint
 	paintManager->render(renderer);
     
-	if (GET_SETTING("render.drawpathnodes", false)) {
+	if(GET_SETTING("render.drawpathnodes", false)) {
 		renderAIDebug();
 	}
 }
