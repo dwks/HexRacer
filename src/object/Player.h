@@ -33,7 +33,7 @@ private:
     Math::Point suspension[4];
 public:
     Player();
-    Player(int id, const Math::Point &origin);
+	Player(int id, const Math::Point &origin, const Math::Point &direction = Math::Point(0.0, 0.0, 1.0));
     virtual ~Player();
     
     void setOnGround(bool onGround)

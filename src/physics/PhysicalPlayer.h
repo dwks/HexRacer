@@ -50,7 +50,7 @@ private:
     double speedBoost;  // not serialized
 public:
     PhysicalPlayer() : rigidBody(NULL), onGround(false), speedBoost(1.0) {}
-    PhysicalPlayer(const Math::Point &position);
+    PhysicalPlayer(const Math::Point &position, const Math::Point &direction);
     virtual ~PhysicalPlayer();
     
     void setOnGround(bool onGround)

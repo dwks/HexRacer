@@ -12,6 +12,7 @@ private:
 public:
     RaceManager(HRMap *map) : map(map) {}
     
+	Math::Point startingPlayerDirection();
     Math::Point startingPointForPlayer(int id);
 };
 

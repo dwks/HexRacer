@@ -237,10 +237,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\CompositeRenderable.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\mapeditor\CubeMapDialog.cpp"
 				>
 			</File>
@@ -426,10 +422,6 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderableObject.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\RenderablePlayer.cpp"
 				>
 			</File>
 			<File
@@ -620,10 +612,6 @@
 			</File>
 			<File
 				RelativePath=".\src\render\ColorConstants.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\CompositeRenderable.h"
 				>
 			</File>
 			<File
@@ -904,10 +892,6 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderableObject.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\RenderablePlayer.h"
 				>
 			</File>
 			<File

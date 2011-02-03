@@ -13,11 +13,11 @@ Player::Player() : AbstractObject(-1) {
     renderable = NULL;
 }
 
-Player::Player(int id, const Math::Point &origin) : AbstractObject(id) {
+Player::Player(int id, const Math::Point &origin, const Math::Point &direction) : AbstractObject(id) {
     Physics::PhysicsWorld *world = Physics::PhysicsWorld::getInstance();
     
     if(world) {
-		physical = Physics::PhysicsFactory::createPhysicalPlayer(origin);
+		physical = Physics::PhysicsFactory::createPhysicalPlayer(origin, direction);
     }
     else {
         physical = NULL;

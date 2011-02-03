@@ -23,7 +23,7 @@ public:
     static btRigidBody* createRigidTriMesh(std::vector <Math::Triangle3D> tri_array);
     static btRigidBody* createRigidTriMesh(std::vector <Math::Point> tri_array);
     
-    static PhysicalPlayer *createPhysicalPlayer(const Math::Point &origin);
+	static PhysicalPlayer *createPhysicalPlayer(const Math::Point &origin, const Math::Point &direction = Math::Point(0.0, 0.0, 1.0));
 };
 
 }  // namespace physics

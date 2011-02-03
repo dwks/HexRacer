@@ -69,6 +69,8 @@ public:
 	static Point triangleNormal(Point tri_a, Point tri_b, Point tri_c);
 
 	static RayIntersection rayPlaneIntersection(Ray ray, Point plane_point, Point plane_normal);
+
+	static double vectorTo2DAngle(Point vector, Axis project_axis = Z_AXIS);
 	
 };
 

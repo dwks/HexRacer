@@ -53,7 +53,7 @@ render.shaderoutput = 1
 render.minimap.enable = 1
 render.minimap.drawheight = 0.25
 render.minimap.drawaspect = 1.0
-render.minimap.height = 50.0
+render.minimap.height = 60.0
 render.minimap.drawpaint = 1
 
 # for AI debugging

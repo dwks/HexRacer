@@ -125,9 +125,8 @@ Player *WorldManager::getPlayer(int id) {
     return dynamic_cast<Player *>(world->getObject(id));
 }
 
-void WorldManager::initForClient(int id, const Math::Point &location) {
-    Object::Player *player = new Object::Player(id, location);
-    
+void WorldManager::initForClient(int id, const Math::Point &location, const Math::Point& direction) {
+    Object::Player *player = new Object::Player(id, location, direction);
     addPlayer(player);
 }
 

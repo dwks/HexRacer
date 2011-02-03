@@ -100,9 +100,12 @@ namespace Paint {
 
 		vector<ObjectSpatial*> visible_cells;
 
-		coloredPaintTree->appendQuery(&visible_cells, bounding_box, SpatialContainer::INSIDE);
+		coloredPaintTree->appendQuery(&visible_cells, bounding_box, SpatialContainer::NEARBY);
 
-		glPointSize(2.0f);
+		GLfloat values [4];
+		glGetFloatv(GL_VIEWPORT, values);
+		float viewportWidth = values[3];
+		glPointSize(viewportWidth/62.5f);
 		glBegin(GL_POINTS);
 		for (unsigned int i = 0; i < visible_cells.size(); i++) {
 

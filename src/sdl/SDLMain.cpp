@@ -146,10 +146,10 @@ void SDLMain::initRenderer() {
     
     //Load the vehicle model
     Render::RenderableObject *object
-        = meshLoader->loadOBJ("playerCube", GET_SETTING("render.model.vehicle", ""));
+        = meshLoader->loadOBJ(VEHICLE_CHASSIS_MODEL_NAME, GET_SETTING("render.model.vehicle", ""));
         
     Render::RenderableObject *objectTire
-        = meshLoader->loadOBJ("playerTire", GET_SETTING("render.model.tire", ""));
+        = meshLoader->loadOBJ(VEHICLE_WHEEL_MODEL_NAME, GET_SETTING("render.model.tire", ""));
         
     object->getRenderProperties()->setTransformation(
         Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0)));
@@ -239,7 +239,8 @@ void SDLMain::run() {
     
     if(!isConnectedToNetwork) {
         worldManager->initForClient(clientData->getPlayerID(),
-            raceManager->startingPointForPlayer(clientData->getPlayerID()));
+            raceManager->startingPointForPlayer(clientData->getPlayerID()),
+			raceManager->startingPlayerDirection());
     }
     
 #ifdef HAVE_OPENAL
@@ -302,12 +303,6 @@ void SDLMain::run() {
 					paintManager);
 
 				glViewport(0, 0, viewWidth, viewHeight);
-				/*
-				renderMinimap(
-					minimap_draw_height*GET_SETTING("render.minimap.drawaspect", 1.0),
-					minimap_draw_height
-					);
-				*/
 			}
        
             glFlush();

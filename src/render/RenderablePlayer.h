@@ -1,19 +1,20 @@
 #ifndef PROJECT_RENDER__RENDERABLE_PLAYER_H
 #define PROJECT_RENDER__RENDERABLE_PLAYER_H
 
-#include "RenderList.h"
+#include "RenderableObject.h"
 #include "MeshGroup.h"
 #include "MeshLoader.h"
+#include "RenderList.h"
 
 namespace Project {
 namespace Render {
 
-class RenderablePlayer : public RenderList {
+class RenderablePlayer : public RenderableObject {
 private:
     Math::Point origin;
     
     MeshGroup *player_cube_mesh;
-    MeshGroup *player_tire;
+    RenderList *player_tire;
     
     double velocity;
     Math::Point suspension[4];

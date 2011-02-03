@@ -9,6 +9,9 @@
 // enables sound
 //#define HAVE_OPENAL
 
+#define VEHICLE_CHASSIS_MODEL_NAME "vehicleChassis"
+#define VEHICLE_WHEEL_MODEL_NAME "vehicleWheel"
+
 #define PAINT_CELL_RADIUS 0.45
 #define PAINT_CELL_VERTEX_HEIGHT_THRESHHOLD 1.0
 #define PAINT_CELL_LIFT_AMOUNT 0.085

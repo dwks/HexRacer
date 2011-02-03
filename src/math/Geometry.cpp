@@ -193,5 +193,20 @@ RayIntersection Geometry::rayPlaneIntersection(Ray ray, Point plane_point, Point
 
 }
 
+double Geometry::vectorTo2DAngle(Point vector, Axis project_axis) {
+
+	double inner_angle = atan(vector.getV(project_axis) / vector.getU(project_axis));
+	if (vector.getU() >= 0.0f) {
+		if (vector.getV() >= 0.0f)
+			return inner_angle;
+		else
+			return PI*2.0f+inner_angle;
+	}
+	else {
+		return PI+inner_angle;
+	}
+
+}
+
 }  // namespace Math
 }  // namespace Project
