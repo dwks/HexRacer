@@ -109,6 +109,8 @@ public:
 	Point operator + (const Point &other) const;
 	Point operator - (const Point &other) const;
     
+    Point operator - () const;
+    
 	Point operator * (double factor) const;
 	Point coordinateMultiply(const Point &other) const;
     

@@ -49,7 +49,8 @@ void PlayerManager::PlayerActionHandler::observe(
         delete player->getPhysicalObject();
         player->setPhysicalObject(
             Physics::PhysicsFactory::createPhysicalPlayer(
-                INITIAL_CAR_LOCATION));
+                manager->raceManager
+                    ->startingPointForPlayer(player->getID())));
         break;
     }
 }

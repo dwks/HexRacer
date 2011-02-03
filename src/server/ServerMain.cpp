@@ -28,6 +28,7 @@
 
 #include "render/MeshGroup.h"
 #include "render/MeshLoader.h"
+#include "map/MapLoader.h"
 
 #include "log/Logger.h"
 #include "misc/Sleeper.h"
@@ -81,7 +82,8 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
             delete player->getPhysicalObject();
             player->setPhysicalObject(
                 Physics::PhysicsFactory::createPhysicalPlayer(
-                    INITIAL_CAR_LOCATION));
+                    main->raceManager->startingPointForPlayer(
+                        player->getID())));
             break;
         }
         
@@ -151,10 +153,10 @@ void ServerMain::run() {
     //Instantiate the map
     map = new Map::HRMap();
     if (map->loadMapFile(GET_SETTING("map", "maps/testtrack.hrm"))) {
-        LOG(WORLD, "Loaded Map File " << GET_SETTING("map", "maps/testtrack.hrm"));
+        LOG(WORLD, "Loaded Map File " << GET_SETTING("map", "data/testtrack.hrm"));
     }
     else {
-        LOG(WORLD, "Unable to load map " << GET_SETTING("map", "maps/testtrack.hrm"));
+        LOG(WORLD, "Unable to load map " << GET_SETTING("map", "data/testtrack.hrm"));
     }
     
     ADD_OBSERVER(new ServerObserver(this));
@@ -164,7 +166,7 @@ void ServerMain::run() {
     worldManager = new Object::WorldManager();
     paintSubsystem = new Paint::PaintSubsystem(worldManager, &paintManager, 20);
     
-    loadMap();
+    Map::MapLoader().load(map, NULL);
     raceManager = new Map::RaceManager(map);
     
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
@@ -270,47 +272,6 @@ void ServerMain::run() {
     delete physicsWorld;
     
     delete accelControl;
-}
-
-void ServerMain::loadMap() {
-    //Process map meshes
-    for(int i = 0; i < Map::HRMap::NUM_MESHES; i++) {
-        Map::HRMap::MeshType type = static_cast<Map::HRMap::MeshType>(i);
-        if (map->getMapMesh(type)) {
-
-            //Add visible meshes to the map renderable
-            /*if (!Map::HRMap::meshIsInvisible(type)) {
-                mapRenderable->addRenderable(map->getMapMesh(type));
-            }*/
-
-            //Add solid meshes to the physics
-            if (Map::HRMap::meshIsSolid(type)) {
-                Physics::PhysicsWorld::getInstance()->registerRigidBody(
-                    Physics::PhysicsFactory::createRigidTriMesh(map->getMapMesh(type)->getTriangles())
-                    );
-            }
-
-        }
-        
-    }
-    
-    //Process mesh instances
-    vector<Map::MeshInstance*> instances = map->getMeshInstances();
-    for (unsigned i = 0; i < instances.size(); i++) {
-        
-        Render::TransformedMesh* transformed_mesh = new Render::TransformedMesh(
-            instances[i]->getMeshGroup(), instances[i]->getTransformation()
-            );
-        //Add the mesh to the map renderable
-        //mapRenderable->addRenderable(transformed_mesh);
-        
-        //If the instance is solid static, add it to the physics
-        if (instances[i]->getType() == Map::MeshInstance::SOLID_STATIC) {
-            Physics::PhysicsWorld::getInstance()->registerRigidBody(
-                    Physics::PhysicsFactory::createRigidTriMesh(transformed_mesh->getTransformedTriangles())
-                    );
-        }
-    }
 }
 
 }  // namespace Server

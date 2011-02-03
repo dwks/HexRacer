@@ -64,8 +64,6 @@ public:
     Object::World *getWorld() { return worldManager->getWorld(); }
     Object::WorldManager *getWorldManager() { return worldManager; }
     Paint::PaintManager &getPaintManager() { return paintManager; }
-private:
-    void loadMap();
 };
 
 }  // namespace Server

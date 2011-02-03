@@ -264,10 +264,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\CompositeRenderable.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\connection\ConstructedTCPSocket.cpp"
 				>
 			</File>
@@ -276,11 +272,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\CreateObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\CubeMapFile.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\DebugDrawer.cpp"
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\DestroyObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\DirectoryFunctions.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\EntireWorld.cpp"
 				>
 			</File>
 			<File
@@ -316,6 +328,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\HRMap.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\Light.cpp"
 				>
 			</File>
@@ -336,6 +352,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\MapLoader.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\Material.cpp"
 				>
 			</File>
@@ -353,6 +373,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\MeshGroup.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\MeshInstance.cpp"
 				>
 			</File>
 			<File
@@ -456,6 +480,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\PathManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\PathNode.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\PauseGame.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\PhysicalObject.cpp"
 				>
 			</File>
@@ -501,6 +537,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\QuitEvent.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\RaceManager.cpp"
 				>
 			</File>
 			<File
@@ -592,6 +632,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\SimpleTransform.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\network\SinglePortal.cpp"
 				>
 			</File>
@@ -648,6 +692,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\TransformedMesh.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Triangle3D.cpp"
 				>
 			</File>
@@ -657,6 +705,14 @@
 			</File>
 			<File
 				RelativePath=".\src\log\TypeRegistry.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\UpdateObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\UpdateWorld.cpp"
 				>
 			</File>
 			<File
@@ -830,10 +886,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\CompositeRenderable.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\connection\ConstructedTCPSocket.h"
 				>
 			</File>
@@ -842,11 +894,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\CreateObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\CubeMapFile.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\DebugDrawer.h"
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\DestroyObject.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\DirectoryFunctions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\EntireWorld.h"
 				>
 			</File>
 			<File
@@ -882,6 +950,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\HRMap.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\Light.h"
 				>
 			</File>
@@ -902,6 +974,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\MapLoader.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\Material.h"
 				>
 			</File>
@@ -919,6 +995,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\MeshGroup.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\MeshInstance.h"
 				>
 			</File>
 			<File
@@ -1026,6 +1106,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\PathManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\PathNode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\PauseGame.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\PhysicalObject.h"
 				>
 			</File>
@@ -1074,6 +1166,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\RaceManager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Ray.h"
 				>
 			</File>
@@ -1115,6 +1211,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderSettings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\RotationAxis.h"
 				>
 			</File>
 			<File
@@ -1162,6 +1262,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\SimpleTransform.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\network\SinglePortal.h"
 				>
 			</File>
@@ -1179,6 +1283,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\SpatialList.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc\StdVectorFunctions.h"
 				>
 			</File>
 			<File
@@ -1218,6 +1326,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\TransformedMesh.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Triangle3D.h"
 				>
 			</File>
@@ -1227,6 +1339,14 @@
 			</File>
 			<File
 				RelativePath=".\src\log\TypeRegistry.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\UpdateObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\UpdateWorld.h"
 				>
 			</File>
 			<File

@@ -10,6 +10,8 @@
 #include "event/ObserverList.h"
 #include "PhysicsFactory.h"
 
+#include "settings/SettingsManager.h"
+
 namespace Project {
 namespace Physics {
 
@@ -26,14 +28,12 @@ PhysicsWorld::PhysicsWorld() {
 }
 
 PhysicsWorld::~PhysicsWorld() {
-	/*
-    for(std::vector<btRigidBody*>::iterator i = collisionBodies.begin();
+    /*for(std::vector<btRigidBody*>::iterator i = collisionBodies.begin();
         i != collisionBodies.end(); ++ i) {
         
         destroyRigidBody(*i);
         delete (*i);
-    }
-	*/
+    }*/
     
     // delete in reverse order of allocation, more or less
     delete dynamicsWorld;
@@ -82,7 +82,8 @@ void PhysicsWorld::setupPhysicsWorld() {
     
     dynamicsWorld = new btDiscreteDynamicsWorld ( collisionDispatcher,broadPhaseInterface,constraintSolver,collisionConfiguration );
     
-    dynamicsWorld->setGravity ( btVector3 ( 0.0,-9.81,0.0 ) );
+    double gravity = GET_SETTING("physics.constant.gravity", 9.81);
+    dynamicsWorld->setGravity ( btVector3 ( 0.0,-gravity,0.0 ) );
     
     LOG2 ( PHYSICS, INIT, "Physics Setup Completed!" );
     

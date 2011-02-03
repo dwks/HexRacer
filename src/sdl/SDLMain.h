@@ -32,6 +32,7 @@
 
 #include "map/HRMap.h"
 #include "map/RaceManager.h"
+#include "map/Minimap.h"
 
 #include "timing/AccelControl.h"
 
@@ -47,7 +48,6 @@ class SDLMain {
 private:
 
 	OpenGL::SimpleTrackball *simpleTrackball;
-	OpenGL::Camera *minimapCamera;
     SDL::CameraObject *cameraObject;
 
 	int viewWidth;
@@ -72,6 +72,7 @@ private:
 
 	Map::HRMap* map;
     Map::RaceManager *raceManager;
+	Map::Minimap *minimap;
 	GLuint minimapTexture;
 
 	int testPaintColor;
@@ -121,7 +122,6 @@ private:
     void initSDL();
     void initOpenGL();
     void initRenderer();
-    void loadMap();
 };
 
 }  // namespace SDL

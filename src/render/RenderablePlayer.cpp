@@ -18,6 +18,10 @@ void RenderablePlayer::initialize(int id) {
         = MeshLoader::getInstance()->getModelByName("playerCube");
     addRenderable(player_cube_mesh);
     
+    MeshGroup *player_tire_1
+        = MeshLoader::getInstance()->getModelByName("playerTire");
+    addRenderable(player_tire_mesh);
+    
     getRenderProperties()->addShaderParameter(
         new Render::ShaderUniformVector4("playerColor",
             ColorConstants::playerColor(id)));
@@ -25,6 +29,10 @@ void RenderablePlayer::initialize(int id) {
 
 void RenderablePlayer::preRenderUpdate(const Math::Matrix &transformation) {
     getRenderProperties()->setTransformation(transformation);
+}
+
+void RenderablePlayer::preRenderTires(){
+    
 }
 
 void RenderablePlayer::updatePhysicalData(const Math::Point &origin) {

@@ -51,7 +51,7 @@ double Suspension::Spring::calculateForceFactor(
         displacementSpeed = 0.0;  // no damping force when first hit the ground
     }
     
-    static const double GRAVITY = 9.81;
+    double GRAVITY = GET_SETTING("physics.constant.gravity", 9.81);
     static const double VEHICLE_WEIGHT = 2.0;
     static const double NORMAL_FORCE = (GRAVITY * VEHICLE_WEIGHT) / 4.0;
     
@@ -142,8 +142,8 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
     for(int wheel = 0; wheel < 4; wheel ++) {
         Math::Matrix matrix = player->getTransformation();
         
-        // 4D vector (don't want translation included)
-        Math::Point axis = matrix * Math::Point(0.0, -1.0, 0.0, 0.0);
+        // downward axis of suspension springs
+        Math::Point axis = -player->getPhysicalObject()->getUpDirection();
         axis.normalize();
         
         // suspension attachment point in world space
@@ -217,8 +217,7 @@ void Suspension::applyDragForce(Object::Player *player) {
     
     // sideways drag (prevent slipping)
     
-    Math::Matrix matrix = physicalPlayer->getTransformation();
-    Math::Point sidewaysAxis = matrix * Math::Point(1.0, 0.0, 0.0, 0.0);
+    Math::Point sidewaysAxis = physicalPlayer->getRightDirection();
     
     if(linearVelocity.lengthSquared()) {
         double sidewaysSpeed = linearVelocity.dotProduct(sidewaysAxis)

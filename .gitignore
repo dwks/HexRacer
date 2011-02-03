@@ -44,9 +44,8 @@ mem.*
 profile.*
 
 # Objects and meshes and other game data
-/models
-/maps
+/data
 /sound
 
-# System Specific Config Files
-renderconfig.txt
+# local configuration
+localconfig.txt

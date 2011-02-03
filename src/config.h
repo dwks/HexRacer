@@ -1,6 +1,8 @@
 #ifndef PROJECT_CONFIG_H
 #define PROJECT_CONFIG_H
 
+#define CONFIG_FILE "config.txt"
+
 // enables some Boost-specific (but more portable) code
 #define HAVE_BOOST
 
