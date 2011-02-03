@@ -206,11 +206,11 @@ Point Point::rotateAxis(Axis axis, double angle) const {
 }
 
 Point Point::rotate90CW(Axis axis) const {
-	return point2D(getV(axis), -getU(axis));
+	return point2D(getV(axis), -getU(axis), axis);
 }
 
 Point Point::rotate90CCW(Axis axis) const {
-	return point2D(-getV(axis), getU(axis));
+	return point2D(-getV(axis), getU(axis), axis);
 }
 
 double Point::dotProduct(const Point &other) const {
