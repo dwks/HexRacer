@@ -66,5 +66,17 @@ void Player::initialize() {
     }
 }
 
+void Player::preRender() {
+    AbstractObject::preRender();
+    
+    for(int wheel = 0; wheel < 4; wheel ++) {
+        renderable->setSuspension(wheel, getSuspension(wheel));
+    }
+    
+    renderable->setVelocity(
+        physical->getLinearVelocity().dotProduct(
+            physical->getFrontDirection()));
+}
+
 }  // namespace Object
 }  // namespace Project

@@ -125,10 +125,10 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
     // add +0.01 to Y so that suspension points are not usually underground
     // multiply Z by 0.9 to shift suspension points inwards slightly
     static const Math::Point suspensionPoint[] = {
-        Math::Point(0.4, -0.2 + 0.05, 0.8 * 0.9),
-        Math::Point(-0.4, -0.2 + 0.05, 0.8 * 0.9),
-        Math::Point(-0.4, -0.2 + 0.05, -0.8 * 0.9),
-        Math::Point(0.4, -0.2 + 0.05, -0.8 * 0.9),
+        Math::Point(0.4, -0.2 + 0.05, 0.8 * 0.85),
+        Math::Point(-0.4, -0.2 + 0.05, 0.8 * 0.85),
+        Math::Point(-0.4, -0.2 + 0.05, -0.8 * 0.85),
+        Math::Point(0.4, -0.2 + 0.05, -0.8 * 0.85),
     };
     
     // bullet rays appear to have radius 0.01.
@@ -179,8 +179,12 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
         
         double down = displacement.getDisplacement();
         
-        debugDrawWheel(matrix, suspensionPoint[wheel]
-            + Math::Point(0.0, -down - WHEEL_DIAMETER - 0.05, 0.0));
+        player->setSuspension(wheel,
+            suspensionPoint[wheel]
+                + Math::Point(0.0, -down - WHEEL_DIAMETER - 0.05, 0.0));
+        
+        /*debugDrawWheel(matrix, suspensionPoint[wheel]
+            + Math::Point(0.0, -down - WHEEL_DIAMETER - 0.05, 0.0));*/
                 //* (GET_SETTING("physics.driving.stretchlength", 1.0)));
                     //- (displacement.getDisplacement() + WHEEL_DIAMETER)));*/
     }

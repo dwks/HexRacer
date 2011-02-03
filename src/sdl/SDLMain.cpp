@@ -155,7 +155,7 @@ void SDLMain::initRenderer() {
         Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0)));
     
     objectTire->getRenderProperties()->setTransformation(
-        Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0)));
+        Math::Matrix::getScalingMatrix(Math::Point(2.5, 2.5, 2.5)));
     
 	//Instantiate the map
 	map = new Map::HRMap();
@@ -279,7 +279,7 @@ void SDLMain::run() {
         {
             render();
 
-			// suspension does not look good when it is out of sync with rendering
+            // suspension does not look good when it is out of sync with rendering
             suspension->doAction(SDL_GetTicks());
             //suspension->doStep(SDL_GetTicks());
 

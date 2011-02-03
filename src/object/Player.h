@@ -30,6 +30,7 @@ private:
 private:
     Physics::PhysicalPlayer *physical;
     Render::RenderablePlayer *renderable;
+    Math::Point suspension[4];
 public:
     Player();
     Player(int id, const Math::Point &origin);
@@ -54,11 +55,17 @@ public:
         { physical->applyTurning(amount); }
     void doJump() { physical->doJump(); }
     
+    void setSuspension(int wheel, Math::Point suspension)
+        { this->suspension[wheel] = suspension; }
+    Math::Point getSuspension(int wheel) { return suspension[wheel]; }
+    
     Math::Point getPosition() const;
     Math::Matrix getTransformation() const;
     void applyForce(const Math::Point &movement, const Math::Point &at);
     
     void initialize();
+    
+    virtual void preRender();
 };
 
 }  // namespace Object
