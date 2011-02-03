@@ -252,8 +252,8 @@ void SDLMain::run() {
 #endif
     
     LOG2(GLOBAL, PROGRESS, "Entering main game loop");
-    
     Uint32 lastTime = SDL_GetTicks();
+    accelControl->setPauseSkipDirectly(lastTime);
     while(!quit) {
         handleEvents();
         
@@ -263,14 +263,16 @@ void SDLMain::run() {
         suspension->setData(worldManager, renderer);
         suspension->checkForWheelsOnGround();
         
-        inputManager->doStep(SDL_GetTicks());
+        // must do paused (static) checks first, in case the game unpauses
         inputManager->doPausedChecks();
+        inputManager->doStep(SDL_GetTicks());
         
         if(!Timing::AccelControl::getInstance()->getPaused()) {
             static Uint32 lastPhysicsTime = SDL_GetTicks();
             lastPhysicsTime += Timing::AccelControl::getInstance()
                 ->getPauseSkip();
             Uint32 thisTime = SDL_GetTicks();
+            
             physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
             lastPhysicsTime = thisTime;
         }
@@ -281,8 +283,8 @@ void SDLMain::run() {
             render();
 
             // suspension does not look good when it is out of sync with rendering
-            suspension->doAction(SDL_GetTicks());
-            //suspension->doStep(SDL_GetTicks());
+            //suspension->doAction(SDL_GetTicks());
+            suspension->doStep(SDL_GetTicks());
 
 			physicsWorld->render();
 

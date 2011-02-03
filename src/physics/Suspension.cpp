@@ -62,8 +62,8 @@ double Suspension::Spring::calculateForceFactor(
     double K = GET_SETTING("physics.driving.constant.k", 1.0) * INITIAL_K;
     double C = GET_SETTING("physics.driving.constant.c", 1.0) * INITIAL_C;
     
-    LOG(PHYSICS, "normal: " << -NORMAL_FORCE << ", -K*disp: " << -K*displacement);
-    LOG(PHYSICS, "C*disp: " << C*displacementSpeed);
+    //LOG(PHYSICS, "normal: " << -NORMAL_FORCE << ", -K*disp: " << -K*displacement);
+    //LOG(PHYSICS, "C*disp: " << C*displacementSpeed);
     
     double factor
         = -NORMAL_FORCE + (K * displacement)

@@ -1,6 +1,7 @@
 #include "RaceManager.h"
 #include "log/Logger.h"
 
+#include "settings/SettingsManager.h"
 #include "config.h"
 
 namespace Project {
@@ -21,7 +22,9 @@ Math::Point RaceManager::startingPointForPlayer(int id) {
     }
 
 	//Start a little higher than the actual start point to avoid starting inside the track
-	Math::Point offset = Math::Point(0.0, 0.5, 0.0);
+    double normalSpringOffset = GET_SETTING("physics.driving.restlength", 0.5);
+    normalSpringOffset += 0.05;  // tweaking
+	Math::Point offset = Math::Point(0.0, normalSpringOffset, 0.0);
     
     return data[id % data.size()]->getPosition()+offset;
 }
