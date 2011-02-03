@@ -5,6 +5,9 @@
 #define PROJECT_OPENGL__OPENGL_H
 
 #ifdef WIN32
+	#ifndef WIN32_LEAN_AND_MEAN
+		#define WIN32_LEAN_AND_MEAN
+	#endif
 	#include <GL/glew.h>
     #include <windows.h>
     #include <GL/gl.h>

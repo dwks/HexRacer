@@ -27,17 +27,14 @@ public:
     /** Sets the transformation of this RenderableObject based on its physical
         state.
     */
-    virtual void preRenderUpdate(const Math::Matrix &transformation) = 0;
+    virtual void preRenderUpdate(const Math::Matrix &transformation);
     
 	void render(RenderManager* manager);
 	virtual void subRender(RenderManager* manager) = 0;
 
 	virtual bool shouldDraw( const Math::BoundingObject& bounding_obj ) { return true; }
 
-	//bool hasRenderProperties() const;
 	RenderProperties* getRenderProperties() const;
-	//void setRenderProperties(RenderProperties* properties);
-	void clearRenderProperties();
 
 	void setRenderingEnabled(bool enabled) { renderingEnabled = enabled; }
 	bool getRenderingEnabled() const { return renderingEnabled; }

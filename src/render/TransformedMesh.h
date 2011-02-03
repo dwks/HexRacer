@@ -9,9 +9,9 @@ namespace Project {
 namespace Render {
 
 class TransformedMesh
-	: public CompositeRenderable {
+	: public RenderableObject {
 private:
-	vector<RenderableObject*> children;
+	MeshGroup* meshGroup;
 	Math::BoundingSphere meshGroupSphere;
 	Math::BoundingSphere transformedSphere;
 	Math::SimpleTransform transformation;
@@ -22,8 +22,8 @@ public:
 	void setTransformation(Math::SimpleTransform transform);
 	Math::SimpleTransform getTransformation() const { return transformation; }
 	bool shouldDraw( const Math::BoundingObject& bounding_obj );
-	const std::vector<RenderableObject*>& getChildren() { return children; }
-	MeshGroup* getMeshGroup() const { return (MeshGroup*) children[0]; }
+	void subRender(RenderManager* manager) { meshGroup->render(manager); }
+	MeshGroup* getMeshGroup() const { return meshGroup; }
 	Math::BoundingSphere getBoundingSphere() const { return transformedSphere; }
 	vector<Math::Triangle3D> getTransformedTriangles() const;
 

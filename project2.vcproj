@@ -225,11 +225,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\CompositeRenderable.cpp"
+				RelativePath=".\src\physics\Converter.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\physics\Converter.cpp"
+				RelativePath=".\src\event\CreateObject.cpp"
 				>
 			</File>
 			<File
@@ -241,7 +241,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\DestroyObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\DirectoryFunctions.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\EntireWorld.cpp"
 				>
 			</File>
 			<File
@@ -381,6 +389,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\RaceManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Ray.cpp"
 				>
 			</File>
@@ -418,6 +430,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetDebugCamera.cpp"
 				>
 			</File>
 			<File
@@ -486,6 +502,14 @@
 			</File>
 			<File
 				RelativePath=".\src\math\Triangle3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\UpdateObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\UpdateWorld.cpp"
 				>
 			</File>
 			<File
@@ -565,10 +589,6 @@
 				</File>
 				<File
 					RelativePath=".\src\event\TypedObserver.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\event\UpdatePlayerList.cpp"
 					>
 				</File>
 			</Filter>
@@ -859,15 +879,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\CompositeRenderable.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\config.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\physics\Converter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\CreateObject.h"
 				>
 			</File>
 			<File
@@ -879,7 +899,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\DestroyObject.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\DirectoryFunctions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\EntireWorld.h"
 				>
 			</File>
 			<File
@@ -1011,6 +1039,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\RaceManager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Ray.h"
 				>
 			</File>
@@ -1052,6 +1084,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\RotationAxis.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetDebugCamera.h"
 				>
 			</File>
 			<File
@@ -1124,6 +1160,14 @@
 			</File>
 			<File
 				RelativePath=".\src\math\Triangle3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\UpdateObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\UpdateWorld.h"
 				>
 			</File>
 			<File
@@ -1371,10 +1415,6 @@
 				</File>
 				<File
 					RelativePath=".\src\event\TypedObserver.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\event\UpdatePlayerList.h"
 					>
 				</File>
 			</Filter>
