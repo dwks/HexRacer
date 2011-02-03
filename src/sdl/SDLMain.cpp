@@ -153,17 +153,17 @@ void SDLMain::initRenderer() {
     
     //Load the vehicle model
     Render::RenderableObject *object
-        = meshLoader->loadOBJ("playerCube", "models/vehicle01.obj");
+        = meshLoader->loadOBJ("playerCube", GET_SETTING("render.model.vehicle", ""));
     object->getRenderProperties()->setTransformation(
         Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0)));
     
 	//Instantiate the map
 	map = new Map::HRMap();
-	if (map->loadMapFile(GET_SETTING("map", "maps/testtrack.hrm"))) {
-		LOG(WORLD, "Loaded Map File " << GET_SETTING("map", "maps/testtrack.hrm"));
+	if (map->loadMapFile(GET_SETTING("map", "data/testtrack.hrm"))) {
+		LOG(WORLD, "Loaded Map File " << GET_SETTING("map", "data/testtrack.hrm"));
 	}
 	else {
-		LOG(WORLD, "Unable to load map " << GET_SETTING("map", "maps/testtrack.hrm"));
+		LOG(WORLD, "Unable to load map " << GET_SETTING("map", "data/testtrack.hrm"));
 	}
     
 	paintManager = new Paint::PaintManager();

@@ -1,7 +1,8 @@
 ################
 # Settings for the project
 
-map = maps/testtrack2.hrm
+#map = data/testtrack.hrm
+map = data/testtrack2.hrm
 
 ########
 ### Display settings
@@ -55,6 +56,9 @@ render.minimap.height = 50.0
 render.minimap.drawpaint = 1
 
 render.drawpathnodes = 0
+
+# Models
+render.model.vehicle = data/vehicle/vehicle01.obj
 
 ########
 ### Camera settings
