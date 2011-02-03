@@ -18,6 +18,7 @@ public:
     
     virtual void visit(BoxWidget *widget);
     virtual void visit(TextWidget *widget);
+    virtual void visit(ButtonWidget *widget);
 private:
     void glVertex(const WidgetPoint &point);
 };

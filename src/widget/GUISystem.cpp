@@ -1,8 +1,7 @@
 #include "GUISystem.h"
 #include "WidgetRenderer.h"
 
-#include "BoxWidget.h"
-#include "TextWidget.h"
+#include "ButtonWidget.h"
 
 namespace Project {
 namespace Widget {
@@ -15,9 +14,8 @@ GUISystem::~GUISystem() {
 void GUISystem::construct() {
     fontManager = new Render::FontManager();
     
-    widgets = new TextWidget("test text", OpenGL::Color::BLUE,
-        "Greetings.");
-    widgets->setBoundingRect(WidgetRect(0.3, 0.4, 0.4, 0.1));
+    widgets = new ButtonWidget("quit",
+        "Greetings.", WidgetRect(0.3, 0.4, 0.4, 0.1));
 }
 
 void GUISystem::render() {
