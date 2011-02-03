@@ -25,6 +25,7 @@ Camera::Camera(CameraType camera_type)
 
 Camera::~Camera(void)
 {
+	//delete(frustrum);
 }
 
 void Camera::setPosition(Point pos) {
