@@ -285,6 +285,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\src\map\MapLoader.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\Material.cpp"
 				>
 			</File>
@@ -310,6 +314,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\MeshVertex.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\Minimap.cpp"
 				>
 			</File>
 			<File
@@ -931,6 +939,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\MapLoader.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\Material.h"
 				>
 			</File>
@@ -956,6 +968,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\MeshVertex.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\Minimap.h"
 				>
 			</File>
 			<File

@@ -102,19 +102,17 @@ namespace Paint {
 
 		coloredPaintTree->appendQuery(&visible_cells, bounding_box, SpatialContainer::INSIDE);
 
-		glBegin(GL_QUADS);
+		glPointSize(2.0f);
+		glBegin(GL_POINTS);
 		for (unsigned int i = 0; i < visible_cells.size(); i++) {
 
 			PaintCell* cell = (PaintCell*) visible_cells[i];
 			OpenGL::Color::glColor(ColorConstants::playerColor(cell->playerColor), alpha);
-			
-			OpenGL::MathWrapper::glVertex(cell->getCorner(false, false, false));
-			OpenGL::MathWrapper::glVertex(cell->getCorner(true, false, false));
-			OpenGL::MathWrapper::glVertex(cell->getCorner(true, false, true));
-			OpenGL::MathWrapper::glVertex(cell->getCorner(false, false, true));
+			OpenGL::MathWrapper::glVertex(cell->center);
 			
 		}
 		glEnd();
+		glPointSize(1.0f);
 
 	}
 	void PaintManager::colorCellsByIndex(const vector<int> &cell_indices, int new_color) {
