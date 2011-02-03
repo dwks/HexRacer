@@ -37,7 +37,7 @@ void PhysicalPlayer::constructRigidBody(const Math::Point &position) {
     destroyRigidBody();
 	
     rigidBody = Physics::PhysicsFactory
-        ::createRigidBox(0.4,0.2,0.8,position,2.0);
+        ::createRigidBox(0.4,0.2,1.04,position,2.0);
     
     /*btTransform transform = btTransform::getIdentity();
     transform.setOrigin(Converter::toVector(Math::Point(0.0, +1.0, 0.0)));

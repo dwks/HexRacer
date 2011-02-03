@@ -1,7 +1,9 @@
 ################
 # Settings for the project
 
-map = maps/testtrack2.hrm
+#map = data/testtrack.hrm
+#map = data/testtrack2.hrm
+map = data/testtrack3.hrm
 
 ########
 ### Display settings
@@ -17,7 +19,7 @@ display.bpp        = 0
 ### Physics settings
 
 # World settings
-physics.constant.gravity          = 15
+physics.constant.gravity          = 12
 
 # Acceleration and responsiveness of input
 physics.constant.turn             = 0.15
@@ -54,7 +56,11 @@ render.minimap.drawaspect = 1.0
 render.minimap.height = 50.0
 render.minimap.drawpaint = 1
 
+# for AI debugging
 render.drawpathnodes = 0
+
+# Models
+render.model.vehicle = data/vehicle/vehicle01.obj
 
 ########
 ### Camera settings
@@ -78,3 +84,9 @@ camera.follow.z = -7.0
 # Network settings for both client and server
 network.port = 1820
 network.host = localhost
+
+
+########
+# Let the user's settings in localconfig.txt, if there is one, override these
+include localconfig.txt
+

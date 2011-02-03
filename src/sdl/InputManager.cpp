@@ -86,6 +86,15 @@ void InputManager::doPausedChecks() {
         
         EMIT_EVENT(new Event::PauseGame(pause));
     }
+    if(keyDown[SDLK_F5]) {
+        keyDown[SDLK_F5] = false;
+        
+        LOG2(GLOBAL, SETTING,
+            "Reloading config file \"" << CONFIG_FILE << "\"");
+        
+        Settings::SettingsManager::getInstance()->removeAll();
+        Settings::SettingsManager::getInstance()->load(CONFIG_FILE);
+    }
     if(keyDown[SDLK_RETURN]) {
         keyDown[SDLK_RETURN] = false;
         

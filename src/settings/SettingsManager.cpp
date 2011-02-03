@@ -75,6 +75,16 @@ void SettingsManager::load(const char *filename) {
         std::string key;
         if(!(linestream >> key)) continue;
         
+        if(key == "include") {
+            // skip space after 'include'
+            linestream.get();
+            
+            std::string include;
+            std::getline(linestream, include);
+            load(include.c_str());
+            continue;
+        }
+        
         // if there's no '=', the line is misformatted
         char equal;
         if(!(linestream >> equal) || equal != '=') {
