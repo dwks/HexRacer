@@ -33,7 +33,8 @@ bool ConstructedTCPSocket::open() {
     
     if(error) {
         LOG2(NETWORK, ERROR, "Error opening socket to "
-            << hostname << ":" << port << ": " << error);
+            << hostname << ":" << port << ": "
+            << boost::system::system_error(error).what());
     }
     
     return !error;

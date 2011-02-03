@@ -46,7 +46,8 @@ bool AbstractTCPSocket::tryReceive(std::string &message, std::size_t size) {
     std::copy(tempBuffer.begin(), tempBuffer.end(), message.begin());
     
     if(error) {
-        LOG2(NETWORK, ERROR, "TCPSocket::tryReceive() error: " << error);
+        LOG2(NETWORK, ERROR, "TCPSocket::tryReceive() error: "
+            << boost::system::system_error(error).what());
     }
     
     return !error;
