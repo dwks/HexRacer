@@ -61,6 +61,7 @@ render.drawpathnodes = 0
 
 # Models
 render.model.vehicle = data/vehicle/vehicle01.obj
+render.model.tire = data/vehicle/carTires.obj
 
 ########
 ### Camera settings
