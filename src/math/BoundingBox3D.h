@@ -32,6 +32,7 @@ public:
 	BoundingObject2D* projectTo2D(Axis project_axis) const;
 	bool pointInside(const Point& p) const;
 	bool intersects3D(const BoundingObject3D& bounding_obj) const;
+	IntersectionType intersectionType(const BoundingObject& bounding_obj) const;
 	void translate(const Point& translation);
 	ObjectType getObjectType() const { return BOX; }
 

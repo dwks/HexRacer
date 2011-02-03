@@ -78,8 +78,24 @@ namespace Render {
 
 		vector<ObjectSpatial*> visible_lights;
 		light_tree->appendQuery(&visible_lights, object, SpatialContainer::INTERSECT);
-		//light_tree->appendAll(&visible_lights);
-		for (unsigned int i = 0; i < visible_lights.size() && activeLights.size() < maxActiveLights; i++) {
+
+		if (visible_lights.empty())
+			return;
+
+		Point light_factor_point;
+		if (object.is2D())
+			light_factor_point = ((const BoundingObject2D&)object).centroid();
+		else
+			light_factor_point = ((const BoundingObject3D&)object).centroid();
+
+		//Sort the lights by ascending strength at the centroid of the bounding object
+		for (unsigned int i = 0; i < visible_lights.size(); i++) {
+			((LightManagerNode*)visible_lights[i])->setLightFactorPoint(light_factor_point);
+		}
+		Misc::vectorPointerMergeSort(visible_lights);
+
+		//Activate the lights in descending order
+		for (int i = visible_lights.size()-1; i >= 0 && activeLights.size() < maxActiveLights; i--) {
 			LightManagerNode* light_node = (LightManagerNode*) visible_lights[i];
 			if (!light_node->active) {
 				activateLight(light_node);
@@ -88,10 +104,23 @@ namespace Render {
 	}
 
 	void LightManager::activateDynamicLights(std::vector<LightManagerNode*>& lights, const Math::BoundingObject& object) {
-		if (activeLights.size() >= maxActiveLights)
+		if (activeLights.size() >= maxActiveLights || lights.empty())
 			return;
 
-		for (unsigned int i = 0; i < lights.size() && activeLights.size() < maxActiveLights; i++) {
+		Point light_factor_point;
+		if (object.is2D())
+			light_factor_point = ((const BoundingObject2D&)object).centroid();
+		else
+			light_factor_point = ((const BoundingObject3D&)object).centroid();
+
+		//Sort the lights by ascending strength at the centroid of the bounding object
+		for (unsigned int i = 0; i < lights.size(); i++) {
+			((LightManagerNode*)lights[i])->setLightFactorPoint(light_factor_point);
+		}
+		Misc::vectorPointerMergeSort(lights);
+
+		//Activate the lights in descending order
+		for (int i = lights.size()-1; i >= 0 && activeLights.size() < maxActiveLights; i--) {
 			LightManagerNode* light_node = (LightManagerNode*) lights.at(i);
 			if (!light_node->active) {
 				light_node->update();
@@ -122,8 +151,8 @@ namespace Render {
 	void LightManager::activateIntersectingLights(const Math::BoundingObject& bounding_obj) {
 		if (activeLights.size() >= maxActiveLights)
 			return;
-		activateDynamicLights(priorityDynamicLights, bounding_obj);
 		activateStaticLights(priorityStaticLightTree, bounding_obj);
+		activateDynamicLights(priorityDynamicLights, bounding_obj);
 		activateDynamicLights(dynamicLights, bounding_obj);
 		activateStaticLights(staticLightTree, bounding_obj);
 	}

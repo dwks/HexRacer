@@ -17,6 +17,8 @@ namespace Render {
 
 	RenderManager::RenderManager() {
 
+		settings = new RenderSettings();
+
 		paramSetter = ShaderParamSetter(this);
 		numMaterialOverrides = 0;
 		numShaderOverrides = 0;
@@ -32,7 +34,7 @@ namespace Render {
 
 		enabledShaderIndex =-1;
 
-		lightManager = new LightManager();
+		lightManager = new LightManager(settings->getMaxLights());
 
 		LOG(OPENGL, "Renderer Initialized.");
 		/*
@@ -47,8 +49,6 @@ namespace Render {
 		glGetIntegerv(GL_MAX_VARYING_FLOATS, &value);
 		LOG(OPENGL, "	Max varying floats: " << value);
 		*/
-
-		settings = new RenderSettings();
 
 	}
 
@@ -284,7 +284,7 @@ namespace Render {
 
 	void RenderManager::loadShadersFile(string filename) {
 
-		if (settings->getGraphicsQuality() == GRAPHICS_VERY_LOW)
+		if (settings->getGraphicsQuality() == RenderSettings::GRAPHICS_VERY_LOW)
 			return;
 
 		string directory = DirectoryFunctions::extractDirectory(filename);
@@ -300,9 +300,9 @@ namespace Render {
 				in_file.ignore(9999,'\n');
 			}
 			if (shader_type == "all"
-				|| (shader_type == "high" && settings->getGraphicsQuality() >= GRAPHICS_HIGH)
-				|| (shader_type == "med" && settings->getGraphicsQuality() == GRAPHICS_MED)
-				|| (shader_type == "low" && settings->getGraphicsQuality() <= GRAPHICS_LOW)) {
+				|| (shader_type == "high" && settings->getGraphicsQuality() >= RenderSettings::GRAPHICS_HIGH)
+				|| (shader_type == "med" && settings->getGraphicsQuality() == RenderSettings::GRAPHICS_MED)
+				|| (shader_type == "low" && settings->getGraphicsQuality() <= RenderSettings::GRAPHICS_LOW)) {
 				string shader_name;
 				in_file >> shader_name;
 				if (shader_name.length() > 0) {
@@ -319,7 +319,7 @@ namespace Render {
 	}
 	void RenderManager::loadShader(string name, string fragment_file, string vertex_file) {
 
-		if (settings->getGraphicsQuality() == GRAPHICS_VERY_LOW)
+		if (settings->getGraphicsQuality() == RenderSettings::GRAPHICS_VERY_LOW)
 			return;
 
 		if (name.length() > 0) {

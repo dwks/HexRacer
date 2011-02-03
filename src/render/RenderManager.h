@@ -43,10 +43,6 @@ private:
 	static const int glowMapTextureNum = 2;
 	static const GLenum cubeMapTexture = GL_TEXTURE3;
 	static const int cubeMapTextureNum = 3;
-	static const short GRAPHICS_HIGH = 3;
-	static const short GRAPHICS_MED = 2;
-	static const short GRAPHICS_LOW = 1;
-	static const short GRAPHICS_VERY_LOW = 0;
 	static const int noShaderIndex = 5000;
 
 	LightManager* lightManager;

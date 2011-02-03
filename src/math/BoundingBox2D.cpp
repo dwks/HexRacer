@@ -48,6 +48,17 @@ bool BoundingBox2D::isInside2D(const BoundingObject2D& bounding_obj) const {
 	if (bounding_obj.getProjectAxis() != projectAxis)
 		return false;
 
+	switch (bounding_obj.getObjectType()) {
+
+		case BOX:
+			return (
+				bounding_obj.minU() <= minU() && bounding_obj.maxU() >= maxU() &&
+				bounding_obj.minV() <= minV() && bounding_obj.maxV() >= maxV()
+				);
+
+		default: break;
+	}
+
 	for (unsigned int i = 0; i < 4; i++) {
 		if (!bounding_obj.pointInside( getCorner(i) )) {
 			return false;

@@ -14,9 +14,14 @@ private:
 public:
 	Light* light;
 	bool active;
+	float factorAtPoint;
 
 	LightManagerNode(Light* _light);
 	void update();
+	void setLightFactorPoint(const Math::Point& point);
+
+	bool operator < (const ObjectSpatial &other);
+	bool operator < (const LightManagerNode &other);
 };
 
 }  // namespace Render

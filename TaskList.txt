@@ -14,7 +14,6 @@ Camera:
 
 Rendering:
 -Visual indication when you have the paint speed boost (trim glow factor?)
--Better system for determining active/inactive lights
 
 Game Engine:
 -Keep track of each vehicle's current path node

@@ -35,6 +35,7 @@ Makefile
 
 # Windows runtime
 *.dll
+*.exe
 
 # Windows clutter
 *.db
@@ -49,3 +50,4 @@ profile.*
 
 # local configuration
 localconfig.txt
+mapeditorconfig.txt
