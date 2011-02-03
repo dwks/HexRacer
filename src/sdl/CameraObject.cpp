@@ -11,7 +11,7 @@ namespace SDL {
         cameraObject->setDebugCamera(event->getOn());
     }
     
-    CameraObject::CameraObject() : Timing::TimedSubsystem(10){
+    CameraObject::CameraObject() : Timing::TimedSubsystem(5){
         LOG2(CAMERA, INIT, "Camera Object has been initialized\n");
         
         camera = new OpenGL::Camera();

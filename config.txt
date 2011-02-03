@@ -23,7 +23,7 @@ physics.constant.gravity          = 12
 
 # Acceleration and responsiveness of input
 physics.constant.turn             = 0.15
-physics.constant.accel            = 2.8
+physics.constant.accel            = 3.2
 physics.constant.centripetal      = 1.0
 
 # Vehicle suspension
@@ -69,7 +69,7 @@ render.model.tire = data/vehicle/carTires.obj
 # This is how fast the
 # camera interpolates between current
 # and destination orientations
-camera.step = 0.06
+camera.step = 0.03
 
 # The following values let you set the 
 # destination position behind a player.
