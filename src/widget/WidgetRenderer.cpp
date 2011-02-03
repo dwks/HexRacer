@@ -17,7 +17,7 @@ void WidgetRenderer::begin() {
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();  // save original projection matrix
     glLoadIdentity();
-    gluOrtho2D(0.0, 1.0, 0.0, 1.0);
+    gluOrtho2D(0.0, 1.0, 1.0, 0.0);
     
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();  // save original modelview matrix
@@ -45,6 +45,8 @@ void WidgetRenderer::visit(BoxWidget *widget) {
     
     glColor3f(0.0f, 0.0f, 0.0f);
     
+    //LOG(WIDGET, "box at " << widget->getBoundingRect());
+    
     glBegin(GL_QUADS);
     
     this->glVertex(corner);
@@ -56,6 +58,8 @@ void WidgetRenderer::visit(BoxWidget *widget) {
 }
 
 void WidgetRenderer::visit(TextWidget *widget) {
+    //LOG(WIDGET, "text at " << widget->getBoundingRect());
+    
     widget->render();
 }
 

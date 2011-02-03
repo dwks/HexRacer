@@ -16,14 +16,17 @@ void GUISystem::construct() {
     
     widgets = new CompositeWidget("gui");
     
+    widgets->addChild(new ButtonWidget("help",
+        "?", WidgetRect(0.0, 0.0, 0.1, 0.1)));
+    
     widgets->addChild(new ButtonWidget("resume",
-        "Resume", WidgetRect(0.3, 0.25, 0.4, 0.1)));
+        "Resume", WidgetRect(0.3, 0.4 - 0.15, 0.4, 0.1)));
     
     widgets->addChild(new ButtonWidget("something",
         "Something", WidgetRect(0.3, 0.4, 0.4, 0.1)));
     
     widgets->addChild(new ButtonWidget("quit",
-        "Quit", WidgetRect(0.3, 0.65, 0.4, 0.1)));
+        "Quit", WidgetRect(0.3, 0.4 + 0.15, 0.4, 0.1)));
 }
 
 void GUISystem::render() {

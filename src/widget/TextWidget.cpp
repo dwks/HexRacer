@@ -108,6 +108,7 @@ void TextWidget::render() {
     topRight.addX(width);
     lowerRight.addX(width);
     
+#if 0
     // shift the texture downwards so that our origin (upper left) stays the
     // same relative to OpenGL's origin (lower left)
     topLeft.addY(-extraHeight);
@@ -120,12 +121,20 @@ void TextWidget::render() {
     glTexCoord2i(1, 1); this->glVertex(topRight);
     glTexCoord2i(1, 0); this->glVertex(lowerRight);
     glTexCoord2i(0, 0); this->glVertex(lowerLeft);
+#else
+    glTexCoord2i(0, 0); this->glVertex(topLeft);
+    glTexCoord2i(1, 0); this->glVertex(topRight);
+    glTexCoord2i(1, 1); this->glVertex(lowerRight);
+    glTexCoord2i(0, 1); this->glVertex(lowerLeft);
+#endif
     
     glEnd();
     
     // back to the blending the rest of the code expects
     // note: must match SDLMain
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    glDisable(GL_TEXTURE_2D);
 }
 
 void TextWidget::glVertex(const WidgetPoint &point) {
