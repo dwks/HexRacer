@@ -90,27 +90,9 @@ bool BoundingBox3D::intersects3D(const BoundingObject3D& bounding_obj) const {
 				bounding_obj.minZ() <= maxZ() && bounding_obj.maxZ() >= minZ()
 				);
 
-		case PLANE:
-			//3D Box-Plane Intersection
-			for (int i = 0; i < 8; i++) {
-				if (bounding_obj.pointInside(getCorner(i))) {
-					return true;
-				}
-			}
-			return false;
-
+		case PLANE: case CONVEX_HULL:
+			return intersectionType(bounding_obj) != INTERSECT_NONE;
 	
-		case CONVEX_HULL: {
-			//3D Box-Convex Hull Intersection
-			std::vector<BoundingPlane3D> planes = ((const BoundingConvexHull3D&)bounding_obj).getPlanes();
-			for (unsigned int i = 0; i < planes.size(); i++) {
-				if (!intersects3D(planes[i])) {
-					return false;
-				}
-			}
-			return (planes.size() > 0);
-        }
-        
         default:
             break;
 	}
@@ -119,6 +101,53 @@ bool BoundingBox3D::intersects3D(const BoundingObject3D& bounding_obj) const {
 	return bounding_obj.intersects3D(*this);
 }
 
+ObjectSpatial::IntersectionType BoundingBox3D::intersectionType(const BoundingObject& bounding_obj) const {
+
+	bool intersects = false;
+	bool inside = true;
+
+	if (!bounding_obj.is2D()) {
+
+		switch (((const BoundingObject3D&)bounding_obj).getObjectType()) {
+
+			case PLANE:
+				for (int i = 0; i < 8; i++) {
+					bool corner_inside = bounding_obj.pointInside(getCorner(i));
+					intersects = (intersects || corner_inside);
+					inside = (inside && corner_inside);
+				}
+
+				if (inside)
+					return INTERSECT_INSIDE;
+				else if (intersects)
+					return INTERSECT_INTERSECTS;
+				else
+					return INTERSECT_NONE;
+
+			case CONVEX_HULL: {
+				//3D Box-Convex Hull Intersection
+				intersects = true;
+				const std::vector<BoundingPlane3D>& planes = ((const BoundingConvexHull3D&)bounding_obj).getPlanes();
+				for (unsigned int i = 0; i < planes.size(); i++) {
+					IntersectionType intersect_type = intersectionType(planes[i]);
+					inside = (inside && intersect_type == INTERSECT_INSIDE);
+					intersects = (intersects && intersect_type != INTERSECT_NONE);
+				}
+				
+				if (planes.empty() || !intersects)
+					return INTERSECT_NONE;
+				else if (inside)
+					return INTERSECT_INSIDE;
+				else
+					return INTERSECT_INTERSECTS;
+			}
+
+		}
+
+	}
+
+	return ObjectSpatial::intersectionType(bounding_obj);
+}
 void BoundingBox3D::translate(const Point& translation) {
 	minCorner += translation;
 	maxCorner += translation;

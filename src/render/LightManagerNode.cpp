@@ -1,6 +1,7 @@
 #include "LightManagerNode.h"
 #include <math.h>
 #include <float.h>
+#include <typeinfo>
 #include "config.h"
 
 namespace Project {
@@ -29,6 +30,29 @@ namespace Render {
 		}
 
 		moveCentroid(light->getPosition());
+	}
+
+	void LightManagerNode::setLightFactorPoint(const Math::Point& point) {
+		if (light->getHasAttenuation()) {
+			factorAtPoint = 1.0f/(
+				light->getConstantAttenuation() +
+				light->getQuadraticAttenuation()*light->getPosition().distanceSquared(point)
+				);
+		}
+		else {
+			factorAtPoint = 1.0f;
+		}
+	}
+
+	bool LightManagerNode::operator < (const ObjectSpatial &other) {
+		if (typeid(other) == typeid(LightManagerNode&))
+			return *this < (const LightManagerNode&) other;
+		else
+			return true;
+	}
+
+	bool LightManagerNode::operator < (const LightManagerNode &other) {
+		return factorAtPoint < other.factorAtPoint;
 	}
 
 }  // namespace Render

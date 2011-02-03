@@ -4,6 +4,7 @@
 #include "SDL.h"
 #include "opengl/OpenGL.h"
 #include "GL/glu.h"
+#include "misc/StdVectorFunctions.h"
 
 #include "opengl/Color.h"
 
@@ -53,6 +54,7 @@ void SDLMain::QuitObserver::observe(Event::QuitEvent *event) {
 }
 
 SDLMain::SDLMain() {
+
     quit = false;
     
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0) {
@@ -425,7 +427,7 @@ void SDLMain::render() {
 	lightManager->activateIntersectingLights(*cameraObject->camera->getFrustrum());
 
 	//Render the active lights
-	lightManager->drawActiveLightSpheres();
+	lightManager->drawActiveLightSpheres(false);
     
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);

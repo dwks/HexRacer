@@ -257,30 +257,37 @@ void BSPTree::appendQuery(vector<ObjectSpatial*>* result_list, const BoundingObj
 	if (size() <= 0)
 		return;
 
+	ObjectSpatial::IntersectionType intersect;
+
 	if (getBoundingObject().is2D()) {
 		const BoundingObject2D& this_bound = (const BoundingObject2D&) getBoundingObject();
-		if (!this_bound.intersects(bounding_object))
-			return;
-		else if (this_bound.isInside(bounding_object)) {
-			appendAll(result_list);
-			return;
-		}
+		intersect = this_bound.intersectionType(bounding_object);
 	}
 	else {
 		const BoundingObject3D& this_bound = (const BoundingObject3D&) getBoundingObject();
-		if (!this_bound.intersects(bounding_object))
-			return;
-		else if (this_bound.isInside(bounding_object)) {
-			appendAll(result_list);
-			return;
-		}
+		intersect = this_bound.intersectionType(bounding_object);
 	}
 
+	switch (intersect) {
 
-	list.appendQuery(result_list, bounding_object, query_type);
-	if (!leaf) {
-		child[0]->appendQuery(result_list, bounding_object, query_type);
-		child[1]->appendQuery(result_list, bounding_object, query_type);
+		case ObjectSpatial::INTERSECT_INSIDE:
+			appendAll(result_list);
+			return;
+
+		case ObjectSpatial::INTERSECT_INTERSECTS:
+			list.appendQuery(result_list, bounding_object, query_type);
+			if (!leaf) {
+				child[0]->appendQuery(result_list, bounding_object, query_type);
+				child[1]->appendQuery(result_list, bounding_object, query_type);
+			}
+			return;
+
+		case ObjectSpatial::INTERSECT_NONE:
+			return;
+
+		default:
+			break;
+			
 	}
 
 }

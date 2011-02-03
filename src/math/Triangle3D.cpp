@@ -72,14 +72,9 @@ namespace Math {
 
 		//Not implemented for sphere
 
-		const BoundingBox3D* box_3D;
-		const BoundingPlane3D* plane_3D;
-		const BoundingConvexHull3D* ch_3D;
-
 		switch (bounding_obj.getObjectType()) {
 
-			case BOX:
-				box_3D = (const BoundingBox3D*) &bounding_obj;
+			case BOX: {
 				//Try the collision in 2D for all three axes, if it passes all three, the objects intersect
 				for (unsigned int i = 0; i < 3; i++) {
 					Axis axis = (Axis) i;
@@ -92,21 +87,22 @@ namespace Math {
 						return false;
 				}
 				return true;
+			}
 
-			case PLANE:
-				plane_3D = (const BoundingPlane3D*) (&bounding_obj);
+			case PLANE: {
+				const BoundingPlane3D& plane_3D = (const BoundingPlane3D&) bounding_obj;
 				//3D Triangle-Plane Intersection
 				for (short i = 0; i < 3; i++) {
-					if (plane_3D->pointInside(getVertex(i))) {
+					if (plane_3D.pointInside(getVertex(i))) {
 						return true;
 					}
 				}
 				return false;
+			}
 
 			case CONVEX_HULL: {
-				ch_3D = (const BoundingConvexHull3D*) &bounding_obj;
 				//3D Triangle-Convex Hull Intersection
-				std::vector<BoundingPlane3D> planes = ch_3D->getPlanes();
+				const std::vector<BoundingPlane3D>& planes = ((const BoundingConvexHull3D&) bounding_obj).getPlanes();
 				for (unsigned int i = 0; i < planes.size(); i++) {
 					if (!intersects3D(planes[i])) {
 						return false;
