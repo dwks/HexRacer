@@ -47,3 +47,5 @@ profile.*
 /data
 /sound
 
+# local configuration
+localconfig.txt
