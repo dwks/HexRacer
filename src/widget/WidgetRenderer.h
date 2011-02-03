@@ -13,6 +13,7 @@ public:
     void end();
     
     virtual void visit(BoxWidget *widget);
+    virtual void visit(TextWidget *widget);
 private:
     void glVertex(const WidgetPoint &point);
 };

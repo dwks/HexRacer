@@ -70,7 +70,14 @@ TypeRegistry::TypeRegistry() {
     // Widget log message types
     {
         int counter = 1;
-        registerType(Subsystem::WORLD, "WARNING", counter ++);
+        registerType(Subsystem::WIDGET, "WARNING", counter ++);
+    }
+    
+    // GUI log message types
+    {
+        int counter = 1;
+        registerType(Subsystem::GUI, "ERROR", counter ++);
+        registerType(Subsystem::GUI, "WARNING", counter ++);
     }
 }
 

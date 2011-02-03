@@ -14,11 +14,11 @@ public:
     AbstractWidget(const std::string &name) : name(name) {}
     
     virtual WidgetRect getBoundingRect() const { return bounds; }
+    virtual void setBoundingRect(const WidgetRect &bounds)
+        { this->bounds = bounds; }
     
     virtual std::string getName() const { return name; }
 protected:
-    void setBoundingRect(const WidgetRect &bounds) { this->bounds = bounds; }
-    
     void setName(const std::string &newName) { name = newName; }
 };
 

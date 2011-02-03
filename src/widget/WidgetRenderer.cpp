@@ -1,6 +1,7 @@
 #include "WidgetRenderer.h"
 
 #include "BoxWidget.h"
+#include "TextWidget.h"
 
 #include "opengl/OpenGL.h"
 #include "opengl/MathWrapper.h"
@@ -40,8 +41,6 @@ void WidgetRenderer::visit(BoxWidget *widget) {
     WidgetPoint corner = widget->getBoundingRect().getCorner();
     WidgetPoint dimensions = widget->getBoundingRect().getDimensions();
     
-    LOG(WIDGET, "draw box " << widget->getBoundingRect());
-    
     glBegin(GL_QUADS);
     
     this->glVertex(corner);
@@ -50,6 +49,10 @@ void WidgetRenderer::visit(BoxWidget *widget) {
     this->glVertex(corner.plusYOf(dimensions));
     
     glEnd();
+}
+
+void WidgetRenderer::visit(TextWidget *widget) {
+    widget->render();
 }
 
 void WidgetRenderer::glVertex(const WidgetPoint &point) {

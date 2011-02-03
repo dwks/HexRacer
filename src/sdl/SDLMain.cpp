@@ -29,6 +29,7 @@
 #include "sound/SoundSystem.h"
 
 #include "SDL_image.h"
+#include "SDL_ttf.h"
 
 #include "settings/SettingsManager.h"
 #include "settings/ProgramSettings.h"
@@ -58,9 +59,14 @@ SDLMain::SDLMain() {
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0) {
         LOG2(SDL, ERROR, "Can't init SDL: " << SDL_GetError());
     }
+    
+    if(TTF_Init() < 0) {
+        LOG2(SDL, ERROR, "Can't init SDL_ttf: " << TTF_GetError());
+    }
 }
 
 SDLMain::~SDLMain() {
+    TTF_Quit();
     SDL_Quit();
 }
 
@@ -133,6 +139,9 @@ void SDLMain::initOpenGL() {
     glEnable(GL_RESCALE_NORMAL);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
 }
 
 void SDLMain::initRenderer() {

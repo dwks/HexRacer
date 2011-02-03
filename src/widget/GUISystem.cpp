@@ -2,16 +2,22 @@
 #include "WidgetRenderer.h"
 
 #include "BoxWidget.h"
+#include "TextWidget.h"
 
 namespace Project {
 namespace Widget {
 
 GUISystem::~GUISystem() {
     delete widgets;
+    delete fontManager;
 }
 
 void GUISystem::construct() {
-    widgets = new BoxWidget("test box", WidgetRect(0.3, 0.4, 0.4, 0.1));
+    fontManager = new Render::FontManager();
+    
+    widgets = new TextWidget("test text", OpenGL::Color::BLUE,
+        "Greetings.");
+    widgets->setBoundingRect(WidgetRect(0.3, 0.4, 0.4, 0.1));
 }
 
 void GUISystem::render() {

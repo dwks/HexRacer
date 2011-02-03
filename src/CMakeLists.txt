@@ -76,7 +76,11 @@ QT4_AUTOMOC(${MAP_EDITOR_SOURCES})
 # SDL stuff
 find_package(SDL)
 find_package(SDL_image)
-include_directories(${SDL_INCLUDE_DIR} ${SDLIMAGE_INCLUDE_DIR})
+find_package(SDL_ttf)
+include_directories(
+    ${SDL_INCLUDE_DIR}
+    ${SDLIMAGE_INCLUDE_DIR}
+    ${SDLTTF_INCLUDE_DIR})
 
 # bullet stuff
 set(BULLET_PATH ../bullet-2.77)
@@ -103,6 +107,6 @@ set(COMMON_LIBRARIES
     ${OPENGL_LIBRARIES}
     ${BULLET_LIBRARIES})
 
-target_link_libraries(sdl ${COMMON_LIBRARIES} ${OPENAL_LIBRARY} alut)
+target_link_libraries(sdl ${COMMON_LIBRARIES} ${SDLTTF_LIBRARY} ${OPENAL_LIBRARY} alut)
 target_link_libraries(server ${COMMON_LIBRARIES})
 target_link_libraries(editor ${COMMON_LIBRARIES} QtCore QtGui QtOpenGL)
