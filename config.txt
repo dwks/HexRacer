@@ -16,6 +16,9 @@ display.bpp        = 0
 ########
 ### Physics settings
 
+# World settings
+physics.constant.gravity          = 15
+
 # Acceleration and responsiveness of input
 physics.constant.turn             = 0.15
 physics.constant.accel            = 2.8

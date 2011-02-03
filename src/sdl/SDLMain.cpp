@@ -14,6 +14,7 @@
 #include "opengl/MathWrapper.h"
 #include "opengl/GeometryDrawing.h"
 #include "render/TextureCube.h"
+#include "map/MapLoader.h"
 
 #include "event/ObserverList.h"
 
@@ -191,55 +192,12 @@ void SDLMain::initRenderer() {
     renderer->setCubeMap(map->getCubeMap());
 }
 
-void SDLMain::loadMap() {
-    //Process map meshes
-    for (int i = 0; i < Map::HRMap::NUM_MESHES; i++) {
-        Map::HRMap::MeshType type = static_cast<Map::HRMap::MeshType>(i);
-        if (map->getMapMesh(type)) {
-
-            //Add visible meshes to the map renderable
-            if (!Map::HRMap::meshIsInvisible(type)) {
-                mapRenderable->addRenderable(map->getMapMesh(type));
-            }
-
-            //Add solid meshes to the physics
-            if (Map::HRMap::meshIsSolid(type)) {
-                Physics::PhysicsWorld::getInstance()->registerRigidBody(
-                    Physics::PhysicsFactory::createRigidTriMesh(map->getMapMesh(type)->getTriangles())
-                    );
-            }
-
-        }
-        
-    }
-    
-    //Process mesh instances
-    vector<Map::MeshInstance*> instances = map->getMeshInstances();
-    for (unsigned i = 0; i < instances.size(); i++) {
-        
-        Render::TransformedMesh* transformed_mesh = new Render::TransformedMesh(
-            instances[i]->getMeshGroup(), instances[i]->getTransformation()
-            );
-        //Add the mesh to the map renderable
-        mapRenderable->addRenderable(transformed_mesh);
-        
-        //If the instance is solid static, add it to the physics
-        if (instances[i]->getType() == Map::MeshInstance::SOLID_STATIC) {
-            Physics::PhysicsWorld::getInstance()->registerRigidBody(
-                    Physics::PhysicsFactory::createRigidTriMesh(transformed_mesh->getTransformedTriangles())
-                    );
-        }
-    }
-    
-    raceManager = new Map::RaceManager(map);
-}
-
 void SDLMain::run() {
     initSDL();
     
     initOpenGL();
     initRenderer();
-
+    
     accelControl = new Timing::AccelControl();
     
     // this must happen before Players are created
@@ -279,7 +237,10 @@ void SDLMain::run() {
     ADD_OBSERVER(new CameraObserver(simpleTrackball, cameraObject->camera));
     ADD_OBSERVER(new QuitObserver(this));
     
-    loadMap();
+    Map::MapLoader().load(map, mapRenderable);
+    raceManager = new Map::RaceManager(map);
+    
+    playerManager->setRaceManager(raceManager);
     
     if(!isConnectedToNetwork) {
         worldManager->initForClient(clientData->getPlayerID(),

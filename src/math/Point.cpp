@@ -247,6 +247,14 @@ Point Point::operator - (const Point &other) const {
         getW() - other.getW());
 }
 
+Point Point::operator - () const {
+    return Point(
+        -getX(),
+        -getY(),
+        -getZ(),
+        getW());
+}
+
 Point Point::operator * (double factor) const {
     return Point(
         getX() * factor,

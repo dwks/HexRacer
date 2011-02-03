@@ -75,6 +75,21 @@ Math::Point PhysicalPlayer::getAngularVelocity() const {
     return Converter::toPoint(rigidBody->getAngularVelocity());
 }
 
+Math::Point PhysicalPlayer::getFrontDirection() const {
+    // 4D vector (don't want translation included)
+    return getTransformation() * Math::Point(0.0, 0.0, -1.0, 0.0);
+}
+
+Math::Point PhysicalPlayer::getRightDirection() const {
+    // 4D vector (don't want translation included)
+    return getTransformation() * Math::Point(+1.0, 0.0, 0.0, 0.0);
+}
+
+Math::Point PhysicalPlayer::getUpDirection() const {
+    // 4D vector (don't want translation included)
+    return getTransformation() * Math::Point(0.0, +1.0, 0.0, 0.0);
+}
+
 void PhysicalPlayer::applyAcceleration(double acceleration) {
     if(!onGround) return;
     

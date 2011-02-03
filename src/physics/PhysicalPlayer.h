@@ -67,6 +67,10 @@ public:
     virtual Math::Point getLinearVelocity() const;
     virtual Math::Point getAngularVelocity() const;
     
+    virtual Math::Point getFrontDirection() const;
+    virtual Math::Point getRightDirection() const;
+    virtual Math::Point getUpDirection() const;
+    
     /** Applies acceleration in the range [-1.0,+1.0], where +1.0 is full
         throttle forwards and -1.0 is backwards.
     */

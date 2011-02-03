@@ -81,7 +81,8 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
             delete player->getPhysicalObject();
             player->setPhysicalObject(
                 Physics::PhysicsFactory::createPhysicalPlayer(
-                    INITIAL_CAR_LOCATION));
+                    main->raceManager->startingPointForPlayer(
+                        player->getID())));
             break;
         }
         

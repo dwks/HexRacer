@@ -10,7 +10,7 @@
 #include "event/PlayerAction.h"
 #include "event/PaintEvent.h"
 
-#include "paint/PaintManager.h"
+#include "map/RaceManager.h"
 
 #include "opengl/Color.h"
 
@@ -21,6 +21,7 @@ class PlayerManager {
 private:
     int id;
     Object::WorldManager *worldManager;
+    Map::RaceManager *raceManager;
 private:
     class PlayerActionHandler
         : public Event::TypedObserver<Event::PlayerAction> {
@@ -33,6 +34,9 @@ private:
     };
 public:
     PlayerManager(int id, Object::WorldManager *worldManager);
+    
+    void setRaceManager(Map::RaceManager *raceManager)
+        { this->raceManager = raceManager; }
 public:
     Object::Player *getPlayer();
     Object::Player *getPlayer(int id);

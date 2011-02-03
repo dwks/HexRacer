@@ -121,7 +121,6 @@ private:
     void initSDL();
     void initOpenGL();
     void initRenderer();
-    void loadMap();
 };
 
 }  // namespace SDL

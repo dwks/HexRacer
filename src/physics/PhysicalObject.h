@@ -18,6 +18,10 @@ public:
     virtual Math::Point getLinearVelocity() const = 0;
     virtual Math::Point getAngularVelocity() const = 0;
     
+    virtual Math::Point getFrontDirection() const = 0;
+    virtual Math::Point getRightDirection() const = 0;
+    virtual Math::Point getUpDirection() const = 0;
+    
     virtual void setData(const Math::Matrix &transform,
         const Math::Point &linearVelocity,
         const Math::Point &angularVelocity) = 0;
