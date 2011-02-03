@@ -38,6 +38,7 @@ public:
     
     void setOnGround(bool onGround)
         { physical->setOnGround(onGround); }
+    bool getOnGround() const { return physical->getOnGround(); }
     void setSpeedBoost(double speedBoost)
         { physical->setSpeedBoost(speedBoost); }
     

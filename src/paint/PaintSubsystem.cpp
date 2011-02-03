@@ -46,6 +46,9 @@ void PaintSubsystem::doAction(unsigned long currentTime) {
         int id = (*i).first;
         Event::TogglePainting::PaintType type = (*i).second;
         
+        // can't paint or erase when in the air
+        if(!worldManager->getPlayer(id)->getOnGround()) continue;
+        
         switch(type) {
         case Event::TogglePainting::ERASING:
             EMIT_EVENT(new Event::PaintEvent(

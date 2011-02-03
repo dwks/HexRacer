@@ -19,5 +19,13 @@ Game Engine:
 -Keep track of each vehicle's current path node
 -Auto-reset the vehicle to the last path node when fallen off the track or flipped
 -Make wheels turn using a non-dumb method
--Physically dynamic props
--Disable painting when in the air
+
+Physics:
+- Add at least one more dynamic object type to test the system (besides Player)
+- Use MotionState properly
+- Replace PhysicsWorld::collisionBodies with dynamicsWorld->getCollisionObjectArray()
+- Create ObjectCollision event for sound?
+
+Refactoring:
+- refactor SDLMain into subsystems
+- refactor HRMap into several component parts

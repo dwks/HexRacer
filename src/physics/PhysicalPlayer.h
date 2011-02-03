@@ -55,6 +55,7 @@ public:
     
     void setOnGround(bool onGround)
         { this->onGround = onGround; }
+    bool getOnGround() const { return onGround; }
     void setSpeedBoost(double speedBoost)
         { this->speedBoost = speedBoost; }
     

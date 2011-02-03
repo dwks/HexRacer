@@ -22,13 +22,7 @@ bool AbstractTCPSocket::send(const std::string &message) {
 }
 
 bool AbstractTCPSocket::tryReceive(std::string &message, std::size_t size) {
-    //boost::system::error_code error;
     std::size_t available = getSocket().available();
-    
-    /*if(error) {
-        LOG2(NETWORK, ERROR, "TCPSocket::tryReceive() error: " << error);
-        return false;
-    }*/
     
     // not enough data yet
     if(available < size) {
