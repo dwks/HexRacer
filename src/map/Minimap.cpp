@@ -88,7 +88,7 @@ namespace Map {
 		glDisable(GL_TEXTURE_2D);
 
 		glPointSize(3.0f);
-		glBegin(GL_POINTS);
+		glBegin(GL_TRIANGLES);
 
 		//Draw a point representing the player
 		Object::WorldManager::PlayerIteratorType it
@@ -100,8 +100,17 @@ namespace Map {
 			
 
 			Math::Point player_pos = player->getPosition();
-			//Math::Point player_dir = player->getPhysicalObject()->
-			OpenGL::MathWrapper::glVertex(player_pos);
+			Math::Point player_dir = Math::Point::point2D(player->getPhysicalObject()->getFrontDirection(), Y_AXIS).normalized()*(-1.0);
+			Math::Point player_right_dir = player_dir.rotate90CW(Y_AXIS);
+			double player_length = 1.5;
+			double player_width = 1.0;
+
+
+			OpenGL::MathWrapper::glVertex(player_pos+player_dir*player_length);
+			OpenGL::MathWrapper::glVertex(player_pos+player_right_dir*player_width
+				-player_dir*player_length);
+			OpenGL::MathWrapper::glVertex(player_pos-player_right_dir*player_width
+				-player_dir*player_length);
 
 		}
 		
