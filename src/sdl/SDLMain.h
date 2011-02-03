@@ -34,6 +34,8 @@
 #include "map/RaceManager.h"
 #include "map/Minimap.h"
 
+#include "widget/GUISystem.h"
+
 #include "timing/AccelControl.h"
 
 #define FIELD_OF_VIEW 60
@@ -82,6 +84,8 @@ private:
     Paint::PaintSubsystem *paintSubsystem;
     
     Timing::AccelControl *accelControl;
+    
+    Widget::GUISystem *gui;
 private:
     class CameraObserver : public Event::TypedObserver<Event::CameraMovement> {
     private:

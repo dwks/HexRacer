@@ -251,6 +251,9 @@ void SDLMain::run() {
     }
 #endif
     
+    gui = new Widget::GUISystem();
+    gui->construct();
+    
     LOG2(GLOBAL, PROGRESS, "Entering main game loop");
     Uint32 lastTime = SDL_GetTicks();
     accelControl->setPauseSkipDirectly(lastTime);
@@ -283,15 +286,12 @@ void SDLMain::run() {
             render();
 
             // suspension does not look good when it is out of sync with rendering
-            //suspension->doAction(SDL_GetTicks());
             suspension->doStep(SDL_GetTicks());
 
 			physicsWorld->render();
 
 			if (GET_SETTING("render.minimap.enable", true)) {
 				
-				
-
 				double minimap_draw_height = viewHeight*GET_SETTING("render.minimap.drawheight", 0.2);
 				double minimap_draw_width = minimap_draw_height*GET_SETTING("render.minimap.drawaspect", 1.0);
 
@@ -306,7 +306,11 @@ void SDLMain::run() {
 
 				glViewport(0, 0, viewWidth, viewHeight);
 			}
-       
+            
+            if(Timing::AccelControl::getInstance()->getPaused()) {
+                gui->render();
+            }
+            
             glFlush();
             
             SDL_GL_SwapBuffers();
@@ -358,6 +362,8 @@ void SDLMain::run() {
     
     delete clientData;
     delete playerManager;
+    
+    delete gui;
 }
 
 void SDLMain::handleEvents() {

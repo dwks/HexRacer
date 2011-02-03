@@ -18,6 +18,7 @@ public:
         AUDIO,
         CAMERA,
         WORLD,
+        WIDGET,
         SUBSYSTEMS
     };
 private:

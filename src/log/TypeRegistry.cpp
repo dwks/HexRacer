@@ -66,6 +66,12 @@ TypeRegistry::TypeRegistry() {
         int counter = 1;
         registerType(Subsystem::WORLD, "WARNING", counter ++);
     }
+    
+    // Widget log message types
+    {
+        int counter = 1;
+        registerType(Subsystem::WORLD, "WARNING", counter ++);
+    }
 }
 
 void TypeRegistry::registerType(Subsystem subsystem,

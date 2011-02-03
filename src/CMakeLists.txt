@@ -25,6 +25,7 @@ aux_source_directory(settings SETTINGS_SOURCES)
 aux_source_directory(sdl SDL_DIR_SOURCES)
 aux_source_directory(sound SOUND_SOURCES)
 aux_source_directory(timing TIMING_SOURCES)
+aux_source_directory(widget WIDGET_SOURCES)
 
 set(SOURCES
     ${LOG_SOURCES}
@@ -41,7 +42,8 @@ set(SOURCES
     ${PAINT_SOURCES}
     ${TIMING_SOURCES}
     ${HANDLER_SOURCES}
-    ${MAP_SOURCES})
+    ${MAP_SOURCES}
+    ${WIDGET_SOURCES})
 
 set(SDL_SOURCES
     ${SDL_DIR_SOURCES}
