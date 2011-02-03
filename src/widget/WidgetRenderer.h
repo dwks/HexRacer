@@ -8,7 +8,11 @@ namespace Project {
 namespace Widget {
 
 class WidgetRenderer : public WidgetVisitor {
+private:
+    WidgetPoint screenSize;
 public:
+    WidgetRenderer(const WidgetPoint &screenSize) : screenSize(screenSize) {}
+    
     void begin();
     void end();
     

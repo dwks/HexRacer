@@ -137,7 +137,7 @@ void SDLMain::initOpenGL() {
     glewInit();
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_RESCALE_NORMAL);
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  // note: must match TextWidget
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     
     glEnable(GL_TEXTURE_2D);

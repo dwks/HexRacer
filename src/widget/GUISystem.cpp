@@ -21,11 +21,15 @@ void GUISystem::construct() {
 }
 
 void GUISystem::render() {
-    WidgetRenderer renderer;
+    WidgetRenderer renderer(screenSize);
     
     renderer.begin();
     widgets->accept(renderer);
     renderer.end();
+}
+
+void GUISystem::setScreenSize(int width, int height) {
+    screenSize = WidgetPoint(width, height);
 }
 
 }  // namespace Widget

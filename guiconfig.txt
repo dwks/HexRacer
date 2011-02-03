@@ -1,0 +1,6 @@
+########
+# Settings for the GUI
+
+font      = data/DejaVuSans.ttf
+font.size = 32
+

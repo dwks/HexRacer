@@ -11,6 +11,7 @@ class GUISystem {
 private:
     Render::FontManager *fontManager;
     WidgetBase *widgets;
+    WidgetPoint screenSize;
 public:
     GUISystem() : widgets(0) {}
     ~GUISystem();
@@ -18,6 +19,8 @@ public:
     void construct();
     
     void render();
+    
+    void setScreenSize(int width, int height);
 };
 
 }  // namespace Widget

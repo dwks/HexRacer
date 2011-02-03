@@ -14,6 +14,7 @@ private:
     OpenGL::Color color;
     std::string data;
     unsigned int texture;
+    double widthFactor, heightFactor;
 public:
     TextWidget(const std::string &name) : AbstractWidget(name), texture(-1) {}
     TextWidget(const std::string &name, OpenGL::Color color,

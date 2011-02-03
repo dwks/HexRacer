@@ -16,10 +16,23 @@ WidgetPoint WidgetPoint::plusYOf(const WidgetPoint &other) {
         getY() + other.getY());
 }
 
-WidgetPoint WidgetPoint::operator + (const WidgetPoint &other) {
+WidgetPoint WidgetPoint::operator + (const WidgetPoint &other) const {
     return WidgetPoint(
         getX() + other.getX(),
         getY() + other.getY());
+}
+
+WidgetPoint &WidgetPoint::operator += (const WidgetPoint &other) {
+    setX(getX() + other.getX());
+    setY(getY() + other.getY());
+    
+    return *this;
+}
+
+WidgetPoint WidgetPoint::operator * (double factor) const {
+    return WidgetPoint(
+        factor * getX(),
+        factor * getY());
 }
 
 WidgetPoint::operator Math::Point () {

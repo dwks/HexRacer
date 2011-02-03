@@ -22,10 +22,18 @@ public:
     double getX() const { return xp; }
     double getY() const { return yp; }
     
+    void setX(double x) { xp = x; }
+    void setY(double y) { yp = y; }
+    
     WidgetPoint plusXOf(const WidgetPoint &other);
     WidgetPoint plusYOf(const WidgetPoint &other);
     
-    WidgetPoint operator + (const WidgetPoint &other);
+    void addX(double x) { xp += x; }
+    void addY(double y) { yp += y; }
+    
+    WidgetPoint operator + (const WidgetPoint &other) const;
+    WidgetPoint &operator += (const WidgetPoint &other);
+    WidgetPoint operator * (double factor) const;
     
     operator Math::Point ();
 };

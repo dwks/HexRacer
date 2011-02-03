@@ -50,6 +50,9 @@ void TextWidget::preRender() {
     int w = nextPowerOf2(first->w);
     int h = nextPowerOf2(first->h);
     
+    widthFactor = double(w) / first->w;
+    heightFactor = double(h) / first->h;
+    
     SDL_Surface *second = SDL_CreateRGBSurface(
         SDL_SWSURFACE, w, h,
         32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
@@ -79,15 +82,47 @@ void TextWidget::render() {
     glBindTexture(GL_TEXTURE_2D, texture);
     glColor3f(1.0f, 1.0f, 1.0f);
     
+    // comment this out to disable font transparency
+    glEnable(GL_BLEND);
+    
+    glBlendFunc(GL_ONE, GL_ONE);
+    
     glBegin(GL_QUADS);
     
+    WidgetPoint bothScaled(
+        dimensions.getX() * widthFactor,
+        dimensions.getY() * heightFactor);
+    
+    double width = dimensions.getX() * widthFactor;
+    double height = dimensions.getY() * heightFactor;
+    double extraWidth = (widthFactor - 1.0) * dimensions.getX();
+    double extraHeight = (heightFactor - 1.0) * dimensions.getY();
+    
+    WidgetPoint topLeft = corner;
+    WidgetPoint lowerLeft = corner;
+    WidgetPoint topRight = corner;
+    WidgetPoint lowerRight = corner;
+    lowerLeft.addY(height);
+    lowerRight.addY(height);
+    topRight.addX(width);
+    lowerRight.addX(width);
+    
+    topLeft.addY(-extraHeight);
+    lowerLeft.addY(-extraHeight);
+    topRight.addY(-extraHeight);
+    lowerRight.addY(-extraHeight);
+    
     // OpenGL origin in lower left corner
-    glTexCoord2i(0, 1); this->glVertex(corner);
-    glTexCoord2i(1, 1); this->glVertex(corner.plusXOf(dimensions));
-    glTexCoord2i(1, 0); this->glVertex(corner + dimensions);
-    glTexCoord2i(0, 0); this->glVertex(corner.plusYOf(dimensions));
+    glTexCoord2i(0, 1); this->glVertex(topLeft);
+    glTexCoord2i(1, 1); this->glVertex(topRight);
+    glTexCoord2i(1, 0); this->glVertex(lowerRight);
+    glTexCoord2i(0, 0); this->glVertex(lowerLeft);
     
     glEnd();
+    
+    // back to the blending the rest of the code expects
+    // note: must match SDLMain
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void TextWidget::glVertex(const WidgetPoint &point) {
