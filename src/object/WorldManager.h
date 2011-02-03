@@ -43,7 +43,7 @@ public:
     void addPlayer(Player *player);
     Player *getPlayer(int id);
     
-    void initForClient(int id, const Math::Point &location);
+	void initForClient(int id, const Math::Point &location, const Math::Point& direction);
     
     PlayerIteratorType getPlayerIterator()
         { return playerList->getIterator(); }

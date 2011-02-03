@@ -15,6 +15,7 @@ class ObjectSpatial
 {
 public:
 
+	enum IntersectionType { INTERSECT_NONE, INTERSECT_INSIDE, INTERSECT_INTERSECTS };
 	enum ObjectType { VERTEX, BOX, TRIANGLE, PLANE, CONVEX_HULL, CIRCLE };
 
 	virtual ~ObjectSpatial(void) {}
@@ -44,9 +45,13 @@ public:
 	*/
 	virtual bool intersects(const BoundingObject& bounding_obj) const = 0;
 
+	virtual IntersectionType intersectionType(const BoundingObject& bounding_obj) const;
+
 	virtual ObjectType getObjectType() const = 0;
 
 	virtual RayIntersection rayIntersection(Ray ray) const { return RayIntersection(); }
+
+	virtual bool operator < (const ObjectSpatial &other) { return true; }
 
 };
 

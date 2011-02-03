@@ -26,6 +26,8 @@ public:
     
     void setPaused(bool paused);
     bool getPaused() const { return paused; }
+    void setPauseSkipDirectly(unsigned long pauseSkip)
+        { this->pauseSkip = pauseSkip; }
     
     unsigned long getPauseSkip() const { return pauseSkip; }
     void clearPauseSkip();

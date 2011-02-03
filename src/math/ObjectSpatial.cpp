@@ -1,6 +1,7 @@
 #include "ObjectSpatial.h"
-using namespace Project;
-using namespace Math;
+
+namespace Project {
+namespace Math {
 
 double ObjectSpatial::minCoord(Axis axis) const {
 	switch (axis) {
@@ -37,3 +38,16 @@ double ObjectSpatial::widthCoord(Axis axis) const {
 	}
 	return 0.0f;
 }
+
+ObjectSpatial::IntersectionType ObjectSpatial::intersectionType(const BoundingObject& bounding_obj) const {
+	if (intersects(bounding_obj)) {
+		if (isInside(bounding_obj))
+			return INTERSECT_INSIDE;
+		else
+			return INTERSECT_INTERSECTS;
+	}
+	return INTERSECT_NONE;
+}
+
+}  // namespace Math
+}  // namespace Project

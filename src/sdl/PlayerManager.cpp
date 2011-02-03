@@ -50,7 +50,8 @@ void PlayerManager::PlayerActionHandler::observe(
         player->setPhysicalObject(
             Physics::PhysicsFactory::createPhysicalPlayer(
                 manager->raceManager
-                    ->startingPointForPlayer(player->getID())));
+                    ->startingPointForPlayer(player->getID()),
+					manager->raceManager->startingPlayerDirection()));
         break;
     }
 }

@@ -13,7 +13,6 @@ class BoundingConvexHull3D
 	: public BoundingObject3D {
 private:
 	std::vector<BoundingPlane3D> planes;
-	Point centroidPoint;
 	
 public:
 	BoundingConvexHull3D(int num_planes);
@@ -26,7 +25,7 @@ public:
 	double maxX() const { return FLT_MAX; }
 	double maxY() const { return FLT_MAX; }
 	double maxZ() const { return FLT_MAX; }
-	Point centroid() const { return centroidPoint; }
+	Point centroid() const;
 	bool isInside(const BoundingObject& bounding_obj) const;
 	BoundingObject2D* projectTo2D(Axis project_axis) const;
 	bool pointInside(const Point& p) const;
@@ -37,7 +36,7 @@ public:
 	//Class Specific
 	void setPlaneNormal(int plane_index, Point normal);
 	void setPlaneOrigin(int plane_index, Point origin);
-	std::vector<BoundingPlane3D> getPlanes() const { return planes; }
+	const std::vector<BoundingPlane3D>& getPlanes() const { return planes; }
 	int getNumPlanes() const { return planes.size(); }
 };
 

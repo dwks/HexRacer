@@ -86,28 +86,7 @@ namespace Map {
 		glEnd();
 
 		glDisable(GL_TEXTURE_2D);
-
-		glPointSize(3.0f);
-		glBegin(GL_POINTS);
-
-		//Draw a point representing the player
-		Object::WorldManager::PlayerIteratorType it
-			= world->getPlayerIterator();
-		while(it.hasNext()) {
-
-			Object::Player *player = it.next();
-			OpenGL::Color::glColor(Render::ColorConstants::playerColor(player->getID()));
-			
-
-			Math::Point player_pos = player->getPosition();
-			//Math::Point player_dir = player->getPhysicalObject()->
-			OpenGL::MathWrapper::glVertex(player_pos);
-
-		}
 		
-		glEnd();
-		glPointSize(1.0f);
-
 		Math::Point camera_diagonal = Math::Point(camera.getOrthoWidth()*0.5, 0.0, camera.getOrthoHeight()*0.5);
 		Math::BoundingBox2D minimap_box = BoundingBox2D(focus_pos-camera_diagonal, focus_pos+camera_diagonal, Y_AXIS);
 
@@ -116,13 +95,47 @@ namespace Map {
 			paint_manager->minimapRender(minimap_box, 0.5f);
 		}
 
-		/*
-		//Draw a border around the minimap
-		OpenGL::Color::glColor(OpenGL::Color::WHITE, 0.5);
-		glLineWidth(3.0f);
-		OpenGL::GeometryDrawing::drawBoundingBox2D(minimap_box, true);
-		glLineWidth(1.0f);
-		*/
+		
+		if (world) {
+			//Draw the players as triangles
+			Object::WorldManager::PlayerIteratorType it
+				= world->getPlayerIterator();
+			while(it.hasNext()) {
+
+				Object::Player *player = it.next();
+				
+				
+
+				Math::Point player_pos = player->getPosition();
+				Math::Point player_dir = Math::Point::point2D(player->getPhysicalObject()->getFrontDirection(), Y_AXIS).normalized()*(-1.0);
+				Math::Point player_right_dir = player_dir.rotate90CW(Y_AXIS);
+				double player_length = 1.75;
+				double player_width = 1.15;
+
+				Math::Point v1 = player_pos+player_dir*player_length;
+				Math::Point v2 = player_pos+player_right_dir*player_width
+					-player_dir*player_length;
+				Math::Point v3 = player_pos-player_right_dir*player_width
+					-player_dir*player_length;
+				
+				OpenGL::Color player_color = Render::ColorConstants::playerColor(player->getID());
+
+				OpenGL::Color::glColor(player_color);
+				glBegin(GL_TRIANGLES);
+				OpenGL::MathWrapper::glVertex(v1);
+				OpenGL::MathWrapper::glVertex(v2);
+				OpenGL::MathWrapper::glVertex(v3);
+				glEnd();
+
+				OpenGL::Color::glColor(OpenGL::Color::WHITE, 0.5f);
+				glBegin(GL_LINE_LOOP);
+				OpenGL::MathWrapper::glVertex(v1);
+				OpenGL::MathWrapper::glVertex(v2);
+				OpenGL::MathWrapper::glVertex(v3);
+				glEnd();
+
+			}
+		}
 
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);

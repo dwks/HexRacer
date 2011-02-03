@@ -1,36 +1,30 @@
-Week 1: to Friday 14
+Todo:
 
-	David
-		-event system *done*
-		-client/server  *done*
-		
-	Alfred
-		-geometry framework *done*
-		-basic renderer *done*
-		
-	Andy
-		-camera
-		-physics engine (dropping object onto plane) *done*
-		
-Jan 17 onward:
+Driving Model:
+-Player continues to move forward relative to its orientation when in the air
+-Friction!!!
+-Set wheels to the actual wheel positions on the model
+-Add better constraints to the wheels (prevent them from going inside the car or being too far below)
+-Reduce overall bounciness of the vehicle
 
-	David:
-		-Add terrain to physics
-		-No jitter in physics
-		-Better framerate system
-	
-	Alfred:
-		-Paint Prototype - Paint Cell System
-		-Camera Culling
-		
-	Andrew:
-		-Milestone 1 Writeup
-		
-	Later:
-		-Suspension/car model
-		-Player Disconnection
-		-Loading screen
-			-server
-			-port
-			-joystick config
-		
+Camera:
+-Eliminate jerkiness from Camera
+-Prevention of objects/walls obscuring the vehicle
+
+Rendering:
+-Visual indication when you have the paint speed boost (trim glow factor?)
+
+Game Engine:
+-Keep track of each vehicle's current path node
+-Auto-reset the vehicle to the last path node when fallen off the track or flipped
+-Make wheels turn using a non-dumb method
+
+Physics:
+- Add at least one more dynamic object type to test the system (besides Player)
+- Use MotionState properly
+- Replace PhysicsWorld::collisionBodies with dynamicsWorld->getCollisionObjectArray()
+- Create ObjectCollision event for sound?
+
+Refactoring:
+- refactor SDLMain into subsystems
+- refactor HRMap into several component parts

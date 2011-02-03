@@ -8,12 +8,16 @@ namespace Render {
 
 class RenderSettings {
 private:
-	static RenderSettings *instance;
 	short graphicsQuality;
 public:
 
-	static RenderSettings *getInstance() { return instance; }
+	static const short GRAPHICS_HIGH = 3;
+	static const short GRAPHICS_MED = 2;
+	static const short GRAPHICS_LOW = 1;
+	static const short GRAPHICS_VERY_LOW = 0;
+
 	short getGraphicsQuality() { return GET_SETTING("render.quality", 2); }
+	short getMaxLights();
 };
 
 }  // namespace Render

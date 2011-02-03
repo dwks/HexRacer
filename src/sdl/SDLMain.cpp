@@ -4,6 +4,7 @@
 #include "SDL.h"
 #include "opengl/OpenGL.h"
 #include "GL/glu.h"
+#include "misc/StdVectorFunctions.h"
 
 #include "opengl/Color.h"
 
@@ -53,6 +54,7 @@ void SDLMain::QuitObserver::observe(Event::QuitEvent *event) {
 }
 
 SDLMain::SDLMain() {
+
     quit = false;
     
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0) {
@@ -146,16 +148,16 @@ void SDLMain::initRenderer() {
     
     //Load the vehicle model
     Render::RenderableObject *object
-        = meshLoader->loadOBJ("playerCube", GET_SETTING("render.model.vehicle", ""));
+        = meshLoader->loadOBJ(VEHICLE_CHASSIS_MODEL_NAME, GET_SETTING("render.model.vehicle", ""));
         
     Render::RenderableObject *objectTire
-        = meshLoader->loadOBJ("playerTire", GET_SETTING("render.model.tire", ""));
+        = meshLoader->loadOBJ(VEHICLE_WHEEL_MODEL_NAME, GET_SETTING("render.model.tire", ""));
         
     object->getRenderProperties()->setTransformation(
         Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0)));
     
     objectTire->getRenderProperties()->setTransformation(
-        Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0)));
+        Math::Matrix::getScalingMatrix(Math::Point(2.5, 2.5, 2.5)));
     
 	//Instantiate the map
 	map = new Map::HRMap();
@@ -239,7 +241,8 @@ void SDLMain::run() {
     
     if(!isConnectedToNetwork) {
         worldManager->initForClient(clientData->getPlayerID(),
-            raceManager->startingPointForPlayer(clientData->getPlayerID()));
+            raceManager->startingPointForPlayer(clientData->getPlayerID()),
+			raceManager->startingPlayerDirection());
     }
     
 #ifdef HAVE_OPENAL
@@ -251,8 +254,8 @@ void SDLMain::run() {
 #endif
     
     LOG2(GLOBAL, PROGRESS, "Entering main game loop");
-    
     Uint32 lastTime = SDL_GetTicks();
+    accelControl->setPauseSkipDirectly(lastTime);
     while(!quit) {
         handleEvents();
         
@@ -262,14 +265,16 @@ void SDLMain::run() {
         suspension->setData(worldManager, renderer);
         suspension->checkForWheelsOnGround();
         
-        inputManager->doStep(SDL_GetTicks());
+        // must do paused (static) checks first, in case the game unpauses
         inputManager->doPausedChecks();
+        inputManager->doStep(SDL_GetTicks());
         
         if(!Timing::AccelControl::getInstance()->getPaused()) {
             static Uint32 lastPhysicsTime = SDL_GetTicks();
             lastPhysicsTime += Timing::AccelControl::getInstance()
                 ->getPauseSkip();
             Uint32 thisTime = SDL_GetTicks();
+            
             physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
             lastPhysicsTime = thisTime;
         }
@@ -279,9 +284,9 @@ void SDLMain::run() {
         {
             render();
 
-			// suspension does not look good when it is out of sync with rendering
-            suspension->doAction(SDL_GetTicks());
-            //suspension->doStep(SDL_GetTicks());
+            // suspension does not look good when it is out of sync with rendering
+            //suspension->doAction(SDL_GetTicks());
+            suspension->doStep(SDL_GetTicks());
 
 			physicsWorld->render();
 
@@ -302,12 +307,6 @@ void SDLMain::run() {
 					paintManager);
 
 				glViewport(0, 0, viewWidth, viewHeight);
-				/*
-				renderMinimap(
-					minimap_draw_height*GET_SETTING("render.minimap.drawaspect", 1.0),
-					minimap_draw_height
-					);
-				*/
 			}
        
             glFlush();
@@ -428,7 +427,7 @@ void SDLMain::render() {
 	lightManager->activateIntersectingLights(*cameraObject->camera->getFrustrum());
 
 	//Render the active lights
-	lightManager->drawActiveLightSpheres();
+	lightManager->drawActiveLightSpheres(false);
     
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);

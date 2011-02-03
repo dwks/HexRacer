@@ -6,6 +6,7 @@
 #include "PhysicsFactory.h"
 
 #include "math/Values.h"
+#include "math/Geometry.h"
 
 #include "log/Logger.h"
 #include "settings/SettingsManager.h"
@@ -13,12 +14,19 @@
 namespace Project {
 namespace Physics {
 
-PhysicalPlayer::PhysicalPlayer(const Math::Point &position) {
+PhysicalPlayer::PhysicalPlayer(const Math::Point &position, const Math::Point &direction) {
     onGround = false;
     speedBoost = 1.0;
     rigidBody = NULL;  // essential, constructRigidBody tries to delete it
     
-    constructRigidBody(position);
+	Math::Matrix transformation = Math::Matrix::getTranslationMatrix(position);
+	transformation *= Math::Matrix::getRotationMatrix(
+		Math::Y_AXIS,
+		Math::Geometry::vectorTo2DAngle(direction.rotate90CCW(Math::Y_AXIS), Math::Y_AXIS)
+		);
+
+	constructRigidBody(transformation);
+    //constructRigidBody(position);
 }
 
 PhysicalPlayer::~PhysicalPlayer() {

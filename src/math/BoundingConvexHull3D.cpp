@@ -10,8 +10,13 @@ namespace Math {
 
 	BoundingConvexHull3D::BoundingConvexHull3D(std::vector<BoundingPlane3D> _planes) {
 		planes = _planes;
-		if (planes.size() > 0)
-			centroidPoint = planes[0].centroid();
+	}
+
+	Point BoundingConvexHull3D::centroid() const {
+		if (!planes.empty())
+			return planes[0].centroid();
+		else
+			return Point();
 	}
 
 	//Abstract method implementations
@@ -40,7 +45,6 @@ namespace Math {
 		for (unsigned int i = 0; i < planes.size(); i++) {
 			planes[i].translate(translation);
 		}
-		centroidPoint += translation;
 	}
 
 	//Class Specific

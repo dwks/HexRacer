@@ -24,39 +24,36 @@ namespace Math {
 
 			const BoundingObject3D& bound_3D = (BoundingObject3D&) bounding_obj;
 
-			const BoundingPlane3D* plane_3D;
-			const BoundingConvexHull3D* ch_3D;
-			const BoundingSphere* sphere_3D;
-			std::vector<BoundingPlane3D> planes;
-
 			switch (bound_3D.getObjectType()) {
 
 				case BOX:
 					return (
 						bound_3D.minX() <= minX() && bound_3D.maxX() >= maxX() &&
-						bound_3D.minY() <= minX() && bound_3D.maxY() >= maxY() &&
-						bound_3D.minZ() <= minX() && bound_3D.maxZ() >= maxZ()
+						bound_3D.minY() <= minY() && bound_3D.maxY() >= maxY() &&
+						bound_3D.minZ() <= minZ() && bound_3D.maxZ() >= maxZ()
 						);
 
-				case CIRCLE:
-					sphere_3D = (const BoundingSphere*) (&bound_3D);
+				case CIRCLE: {
+					const BoundingSphere& sphere_3D = (const BoundingSphere&) (bound_3D);
 					return (
-						(sphere_3D->centroid().distance(position)+radius) <= sphere_3D->getRadius()
+						(sphere_3D.centroid().distance(position)+radius) <= sphere_3D.getRadius()
 						);
+				}
 
-				case PLANE:
-					plane_3D = (const BoundingPlane3D*) (&bound_3D);
-					return plane_3D->pointInside(position-plane_3D->getNormal()*radius);
+				case PLANE: {
+					const BoundingPlane3D& plane_3D = (const BoundingPlane3D&) (bound_3D);
+					return plane_3D.pointInside(position-plane_3D.getNormal()*radius);
+				}
 
-				case CONVEX_HULL:
-					ch_3D = (const BoundingConvexHull3D*) &bound_3D;
-					planes = ch_3D->getPlanes();
+				case CONVEX_HULL: {
+					const std::vector<BoundingPlane3D>& planes = ((const BoundingConvexHull3D&) bound_3D).getPlanes();
 					for (unsigned int i = 0; i < planes.size(); i++) {
 						if (!isInside(planes[i])) {
 							return false;
 						}
 					}
 					return (planes.size() > 0);
+				}
 
 
 				default: break;
@@ -77,18 +74,15 @@ namespace Math {
 
 	bool BoundingSphere::intersects3D(const BoundingObject3D& bounding_obj) const {
 
-		const BoundingPlane3D* plane_3D;
-		const BoundingConvexHull3D* ch_3D;
-		const BoundingSphere* sphere_3D;
-		Point p;
-		std::vector<BoundingPlane3D> planes;
+		
 
 		switch (bounding_obj.getObjectType()) {
 
 			case VERTEX:
 				return pointInside(bounding_obj.centroid());
 
-			case BOX:
+			case BOX: {
+				Point p;
 				p.setX( minimum ( 
 					maximum( position.getX(), bounding_obj.minX() ),
 					bounding_obj.maxX() )
@@ -102,26 +96,30 @@ namespace Math {
 					bounding_obj.maxZ() )
 					);
 				return pointInside(p);
+			}
 
-			case CIRCLE:
-				sphere_3D = (const BoundingSphere*) (&bounding_obj);
+			case CIRCLE: {
+				const BoundingSphere*sphere_3D = (const BoundingSphere*) (&bounding_obj);
 				return (
 					(sphere_3D->centroid().distance(position)-radius) <= sphere_3D->getRadius()
 					);
+			}
 
-			case PLANE:
-				plane_3D = (const BoundingPlane3D*) (&bounding_obj);
+			case PLANE: {
+				const BoundingPlane3D* plane_3D = (const BoundingPlane3D*) (&bounding_obj);
 				return plane_3D->pointInside(position+plane_3D->getNormal()*radius);
+			}
 
-			case CONVEX_HULL:
-				ch_3D = (const BoundingConvexHull3D*) &bounding_obj;
-				planes = ch_3D->getPlanes();
+			case CONVEX_HULL: {
+				const BoundingConvexHull3D* ch_3D = (const BoundingConvexHull3D*) &bounding_obj;
+				const std::vector<BoundingPlane3D>& planes = ch_3D->getPlanes();
 				for (unsigned int i = 0; i < planes.size(); i++) {
 					if (!intersects(planes[i])) {
 						return false;
 					}
 				}
 				return (planes.size() > 0);
+			}
 
 			default: break;
 			
