@@ -1,6 +1,7 @@
 #include <cmath>
 
 #include "TextWidget.h"
+#include "NormalTextLayout.h"
 
 #include "render/FontManager.h"
 
@@ -12,14 +13,14 @@ namespace Project {
 namespace Widget {
 
 TextWidget::TextWidget(const std::string &name, OpenGL::Color color,
-    const std::string &data)
+    const std::string &data, unsigned align)
     : AbstractWidget(name) {
     
     this->color = color;
     this->data = data;
     texture = -1;
     
-    preRender();
+    preRender(align);
 }
 
 TextWidget::~TextWidget() {
@@ -35,7 +36,7 @@ int TextWidget::nextPowerOf2(int x) {
     return 1 << int(std::ceil(std::log(x) / std::log(2.0)));
 }
 
-void TextWidget::preRender() {
+void TextWidget::preRender(unsigned align) {
     SDL_Color c;
     c.r = color.getRedi();
     c.g = color.getGreeni();
@@ -72,6 +73,10 @@ void TextWidget::preRender() {
     
     SDL_FreeSurface(first);
     SDL_FreeSurface(second);
+    
+    double aspectRatio = double(first->h) / first->w;
+    
+    setLayout(new NormalTextLayout(align, aspectRatio));
 }
 
 void TextWidget::render() {
@@ -108,25 +113,10 @@ void TextWidget::render() {
     topRight.addX(width);
     lowerRight.addX(width);
     
-#if 0
-    // shift the texture downwards so that our origin (upper left) stays the
-    // same relative to OpenGL's origin (lower left)
-    topLeft.addY(-extraHeight);
-    lowerLeft.addY(-extraHeight);
-    topRight.addY(-extraHeight);
-    lowerRight.addY(-extraHeight);
-    
-    // OpenGL origin in lower left corner
-    glTexCoord2i(0, 1); this->glVertex(topLeft);
-    glTexCoord2i(1, 1); this->glVertex(topRight);
-    glTexCoord2i(1, 0); this->glVertex(lowerRight);
-    glTexCoord2i(0, 0); this->glVertex(lowerLeft);
-#else
     glTexCoord2i(0, 0); this->glVertex(topLeft);
     glTexCoord2i(1, 0); this->glVertex(topRight);
     glTexCoord2i(1, 1); this->glVertex(lowerRight);
     glTexCoord2i(0, 1); this->glVertex(lowerLeft);
-#endif
     
     glEnd();
     

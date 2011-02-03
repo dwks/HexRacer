@@ -9,6 +9,8 @@
 namespace Project {
 namespace Widget {
 
+class Layout;
+
 /** Abstract base class for all widgets.
 */
 class WidgetBase {
@@ -17,8 +19,12 @@ public:
     
     virtual void accept(WidgetVisitor &visitor) = 0;
     
+    virtual void updateLayout() = 0;
+    virtual void updateLayout(const WidgetRect &newBounds) = 0;
     virtual WidgetRect getBoundingRect() const = 0;
-    virtual void setBoundingRect(const WidgetRect &rect) = 0;
+    
+    virtual Layout *getLayout() const = 0;
+    virtual void setLayout(Layout *layout) = 0;
     
     virtual std::string getName() const = 0;
 };

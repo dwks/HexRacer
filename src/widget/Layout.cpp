@@ -1,4 +1,4 @@
-#include "BoxWidget.h"
+#include "Layout.h"
 
 namespace Project {
 namespace Widget {

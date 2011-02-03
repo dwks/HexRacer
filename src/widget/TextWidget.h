@@ -2,9 +2,9 @@
 #define PROJECT_WIDGET__TEXT_WIDGET_H
 
 #include "AbstractWidget.h"
-#include "opengl/Color.h"
+#include "NormalTextLayout.h"
 
-struct SDL_Surface;
+#include "opengl/Color.h"
 
 namespace Project {
 namespace Widget {
@@ -18,7 +18,7 @@ private:
 public:
     TextWidget(const std::string &name) : AbstractWidget(name), texture(-1) {}
     TextWidget(const std::string &name, OpenGL::Color color,
-        const std::string &data);
+        const std::string &data, unsigned align);
     ~TextWidget();
     
     void render();
@@ -26,7 +26,7 @@ public:
     virtual void accept(WidgetVisitor &visitor) { visitor.visit(this); }
 private:
     int nextPowerOf2(int x);
-    void preRender();
+    void preRender(unsigned align);
     void glVertex(const WidgetPoint &point);
 };
 

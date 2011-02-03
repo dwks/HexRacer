@@ -18,8 +18,14 @@ public:
     WidgetRect(double x, double y, double w, double h)
         : corner(x, y), dimensions(w, h) {}
     
-    WidgetPoint getCorner() const { return corner; }
-    WidgetPoint getDimensions() const { return dimensions; }
+    const WidgetPoint &getCorner() const { return corner; }
+    WidgetPoint &getCorner() { return corner; }
+    
+    const WidgetPoint &getDimensions() const { return dimensions; }
+    WidgetPoint &getDimensions() { return dimensions; }
+    
+    double getWidth() const { return dimensions.getX(); }
+    double getHeight() const { return dimensions.getY(); }
 };
 
 std::ostream &operator << (std::ostream &stream, const WidgetRect &rect);

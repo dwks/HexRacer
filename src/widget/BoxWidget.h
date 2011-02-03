@@ -9,10 +9,6 @@ namespace Widget {
 class BoxWidget : public AbstractWidget {
 public:
     BoxWidget(const std::string &name) : AbstractWidget(name) {}
-    BoxWidget(const std::string &name, const WidgetRect &bounds);
-    
-    virtual void setBoundingRect(const WidgetRect &bounds)
-        { AbstractWidget::setBoundingRect(bounds); }
     
     virtual void accept(WidgetVisitor &visitor) { visitor.visit(this); }
 };

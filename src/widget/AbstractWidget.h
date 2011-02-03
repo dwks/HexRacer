@@ -8,14 +8,17 @@ namespace Widget {
 
 class AbstractWidget : public WidgetBase {
 private:
-    WidgetRect bounds;
+    Layout *layout;
     std::string name;
 public:
     AbstractWidget(const std::string &name) : name(name) {}
+    virtual ~AbstractWidget();
     
-    virtual WidgetRect getBoundingRect() const { return bounds; }
-    virtual void setBoundingRect(const WidgetRect &bounds)
-        { this->bounds = bounds; }
+    virtual void updateLayout();
+    virtual void updateLayout(const WidgetRect &newBounds);
+    virtual WidgetRect getBoundingRect() const;
+    virtual Layout *getLayout() const { return layout; }
+    virtual void setLayout(Layout *layout) { this->layout = layout; }
     
     virtual std::string getName() const { return name; }
 protected:
