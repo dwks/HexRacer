@@ -7,6 +7,7 @@ namespace Widget {
 class BoxWidget;
 class TextWidget;
 class ButtonWidget;
+class CompositeWidget;
 
 class WidgetVisitor {
 public:
@@ -15,6 +16,7 @@ public:
     virtual void visit(BoxWidget *widget) = 0;
     virtual void visit(TextWidget *widget) = 0;
     virtual void visit(ButtonWidget *widget) = 0;
+    virtual void visit(CompositeWidget *widget) = 0;
 };
 
 }  // namespace Widget

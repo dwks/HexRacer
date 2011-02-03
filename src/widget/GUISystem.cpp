@@ -14,8 +14,16 @@ GUISystem::~GUISystem() {
 void GUISystem::construct() {
     fontManager = new Render::FontManager();
     
-    widgets = new ButtonWidget("quit",
-        "Greetings.", WidgetRect(0.3, 0.4, 0.4, 0.1));
+    widgets = new CompositeWidget("gui");
+    
+    widgets->addChild(new ButtonWidget("resume",
+        "Resume", WidgetRect(0.3, 0.25, 0.4, 0.1)));
+    
+    widgets->addChild(new ButtonWidget("something",
+        "Something", WidgetRect(0.3, 0.4, 0.4, 0.1)));
+    
+    widgets->addChild(new ButtonWidget("quit",
+        "Quit", WidgetRect(0.3, 0.65, 0.4, 0.1)));
 }
 
 void GUISystem::render() {

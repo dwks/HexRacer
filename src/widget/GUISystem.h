@@ -1,7 +1,7 @@
 #ifndef PROJECT_WIDGET__GUISYSTEM_H
 #define PROJECT_WIDGET__GUISYSTEM_H
 
-#include "WidgetBase.h"
+#include "CompositeWidget.h"
 #include "render/FontManager.h"
 
 namespace Project {
@@ -10,7 +10,7 @@ namespace Widget {
 class GUISystem {
 private:
     Render::FontManager *fontManager;
-    WidgetBase *widgets;
+    CompositeWidget *widgets;
     WidgetPoint screenSize;
 public:
     GUISystem() : widgets(0) {}
