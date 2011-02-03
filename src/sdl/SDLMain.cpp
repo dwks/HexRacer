@@ -154,7 +154,14 @@ void SDLMain::initRenderer() {
     //Load the vehicle model
     Render::RenderableObject *object
         = meshLoader->loadOBJ("playerCube", GET_SETTING("render.model.vehicle", ""));
+        
+    Render::RenderableObject *objectTire
+        = meshLoader->loadOBJ("playerTire", GET_SETTING("render.model.tire", ""));
+        
     object->getRenderProperties()->setTransformation(
+        Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0)));
+    
+    objectTire->getRenderProperties()->setTransformation(
         Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0)));
     
 	//Instantiate the map
