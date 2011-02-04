@@ -1,9 +1,17 @@
 #Shader File
-high genericShader shaders/genericShaderHighUnrolled.frag shaders/genericShaderHigh.vert
-med genericShader shaders/genericShaderMed.frag shaders/genericShaderMed.vert
+
 all playerGlow shaders/playerGlow.frag shaders/playerGlow.vert
 all backgroundShader shaders/backgroundShader.frag shaders/backgroundShader.vert
-med bgReflectShader shaders/backgroundReflectMed.frag shaders/backgroundReflectMed.vert
-high bgReflectShader shaders/backgroundReflectHighUnrolled.frag shaders/backgroundReflectHigh.vert
 all paintShader shaders/paintShader.frag shaders/paintShader.vert
 all gouraudShader shaders/gouraudShader.frag shaders/genericShaderMed.vert
+
+high genericShader shaders/genericShaderHighUnrolled.frag shaders/genericShaderHigh.vert
+med genericShader shaders/genericShaderMed.frag shaders/genericShaderMed.vert
+high genericShaderLOD shaders/genericShaderMed.frag shaders/genericShaderMed.vert
+med genericShaderLOD mapping gouraudShader
+
+high bgReflectShader shaders/backgroundReflectHighUnrolled.frag shaders/backgroundReflectHigh.vert
+med bgReflectShader shaders/backgroundReflectMed.frag shaders/backgroundReflectMed.vert
+high bgReflectShaderLOD shaders/backgroundReflectMed.frag shaders/backgroundReflectMed.vert
+med bgReflectShaderLOD mapping bgReflectShader
+
