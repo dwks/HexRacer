@@ -35,6 +35,12 @@ class RenderableObject;
 */
 class RenderManager {
 private:
+
+	struct ShaderMapping {
+		string name;
+		string mapped_name;
+	};
+
 	static const GLenum colorMapTexture = GL_TEXTURE0;
 	static const int colorMapTextureNum = 0;
 	static const GLenum normalMapTexture = GL_TEXTURE1;
@@ -59,6 +65,7 @@ private:
 	vector<Shader*> shader;
 	vector< vector< ShaderAttributeLocation > > shaderAttributeLocation;
 	vector<string> shaderName;
+	vector<ShaderMapping> shaderMappings;
 
 	int enabledShaderIndex;
 

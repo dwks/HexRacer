@@ -307,11 +307,21 @@ namespace Render {
 				string shader_name;
 				in_file >> shader_name;
 				if (shader_name.length() > 0) {
+
 					string frag_file;
 					string vert_file;
 					in_file >> frag_file;
 					in_file >> vert_file;
-					loadShader(shader_name, string(directory).append(frag_file), string(directory).append(vert_file));
+					if (frag_file == "mapping") {
+						struct ShaderMapping mapping;
+						mapping.name = shader_name;
+						mapping.mapped_name = vert_file;
+						shaderMappings.push_back(mapping);
+					}
+					else {
+						loadShader(shader_name, string(directory).append(frag_file), string(directory).append(vert_file));
+					}
+
 				}
 			}
 		}
@@ -381,10 +391,17 @@ namespace Render {
 		if (name == RENDERER_NO_SHADER_NAME)
 			return noShaderIndex;
 
+		for (unsigned int i = 0; i < shaderMappings.size(); i++) {
+			if (shaderMappings[i].name == name) {
+				name = shaderMappings[i].mapped_name;
+			}
+		}
+
 		for (unsigned int i = 0; i < shaderName.size(); i++) {
 			if (shaderName[i] == name)
 				return i;
 		}
+
 		return -1;
 
 	}
