@@ -1,4 +1,5 @@
 #include "MeshGroup.h"
+#include "RenderManager.h"
 #include "math/Values.h"
 using namespace Project;
 using namespace Math;
@@ -8,7 +9,7 @@ namespace Project {
 namespace Render {
 
 	MeshGroup::MeshGroup(string _name, vector<Mesh*> _meshes, vector<MeshVertex*> _vertices,
-		std::vector<Triangle3D>* collision_mask) {
+		std::vector<Triangle3D> collision_mask, MeshGroup* lod_mesh) {
 
 		this->name = _name;
 	
@@ -27,6 +28,7 @@ namespace Render {
 		radiusFromOrigin = sqrt(radiusFromOrigin);
 
 		collisionMask = collision_mask;
+		lodMesh = lod_mesh;
 	}
 
 	MeshGroup::~MeshGroup() {
@@ -34,13 +36,13 @@ namespace Render {
 			delete(meshes[i]);
 		for (unsigned int i = 0; i < vertices.size(); i++)
 			delete(vertices[i]);
-		if (collisionMask)
-			delete(collisionMask);
+		if (lodMesh)
+			delete(lodMesh);
 	}
 
 	vector<Triangle3D> MeshGroup::getTriangles() {
-		if (collisionMask)
-			return *collisionMask;
+		if (!collisionMask.empty())
+			return collisionMask;
 
 		if (meshes.size() == 1) {
 			return ((Mesh*)meshes[0])->getTriangles();
@@ -56,9 +58,18 @@ namespace Render {
 	}
 
 	void MeshGroup::subRender(RenderManager* manager) {
-		for (unsigned int i = 0; i < meshes.size(); i++) {
-			meshes[i]->render(manager);
+
+		if (manager->getLODLow() && lodMesh) {
+			//Render low quality meshes
+			lodMesh->render(manager);
 		}
+		else {
+			//Render regular meshes
+			for (unsigned int i = 0; i < meshes.size(); i++) {
+				meshes[i]->render(manager);
+			}
+		}
+
 	}
 
 }  // namespace Render

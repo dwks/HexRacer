@@ -20,6 +20,7 @@ namespace Render {
 
 		triangles = _triangles;
 		material = _material;
+		getRenderProperties()->setMaterial(material);
 
 		triangleTree = NULL;
 		displayList = 0;

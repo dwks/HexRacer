@@ -33,14 +33,15 @@ public:
 		Returns true if successful
 	*/
 	bool deleteModelByName(string model_name);
-	//Material* getMaterialByName(string name);
 	Texture* getTextureByName(string name);
 
 private:
 
 	vector< MeshGroup* > models;
-	//vector< Material* > materials;
 	vector< Texture* > textures;
+
+	bool objLoadMeshes(string filename, bool cullable, vector<Mesh*>& mesh_list, vector<MeshVertex*>& vertex_list);
+	bool objLoadTriangles(string filename, vector<Math::Triangle3D>& triangles);
 
 };
 

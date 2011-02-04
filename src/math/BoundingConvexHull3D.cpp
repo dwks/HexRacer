@@ -62,5 +62,9 @@ namespace Math {
 		planes[plane_index].moveCentroid(origin);
 	}
 
+	void BoundingConvexHull3D::setNumPlanes(int num_planes) {
+		planes.resize(num_planes);
+	}
+
 }  // namespace Math
 }  // namespace Project

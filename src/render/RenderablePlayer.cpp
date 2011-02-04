@@ -8,6 +8,7 @@
 #include "config.h"
 
 #include "log/Logger.h"
+#include "settings/SettingsManager.h"
 
 namespace Project {
 namespace Render {
@@ -18,6 +19,11 @@ void RenderablePlayer::initialize(int id) {
     player_cube_mesh = MeshLoader::getInstance()->getModelByName(VEHICLE_CHASSIS_MODEL_NAME);
     player_tire = new RenderList();
 	player_tire->addRenderable(MeshLoader::getInstance()->getModelByName(VEHICLE_WHEEL_MODEL_NAME));
+
+	//Set the radius of the bounding sphere for camera culling
+	boundingSphere.setRadius(
+		player_cube_mesh->getRadiusFromOrigin()*GET_SETTING("render.vehicle.scale", 2.0)
+		);
     
     getRenderProperties()->addShaderParameter(
         new Render::ShaderUniformVector4("playerColor",
@@ -63,12 +69,10 @@ void RenderablePlayer::setWheelRotation(double velocity)
     this->wheelRotationDegrees += velocity*0.05;
 }
 
-/*void RenderablePlayer::renderGeometry(ShaderParamSetter setter) {
-    LOG(OPENGL, "WARNING: this code is not used and thus not debugged");
-    
-    Math::BoundingBox3D box(2.0, 2.0, 2.0, origin);
-    OpenGL::GeometryDrawing::drawObject(box, true);
-}*/
+bool RenderablePlayer::shouldDraw(const Math::BoundingObject& bounding_obj) {
+	boundingSphere.moveCentroid(origin);
+	return boundingSphere.intersects(bounding_obj);
+}
 
 }  // namespace Render
 }  // namespace Project

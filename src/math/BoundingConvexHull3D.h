@@ -38,6 +38,7 @@ public:
 	void setPlaneOrigin(int plane_index, Point origin);
 	const std::vector<BoundingPlane3D>& getPlanes() const { return planes; }
 	int getNumPlanes() const { return planes.size(); }
+	void setNumPlanes(int num_planes);
 };
 
 }  // namespace Math

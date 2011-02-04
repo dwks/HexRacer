@@ -31,23 +31,82 @@ namespace Render {
 		if (group)
 			return group;
 
+		vector<Mesh*> meshes;
+		vector<MeshVertex*> vertices;
+
+		if (!objLoadMeshes(filename, cullable, meshes, vertices))
+			return NULL;
+
+		//Load the collision mesh
+		vector<Triangle3D> collision_triangles;
+		string mask_filename = string(filename).insert(filename.length()-4, "_c");
+		objLoadTriangles(mask_filename, collision_triangles);
+
+		//Load the lod mesh
+		MeshGroup* lod_group = NULL;
+		vector<Mesh*> lod_meshes;
+		vector<MeshVertex*> lod_vertices;
+		string lod_filename = string(filename).insert(filename.length()-4, "_l");
+		if (objLoadMeshes(lod_filename, cullable, lod_meshes, lod_vertices)) {
+			lod_group = new MeshGroup(model_name.append("_lod"), lod_meshes, lod_vertices);
+		}
+
+		MeshGroup* new_group = new MeshGroup(model_name, meshes, vertices, collision_triangles, lod_group);
+		models.push_back(new_group);
+
+		return new_group;
+		
+	}
+
+	MeshGroup* MeshLoader::getModelByName(string model_name, bool expectFailure) {
+		for (unsigned int i = 0; i < models.size(); i++) {
+			if (models[i]->getName() == model_name) {
+				return models[i];
+			}
+		}
+		if(!expectFailure) {
+            LOG(OPENGL, model_name.append(": Model Not Found"));
+        }
+		return NULL;
+	}
+
+	bool MeshLoader::deleteModelByName(string model_name) {
+		for (unsigned int i = 0; i < models.size(); i++) {
+			if (models[i]->getName() == model_name) {
+				delete(models[i]);
+				Misc::vectorRemoveAtIndex(models, i);
+				return true;
+			}
+		}
+		LOG(OPENGL, model_name.append(": Model Not Found"));
+		return false;
+	}
+
+	Texture* MeshLoader::getTextureByName(string name) {
+		for (unsigned int i = 0; i < textures.size(); i++) {
+			if (textures[i]->getName() == name) {
+				return textures[i];
+			}
+		}
+		return NULL;
+	}
+
+	bool MeshLoader::objLoadMeshes(string filename, bool cullable, vector<Mesh*>& mesh_list, vector<MeshVertex*>& vertex_list) {
+
 		string directory = DirectoryFunctions::extractDirectory(filename);
 
 		ModelOBJ obj_file;
 
 		if (!obj_file.import(filename.c_str(), true)) {
             LOG(OPENGL, "Can't open .OBJ file \"" << filename << "\"");
-			return NULL;
+			return false;
         }
-
-		vector<MeshVertex*> vert_list;
-		vector<Mesh*> mesh_list;
 
 		//Load Vertices
 		for (int i = 0; i < obj_file.getNumberOfVertices(); i++) {
 
 			ModelOBJ::Vertex vertex = obj_file.getVertex(i);
-			vert_list.push_back(new MeshVertex(
+			vertex_list.push_back(new MeshVertex(
 				Point(vertex.position[0], vertex.position[1], vertex.position[2]),
 				Point(vertex.normal[0], vertex.normal[1], vertex.normal[2]),
 				Point(vertex.tangent[0], vertex.tangent[1], vertex.tangent[2]),
@@ -123,106 +182,59 @@ namespace Render {
 			int vert_index = mesh.startIndex;
 			for (int j = 0; j < mesh.triangleCount; j++) {
 				MeshTriangle* tri = new MeshTriangle(
-					vert_list[index[vert_index]],
-					vert_list[index[vert_index+1]],
-					vert_list[index[vert_index+2]]);
+					vertex_list[index[vert_index]],
+					vertex_list[index[vert_index+1]],
+					vertex_list[index[vert_index+2]]);
 				face_list.push_back(tri);
 				vert_index += 3;
 			}
 
 			Mesh* sub_mesh = new Mesh(face_list, mat, cullable);
 			RenderProperties* properties = sub_mesh->getRenderProperties();
-			if (mat) {
-				properties->setMaterial(mat);
+			if (mat)
 				properties->setWantsShaderName(obj_mat.shaderName);
-			}
 			if (tex)
 				properties->setTexture(tex);
 
 			mesh_list.push_back(sub_mesh);
 		}
 		obj_file.destroy(); //Unload the obj file content
+		return true;
+	}
 
-		vector<Triangle3D>* collision_triangles = NULL;
+	bool MeshLoader::objLoadTriangles(string filename, vector<Math::Triangle3D>& triangles) {
+
 
 		//Load the mesh's collision mask if it has one
-		string mask_filename = filename.insert(filename.length()-4, "_c");
-		ModelOBJ mask_file;
-		if (mask_file.import(mask_filename.c_str(), true)) {
-
-			collision_triangles = new vector<Triangle3D>();
-			const int* index = mask_file.getIndexBuffer();
-			
-			for (int i = 0; i < mask_file.getNumberOfMeshes(); i++) {
-
-				ModelOBJ::Mesh mesh = mask_file.getMesh(i);
-				for (int j = 0; j < mesh.triangleCount; j++) {
-					int vert_index = mesh.startIndex;
-					for (int j = 0; j < mesh.triangleCount; j++) {
-
-						Point vertex[3];
-						for (int i = 0; i < 3; i++) {
-							ModelOBJ::Vertex v = mask_file.getVertex(index[vert_index+i]);
-							vertex[i] = Point(v.position[0], v.position[1], v.position[2]);
-						}
-						collision_triangles->push_back(Triangle3D(vertex[0], vertex[1], vertex[2]));
 		
-						vert_index += 3;
+		ModelOBJ obj_file;
+
+		if (!obj_file.import(filename.c_str(), false))
+			return false;
+
+		const int* index = obj_file.getIndexBuffer();
+		
+		for (int i = 0; i < obj_file.getNumberOfMeshes(); i++) {
+
+			ModelOBJ::Mesh mesh = obj_file.getMesh(i);
+			for (int j = 0; j < mesh.triangleCount; j++) {
+				int vert_index = mesh.startIndex;
+				for (int j = 0; j < mesh.triangleCount; j++) {
+
+					Point vertex[3];
+					for (int i = 0; i < 3; i++) {
+						ModelOBJ::Vertex v = obj_file.getVertex(index[vert_index+i]);
+						vertex[i] = Point(v.position[0], v.position[1], v.position[2]);
 					}
+					triangles.push_back(Math::Triangle3D(vertex[0], vertex[1], vertex[2]));
+	
+					vert_index += 3;
 				}
 			}
-        }
-		mask_file.destroy();
-
-		MeshGroup* new_group = new MeshGroup(model_name, mesh_list, vert_list, collision_triangles);
-		models.push_back(new_group);
-
-		return new_group;
-		
-	}
-
-	MeshGroup* MeshLoader::getModelByName(string model_name, bool expectFailure) {
-		for (unsigned int i = 0; i < models.size(); i++) {
-			if (models[i]->getName() == model_name) {
-				return models[i];
-			}
 		}
-		if(!expectFailure) {
-            LOG(OPENGL, model_name.append(": Model Not Found"));
-        }
-		return NULL;
-	}
 
-	bool MeshLoader::deleteModelByName(string model_name) {
-		for (unsigned int i = 0; i < models.size(); i++) {
-			if (models[i]->getName() == model_name) {
-				delete(models[i]);
-				Misc::vectorRemoveAtIndex(models, i);
-				return true;
-			}
-		}
-		LOG(OPENGL, model_name.append(": Model Not Found"));
-		return false;
-	}
-
-	/*
-	Material* MeshLoader::getMaterialByName(string name) {
-		for (unsigned int i = 0; i < materials.size(); i++) {
-			if (materials[i]->getName() == name) {
-				return materials[i];
-			}
-		}
-		return NULL;
-	}
-	*/
-
-	Texture* MeshLoader::getTextureByName(string name) {
-		for (unsigned int i = 0; i < textures.size(); i++) {
-			if (textures[i]->getName() == name) {
-				return textures[i];
-			}
-		}
-		return NULL;
+		obj_file.destroy();
+		return true;
 	}
 
 

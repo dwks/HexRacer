@@ -17,16 +17,20 @@ class MeshGroup
 private:
 
 	std::string name;
+
 	std::vector<Mesh*> meshes;
 	std::vector<MeshVertex*> vertices;
-	std::vector<Math::Triangle3D>* collisionMask;
+	std::vector<Math::Triangle3D> collisionMask;
+	MeshGroup* lodMesh;
+
 	Math::BoundingBox3D boundingBox;
 	double radiusFromOrigin;
 
 public:
 
 	MeshGroup(std::string _name, std::vector<Mesh*> _meshes, std::vector<MeshVertex*> _vertices,
-		std::vector<Math::Triangle3D>* collison_mask = NULL);
+		std::vector<Math::Triangle3D> collison_mask = std::vector<Math::Triangle3D>(),
+		MeshGroup* lod_mesh = NULL);
 	~MeshGroup();
 	std::string getName() { return name; }
 	void subRender(RenderManager* manager);

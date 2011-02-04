@@ -127,7 +127,6 @@ void SDLMain::initSDL() {
     cameraObject = new SDL::CameraObject();
     cameraObject->camera->setFieldOfViewDegrees(GET_SETTING("render.camera.fieldofview", 60.0));
     cameraObject->camera->setPosition(Point(0.0f, 2.0f, -4.0f));
-    cameraObject->camera->setFarPlane(GET_SETTING("render.camera.farplane", 200.0));
     updateCamera();
     
     // this should be called after the camera has been created so that it gets
@@ -161,12 +160,12 @@ void SDLMain::initRenderer() {
         
     Render::RenderableObject *objectTire
         = meshLoader->loadOBJ(VEHICLE_WHEEL_MODEL_NAME, GET_SETTING("render.model.tire", ""));
-        
+      
     object->getRenderProperties()->setTransformation(
-        Math::Matrix::getScalingMatrix(Math::Point(2.0, 2.0, 2.0)));
+        Math::Matrix::getScalingMatrix(GET_SETTING("render.vehicle.scale", 2.0)));
     
     objectTire->getRenderProperties()->setTransformation(
-        Math::Matrix::getScalingMatrix(Math::Point(2.5, 2.5, 2.5)));
+        Math::Matrix::getScalingMatrix(GET_SETTING("render.tire.scale", 2.5)));
     
 	//Instantiate the map
 	map = new Map::HRMap();
@@ -187,10 +186,9 @@ void SDLMain::initRenderer() {
 	}
     
     //Set background shader
-    // !!! this is not freed
-    Render::BackgroundRenderable* background = new Render::BackgroundRenderable(cameraObject->camera);
+    background = new Render::BackgroundRenderable(cameraObject->camera);
     background->getRenderProperties()->setWantsShaderName("backgroundShader");
-    mapRenderable->addRenderable(background);
+    //mapRenderable->addRenderable(background);
 
 	minimap = new Map::Minimap();
 	minimap->setMapInfo(map);
@@ -354,6 +352,7 @@ void SDLMain::run() {
     
 	delete map;
     delete mapRenderable;
+	delete background;
     
     delete inputManager;
     delete network;
@@ -370,7 +369,7 @@ void SDLMain::run() {
     delete simpleTrackball;
     delete cameraObject;
     delete renderer;
-    
+
     delete clientData;
     delete playerManager;
     
@@ -425,49 +424,76 @@ void SDLMain::updateCamera() {
 
 void SDLMain::render() {
 
+	//Debug Drawing----------------------------------------------------------------------
+
+	//Use the full view distance of the camera
+	cameraObject->camera->setNearPlane(GET_SETTING("render.camera.nearplane", 0.1));
+	cameraObject->camera->setFarPlane(GET_SETTING("render.camera.farplane", 300.0));
+	cameraObject->camera->setFrustrumNearPlaneEnabled(false);
+	cameraObject->camera->setFrustrumFarPlaneEnabled(false);
 	cameraObject->camera->glProjection();
 
-    glMatrixMode(GL_MODELVIEW);
-    
+	//Init rendering
+	glMatrixMode(GL_MODELVIEW);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    
+
 	OpenGL::Color::glColor(OpenGL::Color::WHITE);
-    
+
 	cameraObject->camera->glLookAt();
-  
-	//Activate all lights visible to the camera
-	lightManager->activateIntersectingLights(*cameraObject->camera->getFrustrum());
-	//Render the active lights
-	lightManager->drawActiveLightSpheres(false);
-    
-	glEnable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
 
 	//Pass the camera to the renderer for culling
 	renderer->setCamera(cameraObject->camera);
-    
-    //Render most of the world
-    worldManager->getWorld()->preRender();
-    worldManager->getWorld()->getRenderableObject()->render(renderer);
-    
-	//Render the map
-	mapRenderable->render(renderer);
-    
+  
+	//Activate all lights visible to the camera
+	lightManager->activateIntersectingLights(*cameraObject->camera->getFrustrum());
+
+	//Render the active lights
+	if(GET_SETTING("render.drawlightspheres", false))
+		lightManager->drawActiveLightSpheres(false);
+
+	if(GET_SETTING("render.drawpathnodes", false))
+		renderAIDebug();
+
+	//High Quality Rendering----------------------------------------------------------------------
+
+	renderer->setLODLow(false);
+
+	//Set the camera to only render in the nearer portion of the whole view area
+	double lod_split_plane = GET_SETTING("render.camera.farplane", 300.0)*GET_SETTING("render.camera.lodthreshhold", 0.5);
+	cameraObject->camera->setFarPlane(lod_split_plane);
+	cameraObject->camera->setFrustrumFarPlaneEnabled(true);
+	cameraObject->camera->glProjection();
+	//Use only a portion of the depth buffer range
+	glDepthRange(0.0, GET_SETTING("render.camera.lodthreshhold", 0.5));
+
+	glMatrixMode(GL_MODELVIEW);
+
+	renderWorld();
+
+	//Low Quality Rendering----------------------------------------------------------------------
+
+	renderer->setLODLow(true);
+
+	//Set the camera to only render in the farther portion of the whole view area
+	cameraObject->camera->setNearPlane(lod_split_plane);
+	cameraObject->camera->setFarPlane(GET_SETTING("render.camera.farplane", 300.0));
+	cameraObject->camera->setFrustrumNearPlaneEnabled(true);
+	cameraObject->camera->glProjection();
+	//Use only a portion of the depth buffer range
+	glDepthRange(GET_SETTING("render.camera.lodthreshhold", 0.5), 1.0);
+	glMatrixMode(GL_MODELVIEW);
+
+	renderWorld();
+
+	//Render the background
+	background->render(renderer);
+
 	//Reset the lights
 	lightManager->resetLights();
-    
-	//Revert the rendering state
-	//glDisable(GL_COLOR_MATERIAL);
-	glDisable(GL_LIGHTING);
-	glDisable(GL_TEXTURE_2D);
-    
-	//Render the paint
-	paintManager->render(renderer);
-    
-	if(GET_SETTING("render.drawpathnodes", false)) {
-		renderAIDebug();
-	}
+
+	//Use the whole depth buffer range
+	glDepthRange(0.0, 1.0);
 }
 
 void SDLMain::renderAIDebug() {
@@ -507,6 +533,27 @@ void SDLMain::renderAIDebug() {
         glEnd();
         glLineWidth(1.0f);
     }
+}
+
+void SDLMain::renderWorld() {
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
+    
+    //Render most of the world
+    worldManager->getWorld()->preRender();
+    worldManager->getWorld()->getRenderableObject()->render(renderer);
+
+	//Render the map
+	mapRenderable->render(renderer);
+
+	//Revert the rendering state
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
+    
+	//Render the paint
+	paintManager->render(renderer);
+
 }
 
 }  // namespace SDL

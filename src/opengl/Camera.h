@@ -41,6 +41,9 @@ private:
 
 	double orthoHeight;
 
+	bool frustrumNearPlane;
+	bool frustrumFarPlane;
+
 	BoundingConvexHull3D* frustrum;
 	GLfloat cameraMatrix [16];
 
@@ -63,6 +66,9 @@ public:
 	void setNearPlane(double near);
 	void setFarPlane(double far);
 	void setOrthoHeight(double height);
+
+	void setFrustrumNearPlaneEnabled(bool enabled);
+	void setFrustrumFarPlaneEnabled(bool enabled);
 	
 	Point getPosition() const { return cameraPosition; }
 	Point getLookPosition() const { return cameraLookPosition; }

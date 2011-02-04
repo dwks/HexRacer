@@ -63,7 +63,6 @@ private:
     PlayerManager *playerManager;
     Object::WorldManager *worldManager;
     Physics::PhysicsWorld *physicsWorld;
-    Render::MeshGroup *test_terrain;
     ClientData *clientData;
     Physics::Suspension *suspension;
     
@@ -71,6 +70,7 @@ private:
 	Render::RenderManager *renderer;
 	Render::RenderList* mapRenderable;
 	Render::LightManager *lightManager;
+	Render::BackgroundRenderable *background;
 
 	Map::HRMap* map;
     Map::RaceManager *raceManager;
@@ -116,6 +116,7 @@ public:
 private:
     void resizeGL(int width, int height);
     void render();
+	void renderWorld();
     void renderGrid();
 	void renderMinimap(int minimap_width, int minimap_height);
     void renderAIDebug();

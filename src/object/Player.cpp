@@ -76,6 +76,8 @@ void Player::preRender() {
     renderable->setWheelRotation(
         physical->getLinearVelocity().dotProduct(
             physical->getFrontDirection()));
+
+	renderable->updatePhysicalData(physical->getOrigin());
 }
 
 }  // namespace Object

@@ -15,12 +15,15 @@ Camera::Camera(CameraType camera_type)
 
 	cameraType = camera_type;
 
-	frustrum = new BoundingConvexHull3D(5);
+	frustrum = new BoundingConvexHull3D(4);
 	setAspect(1.0f);
 	setFieldOfViewDegrees(90.0f);
 	setNearPlane(0.01f);
 	setFarPlane(20.0f);
 	setUpDirection(Point(0.0f, 1.0f, 0.0f));
+
+	frustrumNearPlane = false;
+	frustrumFarPlane = false;
 }
 
 Camera::~Camera(void)
@@ -146,6 +149,10 @@ void Camera::glProjection() {
 
 void Camera::updateFrustrum() {
 
+	
+	frustrum->setNumPlanes(4 + (int)frustrumNearPlane + (int)frustrumFarPlane);
+
+
 	if (cameraType == PERSPECTIVE) {
 
 		frustrum->setPlaneOrigin(0, cameraPosition);
@@ -173,8 +180,19 @@ void Camera::updateFrustrum() {
 
 	}
 
-	frustrum->setPlaneOrigin(4, cameraPosition+cameraLookDirection*farPlane);
-	frustrum->setPlaneNormal(4, cameraLookDirection*(-1.0));
+	int current_plane = 4;
+
+	if (frustrumNearPlane) {
+		//Set near plane
+		frustrum->setPlaneOrigin(current_plane, cameraPosition+cameraLookDirection*nearPlane);
+		frustrum->setPlaneNormal(current_plane, cameraLookDirection);
+		current_plane++;
+	}
+	if (frustrumFarPlane) {
+		//Set far plane
+		frustrum->setPlaneOrigin(current_plane, cameraPosition+cameraLookDirection*farPlane);
+		frustrum->setPlaneNormal(current_plane, cameraLookDirection*(-1.0));
+	}
 
 	cameraMatrix[12] = static_cast<GLfloat>(cameraPosition.getX());
 	cameraMatrix[13] = static_cast<GLfloat>(cameraPosition.getY());
@@ -228,4 +246,14 @@ Ray Camera::cameraRay(double x, double y) {
 		return Ray(cameraPosition, plane_point-cameraPosition, 0.0);
 	}
 
+}
+
+void Camera::setFrustrumNearPlaneEnabled(bool enabled) {
+	frustrumNearPlane = enabled;
+	updateFrustrum();
+}
+
+void Camera::setFrustrumFarPlaneEnabled(bool enabled) {
+	frustrumFarPlane = enabled;
+	updateFrustrum();
 }

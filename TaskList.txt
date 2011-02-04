@@ -1,7 +1,6 @@
 Todo:
 
 Driving Model:
--Player continues to move forward relative to its orientation when in the air
 -Friction!!!
 -Set wheels to the actual wheel positions on the model
 -Add better constraints to the wheels (prevent them from going inside the car or being too far below)
@@ -18,7 +17,6 @@ Rendering:
 Game Engine:
 -Keep track of each vehicle's current path node
 -Auto-reset the vehicle to the last path node when fallen off the track or flipped
--Make wheels turn using a non-dumb method
 
 Physics:
 - Add at least one more dynamic object type to test the system (besides Player)

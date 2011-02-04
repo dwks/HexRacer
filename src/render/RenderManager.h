@@ -52,6 +52,7 @@ private:
 
 	bool shadersEnabled;
 	bool texturesEnabled;
+	bool lodLow;
 
 	ShaderParamSetter paramSetter;
 
@@ -104,6 +105,8 @@ public:
 
 	void setShadersEnabled(bool enabled) { shadersEnabled = enabled; }
 	void setTexturesEnabled(bool enabled) { texturesEnabled = enabled; }
+	bool getLODLow() const { return lodLow; }
+	void setLODLow(bool low) { lodLow = low; }
 
 	LightManager* getLightManager() const { return lightManager; }
 
@@ -112,6 +115,7 @@ public:
 	const Math::BoundingObject* getBoundingObject() const;
 
 	void setCubeMap(TextureCube* cube_map);
+	
 
 private:
 

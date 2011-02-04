@@ -273,6 +273,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\EventVisitor.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\FontManager.cpp"
 				>
 			</File>
@@ -569,7 +573,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\WidgetActivateEvent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\WidgetBase.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetEvent.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetFocusEvent.cpp"
 				>
 			</File>
 			<File
@@ -999,6 +1015,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\EventVisitor.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\FontManager.h"
 				>
 			</File>
@@ -1295,7 +1315,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\WidgetActivateEvent.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\WidgetBase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetEvent.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetFocusEvent.h"
 				>
 			</File>
 			<File

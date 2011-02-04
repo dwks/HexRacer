@@ -7,11 +7,13 @@
 #include "RenderList.h"
 
 #include "math/Values.h"
+#include "math/BoundingSphere.h"
 
 namespace Project {
 namespace Render {
 
 class RenderablePlayer : public RenderableObject {
+
 private:
     Math::Point origin;
     
@@ -20,6 +22,8 @@ private:
     
     double wheelRotationDegrees; 
     Math::Point suspension[4];
+	Math::BoundingSphere boundingSphere;
+
 public:
     virtual void initialize(int id);
     
@@ -31,6 +35,8 @@ public:
     virtual void updatePhysicalData(const Math::Point &origin);
     
     virtual void subRender(RenderManager* manager);
+
+	virtual bool shouldDraw(const Math::BoundingObject& bounding_obj);
 };
 
 }  // namespace Render
