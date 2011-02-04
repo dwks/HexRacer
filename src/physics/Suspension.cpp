@@ -219,16 +219,18 @@ void Suspension::applyDragForce(Object::Player *player) {
     
     // sideways drag (prevent slipping)
     
-    Math::Point sidewaysAxis = physicalPlayer->getRightDirection();
-    
-    if(linearVelocity.lengthSquared()) {
-        double sidewaysSpeed = linearVelocity.dotProduct(sidewaysAxis)
-            /*/ linearVelocity.length()*/;
+    if(player->getOnGround()) {
+        Math::Point sidewaysAxis = physicalPlayer->getRightDirection();
         
-        double sideways = GET_SETTING("physics.driving.sidewaysdrag", 0.1);
-        Math::Point sidewaysDrag = -sideways * sidewaysSpeed * sidewaysAxis;
-        
-        physicalPlayer->applyForce(sidewaysDrag);
+        if(linearVelocity.lengthSquared()) {
+            double sidewaysSpeed = linearVelocity.dotProduct(sidewaysAxis)
+                /*/ linearVelocity.length()*/;
+            
+            double sideways = GET_SETTING("physics.driving.sidewaysdrag", 0.1);
+            Math::Point sidewaysDrag = -sideways * sidewaysSpeed * sidewaysAxis;
+            
+            physicalPlayer->applyForce(sidewaysDrag);
+        }
     }
 }
 
