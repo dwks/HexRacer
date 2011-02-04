@@ -10,6 +10,7 @@ Driving Model:
 Camera:
 -Eliminate jerkiness from Camera
 -Prevention of objects/walls obscuring the vehicle
+-Fix trackball jerk upon first click (Alfred's trackball code)
 
 Rendering:
 -Visual indication when you have the paint speed boost (trim glow factor?)

@@ -6,6 +6,8 @@
 #include "MeshLoader.h"
 #include "RenderList.h"
 
+#include "math/Values.h"
+
 namespace Project {
 namespace Render {
 
@@ -16,13 +18,13 @@ private:
     MeshGroup *player_cube_mesh;
     RenderList *player_tire;
     
-    double velocity;
+    double wheelRotationDegrees; 
     Math::Point suspension[4];
 public:
     virtual void initialize(int id);
     
     virtual void preRenderUpdate(const Math::Matrix &transformation);
-    void setVelocity(double velocity) { this->velocity = velocity; }
+    void setWheelRotation(double velocity);
     void setSuspension(int wheel, Math::Point suspension)
         { this->suspension[wheel] = suspension; }
     

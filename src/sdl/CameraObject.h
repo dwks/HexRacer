@@ -56,6 +56,7 @@ private:
     
     bool debugMode;
     float interpolationInc;
+    float rotationInc;
     SDL::PlayerManager *playerManager;
     Math::Point defaultOrientation;
     Math::Point destinationLookAt;

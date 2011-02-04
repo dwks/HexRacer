@@ -177,6 +177,22 @@ void Color::setAlphai(int alpha) {
 	setAlphaf(colorIntToFloat(alpha));
 }
 
+int Color::getRedi() const {
+    return r * PROJECT_OPENGL__COLOR_BIT_DEPTH;
+}
+
+int Color::getGreeni() const {
+    return g * PROJECT_OPENGL__COLOR_BIT_DEPTH;
+}
+
+int Color::getBluei() const {
+    return b * PROJECT_OPENGL__COLOR_BIT_DEPTH;
+}
+
+int Color::getAlphai() const {
+    return a * PROJECT_OPENGL__COLOR_BIT_DEPTH;
+}
+
 void Color::invert() {
 	setRedf(1.0f-redf());
 	setGreenf(1.0f-greenf());

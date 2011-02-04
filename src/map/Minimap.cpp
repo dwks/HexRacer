@@ -106,7 +106,7 @@ namespace Map {
 				
 				
 
-				Math::Point player_pos = player->getPosition();
+				Math::Point player_pos = Math::Point::point2D(player->getPosition(), Y_AXIS);
 				Math::Point player_dir = Math::Point::point2D(player->getPhysicalObject()->getFrontDirection(), Y_AXIS).normalized()*(-1.0);
 				Math::Point player_right_dir = player_dir.rotate90CW(Y_AXIS);
 				double player_length = 1.75;

@@ -42,6 +42,7 @@ namespace SDL {
         defaultOrientation.setY(GET_SETTING("camera.follow.y", 0.0));
         defaultOrientation.setZ(GET_SETTING("camera.follow.z", 0.0));
         interpolationInc = GET_SETTING("camera.step", 0.0);
+        rotationInc = GET_SETTING("camera.rotationstep", 0.0);
     }
     
     void CameraObject::setDestinationToPlayer(){
@@ -88,7 +89,7 @@ namespace SDL {
         destViewAxis = destinationLookAt - destinationPosition;
         
         result = btQuaternion(Physics::Converter::toVector(destViewAxis),1).slerp(
-            btQuaternion(Physics::Converter::toVector(currentViewAxis),1),interpolationInc);
+            btQuaternion(Physics::Converter::toVector(currentViewAxis),1),rotationInc);
         
         resultPos = currentPos + interpolationInc*(destinationPosition - currentPos);
         

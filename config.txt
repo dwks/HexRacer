@@ -3,7 +3,8 @@
 
 #map = data/testtrack.hrm
 #map = data/testtrack2.hrm
-map = data/testtrack3.hrm
+map = data/testtrack2.hrm
+#map = data/testtrackbanking.hrm
 
 ########
 ### Display settings
@@ -56,6 +57,9 @@ render.minimap.drawaspect = 1.0
 render.minimap.height = 60.0
 render.minimap.drawpaint = 1
 
+render.camera.farplane = 100.0
+render.camera.fieldofview = 60.0
+
 # for AI debugging
 render.drawpathnodes = 0
 
@@ -68,8 +72,13 @@ render.model.tire = data/vehicle/carTires.obj
 # step is the Interpolation Increment.
 # This is how fast the
 # camera interpolates between current
-# and destination orientations
+# and destination positions
 camera.step = 0.03
+
+# This is how fast the
+# camera interpolates between current
+# and destination orientations
+camera.rotationstep = 0.005
 
 # The following values let you set the 
 # destination position behind a player.
@@ -86,6 +95,9 @@ camera.follow.z = -7.0
 network.port = 1820
 network.host = localhost
 
+
+########
+include guiconfig.txt
 
 ########
 # Let the user's settings in localconfig.txt, if there is one, override these

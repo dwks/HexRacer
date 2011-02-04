@@ -47,7 +47,12 @@ public:
 	void setGreeni(int green);
 	void setBluei(int blue);
 	void setAlphai(int alpha);
-
+    
+    int getRedi() const;
+    int getGreeni() const;
+    int getBluei() const;
+    int getAlphai() const;
+    
 	void invert();
 
 	/** Set this color as the drawing color in openGL

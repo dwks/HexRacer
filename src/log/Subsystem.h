@@ -18,6 +18,8 @@ public:
         AUDIO,
         CAMERA,
         WORLD,
+        GUI,
+        WIDGET,
         SUBSYSTEMS
     };
 private:

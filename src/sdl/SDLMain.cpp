@@ -30,6 +30,7 @@
 #include "sound/SoundSystem.h"
 
 #include "SDL_image.h"
+#include "SDL_ttf.h"
 
 #include "settings/SettingsManager.h"
 #include "settings/ProgramSettings.h"
@@ -60,9 +61,14 @@ SDLMain::SDLMain() {
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0) {
         LOG2(SDL, ERROR, "Can't init SDL: " << SDL_GetError());
     }
+    
+    if(TTF_Init() < 0) {
+        LOG2(SDL, ERROR, "Can't init SDL_ttf: " << TTF_GetError());
+    }
 }
 
 SDLMain::~SDLMain() {
+    TTF_Quit();
     SDL_Quit();
 }
 
@@ -119,9 +125,9 @@ void SDLMain::initSDL() {
     simpleTrackball = new OpenGL::SimpleTrackball();
     
     cameraObject = new SDL::CameraObject();
-    cameraObject->camera->setFieldOfViewDegrees(60.0f);
+    cameraObject->camera->setFieldOfViewDegrees(GET_SETTING("render.camera.fieldofview", 60.0));
     cameraObject->camera->setPosition(Point(0.0f, 2.0f, -4.0f));
-    cameraObject->camera->setFarPlane(VIEW_DISTANCE);
+    cameraObject->camera->setFarPlane(GET_SETTING("render.camera.farplane", 200.0));
     updateCamera();
     
     // this should be called after the camera has been created so that it gets
@@ -133,8 +139,11 @@ void SDLMain::initOpenGL() {
     glewInit();
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_RESCALE_NORMAL);
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  // note: must match TextWidget
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
 }
 
 void SDLMain::initRenderer() {
@@ -253,6 +262,9 @@ void SDLMain::run() {
     }
 #endif
     
+    gui = new Widget::GUISystem();
+    gui->construct();
+    
     LOG2(GLOBAL, PROGRESS, "Entering main game loop");
     Uint32 lastTime = SDL_GetTicks();
     accelControl->setPauseSkipDirectly(lastTime);
@@ -285,15 +297,12 @@ void SDLMain::run() {
             render();
 
             // suspension does not look good when it is out of sync with rendering
-            //suspension->doAction(SDL_GetTicks());
             suspension->doStep(SDL_GetTicks());
 
 			physicsWorld->render();
 
 			if (GET_SETTING("render.minimap.enable", true)) {
 				
-				
-
 				double minimap_draw_height = viewHeight*GET_SETTING("render.minimap.drawheight", 0.2);
 				double minimap_draw_width = minimap_draw_height*GET_SETTING("render.minimap.drawaspect", 1.0);
 
@@ -308,7 +317,11 @@ void SDLMain::run() {
 
 				glViewport(0, 0, viewWidth, viewHeight);
 			}
-       
+            
+            if(Timing::AccelControl::getInstance()->getPaused()) {
+                gui->render();
+            }
+            
             glFlush();
             
             SDL_GL_SwapBuffers();
@@ -360,6 +373,8 @@ void SDLMain::run() {
     
     delete clientData;
     delete playerManager;
+    
+    delete gui;
 }
 
 void SDLMain::handleEvents() {
@@ -421,11 +436,8 @@ void SDLMain::render() {
     
 	cameraObject->camera->glLookAt();
   
-	//Activate all lights near the camera focal point
-	lightManager->activateNearFocalPoint(cameraObject->camera->getLookPosition(), 10.0);
 	//Activate all lights visible to the camera
 	lightManager->activateIntersectingLights(*cameraObject->camera->getFrustrum());
-
 	//Render the active lights
 	lightManager->drawActiveLightSpheres(false);
     

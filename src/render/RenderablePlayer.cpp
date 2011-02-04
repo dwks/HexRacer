@@ -5,7 +5,6 @@
 
 #include "math/BoundingBox3D.h"
 #include "opengl/GeometryDrawing.h"
-#include "math/Values.h"
 #include "config.h"
 
 #include "log/Logger.h"
@@ -14,7 +13,8 @@ namespace Project {
 namespace Render {
 
 void RenderablePlayer::initialize(int id) {
-
+    this->wheelRotationDegrees = 0;
+    
     player_cube_mesh = MeshLoader::getInstance()->getModelByName(VEHICLE_CHASSIS_MODEL_NAME);
     player_tire = new RenderList();
 	player_tire->addRenderable(MeshLoader::getInstance()->getModelByName(VEHICLE_WHEEL_MODEL_NAME));
@@ -38,32 +38,29 @@ void RenderablePlayer::subRender(RenderManager* manager) {
     player_cube_mesh->render(manager);
     
     for (int wheel = 0; wheel < 4; wheel ++) {
-
-		//OpenGL matrices should not be changed within subRender()
-        //glPushMatrix();
-
-		Math::Matrix matrix = Math::Matrix::getTranslationMatrix(suspension[wheel]);
-        //glTranslated(s.getX(), s.getY(), s.getZ());
+	Math::Matrix matrix = Math::Matrix::getTranslationMatrix(suspension[wheel]);
         
         if (wheel == 1 || wheel == 2) {
-			matrix *= Math::Matrix::getRotationMatrix(Math::Y_AXIS, PI);
-            //glRotated(180.0,0.0,1.0,0.0);
+		matrix *= Math::Matrix::getRotationMatrix(Math::Y_AXIS, PI);
         }
         
         if (wheel == 1 || wheel == 2){
-			matrix *= Math::Matrix::getRotationMatrix(Math::X_AXIS, PI*velocity*2.0);
-            //glRotated(360.0*velocity,1.0,0.0,0.0);
+                matrix *= Math::Matrix::getRotationMatrix(Math::X_AXIS, wheelRotationDegrees);
         } else {
-			matrix *= Math::Matrix::getRotationMatrix(Math::X_AXIS, PI*velocity*2.0);
-            //glRotated(-360.0*velocity,1.0,0.0,0.0);
+                matrix *= Math::Matrix::getRotationMatrix(Math::X_AXIS, -wheelRotationDegrees);
         }
 
 		player_tire->getRenderProperties()->setTransformation(matrix);
         player_tire->render(manager);
-        
-       // glPopMatrix();
-
     }
+}
+
+void RenderablePlayer::setWheelRotation(double velocity)
+{
+    //This is still a bit of a hack. But I need to know what the velocity actually represents
+    //In relation to the distance.
+    
+    this->wheelRotationDegrees += velocity*0.05;
 }
 
 /*void RenderablePlayer::renderGeometry(ShaderParamSetter setter) {
