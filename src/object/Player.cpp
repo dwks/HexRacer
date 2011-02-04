@@ -73,7 +73,7 @@ void Player::preRender() {
         renderable->setSuspension(wheel, getSuspension(wheel));
     }
     
-    renderable->setVelocity(
+    renderable->setWheelRotation(
         physical->getLinearVelocity().dotProduct(
             physical->getFrontDirection()));
 }
