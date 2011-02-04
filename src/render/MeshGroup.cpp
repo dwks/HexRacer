@@ -1,4 +1,5 @@
 #include "MeshGroup.h"
+#include "math/Values.h"
 using namespace Project;
 using namespace Math;
 using namespace std;
@@ -14,12 +15,16 @@ namespace Render {
 		meshes = _meshes;
 
 		this->vertices = _vertices;
-		if (vertices.size() > 0) {
-			boundingBox.setToObject(*vertices[0]);
-			for (unsigned int i = 1; i < vertices.size(); i++) {
+		radiusFromOrigin = 0.0;
+		for (unsigned int i = 0; i < vertices.size(); i++) {
+			if (i == 0)
+				boundingBox.setToObject(*vertices[0]);
+			else
 				boundingBox.expandToInclude(*vertices[i]);
-			}
+			radiusFromOrigin = Math::maximum(radiusFromOrigin, _vertices[i]->getPosition().lengthSquared());
 		}
+
+		radiusFromOrigin = sqrt(radiusFromOrigin);
 
 		collisionMask = collision_mask;
 	}

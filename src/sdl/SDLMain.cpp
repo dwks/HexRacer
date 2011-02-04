@@ -125,9 +125,9 @@ void SDLMain::initSDL() {
     simpleTrackball = new OpenGL::SimpleTrackball();
     
     cameraObject = new SDL::CameraObject();
-    cameraObject->camera->setFieldOfViewDegrees(60.0f);
+    cameraObject->camera->setFieldOfViewDegrees(GET_SETTING("render.camera.fieldofview", 60.0));
     cameraObject->camera->setPosition(Point(0.0f, 2.0f, -4.0f));
-    cameraObject->camera->setFarPlane(VIEW_DISTANCE);
+    cameraObject->camera->setFarPlane(GET_SETTING("render.camera.farplane", 200.0));
     updateCamera();
     
     // this should be called after the camera has been created so that it gets

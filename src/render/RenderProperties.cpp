@@ -6,6 +6,7 @@ namespace Project {
 namespace Render {
 
 	RenderProperties::RenderProperties() {
+		empty = true;
 		transformationSet = false;
 		colorSet = false;
 		colorOverrideChildren = false;
@@ -26,19 +27,22 @@ namespace Render {
 	}
 	void RenderProperties::setWantsShaderName(std::string shader_name) {
 		wantsShaderName = shader_name;
+		empty = false;
 	}
 	bool RenderProperties::hasShaderParams() const {
 		return (shaderParams.size() > 0);
 	}
-	std::vector<ShaderParameter*> RenderProperties::getShaderParams() const {
+	std::vector<ShaderParameter*>& RenderProperties::getShaderParams() {
 		return shaderParams;
 	}
 	void RenderProperties::setShaderParams(std::vector<ShaderParameter*> params) {
 		shaderParams = params;
+		empty = false;
 	}
 
 	void RenderProperties::addShaderParameter(ShaderParameter* param) {
 		shaderParams.push_back(param);
+		empty = false;
 	}
 
 }  // namespace Render

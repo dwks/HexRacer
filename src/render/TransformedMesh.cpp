@@ -5,12 +5,10 @@ namespace Render {
 
 	TransformedMesh::TransformedMesh(MeshGroup* mesh_group, Math::SimpleTransform transform) {
 
-		//Set the bounding sphere of the mesh group
-		meshGroupSphere = Math::BoundingSphere(Math::Point(), 0.0);
-		for (int i = 0; i < 8; i++)
-			meshGroupSphere.expandToInclude(mesh_group->getBoundingBox().getCorner(i));
-
 		meshGroup = mesh_group;
+
+		//Set the bounding sphere of the mesh group
+		meshGroupSphere = Math::BoundingSphere(Math::Point(), meshGroup->getRadiusFromOrigin());
 
 		setTransformation(transform);
 	}
@@ -28,7 +26,6 @@ namespace Render {
 	}
 
 	bool TransformedMesh::shouldDraw( const Math::BoundingObject& bounding_obj ) {
-		//return true;
 		return (transformedSphere.intersects(bounding_obj));
 	}
 
