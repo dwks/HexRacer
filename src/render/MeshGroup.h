@@ -21,6 +21,7 @@ private:
 	std::vector<MeshVertex*> vertices;
 	std::vector<Math::Triangle3D>* collisionMask;
 	Math::BoundingBox3D boundingBox;
+	double radiusFromOrigin;
 
 public:
 
@@ -31,6 +32,7 @@ public:
 	void subRender(RenderManager* manager);
 	std::vector<Math::Triangle3D> getTriangles();
 	Math::BoundingBox3D getBoundingBox() { return boundingBox; }
+	double getRadiusFromOrigin() { return radiusFromOrigin; }
 
 };
 

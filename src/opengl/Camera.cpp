@@ -15,7 +15,7 @@ Camera::Camera(CameraType camera_type)
 
 	cameraType = camera_type;
 
-	frustrum = new BoundingConvexHull3D(4);
+	frustrum = new BoundingConvexHull3D(5);
 	setAspect(1.0f);
 	setFieldOfViewDegrees(90.0f);
 	setNearPlane(0.01f);
@@ -172,6 +172,9 @@ void Camera::updateFrustrum() {
 		frustrum->setPlaneNormal(3, bottomPlaneNormal);
 
 	}
+
+	frustrum->setPlaneOrigin(4, cameraPosition+cameraLookDirection*farPlane);
+	frustrum->setPlaneNormal(4, cameraLookDirection*(-1.0));
 
 	cameraMatrix[12] = static_cast<GLfloat>(cameraPosition.getX());
 	cameraMatrix[13] = static_cast<GLfloat>(cameraPosition.getY());

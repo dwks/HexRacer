@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glew32.lib SDL.lib SDLmain.lib SDL_image.lib opengl.lib glu32.lib glu.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
+				AdditionalDependencies="glew32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib opengl.lib glu32.lib glu.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -173,7 +173,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\src\widget\AbsoluteLayout.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\object\AbstractObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\AbstractWidget.cpp"
 				>
 			</File>
 			<File
@@ -205,6 +213,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\BoxWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ButtonWidget.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\Camera.cpp"
 				>
 			</File>
@@ -222,6 +238,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\ColorConstants.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\CompositeWidget.cpp"
 				>
 			</File>
 			<File
@@ -253,11 +273,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\FontManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\GUISystem.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\HRMap.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\sdl\InputManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\Layout.cpp"
 				>
 			</File>
 			<File
@@ -326,6 +358,10 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\MotionState.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\NormalTextLayout.cpp"
 				>
 			</File>
 			<File
@@ -497,6 +533,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\TextWidget.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\timing\TimedSubsystem.cpp"
 				>
 			</File>
@@ -526,6 +566,26 @@
 			</File>
 			<File
 				RelativePath=".\src\math\Vertex3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetBase.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetPoint.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetRect.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetRenderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetVisitor.cpp"
 				>
 			</File>
 			<File
@@ -835,7 +895,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\src\widget\AbsoluteLayout.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\object\AbstractObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\AbstractWidget.h"
 				>
 			</File>
 			<File
@@ -867,6 +935,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\BoxWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ButtonWidget.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\Camera.h"
 				>
 			</File>
@@ -884,6 +960,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\ColorConstants.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\CompositeWidget.h"
 				>
 			</File>
 			<File
@@ -919,11 +999,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\FontManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\GUISystem.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\HRMap.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\sdl\InputManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\Layout.h"
 				>
 			</File>
 			<File
@@ -984,6 +1076,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\MultiObserver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\NormalTextLayout.h"
 				>
 			</File>
 			<File
@@ -1163,6 +1259,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\TextWidget.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\timing\TimedSubsystem.h"
 				>
 			</File>
@@ -1192,6 +1292,26 @@
 			</File>
 			<File
 				RelativePath=".\src\math\Vertex3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetBase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetPoint.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetRect.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetRenderer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetVisitor.h"
 				>
 			</File>
 			<File

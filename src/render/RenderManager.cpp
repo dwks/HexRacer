@@ -60,8 +60,8 @@ namespace Render {
 
 		RenderProperties* properties = renderable->getRenderProperties();
 
-		//if (properties->empty())
-		//	return;
+		if (properties->isEmpty())
+			return;
 		
 		if (properties->hasTransformation()) {
 			glPushMatrix(); //Save previous transformation
@@ -199,8 +199,8 @@ namespace Render {
 
 		RenderProperties* properties = renderable->getRenderProperties();
 
-		//if (properties->empty())
-		//	return;
+		if (properties->isEmpty())
+			return;
 		
 		if (properties->hasTransformation()) {
 			glPopMatrix(); //Restore old transformation
