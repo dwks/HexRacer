@@ -72,7 +72,7 @@ void TextWidget::preRender(unsigned align) {
         GL_UNSIGNED_BYTE, second->pixels);
     
     SDL_FreeSurface(first);
-    SDL_FreeSurface(second);
+    //SDL_FreeSurface(second);
     
     double aspectRatio = double(first->h) / first->w;
     
