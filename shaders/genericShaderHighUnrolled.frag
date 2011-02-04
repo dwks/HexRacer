@@ -102,6 +102,74 @@ void main() {
 		}
 	}
 	
+	if (numLights > 4) {
+		float light_dist = length((position-gl_LightSource[4].position).xyz);
+		float attenuation = min(1.0/(gl_LightSource[4].constantAttenuation + gl_LightSource[4].quadraticAttenuation*light_dist*light_dist), 1.0);
+		if (attenuation >= 0.004) {
+		
+			vec3 light = normalize((position-gl_LightSource[4].position).xyz);
+			float kdiff = max( -dot(light, normal), 0.0) ;
+			
+			float kspec =-dot(reflection,light);
+			kspec = max( pow(kspec, gl_FrontMaterial.shininess) , 0.0);
+			
+			diffuse_color += gl_LightSource[4].diffuse*kdiff*attenuation;
+			specular_color += gl_LightSource[4].specular*kspec*attenuation;
+			ambient_color += gl_LightSource[4].ambient*attenuation;
+		}
+	}
+	
+	if (numLights > 5) {
+		float light_dist = length((position-gl_LightSource[5].position).xyz);
+		float attenuation = min(1.0/(gl_LightSource[5].constantAttenuation + gl_LightSource[5].quadraticAttenuation*light_dist*light_dist), 1.0);
+		if (attenuation >= 0.004) {
+		
+			vec3 light = normalize((position-gl_LightSource[5].position).xyz);
+			float kdiff = max( -dot(light, normal), 0.0) ;
+			
+			float kspec =-dot(reflection,light);
+			kspec = max( pow(kspec, gl_FrontMaterial.shininess) , 0.0);
+			
+			diffuse_color += gl_LightSource[5].diffuse*kdiff*attenuation;
+			specular_color += gl_LightSource[5].specular*kspec*attenuation;
+			ambient_color += gl_LightSource[5].ambient*attenuation;
+		}
+	}
+	
+	if (numLights > 6) {
+		float light_dist = length((position-gl_LightSource[6].position).xyz);
+		float attenuation = min(1.0/(gl_LightSource[6].constantAttenuation + gl_LightSource[6].quadraticAttenuation*light_dist*light_dist), 1.0);
+		if (attenuation >= 0.004) {
+		
+			vec3 light = normalize((position-gl_LightSource[6].position).xyz);
+			float kdiff = max( -dot(light, normal), 0.0) ;
+			
+			float kspec =-dot(reflection,light);
+			kspec = max( pow(kspec, gl_FrontMaterial.shininess) , 0.0);
+			
+			diffuse_color += gl_LightSource[6].diffuse*kdiff*attenuation;
+			specular_color += gl_LightSource[6].specular*kspec*attenuation;
+			ambient_color += gl_LightSource[6].ambient*attenuation;
+		}
+	}
+	
+	if (numLights > 7) {
+		float light_dist = length((position-gl_LightSource[7].position).xyz);
+		float attenuation = min(1.0/(gl_LightSource[7].constantAttenuation + gl_LightSource[7].quadraticAttenuation*light_dist*light_dist), 1.0);
+		if (attenuation >= 0.004) {
+		
+			vec3 light = normalize((position-gl_LightSource[7].position).xyz);
+			float kdiff = max( -dot(light, normal), 0.0) ;
+			
+			float kspec =-dot(reflection,light);
+			kspec = max( pow(kspec, gl_FrontMaterial.shininess) , 0.0);
+			
+			diffuse_color += gl_LightSource[7].diffuse*kdiff*attenuation;
+			specular_color += gl_LightSource[7].specular*kspec*attenuation;
+			ambient_color += gl_LightSource[7].ambient*attenuation;
+		}
+	}
+	
 	//Apply Material----------------------------------------------------------------------------------------
 
 	vec4 diffuse_base;

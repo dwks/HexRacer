@@ -33,7 +33,7 @@ TextWidget::~TextWidget() {
 }
 
 int TextWidget::nextPowerOf2(int x) {
-    return 1 << int(std::ceil(std::log(x) / std::log(2.0)));
+    return 1 << int(std::ceil((double) std::log((double) x) / std::log((double) 2.0)));
 }
 
 void TextWidget::preRender(unsigned align) {
