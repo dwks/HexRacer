@@ -436,11 +436,8 @@ void SDLMain::render() {
     
 	cameraObject->camera->glLookAt();
   
-	//Activate all lights near the camera focal point
-	lightManager->activateNearFocalPoint(cameraObject->camera->getLookPosition(), 10.0);
 	//Activate all lights visible to the camera
 	lightManager->activateIntersectingLights(*cameraObject->camera->getFrustrum());
-
 	//Render the active lights
 	lightManager->drawActiveLightSpheres(false);
     
