@@ -35,7 +35,7 @@
 #include "map/RaceManager.h"
 #include "map/Minimap.h"
 
-#include "widget/GUISystem.h"
+#include "gui/GUISystem.h"
 
 #include "timing/AccelControl.h"
 
@@ -87,7 +87,7 @@ private:
     
     Timing::AccelControl *accelControl;
     
-    Widget::GUISystem *gui;
+    GUI::GUISystem *gui;
 private:
     class CameraObserver : public Event::TypedObserver<Event::CameraMovement> {
     private:

@@ -261,7 +261,7 @@ void SDLMain::run() {
     }
 #endif
     
-    gui = new Widget::GUISystem();
+    gui = new GUI::GUISystem();
     gui->construct();
     guiInputManager = new GUIInputManager(gui);
     

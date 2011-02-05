@@ -3,16 +3,16 @@
 
 #include "SDL_events.h"
 
-#include "widget/GUISystem.h"
+#include "gui/GUISystem.h"
 
 namespace Project {
 namespace SDL {
 
 class GUIInputManager {
 private:
-    Widget::GUISystem *gui;
+    GUI::GUISystem *gui;
 public:
-    GUIInputManager(Widget::GUISystem *gui) : gui(gui) {}
+    GUIInputManager(GUI::GUISystem *gui) : gui(gui) {}
     
     void handleEvent(SDL_Event *event);
 };
