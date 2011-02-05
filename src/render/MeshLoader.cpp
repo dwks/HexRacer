@@ -34,8 +34,10 @@ namespace Render {
 		vector<Mesh*> meshes;
 		vector<MeshVertex*> vertices;
 
-		if (!objLoadMeshes(filename, cullable, meshes, vertices))
+		if (!objLoadMeshes(filename, cullable, meshes, vertices)) {
+			LOG(OPENGL, model_name.append(": Unable to load obj file :").append(filename));
 			return NULL;
+		}
 
 		//Load the collision mesh
 		vector<Triangle3D> collision_triangles;
@@ -65,12 +67,12 @@ namespace Render {
 			}
 		}
 		if(!expectFailure) {
-            LOG(OPENGL, model_name.append(": Model Not Found"));
+            LOG(OPENGL, model_name.append(": Unable to find model."));
         }
 		return NULL;
 	}
 
-	bool MeshLoader::deleteModelByName(string model_name) {
+	bool MeshLoader::deleteModelByName(string model_name, bool expectFailure) {
 		for (unsigned int i = 0; i < models.size(); i++) {
 			if (models[i]->getName() == model_name) {
 				delete(models[i]);
@@ -78,7 +80,9 @@ namespace Render {
 				return true;
 			}
 		}
-		LOG(OPENGL, model_name.append(": Model Not Found"));
+		if(!expectFailure) {
+			LOG(OPENGL, model_name.append(": Unable to delete model."));
+		}
 		return false;
 	}
 
@@ -97,10 +101,8 @@ namespace Render {
 
 		ModelOBJ obj_file;
 
-		if (!obj_file.import(filename.c_str(), true)) {
-            LOG(OPENGL, "Can't open .OBJ file \"" << filename << "\"");
+		if (!obj_file.import(filename.c_str(), true))
 			return false;
-        }
 
 		//Load Vertices
 		for (int i = 0; i < obj_file.getNumberOfVertices(); i++) {

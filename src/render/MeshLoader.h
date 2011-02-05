@@ -32,7 +32,7 @@ public:
 	/** Delete a loaded model with the name @a model_name
 		Returns true if successful
 	*/
-	bool deleteModelByName(string model_name);
+	bool deleteModelByName(string model_name, bool expectFailure = false);
 	Texture* getTextureByName(string name);
 
 private:

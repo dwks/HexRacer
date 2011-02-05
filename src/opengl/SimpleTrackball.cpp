@@ -1,6 +1,7 @@
 #include "SimpleTrackball.h"
 #include <math.h>
 #include "math/Values.h"
+#include "math/Geometry.h"
 using namespace std;
 using namespace Project;
 using namespace Math;
@@ -39,6 +40,11 @@ void SimpleTrackball::setMouseCurrentAt(Point point) {
 
 Point SimpleTrackball::getSpherePoint() {
 	return spherePoint;
+}
+
+void SimpleTrackball::setSpherePoint(Point point) {
+	setLongitude(Geometry::vectorTo2DAngle(Point::point2D(point, Y_AXIS), Y_AXIS));
+	setLatitude(Geometry::vectorTo2DAngle(Point(1.0, point.getY(), 0.0)));
 }
 
 void SimpleTrackball::updateSpherePoint() {
