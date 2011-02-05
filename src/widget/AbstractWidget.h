@@ -9,16 +9,24 @@ namespace Widget {
 class AbstractWidget : public WidgetBase {
 private:
     Layout *layout;
+    EventProxy *proxy;
     std::string name;
 public:
-    AbstractWidget(const std::string &name) : name(name) {}
+    AbstractWidget(const std::string &name)
+        : name(name), layout(0), proxy(0) {}
     virtual ~AbstractWidget();
     
     virtual void updateLayout();
     virtual void updateLayout(const WidgetRect &newBounds);
     virtual WidgetRect getBoundingRect() const;
+    
     virtual Layout *getLayout() const { return layout; }
     virtual void setLayout(Layout *layout) { this->layout = layout; }
+    
+    virtual void handleEvent(WidgetEvent *event);
+    
+    virtual EventProxy *getEventProxy() const { return proxy; }
+    virtual void setEventProxy(EventProxy *proxy) { this->proxy = proxy; }
     
     virtual std::string getName() const { return name; }
 protected:

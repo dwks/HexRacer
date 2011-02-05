@@ -10,6 +10,8 @@ namespace Project {
 namespace Widget {
 
 class Layout;
+class EventProxy;
+class WidgetEvent;
 
 /** Abstract base class for all widgets.
 */
@@ -25,6 +27,11 @@ public:
     
     virtual Layout *getLayout() const = 0;
     virtual void setLayout(Layout *layout) = 0;
+    
+    virtual void handleEvent(WidgetEvent *event) = 0;
+    
+    virtual EventProxy *getEventProxy() const = 0;
+    virtual void setEventProxy(EventProxy *proxy) = 0;
     
     virtual std::string getName() const = 0;
 };

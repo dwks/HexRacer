@@ -48,7 +48,7 @@ physics.driving.sidewaysdrag      = 10.0
 #    1 = low
 #    2 = medium
 #    3 = high
-render.quality = 2
+render.quality = 3
 render.shaderoutput = 1
 
 render.minimap.enable = 1
@@ -58,7 +58,7 @@ render.minimap.height = 60.0
 render.minimap.drawpaint = 1
 
 render.camera.nearplane = 0.1
-render.camera.farplane = 300.0
+render.camera.farplane = 200.0
 render.camera.lodthreshhold = 0.1
 render.camera.fieldofview = 60.0
 

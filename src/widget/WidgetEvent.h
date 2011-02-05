@@ -11,7 +11,7 @@ namespace Widget {
 class WidgetEvent {
 public:
     enum event_type_t {
-        EVENT_FOCUS,
+        EVENT_MOUSE_MOVE,
         EVENT_ACTIVATE
     };
 public:

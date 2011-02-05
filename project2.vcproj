@@ -217,6 +217,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ButtonEventProxy.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\ButtonWidget.cpp"
 				>
 			</File>
@@ -238,6 +242,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\ColorConstants.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\CompositeEventProxy.cpp"
 				>
 			</File>
 			<File
@@ -270,6 +278,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\EntireWorld.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\EventProxy.cpp"
 				>
 			</File>
 			<File
@@ -362,6 +374,10 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\MotionState.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\MouseMoveEvent.cpp"
 				>
 			</File>
 			<File
@@ -582,10 +598,6 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\WidgetEvent.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\widget\WidgetFocusEvent.cpp"
 				>
 			</File>
 			<File
@@ -955,6 +967,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ButtonEventProxy.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\ButtonWidget.h"
 				>
 			</File>
@@ -976,6 +992,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\ColorConstants.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\CompositeEventProxy.h"
 				>
 			</File>
 			<File
@@ -1012,6 +1032,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\EntireWorld.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\EventProxy.h"
 				>
 			</File>
 			<File
@@ -1092,6 +1116,10 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\MotionState.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\MouseMoveEvent.h"
 				>
 			</File>
 			<File
@@ -1324,10 +1352,6 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\WidgetEvent.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\widget\WidgetFocusEvent.h"
 				>
 			</File>
 			<File

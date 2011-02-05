@@ -120,11 +120,13 @@ void Camera::setFieldOfViewDegrees(double fov) {
 
 void Camera::setNearPlane(double near_plane) {
 	nearPlane = near_plane;
+	updateFrustrum();
 }
 
 
 void Camera::setFarPlane(double far_plane) {
 	farPlane = far_plane;
+	updateFrustrum();
 }
 
 void Camera::glLookAt() {

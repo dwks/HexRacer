@@ -1,4 +1,4 @@
-#include "WidgetFocusEvent.h"
+#include "EventProxy.h"
 
 namespace Project {
 namespace Widget {
