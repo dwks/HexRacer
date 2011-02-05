@@ -9,7 +9,7 @@ Driving Model:
 Camera:
 -Eliminate jerkiness from Camera
 -Prevention of objects/walls obscuring the vehicle
--Fix trackball jerk upon first click (Alfred's trackball code)
+-Fix debug camera (WASD)
 
 Rendering:
 -Visual indication when you have the paint speed boost (trim glow factor?)
@@ -25,6 +25,5 @@ Physics:
 - Create ObjectCollision event for sound?
 
 Refactoring:
-- refactor SDLMain into subsystems
 - refactor HRMap into several component parts
 - remove Suspension's dependency on Renderer?
