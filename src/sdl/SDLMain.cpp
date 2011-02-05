@@ -424,29 +424,36 @@ void SDLMain::updateCamera() {
 
 void SDLMain::render() {
 
-	//Debug Drawing----------------------------------------------------------------------
+	//Init Rendering----------------------------------------------------------------------
 
-	//Use the full view distance of the camera
-	cameraObject->camera->setNearPlane(GET_SETTING("render.camera.nearplane", 0.1));
-	cameraObject->camera->setFarPlane(GET_SETTING("render.camera.farplane", 300.0));
-	cameraObject->camera->setFrustrumNearPlaneEnabled(false);
-	cameraObject->camera->setFrustrumFarPlaneEnabled(false);
+	double near_plane = GET_SETTING("render.camera.nearplane", 0.1);
+	double far_plane = GET_SETTING("render.camera.farplane", 300.0);
+	double lod_threshhold = GET_SETTING("render.camera.lodthreshhold", 0.5);
+	double view_length = far_plane-near_plane;
+	double lod_split_plane = near_plane+view_length*lod_threshhold;
+
+	cameraObject->camera->setNearPlane(near_plane);
+	cameraObject->camera->setFarPlane(far_plane);
 	cameraObject->camera->glProjection();
 
-	//Init rendering
 	glMatrixMode(GL_MODELVIEW);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-
-	OpenGL::Color::glColor(OpenGL::Color::WHITE);
-
 	cameraObject->camera->glLookAt();
 
-	//Pass the camera to the renderer for culling
+	OpenGL::Color::glColor(OpenGL::Color::WHITE);
 	renderer->setCamera(cameraObject->camera);
   
 	//Activate all lights visible to the camera
 	lightManager->activateIntersectingLights(*cameraObject->camera->getFrustrum());
+
+	//BG/Paint/Debug Drawing----------------------------------------------------------------------
+	
+	//Render the background
+	background->render(renderer);
+
+	//Render the paint
+	paintManager->render(renderer);
 
 	//Render the active lights
 	if(GET_SETTING("render.drawlightspheres", false))
@@ -455,45 +462,39 @@ void SDLMain::render() {
 	if(GET_SETTING("render.drawpathnodes", false))
 		renderAIDebug();
 
+	GLfloat clip_plane [4] = {0.0f, 0.0f, lod_threshhold, 0.0f};
+
+	if (lod_threshhold < 1.0) {
+
+		//Low Quality Rendering----------------------------------------------------------------------
+
+		renderer->setLODLow(true);
+
+		//Set camera culling to the further portion of the view frustrum
+		cameraObject->camera->setNearPlane(lod_split_plane);
+		cameraObject->camera->setFrustrumNearPlaneEnabled(true);
+		cameraObject->camera->setFrustrumFarPlaneEnabled(false);
+		glClipPlane(GL_CLIP_PLANE0, clip_plane);
+		glEnable(GL_CLIP_PLANE0);
+
+		renderWorld();
+
+	}
+
 	//High Quality Rendering----------------------------------------------------------------------
 
 	renderer->setLODLow(false);
 
-	//Set the camera to only render in the nearer portion of the whole view area
-	double lod_split_plane = GET_SETTING("render.camera.farplane", 300.0)*GET_SETTING("render.camera.lodthreshhold", 0.5);
+	//Set camera culling to the nearer portion of the view frustrum
+	cameraObject->camera->setNearPlane(near_plane);
 	cameraObject->camera->setFarPlane(lod_split_plane);
+	cameraObject->camera->setFrustrumNearPlaneEnabled(false);
 	cameraObject->camera->setFrustrumFarPlaneEnabled(true);
-	cameraObject->camera->glProjection();
-	//Use only a portion of the depth buffer range
-	glDepthRange(0.0, GET_SETTING("render.camera.lodthreshhold", 0.5));
-
-	glMatrixMode(GL_MODELVIEW);
 
 	renderWorld();
-
-	//Low Quality Rendering----------------------------------------------------------------------
-
-	renderer->setLODLow(true);
-
-	//Set the camera to only render in the farther portion of the whole view area
-	cameraObject->camera->setNearPlane(lod_split_plane);
-	cameraObject->camera->setFarPlane(GET_SETTING("render.camera.farplane", 300.0));
-	cameraObject->camera->setFrustrumNearPlaneEnabled(true);
-	cameraObject->camera->glProjection();
-	//Use only a portion of the depth buffer range
-	glDepthRange(GET_SETTING("render.camera.lodthreshhold", 0.5), 1.0);
-	glMatrixMode(GL_MODELVIEW);
-
-	renderWorld();
-
-	//Render the background
-	background->render(renderer);
 
 	//Reset the lights
 	lightManager->resetLights();
-
-	//Use the whole depth buffer range
-	glDepthRange(0.0, 1.0);
 }
 
 void SDLMain::renderAIDebug() {
@@ -550,9 +551,6 @@ void SDLMain::renderWorld() {
 	//Revert the rendering state
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
-    
-	//Render the paint
-	paintManager->render(renderer);
 
 }
 
