@@ -12,7 +12,10 @@
 #include "paint/PaintManager.h"
 
 #include "map/HRMap.h"
-#include "map/Minimap.h"
+
+#include "hud/HUDRenderer.h"
+#include "hud/Minimap.h"
+#include "hud/Speedometer.h"
 
 #include "opengl/Camera.h"
 
@@ -30,12 +33,14 @@ private:
     boost::shared_ptr<Paint::PaintManager> paintManager;
     
     boost::shared_ptr<Map::HRMap> map;
-    boost::shared_ptr<Map::Minimap> minimap;
+	boost::shared_ptr<HUD::HUDRenderer> hudRenderer;
+    boost::shared_ptr<HUD::Minimap> minimap;
+	boost::shared_ptr<HUD::Speedometer> speedometer;
 public:
     void construct(OpenGL::Camera *camera);
     
     void render(OpenGL::Camera *camera, Object::World *world);
-    void renderMinimap(Object::WorldManager *worldManager, Object::Player *player);
+    void renderHUD(Object::WorldManager *worldManager, Object::Player *player);
     
     Map::HRMap *getMap() { return map.get(); }
     Paint::PaintManager *getPaintManager() { return paintManager.get(); }

@@ -197,6 +197,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\BoundingCircle.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingConvexHull3D.cpp"
 				>
 			</File>
@@ -293,11 +297,39 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\sdl\GameLoop.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\GameRenderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\GameViewport.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\GameWorld.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\GUIInputManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\GUISystem.cpp"
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\GUISystem.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\HRMap.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\hud\HUDRenderer.cpp"
 				>
 			</File>
 			<File
@@ -321,6 +353,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\sdl\LoopBase.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\main.cpp"
 				>
 				<FileConfiguration
@@ -333,11 +369,23 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\src\gui\MainMenuProxy.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\MapLoader.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\render\Material.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\MenuBackground.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\MenuLoop.cpp"
 				>
 			</File>
 			<File
@@ -365,7 +413,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\map\Minimap.cpp"
+				RelativePath=".\src\hud\Minimap.cpp"
 				>
 			</File>
 			<File
@@ -374,6 +422,10 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\MotionState.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\MouseButtonEvent.cpp"
 				>
 			</File>
 			<File
@@ -422,6 +474,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\PathNode.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\PauseMenuProxy.cpp"
 				>
 			</File>
 			<File
@@ -497,6 +553,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\sdl\SDLGame.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\SDLMainLoop.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\SetDebugCamera.cpp"
 				>
 			</File>
@@ -538,6 +602,10 @@
 			</File>
 			<File
 				RelativePath=".\src\misc\Sleeper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\hud\Speedometer.cpp"
 				>
 			</File>
 			<File
@@ -911,10 +979,6 @@
 					RelativePath=".\src\sdl\Projector.cpp"
 					>
 				</File>
-				<File
-					RelativePath=".\src\sdl\SDLMain.cpp"
-					>
-				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -944,6 +1008,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\BaseRenderable.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\BoundingCircle.h"
 				>
 			</File>
 			<File
@@ -1047,11 +1115,39 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\sdl\GameLoop.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\GameRenderer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\GameViewport.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\GameWorld.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\GUIInputManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\GUISystem.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\GUISystem.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\map\HRMap.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\hud\HUDRenderer.h"
 				>
 			</File>
 			<File
@@ -1075,11 +1171,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\sdl\LoopBase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\MainMenuProxy.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\MapLoader.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\render\Material.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\MenuBackground.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\MenuLoop.h"
 				>
 			</File>
 			<File
@@ -1107,7 +1219,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\map\Minimap.h"
+				RelativePath=".\src\hud\Minimap.h"
 				>
 			</File>
 			<File
@@ -1116,6 +1228,10 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\MotionState.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\MouseButtonEvent.h"
 				>
 			</File>
 			<File
@@ -1168,6 +1284,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\PathNode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\PauseMenuProxy.h"
 				>
 			</File>
 			<File
@@ -1247,6 +1367,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\sdl\SDLGame.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\SDLMainLoop.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\SetDebugCamera.h"
 				>
 			</File>
@@ -1288,6 +1416,10 @@
 			</File>
 			<File
 				RelativePath=".\src\misc\Sleeper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\hud\Speedometer.h"
 				>
 			</File>
 			<File
@@ -1499,10 +1631,6 @@
 				</File>
 				<File
 					RelativePath=".\src\sdl\Projector.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\sdl\SDLMain.h"
 					>
 				</File>
 			</Filter>

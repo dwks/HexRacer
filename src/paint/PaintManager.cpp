@@ -97,16 +97,16 @@ namespace Paint {
 
 	}
 
-	void PaintManager::minimapRender(const Math::BoundingBox2D& bounding_box, float alpha) {
+	void PaintManager::minimapRender(const Math::BoundingObject& bounding_object, float view_height, float alpha) {
 
 		vector<ObjectSpatial*> visible_cells;
 
-		coloredPaintTree->appendQuery(visible_cells, bounding_box, SpatialContainer::NEARBY);
+		coloredPaintTree->appendQuery(visible_cells, bounding_object, SpatialContainer::NEARBY);
 
 		GLfloat values [4];
 		glGetFloatv(GL_VIEWPORT, values);
 		float viewportWidth = values[3];
-		glPointSize(viewportWidth/GET_SETTING("render.minimap.height", 60.0));
+		glPointSize(viewportWidth/view_height);
 		glBegin(GL_POINTS);
 		for (unsigned int i = 0; i < visible_cells.size(); i++) {
 

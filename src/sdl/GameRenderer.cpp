@@ -59,8 +59,12 @@ void GameRenderer::construct(OpenGL::Camera *camera) {
         new Render::BackgroundRenderable(camera));
     background->getRenderProperties()->setWantsShaderName("backgroundShader");
     
-    minimap = boost::shared_ptr<Map::Minimap>(new Map::Minimap());
+	hudRenderer = boost::shared_ptr<HUD::HUDRenderer>(new HUD::HUDRenderer());
+
+    minimap = boost::shared_ptr<HUD::Minimap>(new HUD::Minimap());
     minimap->setMapInfo(map.get());
+
+	speedometer = boost::shared_ptr<HUD::Speedometer>(new HUD::Speedometer());
     
     renderer->setCubeMap(map->getCubeMap());
     
@@ -162,25 +166,60 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
     lightManager->resetLights();
 }
 
-void GameRenderer::renderMinimap(Object::WorldManager *worldManager, Object::Player *player) {
+void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player *player) {
+
     int viewWidth = SDL_GetVideoSurface()->w;
     int viewHeight = SDL_GetVideoSurface()->h;
+
+	hudRenderer->setViewSize(viewWidth, viewHeight);
+	hudRenderer->renderingStateSetup();
     
-    if (GET_SETTING("render.minimap.enable", true)) {
-        double minimap_draw_height = viewHeight*GET_SETTING("render.minimap.drawheight", 0.2);
-        double minimap_draw_width = minimap_draw_height*GET_SETTING("render.minimap.drawaspect", 1.0);
+	//-Minimap----------------------------------------------------------------------------
+    if (GET_SETTING("hud.minimap.enable", true)) {
 
-        glViewport(viewWidth-minimap_draw_width, 0, minimap_draw_width, minimap_draw_height);
+        int draw_height = viewHeight*GET_SETTING("hud.minimap.drawheight", 0.2);
 
-        minimap->drawMinimap(
-            GET_SETTING("render.minimap.height", 40.0),
-            GET_SETTING("render.minimap.drawaspect", 1.0),
-            player->getPosition(),
-            worldManager,
-            paintManager.get());
+		hudRenderer->setupViewport(
+			HUD::HUDRenderer::ALIGN_MAX,
+			HUD::HUDRenderer::ALIGN_MAX,
+			draw_height,
+			draw_height,
+			10,
+			10);
 
-        glViewport(0, 0, viewWidth, viewHeight);
+		minimap->setWorldInfo(worldManager, paintManager.get());
+		minimap->setDrawInfo(GET_SETTING("hud.minimap.height", 40.0));
+		minimap->setViewInfo(player->getPosition(), player->getPhysicalObject()->getFrontDirection());
+
+		minimap->render(hudRenderer.get());
     }
+
+	//-Speedometer----------------------------------------------------------------------------
+    if (GET_SETTING("hud.speedometer.enable", true)) {
+
+        int draw_height = viewHeight*GET_SETTING("hud.speedometer.drawheight", 0.2);
+
+		hudRenderer->setupViewport(
+			HUD::HUDRenderer::ALIGN_MAX,
+			HUD::HUDRenderer::ALIGN_MIN,
+			draw_height,
+			draw_height,
+			10,
+			10);
+
+		speedometer->setColor(OpenGL::Color::WHITE);
+		speedometer->setMaxSpeed(GET_SETTING("hud.speedometer.maxspeed", 20.0));
+		speedometer->setSpeed(
+			Math::Point::point2D(player->getPhysicalObject()->getLinearVelocity(), Y_AXIS).length()
+			);
+
+		speedometer->render(hudRenderer.get());
+
+    }
+
+	hudRenderer->renderingStateReset();
+	hudRenderer->resetViewport();
+
 }
 
 void GameRenderer::renderWorld(Object::World *world) {

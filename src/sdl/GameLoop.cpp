@@ -53,13 +53,13 @@ void GameLoop::render() {
     gameRenderer->render(
         viewport->getCamera(),
         gameWorld->getWorldManager()->getWorld());
+
+	gameWorld->render();
     
-    gameRenderer->renderMinimap(
+    gameRenderer->renderHUD(
         gameWorld->getWorldManager(),
         gameWorld->getWorldManager()->getPlayer(
             gameWorld->getClientData()->getPlayerID()));
-    
-    gameWorld->render();
 }
 
 void GameLoop::setProjection(const Point2D &size) {

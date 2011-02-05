@@ -62,7 +62,7 @@ public:
 
 	void renderGeometry(Render::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object = NULL);
 
-	void minimapRender(const Math::BoundingBox2D& bounding_box, float alpha = 1.0f);
+	void minimapRender(const Math::BoundingObject& bounding_object, float view_height, float alpha = 1.0f);
 
 	/** Color paint cells by their numerical index
 		@param cell_indices A vector with the indices of all paint cells to color

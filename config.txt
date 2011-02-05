@@ -51,12 +51,6 @@ physics.driving.sidewaysdrag      = 10.0
 render.quality = 2
 render.shaderoutput = 1
 
-render.minimap.enable = 1
-render.minimap.drawheight = 0.35
-render.minimap.drawaspect = 1.0
-render.minimap.height = 80.0
-render.minimap.drawpaint = 1
-
 ########
 ### Rendering frustrum settings
 # lodthreshhold is the portion of the view frustrum that is rendered
@@ -76,6 +70,17 @@ render.model.tire = data/vehicle/carTires.obj
 
 render.vehicle.scale = 2.0
 render.tire.scale = 2.5
+
+########
+### HUD settings
+
+hud.minimap.enable = 1
+hud.minimap.drawheight = 0.35
+hud.minimap.height = 100.0
+
+hud.speedometer.enable = 1
+hud.speedometer.drawheight = 0.35
+hud.speedometer.maxspeed = 30.0
 
 ########
 ### Camera settings

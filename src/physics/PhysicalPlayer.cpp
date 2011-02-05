@@ -85,7 +85,7 @@ Math::Point PhysicalPlayer::getAngularVelocity() const {
 
 Math::Point PhysicalPlayer::getFrontDirection() const {
     // 4D vector (don't want translation included)
-    return getTransformation() * Math::Point(0.0, 0.0, -1.0, 0.0);
+    return getTransformation() * Math::Point(0.0, 0.0, +1.0, 0.0);
 }
 
 Math::Point PhysicalPlayer::getRightDirection() const {

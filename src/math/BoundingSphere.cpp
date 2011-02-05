@@ -1,7 +1,7 @@
 #include "BoundingSphere.h"
 #include "BoundingPlane3D.h"
 #include "BoundingConvexHull3D.h"
-#include "Vertex2D.h"
+#include "BoundingCircle.h"
 #include <math.h>
 #include "Values.h"
 
@@ -65,7 +65,7 @@ namespace Math {
 	}
 
 	BoundingObject2D* BoundingSphere::projectTo2D(Axis project_axis) const {
-		return new Vertex2D();
+		return new BoundingCircle(position, radius, project_axis);
 	}
 
 	bool BoundingSphere::pointInside(const Point& p) const {
@@ -73,8 +73,6 @@ namespace Math {
 	}
 
 	bool BoundingSphere::intersects3D(const BoundingObject3D& bounding_obj) const {
-
-		
 
 		switch (bounding_obj.getObjectType()) {
 
