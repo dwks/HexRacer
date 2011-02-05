@@ -42,3 +42,15 @@ ObjectSpatial* SpatialContainer::nearest(const Point& point) const {
 ObjectSpatial* SpatialContainer::nearest(const Point& point, double max_distance) const {
 	return nearestSquared(point, max_distance*max_distance, true);
 }
+
+vector<ObjectSpatial*> SpatialContainer::query(const BoundingObject& bounding_object, QueryType query_type) const {
+	vector<ObjectSpatial*> vector;
+	appendQuery(vector, bounding_object, query_type);
+	return vector;
+}
+
+vector<ObjectSpatial*> SpatialContainer::all() const {
+	vector<ObjectSpatial*> vector;
+	this->appendAll(vector);
+	return vector;
+}

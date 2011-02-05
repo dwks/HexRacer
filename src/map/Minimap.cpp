@@ -1,6 +1,7 @@
 #include "Minimap.h"
 #include "render/Texture.h"
 #include "render/ColorConstants.h"
+#include "render/Shader.h"
 #include "opengl/Color.h"
 #include "opengl/GeometryDrawing.h"
 #include "opengl/MathWrapper.h"
@@ -13,13 +14,26 @@ namespace Map {
 		camera.setCameraType(OpenGL::Camera::ORTHOGRAPHIC);
 		camera.setUpDirection(Math::Point(0.0, 0.0, 1.0));
 		camera.setLookDirection(Math::Point(0.0, -1.0, 0.0));
-		camera.setNearPlane(-20.0);
-		camera.setFarPlane(20.0);
+		camera.setNearPlane(-1000.0);
+		camera.setFarPlane(1000.0);
 
 		trackTexture = 0;
 		halfMap2DWidth = 0.0;
 		halfMap2DHeight = 0.0;
 
+		alphaMaskTexture = Render::Texture::loadTexture2D(
+			"data/hud/minimap_alpha_mask.png",
+			GL_CLAMP_TO_EDGE,
+			GL_CLAMP_TO_EDGE,
+			GL_LINEAR,
+			GL_LINEAR,
+			false);
+
+		alphaMaskShader = new Render::Shader("shaders/alphamask.frag", "shaders/alphamask.vert");
+		alphaMaskLoc = alphaMaskShader->getUniLoc("alphaMaskTexture");
+		renderTextureLoc = alphaMaskShader->getUniLoc("renderTexture");
+		usingTextureLoc = alphaMaskShader->getUniLoc("usingTexture");
+		viewSizeLoc = alphaMaskShader->getUniLoc("viewSize");
 	}
 
 	Minimap::~Minimap() {
@@ -50,7 +64,7 @@ namespace Map {
 
 	void Minimap::drawMinimap(double minimap_view_height, double minimap_aspect,
 		Math::Point focus_pos, Object::WorldManager* world,
-		Paint::PaintManager* paint_manager) {
+		Paint::PaintManager* paint_manager, bool alpha_mask) {
 
 		focus_pos.setCoord(0.0, Y_AXIS);
 
@@ -58,17 +72,37 @@ namespace Map {
 		camera.setOrthoHeight(minimap_view_height);
 		camera.setPosition(Math::Point(focus_pos.getX(), 1.0f, focus_pos.getZ()));
 
+		Math::Point camera_diagonal = Math::Point(camera.getOrthoWidth()*0.5, 0.0, camera.getOrthoHeight()*0.5);
+		Math::BoundingBox2D minimap_box = BoundingBox2D(camera.cameraToWorld(0.0, 0.0, 0.0), camera.cameraToWorld(1.0, 1.0, 0.0), Y_AXIS);
+
 		camera.glProjection();
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		camera.glLookAt();
 
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, trackTexture);
 		glEnable(GL_BLEND);
+		glEnable(GL_TEXTURE_2D);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDepthMask(GL_FALSE);
 		glDisable(GL_DEPTH_TEST);
+
+		alphaMaskShader->turnShaderOn();
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, alphaMaskTexture);
+
+		GLfloat view_size [2] = {minimap_box.widthU(), minimap_box.widthV()};
+		glUniform1i(alphaMaskLoc, 1);
+		glUniform1i(usingTextureLoc, 1);
+		glUniform1i(renderTextureLoc, 0);
+		glUniform1fv(viewSizeLoc, 2, view_size);
+
+		glActiveTexture(GL_TEXTURE0);
+
+		glBlendEquation(GL_FUNC_ADD);
+		glColorMask(true, true, true, false);
+		
+		glBindTexture(GL_TEXTURE_2D, trackTexture);
 		
 		//Draw the map texture
 		OpenGL::Color::glColor(OpenGL::Color::WHITE, 0.5);
@@ -86,9 +120,8 @@ namespace Map {
 		glEnd();
 
 		glDisable(GL_TEXTURE_2D);
-		
-		Math::Point camera_diagonal = Math::Point(camera.getOrthoWidth()*0.5, 0.0, camera.getOrthoHeight()*0.5);
-		Math::BoundingBox2D minimap_box = BoundingBox2D(focus_pos-camera_diagonal, focus_pos+camera_diagonal, Y_AXIS);
+
+		glUniform1i(usingTextureLoc, 0);
 
 		if (paint_manager) {
 			//Draw the paint
@@ -103,8 +136,6 @@ namespace Map {
 			while(it.hasNext()) {
 
 				Object::Player *player = it.next();
-				
-				
 
 				Math::Point player_pos = Math::Point::point2D(player->getPosition(), Y_AXIS);
 				Math::Point player_dir = Math::Point::point2D(player->getPhysicalObject()->getFrontDirection(), Y_AXIS).normalized()*(-1.0);
@@ -137,9 +168,12 @@ namespace Map {
 			}
 		}
 
+		glColorMask(true, true, true, true);
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glDisable(GL_BLEND);
+
+		alphaMaskShader->turnShaderOff();
 
 	}
 

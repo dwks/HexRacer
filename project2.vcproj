@@ -1291,6 +1291,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\misc\StdListFunctions.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\StdVectorFunctions.h"
 				>
 			</File>

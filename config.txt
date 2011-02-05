@@ -52,14 +52,18 @@ render.quality = 2
 render.shaderoutput = 1
 
 render.minimap.enable = 1
-render.minimap.drawheight = 0.25
+render.minimap.drawheight = 0.35
 render.minimap.drawaspect = 1.0
-render.minimap.height = 60.0
+render.minimap.height = 80.0
 render.minimap.drawpaint = 1
 
+########
+### Rendering frustrum settings
+# lodthreshhold is the portion of the view frustrum that is rendered
+# in high quality. Set it to 1.0 to turn off LOD altogether.
 render.camera.nearplane = 0.1
-render.camera.farplane = 300.0
-render.camera.lodthreshhold = 0.35
+render.camera.farplane = 200.0
+render.camera.lodthreshhold = 1.0
 render.camera.fieldofview = 60.0
 
 # for AI debugging

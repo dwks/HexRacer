@@ -512,7 +512,7 @@ namespace Map {
 	void HRMap::clearCollisionTree() {
 		if (collisionTree) {
 			vector<ObjectSpatial*> collision_triangles;
-			collisionTree->appendAll(&collision_triangles);
+			collisionTree->appendAll(collision_triangles);
 
 			for (unsigned int i = 0; i < collision_triangles.size(); i++)
 				delete(collision_triangles[i]);
