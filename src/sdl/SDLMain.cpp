@@ -12,6 +12,7 @@
 #include "log/Logger.h"
 
 #include "math/Point.h"
+#include "math/Geometry.h"
 #include "opengl/MathWrapper.h"
 #include "opengl/GeometryDrawing.h"
 #include "render/TextureCube.h"
@@ -397,6 +398,9 @@ void SDLMain::handleEvents() {
             if(event.button.button == 1) {  // left
                 simpleTrackball->setMouseStartAt(projector.screenToGL(
                     Point2D(event.button.x, event.button.y)));
+
+				simpleTrackball->setSpherePoint(cameraObject->camera->getLookDirection());
+
             }
             break;
         case SDL_MOUSEMOTION:
@@ -462,7 +466,7 @@ void SDLMain::render() {
 	if(GET_SETTING("render.drawpathnodes", false))
 		renderAIDebug();
 
-	GLdouble clip_plane [4] = {0.0f, 0.0f, lod_threshhold, 0.0f};
+	GLdouble clip_plane [4] = {0.0, 0.0, -1.0, -lod_split_plane};
 
 	if (lod_threshhold < 1.0) {
 
@@ -474,8 +478,12 @@ void SDLMain::render() {
 		cameraObject->camera->setNearPlane(lod_split_plane);
 		cameraObject->camera->setFrustrumNearPlaneEnabled(true);
 		cameraObject->camera->setFrustrumFarPlaneEnabled(false);
+
+		//Set the clipping plane
+		glLoadIdentity();
 		glClipPlane(GL_CLIP_PLANE0, clip_plane);
 		glEnable(GL_CLIP_PLANE0);
+		cameraObject->camera->glLookAt();
 
 		renderWorld();
 
@@ -491,7 +499,17 @@ void SDLMain::render() {
 	cameraObject->camera->setFrustrumNearPlaneEnabled(false);
 	cameraObject->camera->setFrustrumFarPlaneEnabled(true);
 
+	clip_plane[2] = 1.0;
+	clip_plane[3] = lod_split_plane;
+	//Set the clipping plane
+	glLoadIdentity();
+	glClipPlane(GL_CLIP_PLANE0, clip_plane);
+	glEnable(GL_CLIP_PLANE0);
+	cameraObject->camera->glLookAt();
+	
 	renderWorld();
+
+	glDisable(GL_CLIP_PLANE0);
 
 	//Reset the lights
 	lightManager->resetLights();
