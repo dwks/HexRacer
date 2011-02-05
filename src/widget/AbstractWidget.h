@@ -8,9 +8,9 @@ namespace Widget {
 
 class AbstractWidget : public WidgetBase {
 private:
+    std::string name;
     Layout *layout;
     EventProxy *proxy;
-    std::string name;
 public:
     AbstractWidget(const std::string &name)
         : name(name), layout(0), proxy(0) {}

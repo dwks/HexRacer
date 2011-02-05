@@ -141,6 +141,8 @@ ObjectSpatial::IntersectionType BoundingBox3D::intersectionType(const BoundingOb
 				else
 					return INTERSECT_INTERSECTS;
 			}
+			
+            default: break;
 
 		}
 

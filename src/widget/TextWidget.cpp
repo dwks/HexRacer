@@ -100,7 +100,6 @@ void TextWidget::render() {
     
     double width = dimensions.getX() * widthFactor;
     double height = dimensions.getY() * heightFactor;
-    double extraHeight = (heightFactor - 1.0) * dimensions.getY();
     
     // scale dimensions to take the larger power-of-2 texture into account
     // this way it looks the same no matter how big the texture actually is

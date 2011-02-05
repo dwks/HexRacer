@@ -172,10 +172,10 @@ void InputManager::handleJoystick() {
     
     // left hat
     double leftX = joystick->getNormalizedAxisValue(0, DEADZONE);
-    double leftY = joystick->getNormalizedAxisValue(1, DEADZONE);
+    //double leftY = joystick->getNormalizedAxisValue(1, DEADZONE);
     
     // right hat
-    double rightX = joystick->getNormalizedAxisValue(3, DEADZONE);
+    //double rightX = joystick->getNormalizedAxisValue(3, DEADZONE);
     double rightY = -joystick->getNormalizedAxisValue(2, DEADZONE);
     
     if(leftX) {
