@@ -1,6 +1,8 @@
 #include "TimedSubsystem.h"
 #include "AccelControl.h"
 
+#include "log/Logger.h"
+
 namespace Project {
 namespace Timing {
 
@@ -23,11 +25,27 @@ void TimedSubsystem::doStep(unsigned long currentTime) {
     
     unsigned long timeTakenSoFar = currentTime - lastTime;
     
-    while(timeTakenSoFar >= tickTime) {
+    if(currentTime < lastTime) {
+        //lastTime = (currentTime / tickTime) * tickTime;
+        //timeTakenSoFar = currentTime - lastTime;
+        
+        lastTime = currentTime;
+        timeTakenSoFar = tickTime;
+    }
+    
+    /*LOG(SDL, "TimedSubsystem: from " << lastTime << " to "
+        << currentTime << ", tick " << tickTime);*/
+    
+    int maxLoops = 3;
+    while(timeTakenSoFar >= tickTime && maxLoops --) {
         lastTime += tickTime;
         timeTakenSoFar -= tickTime;
         
         doAction(lastTime);
+    }
+    
+    if(!maxLoops) {
+        lastTime = currentTime;
     }
 }
 

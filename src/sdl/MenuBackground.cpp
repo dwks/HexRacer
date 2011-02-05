@@ -11,6 +11,8 @@ MenuBackground::MenuBackground() {
 }
 
 void MenuBackground::render() {
+    glLoadIdentity();
+    
     rotate += 0.02;
     glRotated(rotate, 0.0, 0.0, 1.0);
     

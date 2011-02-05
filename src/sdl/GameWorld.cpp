@@ -1,7 +1,11 @@
+#include "SDL.h"  // for SDL_GetTicks()
+
 #include "GameWorld.h"
 
 #include "settings/SettingsManager.h"
 #include "settings/ProgramSettings.h"
+
+#include "timing/AccelControl.h"
 
 namespace Project {
 namespace SDL {
@@ -57,6 +61,31 @@ void GameWorld::construct2(Map::HRMap *map) {
             raceManager->startingPointForPlayer(clientData->getPlayerID()),
             raceManager->startingPlayerDirection());
     }
+}
+
+void GameWorld::checkNetwork() {
+    network->checkNetwork();
+}
+
+void GameWorld::doPhysics() {
+    suspension->setData(worldManager.get(), NULL);
+    suspension->checkForWheelsOnGround();
+    
+    if(!Timing::AccelControl::getInstance()->getPaused()) {
+        static Uint32 lastPhysicsTime = SDL_GetTicks();
+        lastPhysicsTime += Timing::AccelControl::getInstance()
+            ->getPauseSkip();
+        Uint32 thisTime = SDL_GetTicks();
+        
+        physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
+        lastPhysicsTime = thisTime;
+    }
+}
+
+void GameWorld::render() {
+    suspension->doStep(SDL_GetTicks());
+    
+    physicsWorld->render();
 }
 
 }  // namespace SDL

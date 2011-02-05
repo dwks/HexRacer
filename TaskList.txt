@@ -27,3 +27,4 @@ Physics:
 Refactoring:
 - refactor SDLMain into subsystems
 - refactor HRMap into several component parts
+- remove Suspension's dependency on Renderer?

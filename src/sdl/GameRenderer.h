@@ -35,6 +35,7 @@ public:
     void construct(OpenGL::Camera *camera);
     
     void render(OpenGL::Camera *camera, Object::World *world);
+    void renderMinimap(Object::WorldManager *worldManager, Object::Player *player);
     
     Map::HRMap *getMap() { return map.get(); }
     Paint::PaintManager *getPaintManager() { return paintManager.get(); }

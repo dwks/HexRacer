@@ -6,6 +6,8 @@
 namespace Project {
 namespace SDL {
 
+Projector *Projector::instance = 0;
+
 Math::Point Projector::screenToGL(Point2D point) {
     Math::Point offset;
     double orthoDim = Math::minimum(

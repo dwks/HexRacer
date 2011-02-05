@@ -40,6 +40,11 @@ public:
     PlayerManager *getPlayerManager() { return playerManager.get(); }
     ClientData *getClientData() { return clientData.get(); }
     Object::WorldManager *getWorldManager() { return worldManager.get(); }
+    
+    void checkNetwork();
+    void doPhysics();
+    
+    void render();
 };
 
 }  // namespace SDL

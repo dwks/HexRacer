@@ -1,5 +1,7 @@
 #include <vector>
 
+#include "SDL.h"  // for SDL_GetVideoSurface()
+
 #include "GameRenderer.h"
 #include "opengl/GeometryDrawing.h"
 #include "opengl/MathWrapper.h"
@@ -156,6 +158,27 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
 
     //Reset the lights
     lightManager->resetLights();
+}
+
+void GameRenderer::renderMinimap(Object::WorldManager *worldManager, Object::Player *player) {
+    int viewWidth = SDL_GetVideoSurface()->w;
+    int viewHeight = SDL_GetVideoSurface()->h;
+    
+    if (GET_SETTING("render.minimap.enable", true)) {
+        double minimap_draw_height = viewHeight*GET_SETTING("render.minimap.drawheight", 0.2);
+        double minimap_draw_width = minimap_draw_height*GET_SETTING("render.minimap.drawaspect", 1.0);
+
+        glViewport(viewWidth-minimap_draw_width, 0, minimap_draw_width, minimap_draw_height);
+
+        minimap->drawMinimap(
+            GET_SETTING("render.minimap.height", 40.0),
+            GET_SETTING("render.minimap.drawaspect", 1.0),
+            player->getPosition(),
+            worldManager,
+            paintManager.get());
+
+        glViewport(0, 0, viewWidth, viewHeight);
+    }
 }
 
 void GameRenderer::renderWorld(Object::World *world) {

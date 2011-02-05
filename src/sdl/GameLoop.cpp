@@ -1,3 +1,5 @@
+#include "SDL.h"  // for SDL_GetTicks()
+
 #include "GameLoop.h"
 
 namespace Project {
@@ -28,13 +30,36 @@ void GameLoop::construct() {
 }
 
 void GameLoop::handleEvent(SDL_Event *event) {
+    viewport->checkForDebugCameraEvents(event);
+    
     inputManager->handleEvent(event);
+}
+
+void GameLoop::miscellaneous() {
+    gameWorld->checkNetwork();
+    
+    paintSubsystem->doStep(SDL_GetTicks());
+    
+    // must do paused (static) checks first, in case the game unpauses
+    inputManager->doPausedChecks();
+    inputManager->doStep(SDL_GetTicks());
+    
+    gameWorld->doPhysics();
+    
+    viewport->doCamera(SDL_GetTicks());
 }
 
 void GameLoop::render() {
     gameRenderer->render(
         viewport->getCamera(),
         gameWorld->getWorldManager()->getWorld());
+    
+    gameRenderer->renderMinimap(
+        gameWorld->getWorldManager(),
+        gameWorld->getWorldManager()->getPlayer(
+            gameWorld->getClientData()->getPlayerID()));
+    
+    gameWorld->render();
 }
 
 void GameLoop::setProjection(const Point2D &size) {

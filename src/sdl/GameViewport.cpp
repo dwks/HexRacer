@@ -1,5 +1,7 @@
 #include "GameViewport.h"
 
+#include "Projector.h"
+
 namespace Project {
 namespace SDL {
 
@@ -42,6 +44,33 @@ void GameViewport::setProjection(const Point2D &size) {
 
 void GameViewport::updateCamera() {
     cameraObject->camera->setLookDirection(trackball->getSpherePoint());
+}
+
+void GameViewport::checkForDebugCameraEvents(SDL_Event *event) {
+    Projector *projector = Projector::getInstance();
+    
+    switch(event->type) {
+    case SDL_MOUSEBUTTONDOWN:
+        if(event->button.button == 3) {  // right
+            trackball->setMouseStartAt(projector->screenToGL(
+                Point2D(event->button.x, event->button.y)));
+            
+            trackball->setSpherePoint(
+                cameraObject->camera->getLookDirection());
+        }
+        break;
+    case SDL_MOUSEMOTION:
+        if(event->motion.state & SDL_BUTTON(3)) {
+            trackball->setMouseCurrentAt(projector->screenToGL(
+                Point2D(event->button.x, event->button.y)));
+            updateCamera();
+        }
+        break;
+    }
+}
+
+void GameViewport::doCamera(unsigned long milliseconds) {
+    cameraObject->doStep(milliseconds);
 }
 
 }  // namespace SDL

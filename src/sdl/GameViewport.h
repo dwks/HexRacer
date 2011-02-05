@@ -1,6 +1,8 @@
 #ifndef PROJECT_SDL__GAME_VIEWPORT_H
 #define PROJECT_SDL__GAME_VIEWPORT_H
 
+#include "SDL_events.h"
+
 #include "Point2D.h"
 
 #include "event/CameraMovement.h"
@@ -38,6 +40,9 @@ public:
     OpenGL::Camera *getCamera() { return cameraObject->camera; }
     
     virtual void setProjection(const Point2D &size);
+    
+    void checkForDebugCameraEvents(SDL_Event *event);
+    void doCamera(unsigned long milliseconds);
 private:
     void updateCamera();
 };

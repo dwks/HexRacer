@@ -29,12 +29,13 @@ void SDLMainLoop::JoinGameObserver::observe(Event::JoinGame *event) {
     LoopBase *loop = new GameLoop(event->getHost(), event->getPort());
     loop->construct();
     
+    //Timing::AccelControl::getInstance()->setPauseSkipDirectly(SDL_GetTicks());
     mainLoop->useLoopBase(loop);
 }
 
 SDLMainLoop::SDLMainLoop() {
     quit = false;
-   
+    
     // it's dangerous to add observers inside a constructor, but in this case
     // we know that SDLMainLoop was not constructed from within an event, so
     // it's okay.
@@ -141,6 +142,8 @@ void SDLMainLoop::run() {
     
     while(!quit) {
         handleEvents();
+        
+        loop->miscellaneous();
         
         doRender();
         
