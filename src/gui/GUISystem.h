@@ -12,9 +12,10 @@ class GUISystem {
 private:
     Render::FontManager *fontManager;
     Widget::CompositeWidget *widgets;
+    Widget::WidgetBase *currentScreen;
     Widget::WidgetPoint screenSize;
 public:
-    GUISystem() : widgets(0) {}
+    GUISystem() : widgets(0), currentScreen(0) {}
     ~GUISystem();
     
     void construct();
@@ -23,6 +24,9 @@ public:
     void handleEvent(Widget::WidgetEvent *event);
     
     Widget::WidgetBase *getWidget(const std::string &path);
+    
+    void setScreenSize(Widget::WidgetPoint screenSize)
+        { this->screenSize = screenSize; }
 };
 
 }  // namespace GUI

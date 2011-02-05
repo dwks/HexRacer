@@ -69,14 +69,12 @@ void WidgetRenderer::visit(ButtonWidget *widget) {
 }
 
 void WidgetRenderer::visit(CompositeWidget *widget) {
-    /*WidgetBase *child;
-    for(CompositeWidget::IteratorType i = widget->getIterator(); i.hasNext();
-        child = i.next()) {
+    CompositeWidget::IteratorType i = widget->getIterator();
+    while(i.hasNext()) {
+        WidgetBase *child = i.next();
         
         child->accept(*this);
-    }*/
-    
-    widget->recursiveAccept(*this);
+    }
 }
 
 void WidgetRenderer::glVertex(const WidgetPoint &point) {

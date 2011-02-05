@@ -1,7 +1,9 @@
+Items marked with * are implemented, more or less.
+
 Widgets -- supported observers
-    box       -- activated
-    text
-    button    -- activated
+ *  box       -- activated
+ *  text
+ *  button    -- activated
     edit      -- entered
     scrollbar -- scrolled
     listbox   -- selected
@@ -11,11 +13,10 @@ Widgets -- supported observers
 Events
     key (down/up)
     mouse move (focus in/out)
-    mouse button (down inside/up inside/up outside)
+ *  mouse button (down inside/up inside/up outside)
 
 Observers
     event (any of the above)
-    activated (button clicked, checkbox toggled)
+ *  activated (button clicked, checkbox toggled)
     text data entered
     item selected
-

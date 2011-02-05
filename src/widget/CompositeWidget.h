@@ -32,8 +32,6 @@ public:
     IteratorType getIterator() { return IteratorType(childList); }
     
     virtual void accept(WidgetVisitor &visitor) { visitor.visit(this); }
-    
-    void recursiveAccept(WidgetVisitor &visitor);
 };
 
 }  // namespace Widget

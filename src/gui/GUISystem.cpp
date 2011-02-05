@@ -17,34 +17,39 @@ void GUISystem::construct() {
     
     widgets = new Widget::CompositeWidget("gui");
     
-    widgets->addChild(new Widget::ButtonWidget("help",
+    Widget::CompositeWidget *paused = new Widget::CompositeWidget("paused");
+    widgets->addChild(paused);
+    
+    paused->addChild(new Widget::ButtonWidget("help",
         "?", Widget::WidgetRect(0.0, 0.0, 0.1, 0.1)));
     
-    widgets->addChild(new Widget::ButtonWidget("resume",
+    paused->addChild(new Widget::ButtonWidget("resume",
         "Resume", Widget::WidgetRect(0.3, 0.4 - 0.15, 0.4, 0.1)));
     
-    widgets->addChild(new Widget::ButtonWidget("settings",
+    paused->addChild(new Widget::ButtonWidget("settings",
         "Settings", Widget::WidgetRect(0.3, 0.4, 0.4, 0.1)));
     
-    widgets->addChild(new Widget::ButtonWidget("quit",
+    paused->addChild(new Widget::ButtonWidget("quit",
         "Quit", Widget::WidgetRect(0.3, 0.4 + 0.15, 0.4, 0.1)));
     
-    widgets->getChild("help")->addEventProxy(new PauseMenuProxy());
-    widgets->getChild("resume")->addEventProxy(new PauseMenuProxy());
-    widgets->getChild("settings")->addEventProxy(new PauseMenuProxy());
-    widgets->getChild("quit")->addEventProxy(new PauseMenuProxy());
+    currentScreen = getWidget("paused");
+    
+    getWidget("paused/help")->addEventProxy(new PauseMenuProxy());
+    getWidget("paused/resume")->addEventProxy(new PauseMenuProxy());
+    getWidget("paused/settings")->addEventProxy(new PauseMenuProxy());
+    getWidget("paused/quit")->addEventProxy(new PauseMenuProxy());
 }
 
 void GUISystem::render() {
     Widget::WidgetRenderer renderer(screenSize);
     
     renderer.begin();
-    widgets->accept(renderer);
+    currentScreen->accept(renderer);
     renderer.end();
 }
 
 void GUISystem::handleEvent(Widget::WidgetEvent *event) {
-    widgets->handleEvent(event);
+    currentScreen->handleEvent(event);
 }
 
 Widget::WidgetBase *GUISystem::getWidget(const std::string &path) {
@@ -52,7 +57,7 @@ Widget::WidgetBase *GUISystem::getWidget(const std::string &path) {
     
     std::string::size_type start = 0, end;
     do {
-        end = path.find('/');
+        end = path.find('/', start);
         
         widget = widget->getChild(path.substr(start, end));
         

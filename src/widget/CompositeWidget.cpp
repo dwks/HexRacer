@@ -32,13 +32,5 @@ WidgetBase *CompositeWidget::getChild(const std::string &name) {
     return NULL;
 }
 
-void CompositeWidget::recursiveAccept(WidgetVisitor &visitor) {
-    for(ChildListType::iterator i = childList.begin(); i != childList.end();
-        ++ i) {
-        
-        (*i)->accept(visitor);
-    }
-}
-
 }  // namespace Widget
 }  // namespace Project

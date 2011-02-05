@@ -268,7 +268,7 @@ void SDLMain::run() {
     LOG2(GLOBAL, PROGRESS, "Entering main game loop");
     Uint32 lastTime = SDL_GetTicks();
     accelControl->setPauseSkipDirectly(lastTime);
-
+    
     while(!quit) {
         handleEvents();
         
