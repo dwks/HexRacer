@@ -64,7 +64,7 @@ void InputManager::doAction(unsigned long currentTime) {
         EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::JUMP, 0.0));
     }
     
-    LOG2(SDL, INPUT, "checking input at " << currentTime);
+    //LOG2(SDL, INPUT, "checking input at " << currentTime);
     
     if(keyDown[SDLK_h]) {
         EMIT_EVENT(new Event::PlayerAction(

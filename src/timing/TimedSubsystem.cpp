@@ -25,16 +25,14 @@ void TimedSubsystem::doStep(unsigned long currentTime) {
     
     unsigned long timeTakenSoFar = currentTime - lastTime;
     
+    /*LOG(SDL, "TimedSubsystem: from " << lastTime << " to "
+        << currentTime << ", tick " << tickTime);*/
+    
     if(currentTime < lastTime) {
-        //lastTime = (currentTime / tickTime) * tickTime;
-        //timeTakenSoFar = currentTime - lastTime;
-        
+        return;
         lastTime = currentTime;
         timeTakenSoFar = tickTime;
     }
-    
-    /*LOG(SDL, "TimedSubsystem: from " << lastTime << " to "
-        << currentTime << ", tick " << tickTime);*/
     
     int maxLoops = 3;
     while(timeTakenSoFar >= tickTime && maxLoops --) {

@@ -156,6 +156,8 @@ void SDLMainLoop::run() {
             }
             while(lastTime < thisTime) lastTime += RATE;
         }
+        
+        accelControl->clearPauseSkip();
     }
     
     LOG2(GLOBAL, PROGRESS, "Exiting main loop");
