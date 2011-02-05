@@ -17,22 +17,39 @@ void GUISystem::construct() {
     
     widgets = new Widget::CompositeWidget("gui");
     
-    Widget::CompositeWidget *paused = new Widget::CompositeWidget("paused");
-    widgets->addChild(paused);
+    {
+        Widget::CompositeWidget *main
+            = new Widget::CompositeWidget("main");
+        widgets->addChild(main);
+        
+        main->addChild(new Widget::ButtonWidget("host", "Host game",
+            Widget::WidgetRect(0.1, 0.5, 0.4, 0.05)));
+        main->addChild(new Widget::ButtonWidget("join", "Join game",
+            Widget::WidgetRect(0.1, 0.6, 0.4, 0.05)));
+        
+        main->addChild(new Widget::ButtonWidget("about", "About",
+            Widget::WidgetRect(0.55, 0.5, 0.4, 0.05)));
+        main->addChild(new Widget::ButtonWidget("quit", "Quit",
+            Widget::WidgetRect(0.55, 0.6, 0.4, 0.05)));
+    }
     
-    paused->addChild(new Widget::ButtonWidget("help",
-        "?", Widget::WidgetRect(0.0, 0.0, 0.1, 0.1)));
+    {
+        Widget::CompositeWidget *paused
+            = new Widget::CompositeWidget("paused");
+        widgets->addChild(paused);
+        
+        paused->addChild(new Widget::ButtonWidget("help",
+            "?", Widget::WidgetRect(0.0, 0.0, 0.1, 0.1)));
+        
+        paused->addChild(new Widget::ButtonWidget("resume", "Resume",
+            Widget::WidgetRect(0.3, 0.4 - 0.15, 0.4, 0.1)));
+        paused->addChild(new Widget::ButtonWidget("settings", "Settings",
+            Widget::WidgetRect(0.3, 0.4, 0.4, 0.1)));
+        paused->addChild(new Widget::ButtonWidget("quit", "Quit",
+            Widget::WidgetRect(0.3, 0.4 + 0.15, 0.4, 0.1)));
+    }
     
-    paused->addChild(new Widget::ButtonWidget("resume",
-        "Resume", Widget::WidgetRect(0.3, 0.4 - 0.15, 0.4, 0.1)));
-    
-    paused->addChild(new Widget::ButtonWidget("settings",
-        "Settings", Widget::WidgetRect(0.3, 0.4, 0.4, 0.1)));
-    
-    paused->addChild(new Widget::ButtonWidget("quit",
-        "Quit", Widget::WidgetRect(0.3, 0.4 + 0.15, 0.4, 0.1)));
-    
-    currentScreen = getWidget("paused");
+    selectScreen("paused");
     
     getWidget("paused/help")->addEventProxy(new PauseMenuProxy());
     getWidget("paused/resume")->addEventProxy(new PauseMenuProxy());
@@ -50,6 +67,10 @@ void GUISystem::render() {
 
 void GUISystem::handleEvent(Widget::WidgetEvent *event) {
     currentScreen->handleEvent(event);
+}
+
+void GUISystem::selectScreen(const std::string &screen) {
+    currentScreen = getWidget(screen);
 }
 
 Widget::WidgetBase *GUISystem::getWidget(const std::string &path) {

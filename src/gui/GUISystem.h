@@ -23,6 +23,8 @@ public:
     void render();
     void handleEvent(Widget::WidgetEvent *event);
     
+    void selectScreen(const std::string &screen);
+    
     Widget::WidgetBase *getWidget(const std::string &path);
     
     void setScreenSize(Widget::WidgetPoint screenSize)
