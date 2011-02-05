@@ -7,16 +7,20 @@
 #include "Projector.h"
 
 #include "event/QuitEvent.h"
+#include "event/JoinGame.h"
 
 #include "timing/AccelControl.h"
 
 namespace Project {
 namespace SDL {
 
+class MenuLoop;
+
 class SDLMainLoop {
 private:
     int sdl_init_flags;
     bool quit;
+    MenuLoop *menuLoop;
     LoopBase *loop;
     
     Projector projector;
@@ -29,7 +33,16 @@ private:
     public:
         QuitObserver(SDLMainLoop *mainLoop) : mainLoop(mainLoop) {}
         
-        virtual void observe(Event::QuitEvent *event) { mainLoop->setQuit(); }
+        virtual void observe(Event::QuitEvent *event);
+    };
+    
+    class JoinGameObserver : public Event::TypedObserver<Event::JoinGame> {
+    private:
+        SDLMainLoop *mainLoop;
+    public:
+        JoinGameObserver(SDLMainLoop *mainLoop) : mainLoop(mainLoop) {}
+        
+        virtual void observe(Event::JoinGame *event);
     };
 public:
     SDLMainLoop();
@@ -39,11 +52,16 @@ public:
     
     void run();
     
+    void useLoopBase(LoopBase *loop);
+    void useMenuLoop();
+    bool currentlyUsingMenuLoop();
+    
     void setQuit() { quit = true; }
 private:
     void initSDL();
 private:
     void handleEvents();
+    void doRender();
 };
 
 }  // namespace SDL

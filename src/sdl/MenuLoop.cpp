@@ -11,6 +11,9 @@ void MenuLoop::construct() {
     
     gui->construct();
     gui->selectScreen("main");
+    
+    menuBackground = boost::shared_ptr<MenuBackground>(
+        new MenuBackground());
 }
 
 void MenuLoop::handleEvent(SDL_Event *event) {
@@ -18,6 +21,8 @@ void MenuLoop::handleEvent(SDL_Event *event) {
 }
 
 void MenuLoop::render() {
+    menuBackground->render();
+    
     gui->render();
 }
 

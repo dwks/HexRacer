@@ -7,6 +7,7 @@
 
 #include "gui/GUISystem.h"
 #include "GUIInputManager.h"
+#include "MenuBackground.h"
 
 namespace Project {
 namespace SDL {
@@ -15,6 +16,7 @@ class MenuLoop : public LoopBase {
 private:
     boost::shared_ptr<GUI::GUISystem> gui;
     boost::shared_ptr<GUIInputManager> guiInputManager;
+    boost::shared_ptr<MenuBackground> menuBackground;
 public:
     virtual void construct();
     

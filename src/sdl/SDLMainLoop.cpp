@@ -5,6 +5,7 @@
 #include "opengl/OpenGL.h"
 
 #include "MenuLoop.h"
+#include "GameLoop.h"
 
 #include "event/ObserverList.h"
 
@@ -15,18 +16,47 @@
 namespace Project {
 namespace SDL {
 
+void SDLMainLoop::QuitObserver::observe(Event::QuitEvent *event) {
+    if(!mainLoop->currentlyUsingMenuLoop()) {
+        mainLoop->useMenuLoop();
+    }
+    else {
+        mainLoop->setQuit();
+    }
+}
+
+void SDLMainLoop::JoinGameObserver::observe(Event::JoinGame *event) {
+    LoopBase *loop = new GameLoop(event->getHost(), event->getPort());
+    
+    mainLoop->useLoopBase(loop);
+}
+
 SDLMainLoop::SDLMainLoop() {
     quit = false;
     ADD_OBSERVER(new QuitObserver(this));
+    ADD_OBSERVER(new JoinGameObserver(this));
     
     initSDL();
     
-    loop = new MenuLoop();
+    menuLoop = new MenuLoop();
+    loop = menuLoop;
 }
 
 SDLMainLoop::~SDLMainLoop() {
     TTF_Quit();
     SDL_Quit();
+}
+
+void SDLMainLoop::useLoopBase(LoopBase *loop) {
+    this->loop = loop;
+}
+
+void SDLMainLoop::useMenuLoop() {
+    this->loop = menuLoop;
+}
+
+bool SDLMainLoop::currentlyUsingMenuLoop() {
+    return loop == menuLoop;
 }
 
 void SDLMainLoop::initSDL() {
@@ -90,9 +120,7 @@ void SDLMainLoop::run() {
     while(!quit) {
         handleEvents();
         
-        loop->render();
-        glFlush();
-        SDL_GL_SwapBuffers();
+        doRender();
         
         {
             static const int RATE = 10;
@@ -104,6 +132,8 @@ void SDLMainLoop::run() {
             while(lastTime < thisTime) lastTime += RATE;
         }
     }
+    
+    LOG2(GLOBAL, PROGRESS, "Exiting main loop");
 }
 
 void SDLMainLoop::handleEvents() {
@@ -124,6 +154,17 @@ void SDLMainLoop::handleEvents() {
         
         loop->handleEvent(&event);
     }
+}
+
+void SDLMainLoop::doRender() {
+    glMatrixMode(GL_MODELVIEW);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+    
+    loop->render();
+    
+    glFlush();
+    SDL_GL_SwapBuffers();
 }
 
 }  // namespace SDL
