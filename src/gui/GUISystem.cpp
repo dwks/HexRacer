@@ -1,4 +1,5 @@
 #include "GUISystem.h"
+#include "MainMenuProxy.h"
 #include "PauseMenuProxy.h"
 
 #include "widget/WidgetRenderer.h"
@@ -31,6 +32,11 @@ void GUISystem::construct() {
             Widget::WidgetRect(0.55, 0.5, 0.4, 0.05)));
         main->addChild(new Widget::ButtonWidget("quit", "Quit",
             Widget::WidgetRect(0.55, 0.6, 0.4, 0.05)));
+        
+        getWidget("main/host")->addEventProxy(new MainMenuProxy());
+        getWidget("main/join")->addEventProxy(new MainMenuProxy());
+        getWidget("main/about")->addEventProxy(new MainMenuProxy());
+        getWidget("main/quit")->addEventProxy(new MainMenuProxy());
     }
     
     {
@@ -47,14 +53,14 @@ void GUISystem::construct() {
             Widget::WidgetRect(0.3, 0.4, 0.4, 0.1)));
         paused->addChild(new Widget::ButtonWidget("quit", "Quit",
             Widget::WidgetRect(0.3, 0.4 + 0.15, 0.4, 0.1)));
+        
+        getWidget("paused/help")->addEventProxy(new PauseMenuProxy());
+        getWidget("paused/resume")->addEventProxy(new PauseMenuProxy());
+        getWidget("paused/settings")->addEventProxy(new PauseMenuProxy());
+        getWidget("paused/quit")->addEventProxy(new PauseMenuProxy());
     }
     
     selectScreen("paused");
-    
-    getWidget("paused/help")->addEventProxy(new PauseMenuProxy());
-    getWidget("paused/resume")->addEventProxy(new PauseMenuProxy());
-    getWidget("paused/settings")->addEventProxy(new PauseMenuProxy());
-    getWidget("paused/quit")->addEventProxy(new PauseMenuProxy());
 }
 
 void GUISystem::render() {

@@ -1,6 +1,8 @@
 #ifndef PROJECT_SDL__GUIINPUT_MANAGER_H
 #define PROJECT_SDL__GUIINPUT_MANAGER_H
 
+#include "boost/smart_ptr/shared_ptr.hpp"
+
 #include "SDL_events.h"
 
 #include "gui/GUISystem.h"
@@ -10,9 +12,9 @@ namespace SDL {
 
 class GUIInputManager {
 private:
-    GUI::GUISystem *gui;
+    boost::shared_ptr<GUI::GUISystem> gui;
 public:
-    GUIInputManager(GUI::GUISystem *gui) : gui(gui) {}
+    GUIInputManager(boost::shared_ptr<GUI::GUISystem> gui) : gui(gui) {}
     
     void handleEvent(SDL_Event *event);
 };

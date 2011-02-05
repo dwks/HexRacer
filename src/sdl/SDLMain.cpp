@@ -261,7 +261,7 @@ void SDLMain::run() {
     }
 #endif
     
-    gui = new GUI::GUISystem();
+    gui = boost::shared_ptr<GUI::GUISystem>(new GUI::GUISystem());
     gui->construct();
     guiInputManager = new GUIInputManager(gui);
     
@@ -375,8 +375,6 @@ void SDLMain::run() {
 
     delete clientData;
     delete playerManager;
-    
-    delete gui;
 }
 
 void SDLMain::handleEvents() {

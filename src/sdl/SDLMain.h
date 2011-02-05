@@ -87,7 +87,7 @@ private:
     
     Timing::AccelControl *accelControl;
     
-    GUI::GUISystem *gui;
+    boost::shared_ptr<GUI::GUISystem> gui;
 private:
     class CameraObserver : public Event::TypedObserver<Event::CameraMovement> {
     private:
