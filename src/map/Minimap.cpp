@@ -29,7 +29,7 @@ namespace Map {
 			GL_LINEAR,
 			false);
 
-		alphaMaskShader = new Render::Shader("shaders/alphamask.frag", "shaders/alphamask.vert");
+		alphaMaskShader = new Render::Shader("shaders/alphaMask.frag", "shaders/alphaMask.vert");
 		alphaMaskLoc = alphaMaskShader->getUniLoc("alphaMaskTexture");
 		renderTextureLoc = alphaMaskShader->getUniLoc("renderTexture");
 		usingTextureLoc = alphaMaskShader->getUniLoc("usingTexture");
