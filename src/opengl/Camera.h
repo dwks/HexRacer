@@ -26,11 +26,6 @@ private:
 	Point cameraLookDirection;
 	Point cameraUpDirection;
 
-	Point topPlaneNormal;
-	Point leftPlaneNormal;
-	Point rightPlaneNormal;
-	Point bottomPlaneNormal;
-
 	double halfPlaneWidth;
 	double halfPlaneHeight;
 
@@ -44,13 +39,21 @@ private:
 	bool frustrumNearPlane;
 	bool frustrumFarPlane;
 
+	bool matrixChanged;
+
+	bool frustrumChanged;
+	bool frustrumDimensionsChanged;
+
 	BoundingConvexHull3D* frustrum;
 	GLfloat cameraMatrix [16];
 
 	CameraType cameraType;
 
+	void updatePosition();
 	void updateDirections();
+	void updateDimensions();
 	void updateFrustrum();
+	void updateMatrix();
 
 public:
 	Camera(CameraType camera_type = PERSPECTIVE);
@@ -81,18 +84,18 @@ public:
 	double getFarPlane() const { return farPlane; }
 	double getOrthoHeight() const { return orthoHeight; }
 	double getOrthoWidth() const { return orthoHeight*aspect; }
-	Point cameraToWorld(Point p);
-	Point cameraToWorld(double x, double y, double z = 1.0);
-	Ray cameraRay(double x, double y);
+	Point cameraToWorld(Point p) const;
+	Point cameraToWorld(double x, double y, double z = 1.0) const;
+	Ray cameraRay(double x, double y) const;
 
 	void setCameraType(CameraType type);
 	CameraType getCameraType() const { return cameraType; }
 
-	void glLookAt();
-	void glProjection();
+	void glLookAt() const;
+	void glProjection() const;
 
-	const BoundingConvexHull3D* getFrustrum() const { return frustrum; }
-	const GLfloat* getCameraMatrix() const { return cameraMatrix; }
+	const BoundingConvexHull3D* getFrustrum();
+	const GLfloat* getCameraMatrix();
 
 };
 

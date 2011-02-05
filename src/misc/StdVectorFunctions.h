@@ -14,7 +14,7 @@ static void vectorRemoveAtIndex(std::vector<Type>& v, int index) {
 }
 
 template <typename Type>
-static bool vectorRemoveOneElement(std::vector<Type>& v, Type element) {
+static bool vectorRemoveOneElement(std::vector<Type>& v, const Type& element) {
 	for (unsigned int i = 0; i < v.size(); i++) {
 		if (v[i] == element) {
 			vectorRemoveAtIndex(v, i);
@@ -26,7 +26,7 @@ static bool vectorRemoveOneElement(std::vector<Type>& v, Type element) {
 }
 
 template <typename Type>
-static bool vectorContains(const std::vector<Type>& v, Type element) {
+static bool vectorContains(const std::vector<Type>& v, const Type& element) {
 	for (unsigned int i = 0; i < v.size(); i++) {
 		if (v[i] == element) {
 			return true;
@@ -52,7 +52,7 @@ static std::vector<Type> vectorAppended(std::vector<Type>& v1, const std::vector
 }
 
 template <typename Type>
-static int vectorIndexOfFirst(std::vector<Type>& v, Type element) {
+static int vectorIndexOfFirst(std::vector<Type>& v, const Type& element) {
 
 	for (unsigned int i = 0; i < v.size(); i++) {
 		if (v[i] == element) {

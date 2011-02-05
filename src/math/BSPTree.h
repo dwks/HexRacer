@@ -16,15 +16,13 @@ public:
 	bool add(ObjectSpatial* object);
 	bool remove(ObjectSpatial* object);
 	bool contains(ObjectSpatial* object) const;
-	void add(vector<ObjectSpatial*> objects);
-	vector<ObjectSpatial*> query(const BoundingObject& bounding_object, QueryType query_type) const;
-	vector<ObjectSpatial*> all() const;
+	void add(const vector<ObjectSpatial*>& objects);
 	RayIntersection rayIntersection(Ray ray) const;
 	int size() const;
 	void clear();
 
-	void appendQuery(vector<ObjectSpatial*>* result_list, const BoundingObject& bounding_object, QueryType query_type) const;
-	void appendAll(vector<ObjectSpatial*>* result_list) const;
+	void appendQuery(vector<ObjectSpatial*>& result_vector, const BoundingObject& bounding_object, QueryType query_type) const;
+	void appendAll(vector<ObjectSpatial*>& result_vector) const;
 	int getHeight() const;
 
 	ObjectSpatial* nearestSquared(const Point& point, double max_distance_squared, bool bounded) const;

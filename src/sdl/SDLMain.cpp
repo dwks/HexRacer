@@ -439,6 +439,8 @@ void SDLMain::render() {
 
 	cameraObject->camera->setNearPlane(near_plane);
 	cameraObject->camera->setFarPlane(far_plane);
+	cameraObject->camera->setFrustrumNearPlaneEnabled(false);
+	cameraObject->camera->setFrustrumFarPlaneEnabled(false);
 	cameraObject->camera->glProjection();
 
 	glMatrixMode(GL_MODELVIEW);
@@ -467,9 +469,9 @@ void SDLMain::render() {
 	if(GET_SETTING("render.drawpathnodes", false))
 		renderAIDebug();
 
-	GLdouble clip_plane [4] = {0.0, 0.0, -1.0, -lod_split_plane};
-
 	if (lod_threshhold < 1.0) {
+
+		GLdouble clip_plane [4] = {0.0, 0.0, -1.0, -lod_split_plane};
 
 		//Low Quality Rendering----------------------------------------------------------------------
 
@@ -482,31 +484,31 @@ void SDLMain::render() {
 
 		//Set the clipping plane
 		glLoadIdentity();
-		glClipPlane(GL_CLIP_PLANE0, clip_plane);
 		glEnable(GL_CLIP_PLANE0);
+		glClipPlane(GL_CLIP_PLANE0, clip_plane);
 		cameraObject->camera->glLookAt();
 
 		renderWorld();
 
+		//High Quality Rendering----------------------------------------------------------------------
+
+		renderer->setLODLow(false);
+
+		//Set camera culling to the nearer portion of the view frustrum
+		cameraObject->camera->setNearPlane(near_plane);
+		cameraObject->camera->setFarPlane(lod_split_plane);
+		cameraObject->camera->setFrustrumNearPlaneEnabled(false);
+		cameraObject->camera->setFrustrumFarPlaneEnabled(true);
+
+		clip_plane[2] = 1.0;
+		clip_plane[3] = lod_split_plane;
+		//Set the clipping plane
+		glLoadIdentity();
+		glEnable(GL_CLIP_PLANE0);
+		glClipPlane(GL_CLIP_PLANE0, clip_plane);
+		cameraObject->camera->glLookAt();
+
 	}
-
-	//High Quality Rendering----------------------------------------------------------------------
-
-	renderer->setLODLow(false);
-
-	//Set camera culling to the nearer portion of the view frustrum
-	cameraObject->camera->setNearPlane(near_plane);
-	cameraObject->camera->setFarPlane(lod_split_plane);
-	cameraObject->camera->setFrustrumNearPlaneEnabled(false);
-	cameraObject->camera->setFrustrumFarPlaneEnabled(true);
-
-	clip_plane[2] = 1.0;
-	clip_plane[3] = lod_split_plane;
-	//Set the clipping plane
-	glLoadIdentity();
-	glClipPlane(GL_CLIP_PLANE0, clip_plane);
-	glEnable(GL_CLIP_PLANE0);
-	cameraObject->camera->glLookAt();
 	
 	renderWorld();
 

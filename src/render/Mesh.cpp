@@ -111,7 +111,7 @@ namespace Render {
 		}
 		else {
 			vector<ObjectSpatial*> culled_triangles;
-			triangleTree->appendQuery(&culled_triangles, *bounding_object, CULLING_QUERY_TYPE);
+			triangleTree->appendQuery(culled_triangles, *bounding_object, CULLING_QUERY_TYPE);
 
 			glBegin(GL_TRIANGLES);
 			for (unsigned int i = 0; i < culled_triangles.size(); i++) {

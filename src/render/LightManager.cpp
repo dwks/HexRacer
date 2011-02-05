@@ -77,7 +77,7 @@ namespace Render {
 			return;
 
 		vector<ObjectSpatial*> visible_lights;
-		light_tree->appendQuery(&visible_lights, object, SpatialContainer::INTERSECT);
+		light_tree->appendQuery(visible_lights, object, SpatialContainer::INTERSECT);
 
 		if (visible_lights.empty())
 			return;

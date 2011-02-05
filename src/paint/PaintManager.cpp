@@ -3,6 +3,7 @@
 #include "math/BoundingSphere.h"
 #include "render/ColorConstants.h"
 #include "event/ObserverList.h"
+#include "settings/SettingsManager.h"
 using namespace Project;
 using namespace Math;
 using namespace Render;
@@ -74,9 +75,9 @@ namespace Paint {
 		vector<ObjectSpatial*> visible_cells;
 
 		if (bounding_object)
-			coloredPaintTree->appendQuery(&visible_cells, *bounding_object, SpatialContainer::NEARBY);
+			coloredPaintTree->appendQuery(visible_cells, *bounding_object, SpatialContainer::NEARBY);
 		else
-			coloredPaintTree->appendAll(&visible_cells);
+			coloredPaintTree->appendAll(visible_cells);
 
 		for (unsigned int i = 0; i < visible_cells.size(); i++) {
 
@@ -100,12 +101,12 @@ namespace Paint {
 
 		vector<ObjectSpatial*> visible_cells;
 
-		coloredPaintTree->appendQuery(&visible_cells, bounding_box, SpatialContainer::NEARBY);
+		coloredPaintTree->appendQuery(visible_cells, bounding_box, SpatialContainer::NEARBY);
 
 		GLfloat values [4];
 		glGetFloatv(GL_VIEWPORT, values);
 		float viewportWidth = values[3];
-		glPointSize(viewportWidth/62.5f);
+		glPointSize(viewportWidth/GET_SETTING("render.minimap.height", 60.0));
 		glBegin(GL_POINTS);
 		for (unsigned int i = 0; i < visible_cells.size(); i++) {
 
@@ -131,9 +132,9 @@ namespace Paint {
 		vector<ObjectSpatial*> candidate_cells;
 
 		if (new_color >= 0)
-			neutralPaintTree->appendQuery(&candidate_cells, query_sphere, SpatialContainer::NEARBY);
+			neutralPaintTree->appendQuery(candidate_cells, query_sphere, SpatialContainer::NEARBY);
 		else
-			coloredPaintTree->appendQuery(&candidate_cells, query_sphere, SpatialContainer::NEARBY);
+			coloredPaintTree->appendQuery(candidate_cells, query_sphere, SpatialContainer::NEARBY);
 
 		for (unsigned int i = 0; i < candidate_cells.size(); i++) {
 
@@ -155,7 +156,7 @@ namespace Paint {
         
 		BoundingSphere query_sphere(centroid, radius);
 		vector<ObjectSpatial*> candidate_cells;
-		coloredPaintTree->appendQuery(&candidate_cells, query_sphere, SpatialContainer::NEARBY);
+		coloredPaintTree->appendQuery(candidate_cells, query_sphere, SpatialContainer::NEARBY);
         
 		for (unsigned int i = 0; i < candidate_cells.size(); i++) {
 			PaintCell *cell = static_cast<PaintCell *>(candidate_cells[i]);
