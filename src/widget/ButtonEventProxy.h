@@ -13,7 +13,7 @@ private:
 public:
     ButtonEventProxy(ButtonWidget *widget) : widget(widget) {}
     
-    virtual void visit(WidgetFocusEvent *event);
+    virtual void visit(MouseMoveEvent *event);
     virtual void visit(WidgetActivateEvent *event);
 };
 

@@ -5,7 +5,7 @@
 namespace Project {
 namespace Widget {
 
-void CompositeEventProxy::visit(WidgetFocusEvent *event) {
+void CompositeEventProxy::visit(MouseMoveEvent *event) {
     // nyi
 }
 

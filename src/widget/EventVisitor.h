@@ -4,14 +4,14 @@
 namespace Project {
 namespace Widget {
 
-class WidgetFocusEvent;
+class MouseMoveEvent;
 class WidgetActivateEvent;
 
 class EventVisitor {
 public:
     virtual ~EventVisitor() {}
     
-    virtual void visit(WidgetFocusEvent *event) = 0;
+    virtual void visit(MouseMoveEvent *event) = 0;
     virtual void visit(WidgetActivateEvent *event) = 0;
 };
 

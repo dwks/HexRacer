@@ -14,7 +14,7 @@ private:
 public:
     CompositeEventProxy(CompositeWidget *widget) : widget(widget), proxy(0) {}
     
-    virtual void visit(WidgetFocusEvent *event);
+    virtual void visit(MouseMoveEvent *event);
     virtual void visit(WidgetActivateEvent *event);
 };
 

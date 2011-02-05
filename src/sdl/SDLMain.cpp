@@ -462,7 +462,7 @@ void SDLMain::render() {
 	if(GET_SETTING("render.drawpathnodes", false))
 		renderAIDebug();
 
-	GLfloat clip_plane [4] = {0.0f, 0.0f, lod_threshhold, 0.0f};
+	GLdouble clip_plane [4] = {0.0f, 0.0f, lod_threshhold, 0.0f};
 
 	if (lod_threshhold < 1.0) {
 

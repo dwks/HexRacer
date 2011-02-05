@@ -1,5 +1,5 @@
-#ifndef PROJECT_WIDGET__WIDGET_FOCUS_EVENT_H
-#define PROJECT_WIDGET__WIDGET_FOCUS_EVENT_H
+#ifndef PROJECT_WIDGET__MOUSE_MOVE_EVENT_H
+#define PROJECT_WIDGET__MOUSE_MOVE_EVENT_H
 
 #include "WidgetEvent.h"
 #include "WidgetPoint.h"
@@ -11,7 +11,7 @@ class MouseMoveEvent : public WidgetEvent {
 private:
     WidgetPoint where;
 public:
-    WidgetFocusEvent(WidgetPoint where) : where(where) {}
+    MouseMoveEvent(WidgetPoint where) : where(where) {}
     
     WidgetPoint getWhere() const { return where; }
     
