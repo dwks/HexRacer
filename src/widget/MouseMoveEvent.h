@@ -2,25 +2,21 @@
 #define PROJECT_WIDGET__WIDGET_FOCUS_EVENT_H
 
 #include "WidgetEvent.h"
+#include "WidgetPoint.h"
 
 namespace Project {
 namespace Widget {
 
-class WidgetFocusEvent : public WidgetEvent {
-public:
-    enum focus_t {
-        KEYBOARD_FOCUS,
-        MOUSE_FOCUS
-    };
+class MouseMoveEvent : public WidgetEvent {
 private:
-    unsigned focus;
+    WidgetPoint where;
 public:
-    WidgetFocusEvent(unsigned focus) : focus(focus) {}
+    WidgetFocusEvent(WidgetPoint where) : where(where) {}
     
-    unsigned getFocus() const { return focus; }
+    WidgetPoint getWhere() const { return where; }
     
     virtual void accept(EventVisitor &visitor) { visitor.visit(this); }
-    virtual event_type_t getType() const { return EVENT_FOCUS; }
+    virtual event_type_t getType() const { return EVENT_MOUSE_MOVE; }
 };
 
 }  // namespace Widget
