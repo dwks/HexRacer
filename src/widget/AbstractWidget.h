@@ -32,6 +32,8 @@ public:
     virtual void addEventProxy(EventProxy *proxy);
     virtual void removeAllEventProxies();
     
+    virtual WidgetBase *getChild(const std::string &name) { return NULL; }
+    
     virtual std::string getName() const { return name; }
 protected:
     void setName(const std::string &newName) { name = newName; }

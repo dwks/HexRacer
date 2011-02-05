@@ -12,6 +12,7 @@
 #include "event/PauseGame.h"
 
 #include "settings/SettingsManager.h"
+#include "timing/AccelControl.h"
 
 namespace Project {
 namespace SDL {
@@ -79,11 +80,10 @@ void InputManager::doPausedChecks() {
     if(keyDown[SDLK_F1]) {
         keyDown[SDLK_F1] = false;
         
-        static bool pause = false;
+        bool pause = Timing::AccelControl::getInstance()->getPaused();
         pause = !pause;
         
         LOG2(SDL, INPUT, (pause ? "Game paused" : "Game unpaused"));
-        
         EMIT_EVENT(new Event::PauseGame(pause));
     }
     if(keyDown[SDLK_F5]) {

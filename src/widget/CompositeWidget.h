@@ -27,6 +27,7 @@ public:
     CompositeWidget(const std::string &name);
     
     void addChild(WidgetBase *widget);
+    virtual WidgetBase *getChild(const std::string &name);
     
     IteratorType getIterator() { return IteratorType(childList); }
     

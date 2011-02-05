@@ -59,6 +59,12 @@ public:
     */
     virtual void removeAllEventProxies() = 0;
     
+    /** Returns a pointer to the child with name @a name. The return value may
+        be NULL if the child does not exist or if this widget does not support
+        querying children.
+    */
+    virtual WidgetBase *getChild(const std::string &name) = 0;
+    
     /** Returns the name of this widget; each widget should have a unique name
         amongst its siblings, so that name-based lookups are possible.
     */

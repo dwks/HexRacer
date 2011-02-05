@@ -19,7 +19,7 @@ void ButtonEventProxy::visit(MouseButtonEvent *event) {
             // nothing yet
         }
         else {
-            WidgetActivateEvent newEvent(true);
+            WidgetActivateEvent newEvent(widget, true);
             
             LOG(WIDGET, "Button \"" << widget->getName()
                 << "\" clicked at " << event->getWhere());

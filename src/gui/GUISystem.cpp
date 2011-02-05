@@ -1,6 +1,7 @@
 #include "GUISystem.h"
-#include "widget/WidgetRenderer.h"
+#include "PauseMenuProxy.h"
 
+#include "widget/WidgetRenderer.h"
 #include "widget/ButtonWidget.h"
 
 namespace Project {
@@ -27,6 +28,11 @@ void GUISystem::construct() {
     
     widgets->addChild(new Widget::ButtonWidget("quit",
         "Quit", Widget::WidgetRect(0.3, 0.4 + 0.15, 0.4, 0.1)));
+    
+    widgets->getChild("help")->addEventProxy(new PauseMenuProxy());
+    widgets->getChild("resume")->addEventProxy(new PauseMenuProxy());
+    widgets->getChild("settings")->addEventProxy(new PauseMenuProxy());
+    widgets->getChild("quit")->addEventProxy(new PauseMenuProxy());
 }
 
 void GUISystem::render() {
@@ -39,6 +45,21 @@ void GUISystem::render() {
 
 void GUISystem::handleEvent(Widget::WidgetEvent *event) {
     widgets->handleEvent(event);
+}
+
+Widget::WidgetBase *GUISystem::getWidget(const std::string &path) {
+    Widget::WidgetBase *widget = this->widgets;
+    
+    std::string::size_type start = 0, end;
+    do {
+        end = path.find('/');
+        
+        widget = widget->getChild(path.substr(start, end));
+        
+        start = end + 1;
+    } while(widget && end != std::string::npos);
+    
+    return widget;
 }
 
 }  // namespace GUI

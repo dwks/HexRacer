@@ -7,12 +7,17 @@
 namespace Project {
 namespace Widget {
 
+class WidgetBase;
+
 class WidgetActivateEvent : public WidgetEvent {
 private:
+    WidgetBase *widget;
     bool down;
 public:
-    WidgetActivateEvent(bool down) : down(down) {}
+    WidgetActivateEvent(WidgetBase *widget, bool down)
+        : widget(widget), down(down) {}
     
+    WidgetBase *getWidget() { return widget; }
     bool getDown() const { return down; }
     
     virtual void accept(EventVisitor &visitor) { visitor.visit(this); }

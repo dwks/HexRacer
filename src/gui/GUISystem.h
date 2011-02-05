@@ -21,6 +21,8 @@ public:
     
     void render();
     void handleEvent(Widget::WidgetEvent *event);
+    
+    Widget::WidgetBase *getWidget(const std::string &path);
 };
 
 }  // namespace GUI
