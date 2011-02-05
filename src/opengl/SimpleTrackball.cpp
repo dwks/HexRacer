@@ -43,8 +43,16 @@ Point SimpleTrackball::getSpherePoint() {
 }
 
 void SimpleTrackball::setSpherePoint(Point point) {
-	setLongitude(Geometry::vectorTo2DAngle(Point::point2D(point, Y_AXIS), Y_AXIS));
-	setLatitude(Geometry::vectorTo2DAngle(Point(1.0, point.getY(), 0.0)));
+
+	point.normalize();
+
+	Math::Point longitude_vector = Point::point2D(point, Y_AXIS);
+
+	setLongitude(Geometry::vectorTo2DAngle(longitude_vector, Y_AXIS));
+
+	//float new_latitude = Geometry::vectorTo2DAngle(Point(longitude_vector.length(), point.getY(), 0.0));
+	float new_latitude = asin(point.getY());
+	setLatitude(new_latitude);
 }
 
 void SimpleTrackball::updateSpherePoint() {
@@ -59,6 +67,7 @@ void SimpleTrackball::setLongitude(double _longitude) {
 }
 
 void SimpleTrackball::setLatitude(double _latitude) {
+	latitude = smartMod(_latitude, PI*2.0);
 	latitude = bound(_latitude, -PI*0.45, PI*0.45);
 	updateSpherePoint();
 }
