@@ -263,6 +263,7 @@ void SDLMain::run() {
     
     gui = new Widget::GUISystem();
     gui->construct();
+    guiInputManager = new GUIInputManager(gui);
     
     LOG2(GLOBAL, PROGRESS, "Entering main game loop");
     Uint32 lastTime = SDL_GetTicks();
@@ -419,6 +420,10 @@ void SDLMain::handleEvents() {
         case SDL_KEYUP:
             inputManager->handleEvent(&event);
             break;
+        }
+        
+        if(Timing::AccelControl::getInstance()->getPaused()) {
+            guiInputManager->handleEvent(&event);
         }
     }
 }

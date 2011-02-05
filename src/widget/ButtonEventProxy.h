@@ -14,7 +14,7 @@ public:
     ButtonEventProxy(ButtonWidget *widget) : widget(widget) {}
     
     virtual void visit(MouseMoveEvent *event);
-    virtual void visit(WidgetActivateEvent *event);
+    virtual void visit(MouseButtonEvent *event);
 };
 
 }  // namespace Widget

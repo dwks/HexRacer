@@ -1,19 +1,23 @@
 #ifndef PROJECT_WIDGET__ABSTRACT_WIDGET_H
 #define PROJECT_WIDGET__ABSTRACT_WIDGET_H
 
+#include <vector>
+
 #include "WidgetBase.h"
 
 namespace Project {
 namespace Widget {
 
 class AbstractWidget : public WidgetBase {
+protected:
+    typedef std::vector<EventProxy *> proxy_list_t;
 private:
     std::string name;
     Layout *layout;
-    EventProxy *proxy;
+    proxy_list_t proxyList;
 public:
     AbstractWidget(const std::string &name)
-        : name(name), layout(0), proxy(0) {}
+        : name(name), layout(0) {}
     virtual ~AbstractWidget();
     
     virtual void updateLayout();
@@ -25,8 +29,8 @@ public:
     
     virtual void handleEvent(WidgetEvent *event);
     
-    virtual EventProxy *getEventProxy() const { return proxy; }
-    virtual void setEventProxy(EventProxy *proxy) { this->proxy = proxy; }
+    virtual void addEventProxy(EventProxy *proxy);
+    virtual void removeAllEventProxies();
     
     virtual std::string getName() const { return name; }
 protected:

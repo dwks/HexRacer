@@ -10,6 +10,10 @@ namespace Widget {
 class EventProxy : public EventVisitor {
 public:
     virtual ~EventProxy() {}
+    
+    virtual void visit(MouseMoveEvent *event) {}
+    virtual void visit(MouseButtonEvent *event) {}
+    virtual void visit(WidgetActivateEvent *event) {}
 };
 
 }  // namespace Widget

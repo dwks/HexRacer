@@ -37,6 +37,10 @@ void GUISystem::render() {
     renderer.end();
 }
 
+void GUISystem::handleEvent(WidgetEvent *event) {
+    widgets->handleEvent(event);
+}
+
 void GUISystem::setScreenSize(int width, int height) {
     screenSize = WidgetPoint(width, height);
 }

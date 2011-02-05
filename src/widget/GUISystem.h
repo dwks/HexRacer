@@ -7,6 +7,8 @@
 namespace Project {
 namespace Widget {
 
+class WidgetEvent;
+
 class GUISystem {
 private:
     Render::FontManager *fontManager;
@@ -19,6 +21,7 @@ public:
     void construct();
     
     void render();
+    void handleEvent(WidgetEvent *event);
     
     void setScreenSize(int width, int height);
 };

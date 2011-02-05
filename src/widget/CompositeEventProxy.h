@@ -10,12 +10,11 @@ namespace Widget {
 class CompositeEventProxy : public EventProxy {
 private:
     CompositeWidget *widget;
-    WidgetBase *proxy;
 public:
-    CompositeEventProxy(CompositeWidget *widget) : widget(widget), proxy(0) {}
+    CompositeEventProxy(CompositeWidget *widget) : widget(widget) {}
     
     virtual void visit(MouseMoveEvent *event);
-    virtual void visit(WidgetActivateEvent *event);
+    virtual void visit(MouseButtonEvent *event);
 };
 
 }  // namespace Widget

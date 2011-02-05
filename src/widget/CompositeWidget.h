@@ -24,7 +24,7 @@ public:
         bool hasNext() const { return it != end; }
     };
 public:
-    CompositeWidget(const std::string &name) : AbstractWidget(name) {}
+    CompositeWidget(const std::string &name);
     
     void addChild(WidgetBase *widget);
     

@@ -13,7 +13,6 @@ private:
     BoxWidget *box;
     TextWidget *text;
 public:
-    ButtonWidget(const std::string &name) : AbstractWidget(name) {}
     ButtonWidget(const std::string &name, const std::string &data,
         const WidgetRect &bounds);
     virtual ~ButtonWidget();

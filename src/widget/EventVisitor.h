@@ -5,6 +5,7 @@ namespace Project {
 namespace Widget {
 
 class MouseMoveEvent;
+class MouseButtonEvent;
 class WidgetActivateEvent;
 
 class EventVisitor {
@@ -12,6 +13,7 @@ public:
     virtual ~EventVisitor() {}
     
     virtual void visit(MouseMoveEvent *event) = 0;
+    virtual void visit(MouseButtonEvent *event) = 0;
     virtual void visit(WidgetActivateEvent *event) = 0;
 };
 

@@ -7,6 +7,7 @@ namespace Widget {
 
 AbstractWidget::~AbstractWidget() {
     delete layout;
+    removeAllEventProxies();
 }
 
 void AbstractWidget::updateLayout() {
@@ -22,7 +23,27 @@ WidgetRect AbstractWidget::getBoundingRect() const {
 }
 
 void AbstractWidget::handleEvent(WidgetEvent *event) {
-    event->accept(*proxy);
+    for(proxy_list_t::iterator i = proxyList.begin(); i != proxyList.end();
+        ++ i) {
+        
+        EventProxy *proxy = *i;
+        event->accept(*proxy);
+    }
+}
+
+void AbstractWidget::addEventProxy(EventProxy *proxy) {
+    proxyList.push_back(proxy);
+}
+
+void AbstractWidget::removeAllEventProxies() {
+    for(proxy_list_t::iterator i = proxyList.begin(); i != proxyList.end();
+        ++ i) {
+        
+        EventProxy *proxy = *i;
+        delete proxy;
+    }
+    
+    proxyList.clear();
 }
 
 }  // namespace Widget

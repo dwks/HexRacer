@@ -8,6 +8,7 @@
 #include "NetworkPortal.h"
 #include "PlayerManager.h"
 #include "InputManager.h"
+#include "GUIInputManager.h"
 #include "ClientData.h"
 
 #include "render/RenderManager.h"
@@ -59,6 +60,7 @@ private:
     
     Projector projector;
     InputManager *inputManager;
+    GUIInputManager *guiInputManager;
     NetworkPortal *network;
     PlayerManager *playerManager;
     Object::WorldManager *worldManager;
