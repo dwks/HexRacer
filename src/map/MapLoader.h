@@ -13,7 +13,7 @@ public:
         
         @param mapRenderable can be NULL if no rendering is required.
     */
-    void load(HRMap *&map, Render::RenderList *mapRenderable);
+    void load(HRMap *map, Render::RenderList *mapRenderable);
 };
 
 }  // namespace Map

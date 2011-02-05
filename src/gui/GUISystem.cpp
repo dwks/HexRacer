@@ -4,6 +4,7 @@
 
 #include "widget/WidgetRenderer.h"
 #include "widget/ButtonWidget.h"
+#include "widget/NormalTextLayout.h"
 
 namespace Project {
 namespace GUI {
@@ -23,18 +24,32 @@ void GUISystem::construct() {
             = new Widget::CompositeWidget("main");
         widgets->addChild(main);
         
+        main->addChild(new Widget::TextWidget("title", OpenGL::Color::WHITE,
+            "HexRacer",
+            Widget::NormalTextLayout::ALIGN_HCENTRE | Widget::NormalTextLayout::ALIGN_TOP));
+        
+        main->getChild("title")->updateLayout(
+            Widget::WidgetRect(0.0, 0.1, 1.0, 0.2));
+        
         main->addChild(new Widget::ButtonWidget("host", "Host game",
             Widget::WidgetRect(0.1, 0.5, 0.4, 0.05)));
         main->addChild(new Widget::ButtonWidget("join", "Join game",
             Widget::WidgetRect(0.1, 0.6, 0.4, 0.05)));
+        main->addChild(new Widget::ButtonWidget("single", "Single-player",
+            Widget::WidgetRect(0.1, 0.7, 0.4, 0.05)));
         
-        main->addChild(new Widget::ButtonWidget("about", "About",
+        main->addChild(new Widget::ButtonWidget("settings", "Settings",
             Widget::WidgetRect(0.55, 0.5, 0.4, 0.05)));
-        main->addChild(new Widget::ButtonWidget("quit", "Quit",
+        main->addChild(new Widget::ButtonWidget("about", "About",
             Widget::WidgetRect(0.55, 0.6, 0.4, 0.05)));
+        main->addChild(new Widget::ButtonWidget("quit", "Quit",
+            Widget::WidgetRect(0.55, 0.7, 0.4, 0.05)));
         
         getWidget("main/host")->addEventProxy(new MainMenuProxy());
         getWidget("main/join")->addEventProxy(new MainMenuProxy());
+        getWidget("main/single")->addEventProxy(new MainMenuProxy());
+        
+        getWidget("main/settings")->addEventProxy(new MainMenuProxy());
         getWidget("main/about")->addEventProxy(new MainMenuProxy());
         getWidget("main/quit")->addEventProxy(new MainMenuProxy());
     }

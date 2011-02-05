@@ -38,8 +38,8 @@ void ObserverList::notifyObservers(EventBase *event, bool freeEvent) {
             << typeid(*event).name());
     }
     
-    for(observer_list_t::iterator i = list.begin(); i != list.end(); ++ i) {
-        (*i)->observe(event);
+    for(observer_list_t::size_type x = 0; x < list.size(); x ++) {
+        list[x]->observe(event);
     }
     
     if(freeEvent) delete event;

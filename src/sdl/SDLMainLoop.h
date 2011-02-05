@@ -8,6 +8,7 @@
 
 #include "event/QuitEvent.h"
 #include "event/JoinGame.h"
+#include "event/TypedObserver.h"
 
 #include "timing/AccelControl.h"
 
@@ -59,6 +60,7 @@ public:
     void setQuit() { quit = true; }
 private:
     void initSDL();
+    void initOpenGL();
 private:
     void handleEvents();
     void doRender();

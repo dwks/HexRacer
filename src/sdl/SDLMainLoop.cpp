@@ -27,16 +27,22 @@ void SDLMainLoop::QuitObserver::observe(Event::QuitEvent *event) {
 
 void SDLMainLoop::JoinGameObserver::observe(Event::JoinGame *event) {
     LoopBase *loop = new GameLoop(event->getHost(), event->getPort());
+    loop->construct();
     
     mainLoop->useLoopBase(loop);
 }
 
 SDLMainLoop::SDLMainLoop() {
     quit = false;
+   
+    // it's dangerous to add observers inside a constructor, but in this case
+    // we know that SDLMainLoop was not constructed from within an event, so
+    // it's okay.
     ADD_OBSERVER(new QuitObserver(this));
     ADD_OBSERVER(new JoinGameObserver(this));
     
     initSDL();
+    initOpenGL();
     
     menuLoop = new MenuLoop();
     loop = menuLoop;
@@ -74,7 +80,7 @@ void SDLMainLoop::initSDL() {
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     
-    SDL_WM_SetCaption("The Project", NULL);
+    SDL_WM_SetCaption("HexRacer", NULL);
     
     int width = GET_SETTING("display.width", 0);
     int height = GET_SETTING("display.height", 0);
@@ -86,6 +92,17 @@ void SDLMainLoop::initSDL() {
     }
     
     SDL_SetVideoMode(width, height, bpp, sdl_init_flags);
+}
+
+void SDLMainLoop::initOpenGL() {
+    glewInit();
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_RESCALE_NORMAL);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  // note: must match TextWidget
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
 }
 
 void SDLMainLoop::resizeGL(int width, int height) {
@@ -117,6 +134,11 @@ void SDLMainLoop::run() {
         new Timing::AccelControl());
     accelControl->setPauseSkipDirectly(lastTime);
     
+    // set up camera if necessary
+    loop->setProjection(Point2D(
+        SDL_GetVideoSurface()->w,
+        SDL_GetVideoSurface()->h));
+    
     while(!quit) {
         handleEvents();
         
@@ -141,7 +163,7 @@ void SDLMainLoop::handleEvents() {
     while(SDL_PollEvent(&event)) {
         switch(event.type) {
         case SDL_QUIT:
-            setQuit();
+            EMIT_EVENT(new Event::QuitEvent());
             break;
         case SDL_VIDEORESIZE:
             SDL_SetVideoMode(event.resize.w, event.resize.h,
