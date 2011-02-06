@@ -52,7 +52,8 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	//Edit Menu
 	editMenu = new QMenu("&Edit", this);
 	editMenu->addAction("&Delete", mapEditor, SLOT(deleteSelected()), QKeySequence(Qt::Key_Delete));
-	editMenu->addAction("&Delete All", mapEditor, SLOT(deleteAll()), QKeySequence(Qt::Key_Delete));
+	editMenu->addAction("&Delete All", mapEditor, SLOT(deleteAll()),
+        QKeySequence(Qt::Key_Control + Qt::Key_Delete));
 
 	//Meshes Menu
 	meshMenu = new QMenu("&Mesh", this);
