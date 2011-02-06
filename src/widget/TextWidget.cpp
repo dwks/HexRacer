@@ -2,6 +2,7 @@
 
 #include "TextWidget.h"
 #include "NormalTextLayout.h"
+#include "WidgetRenderer.h"
 
 #include "render/FontManager.h"
 
@@ -112,10 +113,10 @@ void TextWidget::render() {
     topRight.addX(width);
     lowerRight.addX(width);
     
-    glTexCoord2i(0, 0); this->glVertex(topLeft);
-    glTexCoord2i(1, 0); this->glVertex(topRight);
-    glTexCoord2i(1, 1); this->glVertex(lowerRight);
-    glTexCoord2i(0, 1); this->glVertex(lowerLeft);
+    glTexCoord2i(0, 0); WidgetRenderer::glVertex(topLeft);
+    glTexCoord2i(1, 0); WidgetRenderer::glVertex(topRight);
+    glTexCoord2i(1, 1); WidgetRenderer::glVertex(lowerRight);
+    glTexCoord2i(0, 1); WidgetRenderer::glVertex(lowerLeft);
     
     glEnd();
     
@@ -124,10 +125,6 @@ void TextWidget::render() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     glDisable(GL_TEXTURE_2D);
-}
-
-void TextWidget::glVertex(const WidgetPoint &point) {
-    glVertex2d(point.getX(), point.getY());
 }
 
 }  // namespace Widget

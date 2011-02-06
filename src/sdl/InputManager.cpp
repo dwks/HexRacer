@@ -41,6 +41,11 @@ void InputManager::handleEvent(SDL_Event *event) {
         break;
     case SDL_KEYUP:
         keyDown[event->key.keysym.sym] = false;
+        
+        if(event->key.keysym.sym == SDLK_ESCAPE) {
+            EMIT_EVENT(new Event::QuitEvent());
+        }
+        
         break;
     }
 }
@@ -76,9 +81,6 @@ void InputManager::doAction(unsigned long currentTime) {
 }
 
 void InputManager::doPausedChecks() {
-    if(keyDown[SDLK_ESCAPE]) {
-        EMIT_EVENT(new Event::QuitEvent());
-    }
     if(keyDown[SDLK_F1]) {
         keyDown[SDLK_F1] = false;
         

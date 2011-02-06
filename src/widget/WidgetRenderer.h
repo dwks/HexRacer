@@ -20,8 +20,8 @@ public:
     virtual void visit(TextWidget *widget);
     virtual void visit(ButtonWidget *widget);
     virtual void visit(CompositeWidget *widget);
-private:
-    void glVertex(const WidgetPoint &point);
+public:
+    static void glVertex(const WidgetPoint &point);
 };
 
 }  // namespace Widget

@@ -14,11 +14,13 @@ namespace GUI {
 
 GUISystem::~GUISystem() {
     delete widgets;
+    delete textureList;
     delete fontManager;
 }
 
 void GUISystem::construct() {
     fontManager = new Render::FontManager();
+    textureList = new Render::WidgetTextureList();
     
     widgets = new Widget::CompositeWidget("gui");
     

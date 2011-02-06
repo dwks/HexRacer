@@ -40,21 +40,7 @@ void WidgetRenderer::end() {
 }
 
 void WidgetRenderer::visit(BoxWidget *widget) {
-    WidgetPoint corner = widget->getBoundingRect().getCorner();
-    WidgetPoint dimensions = widget->getBoundingRect().getDimensions();
-    
-    glColor3f(0.0f, 0.0f, 0.0f);
-    
-    //LOG(WIDGET, "box at " << widget->getBoundingRect());
-    
-    glBegin(GL_QUADS);
-    
-    this->glVertex(corner);
-    this->glVertex(corner.plusXOf(dimensions));
-    this->glVertex(corner + dimensions);
-    this->glVertex(corner.plusYOf(dimensions));
-    
-    glEnd();
+    widget->render();
 }
 
 void WidgetRenderer::visit(TextWidget *widget) {

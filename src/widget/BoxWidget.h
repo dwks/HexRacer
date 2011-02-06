@@ -10,6 +10,8 @@ class BoxWidget : public AbstractWidget {
 public:
     BoxWidget(const std::string &name) : AbstractWidget(name) {}
     
+    void render();
+    
     virtual void accept(WidgetVisitor &visitor) { visitor.visit(this); }
 };
 

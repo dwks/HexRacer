@@ -4,6 +4,7 @@
 #include "widget/CompositeWidget.h"
 #include "widget/WidgetEvent.h"
 #include "render/FontManager.h"
+#include "render/WidgetTextureList.h"
 
 namespace Project {
 namespace GUI {
@@ -11,6 +12,7 @@ namespace GUI {
 class GUISystem {
 private:
     Render::FontManager *fontManager;
+    Render::WidgetTextureList *textureList;
     Widget::CompositeWidget *widgets;
     Widget::WidgetBase *currentScreen;
     Widget::WidgetPoint screenSize;
