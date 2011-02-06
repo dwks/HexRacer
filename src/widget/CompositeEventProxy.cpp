@@ -1,6 +1,7 @@
 #include "CompositeEventProxy.h"
 
 #include "MouseButtonEvent.h"
+#include "KeyEvent.h"
 
 #include "log/Logger.h"
 
@@ -19,6 +20,15 @@ void CompositeEventProxy::visit(MouseButtonEvent *event) {
         if(child->getBoundingRect().pointInside(event->getWhere())) {
             child->handleEvent(event);
         }
+    }
+}
+
+void CompositeEventProxy::visit(KeyEvent *event) {
+    CompositeWidget::IteratorType i = widget->getIterator();
+    while(i.hasNext()) {
+        WidgetBase *child = i.next();
+        
+        child->handleEvent(event);
     }
 }
 

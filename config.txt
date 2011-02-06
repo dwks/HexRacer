@@ -24,7 +24,7 @@ physics.constant.gravity          = 12
 
 # Acceleration and responsiveness of input
 physics.constant.turn             = 0.15
-physics.constant.accel            = 3.2
+physics.constant.accel            = 3.5
 physics.constant.centripetal      = 1.0
 
 # Vehicle suspension
@@ -32,13 +32,13 @@ physics.driving.enablesuspension  = 1
 physics.driving.minlength         = 0.0
 physics.driving.restlength        = 0.5
 physics.driving.stretchlength     = 1.0
-physics.driving.constant.k        = 2.0
+physics.driving.constant.k        = 5.0
 physics.driving.constant.c        = 30.0
 
 # Drag forces
-physics.driving.lineardrag        = 0.4
+physics.driving.lineardrag        = 0.5
 physics.driving.angulardrag       = 0.5
-physics.driving.sidewaysdrag      = 10.0
+physics.driving.sidewaysdrag      = 20.0
 
 ########
 ### Rendering settings

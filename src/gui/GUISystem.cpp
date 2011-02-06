@@ -5,6 +5,9 @@
 #include "widget/WidgetRenderer.h"
 #include "widget/ButtonWidget.h"
 #include "widget/NormalTextLayout.h"
+#include "widget/KeyboardShortcutProxy.h"
+
+#include "SDL_events.h"
 
 namespace Project {
 namespace GUI {
@@ -44,6 +47,11 @@ void GUISystem::construct() {
             Widget::WidgetRect(0.55, 0.6, 0.4, 0.05)));
         main->addChild(new Widget::ButtonWidget("quit", "Quit",
             Widget::WidgetRect(0.55, 0.7, 0.4, 0.05)));
+        
+        setShortcut(getWidget("main/join"), SDLK_j);
+        
+        setShortcut(getWidget("main/quit"), SDLK_q);
+        setShortcut(getWidget("main/quit"), SDLK_ESCAPE);
         
         getWidget("main/host")->addEventProxy(new MainMenuProxy());
         getWidget("main/join")->addEventProxy(new MainMenuProxy());
@@ -107,6 +115,10 @@ Widget::WidgetBase *GUISystem::getWidget(const std::string &path) {
     } while(widget && end != std::string::npos);
     
     return widget;
+}
+
+void GUISystem::setShortcut(Widget::WidgetBase *widget, long key) {
+    widget->addEventProxy(new Widget::KeyboardShortcutProxy(widget, key));
 }
 
 }  // namespace GUI

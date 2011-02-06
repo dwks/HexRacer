@@ -2,6 +2,7 @@
 
 #include "widget/MouseMoveEvent.h"
 #include "widget/MouseButtonEvent.h"
+#include "widget/KeyEvent.h"
 
 namespace Project {
 namespace SDL {
@@ -37,6 +38,14 @@ void GUIInputManager::handleEvent(SDL_Event *event) {
         gui->handleEvent(&widgetEvent);
         
         break;
+    }
+    case SDL_KEYDOWN:
+    case SDL_KEYUP: {
+        long key = event->key.keysym.sym;
+        bool down = (event->type == SDL_KEYDOWN);
+        
+        Widget::KeyEvent widgetEvent(key, down);
+        gui->handleEvent(&widgetEvent);
     }
     default:
         break;
