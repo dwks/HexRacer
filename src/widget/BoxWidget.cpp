@@ -9,13 +9,17 @@
 namespace Project {
 namespace Widget {
 
+void BoxWidget::setArtwork(const std::string &artwork) {
+    this->artwork = artwork;
+}
+
 void BoxWidget::render() {
     WidgetPoint corner = getBoundingRect().getCorner();
     WidgetPoint dimensions = getBoundingRect().getDimensions();
     
     Render::WidgetTextureList *textureList
         = Render::WidgetTextureList::getInstance();
-    unsigned id = textureList->getTexture("corners/out/normal");
+    unsigned id = textureList->getTexture(artwork);
     
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, id);

@@ -3,6 +3,8 @@
 
 #include "widget/CompositeWidget.h"
 #include "widget/WidgetEvent.h"
+#include "widget/FocusManager.h"
+
 #include "render/FontManager.h"
 #include "render/WidgetTextureList.h"
 
@@ -13,8 +15,11 @@ class GUISystem {
 private:
     Render::FontManager *fontManager;
     Render::WidgetTextureList *textureList;
+    Widget::FocusManager *focusManager;
+    
     Widget::CompositeWidget *widgets;
     Widget::WidgetBase *currentScreen;
+    
     Widget::WidgetPoint screenSize;
 public:
     GUISystem() : widgets(0), currentScreen(0) {}

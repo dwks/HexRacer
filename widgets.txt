@@ -20,3 +20,11 @@ Observers
  *  activated (button clicked, checkbox toggled)
     text data entered
     item selected
+
+States
+    keyboard focus [bool enter]
+        key press events are sent to this widget
+    hover (mouse) focus [bool enter]
+        mouse move events are sent to this widget
+    click focus [press, cancel, release]
+        mouse button events are sent to this widget

@@ -5,6 +5,7 @@
 #include "widget/WidgetRenderer.h"
 #include "widget/ButtonWidget.h"
 #include "widget/NormalTextLayout.h"
+#include "widget/MouseButtonEvent.h"
 #include "widget/KeyboardShortcutProxy.h"
 
 #include "SDL_events.h"
@@ -21,6 +22,7 @@ GUISystem::~GUISystem() {
 void GUISystem::construct() {
     fontManager = new Render::FontManager();
     textureList = new Render::WidgetTextureList();
+    focusManager = new Widget::FocusManager();
     
     widgets = new Widget::CompositeWidget("gui");
     
@@ -98,6 +100,16 @@ void GUISystem::render() {
 
 void GUISystem::handleEvent(Widget::WidgetEvent *event) {
     currentScreen->handleEvent(event);
+    
+    if(dynamic_cast<Widget::MouseButtonEvent *>(event)) {
+        Widget::MouseButtonEvent *button
+            = dynamic_cast<Widget::MouseButtonEvent *>(event);
+        if(button->getButton() == Widget::MouseButtonEvent::BUTTON_LEFT
+            && !button->getDown()) {
+            
+            focusManager->setClickFocus(NULL);
+        }
+    }
 }
 
 void GUISystem::selectScreen(const std::string &screen) {

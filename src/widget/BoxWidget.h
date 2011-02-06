@@ -7,8 +7,13 @@ namespace Project {
 namespace Widget {
 
 class BoxWidget : public AbstractWidget {
+private:
+    std::string artwork;
 public:
-    BoxWidget(const std::string &name) : AbstractWidget(name) {}
+    BoxWidget(const std::string &name)
+        : AbstractWidget(name), artwork("corners/out/normal") {}
+    
+    void setArtwork(const std::string &artwork);
     
     void render();
     

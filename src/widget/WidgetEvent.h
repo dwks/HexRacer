@@ -14,7 +14,8 @@ public:
         EVENT_MOUSE_MOVE,
         EVENT_MOUSE_BUTTON,
         EVENT_KEY,
-        EVENT_ACTIVATE
+        EVENT_ACTIVATE,
+        EVENT_FOCUS
     };
 public:
     WidgetEvent() {}
