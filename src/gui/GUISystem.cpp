@@ -39,18 +39,18 @@ void GUISystem::construct() {
             Widget::WidgetRect(0.0, 0.1, 1.0, 0.2));
         
         main->addChild(new Widget::ButtonWidget("host", "Host game",
-            Widget::WidgetRect(0.1, 0.5, 0.4, 0.05)));
+            Widget::WidgetRect(0.03, 0.6, 0.42, 0.08)));
         main->addChild(new Widget::ButtonWidget("join", "Join game",
-            Widget::WidgetRect(0.1, 0.6, 0.4, 0.05)));
+            Widget::WidgetRect(0.03, 0.7, 0.42, 0.08)));
         main->addChild(new Widget::ButtonWidget("single", "Single-player",
-            Widget::WidgetRect(0.1, 0.7, 0.4, 0.05)));
+            Widget::WidgetRect(0.03, 0.8, 0.42, 0.08)));
         
         main->addChild(new Widget::ButtonWidget("settings", "Settings",
-            Widget::WidgetRect(0.55, 0.5, 0.4, 0.05)));
+            Widget::WidgetRect(0.55, 0.6, 0.42, 0.08)));
         main->addChild(new Widget::ButtonWidget("about", "About",
-            Widget::WidgetRect(0.55, 0.6, 0.4, 0.05)));
+            Widget::WidgetRect(0.55, 0.7, 0.42, 0.08)));
         main->addChild(new Widget::ButtonWidget("quit", "Quit",
-            Widget::WidgetRect(0.55, 0.7, 0.4, 0.05)));
+            Widget::WidgetRect(0.55, 0.8, 0.42, 0.08)));
         
         setShortcut(getWidget("main/join"), SDLK_j);
         
