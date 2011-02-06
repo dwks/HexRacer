@@ -1,28 +1,32 @@
 Todo:
 
 Driving Model:
--Friction!!!
--Set wheels to the actual wheel positions on the model
--Add better constraints to the wheels (prevent them from going inside the car or being too far below)
--Reduce overall bounciness of the vehicle
+- Friction!!!
+- Set wheels to the actual wheel positions on the model
+- Add better constraints to the wheels (prevent them from going inside the car or being too far below)
+- Reduce overall bounciness of the vehicle
 
 Camera:
--Eliminate jerkiness from Camera
--Prevention of objects/walls obscuring the vehicle
--Fix debug camera (WASD)
+- Eliminate jerkiness from Camera
+- Prevention of objects/walls obscuring the vehicle
+- Fix debug camera (WASD)
+- Change field of view when on paint (to give the illusion of acceleration)?
 
 Rendering:
--Visual indication when you have the paint speed boost (trim glow factor?)
+- Visual indication when you have the paint speed boost (trim glow factor?)
 
 Game Engine:
--Keep track of each vehicle's current path node
--Auto-reset the vehicle to the last path node when fallen off the track or flipped
+- Keep track of each vehicle's current path node
+- Auto-reset the vehicle to the last path node when fallen off the track or flipped
 
 Physics:
 - Add at least one more dynamic object type to test the system (besides Player)
 - Use MotionState properly
 - Replace PhysicsWorld::collisionBodies with dynamicsWorld->getCollisionObjectArray()
 - Create ObjectCollision event for sound?
+
+GUI:
+- List supported maps, allow the user to select one
 
 Refactoring:
 - refactor HRMap into several component parts
