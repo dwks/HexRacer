@@ -25,6 +25,8 @@ public:
     void setX(double x) { xp = x; }
     void setY(double y) { yp = y; }
     
+    WidgetPoint plusX(double x);
+    WidgetPoint plusY(double y);
     WidgetPoint plusXOf(const WidgetPoint &other);
     WidgetPoint plusYOf(const WidgetPoint &other);
     
@@ -32,8 +34,11 @@ public:
     void addY(double y) { yp += y; }
     
     WidgetPoint operator + (const WidgetPoint &other) const;
+    WidgetPoint operator - (const WidgetPoint &other) const;
     WidgetPoint &operator += (const WidgetPoint &other);
+    WidgetPoint &operator -= (const WidgetPoint &other);
     WidgetPoint operator * (double factor) const;
+    WidgetPoint &operator *= (double factor);
     
     operator Math::Point ();
 };

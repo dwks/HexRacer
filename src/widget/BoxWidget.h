@@ -13,6 +13,9 @@ public:
     void render();
     
     virtual void accept(WidgetVisitor &visitor) { visitor.visit(this); }
+private:
+    void drawQuad(double xmin, double xmax, double ymin, double ymax,
+        WidgetPoint corner, WidgetPoint dimensions);
 };
 
 }  // namespace Widget
