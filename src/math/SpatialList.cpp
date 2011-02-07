@@ -1,17 +1,17 @@
 #include "SpatialList.h"
+#include "misc/StdVectorFunctions.h"
 using namespace Project;
 using namespace Math;
+using namespace Misc;
 
-SpatialList::SpatialList(bool use_bounding_box)
-{
+SpatialList::SpatialList(bool use_bounding_box) {
 	if (use_bounding_box)
 		boundingBox = new BoundingBox3D();
 	else
 		boundingBox = NULL;
 }
 
-SpatialList::~SpatialList(void)
-{
+SpatialList::~SpatialList(void) {
 	//if (boundingBox)
 	//	delete(boundingBox);
 }
@@ -19,84 +19,68 @@ SpatialList::~SpatialList(void)
 bool SpatialList::add(ObjectSpatial* object) {
 
 	if (boundingBox) {
-		if (size() == 0)
+		if (objectsVector.empty())
 			boundingBox->setToObject(*object);
 		else
 			boundingBox->expandToInclude(*object);
 	}
 
-	objectList.push_back(object);
+	objectsVector.push_back(object);
 	return true;
 }
 
-void SpatialList::add(vector<ObjectSpatial*> objects) {
-	for (unsigned int i = 0; i < objects.size(); i++) {
-		add(objects[i]);
+void SpatialList::add(const vector<ObjectSpatial*>& objects) {
+	if (boundingBox) {
+		for (unsigned int i = 0; i < objects.size(); i++) {
+			add(objects[i]);
+		}
 	}
+	else
+		objectsVector.insert(objectsVector.end(), objects.begin(), objects.end());
 }
 
 bool SpatialList::remove(ObjectSpatial* object) {
 
-	for (unsigned int i = 0; i < objectList.size(); i++) {
-		if (objectList[i] == object) {
-			//Swap the object with the last object in the list and decrement the size
-			objectList[i] = objectList[objectList.size()-1];
-			objectList.resize(objectList.size()-1);
-			refreshBoundingBox();
-			return true;
-		}
+	if (vectorRemoveOneElement(objectsVector, object)) {
+		refreshBoundingBox();
+		return true;
 	}
-
 	return false;
 }
 
 bool SpatialList::contains(ObjectSpatial* object) const {
-	for (unsigned int i = 0; i < objectList.size(); i++) {
-		if (objectList[i] == object)
-			return true;
-	}
-	return false;
+	return vectorContains(objectsVector, object);
 }
 
-vector<ObjectSpatial*> SpatialList::query(const BoundingObject& bounding_object, QueryType query_type) const {
+void SpatialList::appendQuery(vector<ObjectSpatial*>& result_vector, const BoundingObject& bounding_object, QueryType query_type) const {
 
-	vector<ObjectSpatial*> return_list;
-	appendQuery(&return_list, bounding_object, query_type);
-	return return_list;
-}
-
-void SpatialList::appendQuery(vector<ObjectSpatial*>* result_list, const BoundingObject& bounding_object, QueryType query_type) const {
-
-	if (objectList.size() == 0 || (boundingBox && !boundingBox->intersects(bounding_object)))
+	if (objectsVector.empty() || (boundingBox && !boundingBox->intersects(bounding_object)))
 		return;
 
-	for (unsigned int i = 0; i < objectList.size(); i++) {
-
-		if (queryTypeFilter(objectList[i], bounding_object, query_type)) {
-			result_list->push_back(objectList[i]);
+	if (query_type == SpatialContainer::NEARBY)
+		result_vector.insert(result_vector.end(), objectsVector.begin(), objectsVector.end());
+	else {
+		for (unsigned int i = 0; i < objectsVector.size(); i++) {
+			if (queryTypeFilter(objectsVector[i], bounding_object, query_type)) {
+				result_vector.push_back(objectsVector[i]);
+			}
 		}
-
 	}
 }
 
-void SpatialList::appendAll(vector<ObjectSpatial*>* result_list) const {
-	for (unsigned int i = 0; i < objectList.size(); i++) {
-		result_list->push_back(objectList[i]);
-	}
-}
-
-vector<ObjectSpatial*> SpatialList::all() const {
-	return objectList;
+void SpatialList::appendAll(vector<ObjectSpatial*>& result_vector) const {
+	result_vector.insert(result_vector.end(), objectsVector.begin(), objectsVector.end());
 }
 
 ObjectSpatial* SpatialList::nearestSquared(const Point& point, double max_distance_squared, bool bounded) const {
 
 	ObjectSpatial* nearest = NULL;
 
-	for (unsigned int i = 0; i < objectList.size(); i++) {
-		double dist_squared = point.distanceSquared(objectList[i]->centroid());
+	for (unsigned int i = 0; i < objectsVector.size(); i++) {
+
+		double dist_squared = point.distanceSquared(objectsVector[i]->centroid());
 		if ((!bounded && i == 0) || dist_squared < max_distance_squared) {
-			nearest = objectList[i];
+			nearest = objectsVector[i];
 			max_distance_squared = dist_squared;
 		}
 	}
@@ -105,17 +89,15 @@ ObjectSpatial* SpatialList::nearestSquared(const Point& point, double max_distan
 
 }
 RayIntersection SpatialList::rayIntersection(Ray ray) const {
-	if (objectList.size() == 0 || (boundingBox && !boundingBox->rayIntersection(ray).intersects))
+	if (objectsVector.empty() || (boundingBox && !boundingBox->rayIntersection(ray).intersects))
 		return RayIntersection();
 
 	RayIntersection first_intersection = RayIntersection();
 
-	for (unsigned int i = 0; i < objectList.size(); i++) {
-		RayIntersection intersection = objectList[i]->rayIntersection(ray);
-		if (intersection.intersects) {
-			if ((!first_intersection.intersects || intersection < first_intersection)) {
-				first_intersection = intersection;
-			}
+	for (unsigned int i = 0; i < objectsVector.size(); i++) {
+		RayIntersection intersection = objectsVector[i]->rayIntersection(ray);
+		if (intersection.intersects && (!first_intersection.intersects || intersection < first_intersection)) {
+			first_intersection = intersection;
 		}
 	}
 
@@ -123,20 +105,21 @@ RayIntersection SpatialList::rayIntersection(Ray ray) const {
 }
 
 int SpatialList::size() const {
-	return objectList.size();
+	return objectsVector.size();
 }
 
 void SpatialList::clear() {
-	objectList.clear();
+	objectsVector.clear();
 }
 
 void SpatialList::refreshBoundingBox() {
 
-	if (size() > 0) {
-		boundingBox->setToObject(*objectList[0]);
-		for (unsigned int i = 1; i < objectList.size(); i++) {
-			boundingBox->expandToInclude(*objectList[i]);
-		}
+	if (boundingBox && !objectsVector.empty()) {
+
+		boundingBox->setToObject(*objectsVector[0]);
+		for (unsigned int i = 1; i < objectsVector.size(); i++)
+			boundingBox->expandToInclude(*objectsVector[i]);
+
 	}
 
 }

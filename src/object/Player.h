@@ -42,6 +42,10 @@ public:
     void setSpeedBoost(double speedBoost)
         { physical->setSpeedBoost(speedBoost); }
     
+    double getSpeedBoost(){
+        return physical->getSpeedBoost();    
+    }
+    
     void setPhysicalObject(Physics::PhysicalPlayer *physical)
         { this->physical = physical; }
     virtual Physics::PhysicalObject *getPhysicalObject();

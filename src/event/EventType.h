@@ -30,6 +30,7 @@ public:
         UPDATE_OBJECT,
         UPDATE_WORLD,
         ENTIRE_WORLD,
+        JOIN_GAME,
         TYPES
     };
 };

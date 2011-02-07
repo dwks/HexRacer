@@ -40,21 +40,7 @@ void WidgetRenderer::end() {
 }
 
 void WidgetRenderer::visit(BoxWidget *widget) {
-    WidgetPoint corner = widget->getBoundingRect().getCorner();
-    WidgetPoint dimensions = widget->getBoundingRect().getDimensions();
-    
-    glColor3f(0.0f, 0.0f, 0.0f);
-    
-    //LOG(WIDGET, "box at " << widget->getBoundingRect());
-    
-    glBegin(GL_QUADS);
-    
-    this->glVertex(corner);
-    this->glVertex(corner.plusXOf(dimensions));
-    this->glVertex(corner + dimensions);
-    this->glVertex(corner.plusYOf(dimensions));
-    
-    glEnd();
+    widget->render();
 }
 
 void WidgetRenderer::visit(TextWidget *widget) {
@@ -69,14 +55,12 @@ void WidgetRenderer::visit(ButtonWidget *widget) {
 }
 
 void WidgetRenderer::visit(CompositeWidget *widget) {
-    /*WidgetBase *child;
-    for(CompositeWidget::IteratorType i = widget->getIterator(); i.hasNext();
-        child = i.next()) {
+    CompositeWidget::IteratorType i = widget->getIterator();
+    while(i.hasNext()) {
+        WidgetBase *child = i.next();
         
         child->accept(*this);
-    }*/
-    
-    widget->recursiveAccept(*this);
+    }
 }
 
 void WidgetRenderer::glVertex(const WidgetPoint &point) {

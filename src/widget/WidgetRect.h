@@ -26,6 +26,8 @@ public:
     
     double getWidth() const { return dimensions.getX(); }
     double getHeight() const { return dimensions.getY(); }
+    
+    bool pointInside(const WidgetPoint &point) const;
 };
 
 std::ostream &operator << (std::ostream &stream, const WidgetRect &rect);

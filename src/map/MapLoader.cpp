@@ -11,7 +11,7 @@
 namespace Project {
 namespace Map {
 
-void MapLoader::load(HRMap *&map, Render::RenderList *mapRenderable) {
+void MapLoader::load(HRMap *map, Render::RenderList *mapRenderable) {
     //Instantiate the map
     /*map = new Map::HRMap();
     std::string mapName = GET_SETTING("map", "data/testtrack.hrm");

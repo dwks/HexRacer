@@ -27,7 +27,6 @@ public:
 private:
     int nextPowerOf2(int x);
     void preRender(unsigned align);
-    void glVertex(const WidgetPoint &point);
 };
 
 }  // namespace Widget

@@ -4,6 +4,8 @@
 #include "math/Vertex2D.h"
 #include <typeinfo>
 #include <vector>
+#include <math.h>
+#include "math/Values.h"
 using namespace Project;
 using namespace OpenGL;
 using namespace Math;
@@ -31,6 +33,10 @@ void GeometryDrawing::drawObject(const ObjectSpatial& object, bool wireframe) {
 	}
 	else if (object_type == typeid(BoundingTriangle2D&)) {
 		drawBoundingTriangle2D((BoundingTriangle2D&) object, wireframe);
+		return;
+	}
+	else if (object_type == typeid(BoundingCircle&)) {
+		drawBoundingCircle((BoundingCircle&) object, wireframe);
 		return;
 	}
 	else if (object_type == typeid(Triangle3D&)) {
@@ -192,6 +198,26 @@ void GeometryDrawing::drawBoundingBox2D(const BoundingBox2D& object, bool wirefr
 	glEnd();
 }
 
+void GeometryDrawing::drawBoundingCircle(const Math::BoundingCircle& object, bool wireframe) {
+
+	if (wireframe)
+		glBegin(GL_LINE_LOOP);
+	else
+		glBegin(GL_POLYGON);
+
+	Point p = object.centroid();
+	double r = object.getRadius();
+	Axis axis = object.getProjectAxis();
+
+	for (unsigned int i = 0; i < 36; i++) {
+		double u = (double) i / 18.0 * PI;
+		MathWrapper::glVertex(
+			Point::point2D(p.getU(axis)+cos(u), p.getV(axis)+sin(u), axis)
+			);
+	}
+
+	glEnd();
+}
 void GeometryDrawing::drawBoundingTriangle2D(const Math::BoundingTriangle2D& object, bool wireframe) {
 
 	if (wireframe)

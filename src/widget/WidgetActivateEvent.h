@@ -7,21 +7,18 @@
 namespace Project {
 namespace Widget {
 
+class WidgetBase;
+
 class WidgetActivateEvent : public WidgetEvent {
-public:
-    enum activate_t {
-        BEGIN,   //!< clicking/pressing enter/etc.
-        CANCEL,  //!< stopped clicking
-        EXECUTE  //!< released mouse inside widget
-    };
 private:
-    WidgetPoint where;
-    unsigned activate;
+    WidgetBase *widget;
+    bool down;
 public:
-    WidgetActivateEvent(WidgetPoint where, unsigned activate) {}
+    WidgetActivateEvent(WidgetBase *widget, bool down)
+        : widget(widget), down(down) {}
     
-    WidgetPoint getWhere() const { return where; }
-    unsigned getActivate() const { return activate; }
+    WidgetBase *getWidget() { return widget; }
+    bool getDown() const { return down; }
     
     virtual void accept(EventVisitor &visitor) { visitor.visit(this); }
     virtual event_type_t getType() const { return EVENT_ACTIVATE; }

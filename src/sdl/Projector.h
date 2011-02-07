@@ -11,6 +11,12 @@ namespace SDL {
 */
 class Projector {
 private:
+    static Projector *instance;
+public:
+    static Projector *getInstance() { return instance; }
+    
+    Projector() { instance = this; }
+private:
     Point2D currentDimensions;
 public:
     const Point2D &getCurrentDimensions() const

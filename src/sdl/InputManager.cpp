@@ -12,6 +12,7 @@
 #include "event/PauseGame.h"
 
 #include "settings/SettingsManager.h"
+#include "timing/AccelControl.h"
 
 namespace Project {
 namespace SDL {
@@ -40,6 +41,11 @@ void InputManager::handleEvent(SDL_Event *event) {
         break;
     case SDL_KEYUP:
         keyDown[event->key.keysym.sym] = false;
+        
+        if(event->key.keysym.sym == SDLK_ESCAPE) {
+            EMIT_EVENT(new Event::QuitEvent());
+        }
+        
         break;
     }
 }
@@ -63,6 +69,8 @@ void InputManager::doAction(unsigned long currentTime) {
         EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::JUMP, 0.0));
     }
     
+    //LOG2(SDL, INPUT, "checking input at " << currentTime);
+    
     if(keyDown[SDLK_h]) {
         EMIT_EVENT(new Event::PlayerAction(
             Event::PlayerAction::FIX_OFF_TRACK, 0.0));
@@ -73,17 +81,13 @@ void InputManager::doAction(unsigned long currentTime) {
 }
 
 void InputManager::doPausedChecks() {
-    if(keyDown[SDLK_ESCAPE]) {
-        EMIT_EVENT(new Event::QuitEvent());
-    }
     if(keyDown[SDLK_F1]) {
         keyDown[SDLK_F1] = false;
         
-        static bool pause = false;
+        bool pause = Timing::AccelControl::getInstance()->getPaused();
         pause = !pause;
         
         LOG2(SDL, INPUT, (pause ? "Game paused" : "Game unpaused"));
-        
         EMIT_EVENT(new Event::PauseGame(pause));
     }
     if(keyDown[SDLK_F5]) {
@@ -172,10 +176,10 @@ void InputManager::handleJoystick() {
     
     // left hat
     double leftX = joystick->getNormalizedAxisValue(0, DEADZONE);
-    double leftY = joystick->getNormalizedAxisValue(1, DEADZONE);
+    //double leftY = joystick->getNormalizedAxisValue(1, DEADZONE);
     
     // right hat
-    double rightX = joystick->getNormalizedAxisValue(3, DEADZONE);
+    //double rightX = joystick->getNormalizedAxisValue(3, DEADZONE);
     double rightY = -joystick->getNormalizedAxisValue(2, DEADZONE);
     
     if(leftX) {

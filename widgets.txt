@@ -1,0 +1,30 @@
+Items marked with * are implemented, more or less.
+
+Widgets -- supported observers
+ *  box       -- activated
+ *  text
+ *  button    -- activated
+    edit      -- entered
+    scrollbar -- scrolled
+    listbox   -- selected
+    combobox  -- entered, selected
+    checkbox  -- toggled
+
+Events
+    key (down/up)
+    mouse move (focus in/out)
+ *  mouse button (down inside/up inside/up outside)
+
+Observers
+    event (any of the above)
+ *  activated (button clicked, checkbox toggled)
+    text data entered
+    item selected
+
+States
+    keyboard focus [bool enter]
+        key press events are sent to this widget
+    hover (mouse) focus [bool enter]
+        mouse move events are sent to this widget
+    click focus [press, cancel, release]
+        mouse button events are sent to this widget

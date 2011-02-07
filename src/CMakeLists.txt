@@ -8,7 +8,9 @@ include_directories(../build)  # for the moc
 
 aux_source_directory(connection CONNECTION_SOURCES)
 aux_source_directory(event EVENT_SOURCES)
+aux_source_directory(gui GUI_SOURCES)
 aux_source_directory(handler HANDLER_SOURCES)
+aux_source_directory(hud HUD_SOURCES)
 aux_source_directory(log LOG_SOURCES)
 aux_source_directory(map MAP_SOURCES)
 aux_source_directory(mapeditor MAP_EDITOR_DIR_SOURCES)
@@ -42,12 +44,14 @@ set(SOURCES
     ${PAINT_SOURCES}
     ${TIMING_SOURCES}
     ${HANDLER_SOURCES}
-    ${MAP_SOURCES}
-    ${WIDGET_SOURCES})
+    ${MAP_SOURCES})
 
 set(SDL_SOURCES
     ${SDL_DIR_SOURCES}
-    ${SOUND_SOURCES})
+    ${SOUND_SOURCES}
+    ${WIDGET_SOURCES}
+    ${GUI_SOURCES}
+    ${HUD_SOURCES})
 
 set(SERVER_SOURCES
     ${SERVER_DIR_SOURCES})

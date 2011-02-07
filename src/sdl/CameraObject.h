@@ -48,8 +48,9 @@ private:
     void loadSettings();
     void slerpCamera();
     void setCamera(Math::Point _look, Math::Point _pos);
+    void setCameraFOV(double destFOV);
     void setDestinationToPlayer();
-    void setCameraDestination(Math::Point _look, Math::Point _pos);
+    void setCameraDestination(Math::Point _look, Math::Point _pos, double destFOV);
     Math::Point getCurrent();
     
     void setDebugCamera(bool debug);
@@ -57,6 +58,8 @@ private:
     bool debugMode;
     float interpolationInc;
     float rotationInc;
+    double fovInc;
+    double destinationFOV;
     SDL::PlayerManager *playerManager;
     Math::Point defaultOrientation;
     Math::Point destinationLookAt;

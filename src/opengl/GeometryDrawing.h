@@ -3,6 +3,7 @@
 #include "math/ObjectSpatial.h"
 #include "math/BoundingBox3D.h"
 #include "math/BoundingBox2D.h"
+#include "math/BoundingCircle.h"
 #include "math/BoundingTriangle2D.h"
 #include "math/Triangle3D.h"
 #include "math/BoundingPlane3D.h"
@@ -24,6 +25,7 @@ public:
 	static void drawBoundingObject(const Math::BoundingObject& object, bool wireframe = false);
 	static void drawBoundingBox3D(const Math::BoundingBox3D& object, bool wireframe = false);
 	static void drawBoundingBox2D(const Math::BoundingBox2D& object, bool wireframe = false);
+	static void drawBoundingCircle(const Math::BoundingCircle& object, bool wireframe = false);
 	static void drawBoundingTriangle2D(const Math::BoundingTriangle2D& object, bool wireframe = false);
 	static void drawTriangle3D(const Math::Triangle3D& object, bool wireframe = false);
 	static void drawBoundingPlane3D(const Math::BoundingPlane3D& object, bool wireframe = false);

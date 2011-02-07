@@ -52,8 +52,10 @@ void Point::setU(double u, Axis project_axis) {
 	switch (project_axis) {
 		case X_AXIS:
 			setY(u);
+			return;
 		case Y_AXIS: case Z_AXIS:
 			setX(u);
+			return;
 	}
 }
 
@@ -61,8 +63,10 @@ void Point::setV(double v, Axis project_axis) {
 	switch (project_axis) {
 		case X_AXIS: case Y_AXIS:
 			setZ(v);
+			return;
 		 case Z_AXIS:
 			setY(v);
+			return;
 	}
 }
 
@@ -81,11 +85,11 @@ double Point::getCoord(Axis axis) const {
 void Point::setCoord(double coord, Axis axis) {
 	switch (axis) {
 		case X_AXIS:
-			setX(coord); break;
+			setX(coord); return;
 		case Y_AXIS:
-			setY(coord); break;
+			setY(coord); return;
 		case Z_AXIS:
-			setZ(coord); break;
+			setZ(coord); return;
 	}
 }
 

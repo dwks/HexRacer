@@ -18,7 +18,7 @@ void NormalTextLayout::update(const WidgetRect &newBounds) {
     if(newRatio > aspectRatio) {
         // the X size is already precisely right, shrink Y to meet ratio
         double oldY = bounds.getHeight();
-        double newY = aspectRatio * bounds.getHeight();
+        double newY = aspectRatio * bounds.getWidth();
         
         if(align & ALIGN_TOP) {
             bounds.getDimensions().setY(newY);

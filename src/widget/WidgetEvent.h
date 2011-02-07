@@ -12,7 +12,10 @@ class WidgetEvent {
 public:
     enum event_type_t {
         EVENT_MOUSE_MOVE,
-        EVENT_ACTIVATE
+        EVENT_MOUSE_BUTTON,
+        EVENT_KEY,
+        EVENT_ACTIVATE,
+        EVENT_FOCUS
     };
 public:
     WidgetEvent() {}

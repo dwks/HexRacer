@@ -24,7 +24,7 @@ physics.constant.gravity          = 12
 
 # Acceleration and responsiveness of input
 physics.constant.turn             = 0.15
-physics.constant.accel            = 3.2
+physics.constant.accel            = 3.5
 physics.constant.centripetal      = 1.0
 
 # Vehicle suspension
@@ -32,13 +32,13 @@ physics.driving.enablesuspension  = 1
 physics.driving.minlength         = 0.0
 physics.driving.restlength        = 0.5
 physics.driving.stretchlength     = 1.0
-physics.driving.constant.k        = 2.0
+physics.driving.constant.k        = 5.0
 physics.driving.constant.c        = 30.0
 
 # Drag forces
-physics.driving.lineardrag        = 0.4
+physics.driving.lineardrag        = 0.5
 physics.driving.angulardrag       = 0.5
-physics.driving.sidewaysdrag      = 10.0
+physics.driving.sidewaysdrag      = 20.0
 
 ########
 ### Rendering settings
@@ -51,16 +51,15 @@ physics.driving.sidewaysdrag      = 10.0
 render.quality = 2
 render.shaderoutput = 1
 
-render.minimap.enable = 1
-render.minimap.drawheight = 0.25
-render.minimap.drawaspect = 1.0
-render.minimap.height = 60.0
-render.minimap.drawpaint = 1
-
+########
+### Rendering frustrum settings
+# lodthreshhold is the portion of the view frustrum that is rendered
+# in high quality. Set it to 1.0 to turn off LOD altogether.
 render.camera.nearplane = 0.1
-render.camera.farplane = 300.0
-render.camera.lodthreshhold = 0.35
+render.camera.farplane = 200.0
+render.camera.lodthreshhold = 1.0
 render.camera.fieldofview = 60.0
+render.camera.speedboostfov = 50.0
 
 # for AI debugging
 render.drawpathnodes = 0
@@ -74,6 +73,17 @@ render.vehicle.scale = 2.0
 render.tire.scale = 2.5
 
 ########
+### HUD settings
+
+hud.minimap.enable = 1
+hud.minimap.drawheight = 0.35
+hud.minimap.height = 100.0
+
+hud.speedometer.enable = 1
+hud.speedometer.drawheight = 0.35
+hud.speedometer.maxspeed = 30.0
+
+########
 ### Camera settings
 # step is the Interpolation Increment.
 # This is how fast the
@@ -84,7 +94,16 @@ camera.step = 0.03
 # This is how fast the
 # camera interpolates between current
 # and destination orientations
+### this value is currently not used ###
+# because we are testing a camera
+# without quaternion rotations.
 camera.rotationstep = 0.005
+
+# This is how fast the
+# camera interpolates between current
+# and destination FOVs Speedburst
+# fov value can be changed in this file as well
+camera.fovstep = 0.01
 
 # The following values let you set the 
 # destination position behind a player.

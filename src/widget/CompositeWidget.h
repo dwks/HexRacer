@@ -24,15 +24,14 @@ public:
         bool hasNext() const { return it != end; }
     };
 public:
-    CompositeWidget(const std::string &name) : AbstractWidget(name) {}
+    CompositeWidget(const std::string &name);
     
     void addChild(WidgetBase *widget);
+    virtual WidgetBase *getChild(const std::string &name);
     
     IteratorType getIterator() { return IteratorType(childList); }
     
     virtual void accept(WidgetVisitor &visitor) { visitor.visit(this); }
-    
-    void recursiveAccept(WidgetVisitor &visitor);
 };
 
 }  // namespace Widget

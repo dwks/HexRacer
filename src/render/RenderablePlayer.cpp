@@ -51,9 +51,9 @@ void RenderablePlayer::subRender(RenderManager* manager) {
         }
         
         if (wheel == 1 || wheel == 2){
-                matrix *= Math::Matrix::getRotationMatrix(Math::X_AXIS, wheelRotationDegrees);
-        } else {
                 matrix *= Math::Matrix::getRotationMatrix(Math::X_AXIS, -wheelRotationDegrees);
+        } else {
+                matrix *= Math::Matrix::getRotationMatrix(Math::X_AXIS, wheelRotationDegrees);
         }
 
 		player_tire->getRenderProperties()->setTransformation(matrix);
