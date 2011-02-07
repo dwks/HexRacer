@@ -59,7 +59,7 @@ render.camera.nearplane = 0.1
 render.camera.farplane = 200.0
 render.camera.lodthreshhold = 1.0
 render.camera.fieldofview = 60.0
-render.camera.speedboostfov = 55.0
+render.camera.speedboostfov = 50.0
 
 # for AI debugging
 render.drawpathnodes = 0
