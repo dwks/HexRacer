@@ -8,9 +8,7 @@ Driving Model:
 
 Camera:
 - Eliminate jerkiness from Camera
-- Prevention of objects/walls obscuring the vehicle
 - Fix debug camera (WASD)
-- Change field of view when on paint (to give the illusion of acceleration)?
 
 Rendering:
 - Visual indication when you have the paint speed boost (trim glow factor?)

@@ -58,6 +58,8 @@ public:
     bool getOnGround() const { return onGround; }
     void setSpeedBoost(double speedBoost)
         { this->speedBoost = speedBoost; }
+    double getSpeedBoost()
+        { return this->speedBoost; }
     
     void destroyRigidBody();
     void constructRigidBody(const Math::Point &position);
