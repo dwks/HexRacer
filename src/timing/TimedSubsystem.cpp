@@ -35,7 +35,7 @@ void TimedSubsystem::doStep(unsigned long currentTime) {
     }
     
     int maxLoops = 3;
-    while(timeTakenSoFar >= tickTime && maxLoops --) {
+    while(timeTakenSoFar >= tickTime && -- maxLoops) {
         lastTime += tickTime;
         timeTakenSoFar -= tickTime;
         
