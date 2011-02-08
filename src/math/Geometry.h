@@ -34,6 +34,11 @@ public:
     static bool intersectLineSegment(Point start, Point end, Point point,
         Point *closest);
     
+    /** Finds the closest point on a line segment to @a point, in 3D.
+    */
+    static void intersectLine3D(Point start, Point end, Point point,
+        Point *closest);
+    
     /** Returns the Euclidean distance between two points.
     */
     static double distance(Point one, Point two);
