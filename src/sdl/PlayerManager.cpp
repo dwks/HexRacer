@@ -59,7 +59,7 @@ void PlayerManager::PlayerActionHandler::observe(
 		const Map::PathNode* node = player->getPathTracker()->getCurrentNode();
 		Math::Point origin = node->getPosition();
 		origin.setY(origin.getY() + 1.0);
-		Math::Point direction = (node->getNextNodes()[0]->getPosition()-node->getPosition()).normalized();
+		Math::Point direction = (node->getNextNodes()[0]->getPosition() - node->getPosition()).normalized();
 		player->setPhysicalObject(
             Physics::PhysicsFactory::createPhysicalPlayer(origin, direction)
 			);

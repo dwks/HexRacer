@@ -46,11 +46,18 @@ namespace Map {
 		for (unsigned int i = 0; i < pairs.size(); i++) {
 
 			Math::Point p;
+			Math::Geometry::intersectLine3D(
+				pairs[i].start->getPosition(),
+				pairs[i].end->getPosition(),
+				point,
+				&p);
+			/*
 			Math::Geometry::intersectLineSegment(
 				pairs[i].start->getPosition(),
 				pairs[i].end->getPosition(),
 				point,
 				&p);
+				*/
 
 			double dist_squared = p.distanceSquared(point);
 
