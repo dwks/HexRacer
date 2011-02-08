@@ -5,6 +5,9 @@
 #include "settings/SettingsManager.h"
 #include "settings/ProgramSettings.h"
 
+#include "event/ObserverList.h"
+#include "event/PlayerAction.h"
+
 #include "timing/AccelControl.h"
 
 namespace Project {
@@ -113,11 +116,14 @@ void GameWorld::updatePlayerPathing() {
 					LOG(WORLD, "Player: " << player->getID() << " has finished lap " << player->getPathTracker()->getNumLaps());
 
 			}
-			/*
-			char prog_str [30];
-			sprintf(prog_str, "%.4g", player->getPathTracker()->getLapProgress());
-			LOG(WORLD, string("Lap Progress: ")+prog_str);
-			*/
+		}
+		else {
+			//Reset the player if they are below the kill plane
+			//Probably not doing the right ID check?
+			if (player->getID() == 0 && origin_pos.getY() < raceManager->getKillPlaneY()) {
+				EMIT_EVENT(new Event::PlayerAction(
+					Event::PlayerAction::FIX_OFF_TRACK, 0.0));
+			}
 		}
 	}
 

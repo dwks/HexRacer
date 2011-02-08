@@ -8,6 +8,8 @@
 
 #include "map/MapLoader.h"
 
+#include "hud/LapProgressBar.h"
+
 #include "log/Logger.h"
 #include "config.h"
 
@@ -211,6 +213,25 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 			);
 
 		speedometer->render(hudRenderer.get());
+
+    }
+
+	//-Lap Progress----------------------------------------------------------------------------
+    if (GET_SETTING("hud.lapprogress.enable", true)) {
+
+        int draw_height = viewHeight*GET_SETTING("hud.lapprogress.drawheight", 0.5);
+
+		hudRenderer->setupViewport(
+			HUD::HUDRenderer::ALIGN_MIN,
+			HUD::HUDRenderer::ALIGN_MID,
+			20,
+			draw_height,
+			10,
+			0);
+
+		HUD::LapProgressBar bar;
+		bar.setProgress(player->getPathTracker()->getLapProgress());
+		bar.render();
 
     }
 

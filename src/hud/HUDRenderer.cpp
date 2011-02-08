@@ -36,7 +36,7 @@ namespace HUD {
 				x_min = viewWidth-width-h_padding;
 				break;
 			case ALIGN_MID:
-				x_min = viewWidth-(width/2);
+				x_min = viewWidth/2-(width/2)+h_padding;
 				break;
 			default:
 				break;
@@ -50,7 +50,7 @@ namespace HUD {
 				y_min = viewHeight-height-v_padding;
 				break;
 			case ALIGN_MID:
-				y_min = viewHeight-(height/2);
+				y_min = viewHeight/2-(height/2)+v_padding;
 				break;
 			default:
 				break;
