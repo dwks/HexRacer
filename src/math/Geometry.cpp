@@ -236,8 +236,8 @@ double Geometry::getUOfLine(Point start, Point end, Point midpoint) {
 	double z_dist = end.getZ()-start.getZ();
 
 	//Perform the test based on the axis with greatest displacement
-	if (x_dist > y_dist) {
-		if (x_dist > z_dist) {
+	if (fabs(x_dist) > fabs(y_dist)) {
+		if (fabs(x_dist) > fabs(z_dist)) {
 			test_axis = X_AXIS;
 			test_dist = x_dist;
 		}
@@ -247,7 +247,7 @@ double Geometry::getUOfLine(Point start, Point end, Point midpoint) {
 		}
 	}
 	else {
-		if (y_dist > z_dist){
+		if (fabs(y_dist) > fabs(z_dist)){
 			test_axis = Y_AXIS;
 			test_dist = y_dist;
 		}

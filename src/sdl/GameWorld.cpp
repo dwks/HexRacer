@@ -93,7 +93,23 @@ void GameWorld::updatePlayerPathing() {
 	Object::WorldManager::PlayerIteratorType iterator = worldManager->getPlayerIterator();
 	while (iterator.hasNext()) {
 		Object::Player* player = iterator.next();
-		player->getPathTracker()->update(player->getPosition());
+
+		//Raycast downward to find the update point
+		Math::Point origin_pos = player->getPosition();
+		Math::Point dir_pos = origin_pos;
+		dir_pos.setY(dir_pos.getY() - VEHICLE_PATH_RAY_MAX_HEIGHT);
+
+		Math::Point update_pos;
+
+		//Update if the player is above the track
+		if (physicsWorld->raycastPoint(origin_pos, dir_pos, &update_pos)) {
+
+			player->getPathTracker()->update(update_pos);
+
+			char prog_str [30];
+			sprintf(prog_str, "%.4g", player->getPathTracker()->getProgress());
+			LOG(WORLD, string("Progress: ")+prog_str);
+		}
 	}
 
 }

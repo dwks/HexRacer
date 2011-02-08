@@ -48,6 +48,8 @@ public:
     void render();
     
     double raycastLength(const Math::Point &from, const Math::Point &to);
+
+	bool raycastPoint(const Math::Point &from, const Math::Point &to, Math::Point* point = NULL);
     
     DebugDrawer &getDebug() { return debug; }
 private:

@@ -1,6 +1,7 @@
 #include "PathTracker.h"
 #include "math/Geometry.h"
-
+#include "math/Values.h"
+#include <math.h>
 #include "log/Logger.h"
 
 namespace Project {
@@ -15,8 +16,6 @@ namespace Map {
 	void PathTracker::update(Math::Point point) {
 
 		currentNode = manager.nearestPathNode(point);
-
-		float node_progress = getWrappedProgress(currentNode->getProgress());
 
 		std::vector<PathPair> pairs;
 
@@ -51,13 +50,6 @@ namespace Map {
 				pairs[i].end->getPosition(),
 				point,
 				&p);
-			/*
-			Math::Geometry::intersectLineSegment(
-				pairs[i].start->getPosition(),
-				pairs[i].end->getPosition(),
-				point,
-				&p);
-				*/
 
 			double dist_squared = p.distanceSquared(point);
 
@@ -69,25 +61,38 @@ namespace Map {
 
 		}
 
-		double u = Math::Geometry::getUOfLine(
-			best_pair.start->getPosition(),
-			best_pair.end->getPosition(),
-			progressPosition);
+		if (best_pair.start->getProgress() > best_pair.end->getProgress())
+			progress = getWrappedProgress(Math::maximum(best_pair.start->getProgress(), best_pair.end->getProgress()));
+		else {
 
-		//Interpolate the progress
-		progress = static_cast<float>(
-			getWrappedProgress(best_pair.start->getProgress())*(1.0-u) +
-			getWrappedProgress(best_pair.end->getProgress())*u);
+			float u = static_cast<float>(
+				Math::Geometry::getUOfLine(
+				best_pair.start->getPosition(),
+				best_pair.end->getPosition(),
+				progressPosition)
+				);
+
+			//Interpolate the progress
+			progress = static_cast<float>(
+				getWrappedProgress(
+					best_pair.start->getProgress()*(1.0-u) +
+					best_pair.end->getProgress()*u
+					)
+					);
+
+		}
 
 	}
 
 	float PathTracker::getWrappedProgress(float _prog) {
-		if (progress < 0.5f && _prog > 0.5f)
-			return -_prog;
-		else if (progress > 0.5f && _prog < 0.5f)
-			return 1.0f+_prog;
-		else
-			return _prog;
+		if (fabs(_prog - progress) >= 0.5f) {
+			if (progress < 0.5f && _prog > 0.5f)
+				return _prog-1.0f;
+			else if (progress > 0.5f && _prog < 0.5f)
+				return 1.0f+_prog;
+		}
+		
+		return _prog;
 	}
 
 }  // namespace Map

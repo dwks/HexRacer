@@ -129,5 +129,26 @@ double PhysicsWorld::raycastLength(const Math::Point &from,
 	return DBL_MAX;
 }
 
+bool PhysicsWorld::raycastPoint(const Math::Point &from, const Math::Point &to, Math::Point* point) {
+
+	btVector3 fromv = Converter::toVector(from);
+    btVector3 tov = Converter::toVector(to);
+    
+    btCollisionWorld::ClosestRayResultCallback ray(fromv, tov);
+    
+    dynamicsWorld->rayTest(fromv, tov, ray);
+    
+    if (ray.hasHit()) {
+		if (point) {
+			*point = Converter::toPoint(ray.m_hitPointWorld);
+		}
+
+		return true;
+    }
+
+	return false;
+
+}
+
 }  // namespace Physics
 }  // namespace Project
