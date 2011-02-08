@@ -11,6 +11,7 @@ namespace Map {
 		: manager(_manager) {
 		progress = 0.0;
 		currentNode = manager.getStartNode();
+		numLaps = 0;
 	}
 
 	void PathTracker::update(Math::Point point) {
@@ -35,7 +36,7 @@ namespace Map {
 		}
 
 		if (pairs.empty()) {
-			LOG(WORLD, "ERROR: Current path node has no links!");
+			LOG2(WORLD, ERROR, "Path Node #" << currentNode->index << " has no links!" );
 			return;
 		}
 
@@ -82,6 +83,11 @@ namespace Map {
 
 		}
 
+	}
+
+	void PathTracker::startNewLap() {
+		numLaps++;
+		progress = 0.0f;
 	}
 
 	float PathTracker::getWrappedProgress(float _prog) {

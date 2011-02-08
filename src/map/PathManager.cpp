@@ -30,7 +30,7 @@ namespace Map {
 			}
 		}
 		else
-			LOG(WORLD, "ERROR: No path nodes defined in map!");
+			LOG2(WORLD, ERROR, "No path nodes defined in map!");
 
 		pathTree = new BSPTree3D(path_bound, BSPTree3D::LARGEST_AXIS, 10);
 		pathTree->add(objects);

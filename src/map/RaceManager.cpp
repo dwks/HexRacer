@@ -7,6 +7,11 @@
 namespace Project {
 namespace Map {
 
+RaceManager::RaceManager(HRMap *_map)
+: map(_map) {
+	finishPlane = map->getFinishPlane();
+}
+
 Math::Point RaceManager::startingPlayerDirection() {
 	return map->getFinishPlane().getNormal();
 }

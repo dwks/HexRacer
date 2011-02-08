@@ -22,6 +22,8 @@ private:
 	float getWrappedProgress(float _prog);
 
 	Math::Point progressPosition;
+	int numLaps;
+
 public:
 
 	PathTracker(const PathManager& _manager);
@@ -29,8 +31,13 @@ public:
 	void update(Math::Point point);
 
 	const PathNode* getCurrentNode() const { return currentNode; }
-	float getProgress() const { return progress; }
-	bool isReadyforNewLap() const { return (progress >= 1.0f); }
+
+	float getLapProgress() const { return progress; }
+	float getRaceProgress() const { return (float) numLaps + progress; }
+	int getNumLaps() const { return numLaps; }
+	bool readyforNewLap() const { return (progress >= 1.0f); }
+
+	void startNewLap();
 	Math::Point getProgressPosition() const { return progressPosition; }
 
 };

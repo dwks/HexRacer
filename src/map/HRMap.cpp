@@ -81,6 +81,7 @@ namespace Map {
 						num_links--;
 					}
 					PathNode* node = new PathNode(p);
+					node->index = static_cast<int>(pathNodes.size());
 					node->setProgress(progress);
 					pathNodes.push_back(node);
 					pathnode_links.push_back(links);

@@ -106,9 +106,18 @@ void GameWorld::updatePlayerPathing() {
 
 			player->getPathTracker()->update(update_pos);
 
+			//Start a new lap for the player if they have crossed the finish plane
+			if (player->getPathTracker()->readyforNewLap() &&
+				raceManager->getBoundingPlane().pointInside(origin_pos)) {
+					player->getPathTracker()->startNewLap();
+					LOG(WORLD, "Player: " << player->getID() << " has finished lap " << player->getPathTracker()->getNumLaps());
+
+			}
+			/*
 			char prog_str [30];
-			sprintf(prog_str, "%.4g", player->getPathTracker()->getProgress());
-			LOG(WORLD, string("Progress: ")+prog_str);
+			sprintf(prog_str, "%.4g", player->getPathTracker()->getLapProgress());
+			LOG(WORLD, string("Lap Progress: ")+prog_str);
+			*/
 		}
 	}
 

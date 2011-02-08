@@ -9,11 +9,13 @@ namespace Map {
 class RaceManager {
 private:
     HRMap *map;
+	Math::BoundingPlane3D finishPlane;
 public:
-    RaceManager(HRMap *map) : map(map) {}
+    RaceManager(HRMap *_map);
     
 	Math::Point startingPlayerDirection();
     Math::Point startingPointForPlayer(int id);
+	const Math::BoundingPlane3D& getBoundingPlane() { return finishPlane; }
 };
 
 }  // namespace Map

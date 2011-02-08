@@ -45,8 +45,7 @@ template <typename Type>
 static std::vector<Type> vectorAppended(std::vector<Type>& v1, const std::vector<Type>& v2) {
 
 	std::vector<Type> return_v(v1);
-	for (unsigned int i = 0; i < v2.size(); i++)
-		return_v.push_back(v2[i]);
+	return_v.insert(return_v.end(), v2.begin(), v2.end());
 	return return_v;
 
 }
