@@ -35,7 +35,7 @@ public:
 	float getLapProgress() const { return progress; }
 	float getRaceProgress() const { return (float) numLaps + progress; }
 	int getNumLaps() const { return numLaps; }
-	bool readyforNewLap() const { return (progress >= 1.0f); }
+	bool readyforNewLap() const { return (progress >= 1.0); }
 
 	void startNewLap();
 	Math::Point getProgressPosition() const { return progressPosition; }

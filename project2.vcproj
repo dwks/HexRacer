@@ -349,6 +349,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\hud\LapProgressBar.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\Layout.cpp"
 				>
 			</File>
@@ -1184,6 +1188,10 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\KeyEvent.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\hud\LapProgressBar.h"
 				>
 			</File>
 			<File

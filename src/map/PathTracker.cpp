@@ -91,12 +91,11 @@ namespace Map {
 	}
 
 	float PathTracker::getWrappedProgress(float _prog) {
-		if (fabs(_prog - progress) >= 0.5f) {
-			if (progress < 0.5f && _prog > 0.5f)
-				return _prog-1.0f;
-			else if (progress > 0.5f && _prog < 0.5f)
-				return 1.0f+_prog;
-		}
+
+		if ( progress < 0.5f && _prog > progress && _prog - progress > 0.5f )
+			return _prog-1.0f;
+		else if ( progress >= 1.0f && _prog < progress && progress - _prog > 0.8f)
+			return 1.0f+_prog;
 		
 		return _prog;
 	}

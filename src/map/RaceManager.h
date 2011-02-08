@@ -10,12 +10,14 @@ class RaceManager {
 private:
     HRMap *map;
 	Math::BoundingPlane3D finishPlane;
+	double killPlaneY;
 public:
     RaceManager(HRMap *_map);
     
 	Math::Point startingPlayerDirection();
     Math::Point startingPointForPlayer(int id);
 	const Math::BoundingPlane3D& getBoundingPlane() { return finishPlane; }
+	double getKillPlaneY() { return killPlaneY; }
 };
 
 }  // namespace Map

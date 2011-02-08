@@ -12,7 +12,6 @@ Camera:
 
 Rendering:
 - Visual indication when you have the paint speed boost (trim glow factor?)
-- Fix aspect ratio being wrong when the game first starts
 
 Game Engine:
 - Auto-reset the vehicle to the last path node when fallen off the track or flipped
