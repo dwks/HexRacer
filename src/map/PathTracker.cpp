@@ -50,7 +50,7 @@ namespace Map {
 				pairs[i].end->getPosition(),
 				point,
 				&p);
-
+ 
 			double dist_squared = p.distanceSquared(point);
 
 			if (i == 0 || dist_squared < min_distance_squared) {

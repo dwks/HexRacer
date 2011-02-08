@@ -28,6 +28,11 @@ void SDLMainLoop::QuitObserver::observe(Event::QuitEvent *event) {
 void SDLMainLoop::JoinGameObserver::observe(Event::JoinGame *event) {
     LoopBase *loop = new GameLoop(event->getHost(), event->getPort());
     loop->construct();
+
+	// set up camera if necessary
+    loop->setProjection(Point2D(
+        SDL_GetVideoSurface()->w,
+        SDL_GetVideoSurface()->h));
     
     //Timing::AccelControl::getInstance()->setPauseSkipDirectly(SDL_GetTicks());
     mainLoop->useLoopBase(loop);
@@ -108,7 +113,7 @@ void SDLMainLoop::initOpenGL() {
 
 void SDLMainLoop::resizeGL(int width, int height) {
     // in case of divide by zero
-    if(height == 0) height = 1;
+    if (height == 0) height = 1;
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -134,11 +139,6 @@ void SDLMainLoop::run() {
     accelControl = boost::shared_ptr<Timing::AccelControl>(
         new Timing::AccelControl());
     accelControl->setPauseSkipDirectly(lastTime);
-    
-    // set up camera if necessary
-    loop->setProjection(Point2D(
-        SDL_GetVideoSurface()->w,
-        SDL_GetVideoSurface()->h));
     
     while(!quit) {
         handleEvents();

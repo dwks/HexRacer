@@ -21,7 +21,7 @@ namespace Render {
 		gluDeleteQuadric(quadric);
 
 		BoundingBox3D bounding_box(100.0, 100.0, 100.0);
-		priorityStaticLightTree = new BSPTree3D(bounding_box);
+		priorityStaticLightTree = new BSPTree3D(bounding_box, BSPTree3D::FAIR_XSTART, 8);
 		staticLightTree = new BSPTree3D(bounding_box);
 	}
 

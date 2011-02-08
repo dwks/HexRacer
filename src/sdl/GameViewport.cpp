@@ -35,7 +35,7 @@ void GameViewport::setPlayerManager(PlayerManager *playerManager) {
 }
 
 void GameViewport::setProjection(const Point2D &size) {
-    if(cameraObject) {
+    if (cameraObject) {
         cameraObject->camera->setAspect(
             static_cast<double>(size.getX()) / size.getY());
         cameraObject->camera->glProjection();

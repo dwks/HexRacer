@@ -64,7 +64,7 @@ namespace Render {
 			}
 		}
 
-		triangleTree = new BSPTree3D(bounding_box, TREE_SPLIT_METHOD, TREE_SPLIT_SIZE);
+		triangleTree = new BSPTree3D(bounding_box, TREE_SPLIT_METHOD, TREE_SPLIT_SIZE, 1.0);
 		triangleTree->add(tri_obj);
 		LOG(OPENGL, "Generated BSP Tree with " << triangles.size() << " objects with height " << triangleTree->getHeight());
 
