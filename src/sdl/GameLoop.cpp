@@ -69,7 +69,7 @@ void GameLoop::render() {
 }
 
 void GameLoop::setProjection(const Point2D &size) {
-    viewport->setProjection(size);
+     viewport->setProjection(size);
 }
 
 }  // namespace SDL
