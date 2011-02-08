@@ -68,6 +68,25 @@ bool Geometry::intersectLineSegment(Point start, Point end, Point point,
     return perpendicular;
 }
 
+void Geometry::intersectLine3D(Point start, Point end, Point point,
+    Point *closest) {
+    
+    RayIntersection intersect
+        = rayPlaneIntersection(Ray(start, end - start), point, end - start);
+    
+    double length = (end - start).length();
+    
+    if(intersect.t < 0.0) {
+        *closest = start;
+    }
+    else if(intersect.t > length) {
+        *closest = end;
+    }
+    else {
+        *closest = start + (end - start).normalized() * intersect.t;
+    }
+}
+
 double Geometry::distance(Point one, Point two) {
     return (two - one).length();
 }
