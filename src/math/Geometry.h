@@ -34,6 +34,11 @@ public:
     static bool intersectLineSegment(Point start, Point end, Point point,
         Point *closest);
     
+    /** Finds the closest point on a line segment to @a point, in 3D.
+    */
+    static void intersectLine3D(Point start, Point end, Point point,
+        Point *closest);
+    
     /** Returns the Euclidean distance between two points.
     */
     static double distance(Point one, Point two);
@@ -71,6 +76,8 @@ public:
 	static RayIntersection rayPlaneIntersection(Ray ray, Point plane_point, Point plane_normal);
 
 	static double vectorTo2DAngle(Point vector, Axis project_axis = Z_AXIS);
+
+	static double getUOfLine(Point start, Point end, Point midpoint);
 	
 };
 

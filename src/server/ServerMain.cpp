@@ -29,6 +29,7 @@
 #include "render/MeshGroup.h"
 #include "render/MeshLoader.h"
 #include "map/MapLoader.h"
+#include "map/PathTracker.h"
 
 #include "log/Logger.h"
 #include "misc/Sleeper.h"
@@ -80,10 +81,14 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
             break;
         case Event::PlayerAction::FIX_OFF_TRACK:
             delete player->getPhysicalObject();
-            player->setPhysicalObject(
-                Physics::PhysicsFactory::createPhysicalPlayer(
-                    main->raceManager->startingPointForPlayer(
-                        player->getID())));
+
+			const Map::PathNode* node = player->getPathTracker()->getCurrentNode();
+			Math::Point origin = node->getPosition();
+			origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
+			Math::Point direction = (node->getNextNodes()[0]->getPosition() - node->getPosition()).normalized();
+			player->setPhysicalObject(
+				Physics::PhysicsFactory::createPhysicalPlayer(origin, direction)
+				);
             break;
         }
         

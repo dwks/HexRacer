@@ -68,6 +68,25 @@ bool Geometry::intersectLineSegment(Point start, Point end, Point point,
     return perpendicular;
 }
 
+void Geometry::intersectLine3D(Point start, Point end, Point point,
+    Point *closest) {
+    
+    RayIntersection intersect
+        = rayPlaneIntersection(Ray(start, end - start), point, end - start);
+    
+    double length = (end - start).length();
+    
+    if(intersect.t < 0.0) {
+        *closest = start;
+    }
+    else if(intersect.t > length) {
+        *closest = end;
+    }
+    else {
+        *closest = start + (end - start).normalized() * intersect.t;
+    }
+}
+
 double Geometry::distance(Point one, Point two) {
     return (two - one).length();
 }
@@ -205,6 +224,40 @@ double Geometry::vectorTo2DAngle(Point vector, Axis project_axis) {
 	else {
 		return PI+inner_angle;
 	}
+
+}
+
+double Geometry::getUOfLine(Point start, Point end, Point midpoint) {
+
+	Axis test_axis;
+	double test_dist;
+	double x_dist = end.getX()-start.getX();
+	double y_dist = end.getY()-start.getY();
+	double z_dist = end.getZ()-start.getZ();
+
+	//Perform the test based on the axis with greatest displacement
+	if (fabs(x_dist) > fabs(y_dist)) {
+		if (fabs(x_dist) > fabs(z_dist)) {
+			test_axis = X_AXIS;
+			test_dist = x_dist;
+		}
+		else {
+			test_axis = Z_AXIS;
+			test_dist = z_dist;
+		}
+	}
+	else {
+		if (fabs(y_dist) > fabs(z_dist)){
+			test_axis = Y_AXIS;
+			test_dist = y_dist;
+		}
+		else {
+			test_axis = Z_AXIS;
+			test_dist = z_dist;
+		}
+	}
+
+	return ( (midpoint.getCoord(test_axis)-start.getCoord(test_axis))/(test_dist) );
 
 }
 

@@ -12,6 +12,7 @@ BoundingBox3D PathNodeObject::getBoundingBox() const {
 void PathNodeObject::linkNode(PathNodeObject* node_object) {
 
 	if (node_object) {
+		/*
 		PathNode* link_node = node_object->getNode();
 		if (link_node && link_node != node) {
 			//If the two nodes are already linked, remove the link, otherwise link them
@@ -20,6 +21,9 @@ void PathNodeObject::linkNode(PathNodeObject* node_object) {
 				node->getNextNodes().push_back(link_node);
 			}
 		}
+		*/
+
+		node->linkToNode(node_object->getNode());
 	}
 
 }

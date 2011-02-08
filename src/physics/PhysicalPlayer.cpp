@@ -20,10 +20,8 @@ PhysicalPlayer::PhysicalPlayer(const Math::Point &position, const Math::Point &d
     rigidBody = NULL;  // essential, constructRigidBody tries to delete it
     
 	Math::Matrix transformation = Math::Matrix::getTranslationMatrix(position);
-	transformation *= Math::Matrix::getRotationMatrix(
-		Math::Y_AXIS,
-		Math::Geometry::vectorTo2DAngle(direction.rotate90CCW(Math::Y_AXIS), Math::Y_AXIS)
-		);
+	double angle = Math::Geometry::vectorTo2DAngle(direction.rotate90CW(Math::Y_AXIS), Math::Y_AXIS);
+	transformation *= Math::Matrix::getRotationMatrix(Math::Y_AXIS, -angle);
 
 	constructRigidBody(transformation);
     //constructRigidBody(position);

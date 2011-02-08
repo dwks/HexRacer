@@ -53,6 +53,11 @@ void GameWorld::construct(const std::string &host, unsigned short port) {
 void GameWorld::construct2(Map::HRMap *map) {
     raceManager = boost::shared_ptr<Map::RaceManager>(
         new Map::RaceManager(map));
+
+	pathManager = boost::shared_ptr<Map::PathManager>(
+		new Map::PathManager(map->getPathNodes()));
+
+	worldManager->setPathManager(pathManager.get());
     
     playerManager->setRaceManager(raceManager.get());
     
@@ -80,6 +85,42 @@ void GameWorld::doPhysics() {
         physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
         lastPhysicsTime = thisTime;
     }
+
+}
+
+void GameWorld::updatePlayerPathing() {
+
+	Object::WorldManager::PlayerIteratorType iterator = worldManager->getPlayerIterator();
+	while (iterator.hasNext()) {
+		Object::Player* player = iterator.next();
+
+		//Raycast downward to find the update point
+		Math::Point origin_pos = player->getPosition();
+		Math::Point dir_pos = origin_pos;
+		dir_pos.setY(dir_pos.getY() - VEHICLE_PATH_RAY_MAX_HEIGHT);
+
+		Math::Point update_pos;
+
+		//Update if the player is above the track
+		if (physicsWorld->raycastPoint(origin_pos, dir_pos, &update_pos)) {
+
+			player->getPathTracker()->update(update_pos);
+
+			//Start a new lap for the player if they have crossed the finish plane
+			if (player->getPathTracker()->readyforNewLap() &&
+				raceManager->getBoundingPlane().pointInside(origin_pos)) {
+					player->getPathTracker()->startNewLap();
+					LOG(WORLD, "Player: " << player->getID() << " has finished lap " << player->getPathTracker()->getNumLaps());
+
+			}
+			/*
+			char prog_str [30];
+			sprintf(prog_str, "%.4g", player->getPathTracker()->getLapProgress());
+			LOG(WORLD, string("Lap Progress: ")+prog_str);
+			*/
+		}
+	}
+
 }
 
 void GameWorld::render() {

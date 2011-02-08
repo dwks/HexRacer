@@ -78,6 +78,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	//Map Menu
 	mapMenu = new QMenu("&Map", this);
 	mapMenu->addAction("&Generate Paint Cells",	mapEditor, SLOT(generatePaint()));
+	mapMenu->addAction("&Generate Path Progression", mapEditor, SLOT(generatePathProgress()));
 	mapMenu->addAction("&Generate 2D Map",	this, SLOT(save2DMapImage()));
 	mapMenu->addAction("&Load Cube Map", mapEditor, SLOT(loadCubeMap()));
 	mapMenu->addAction("&Load Prop Mesh", this, SLOT(loadPropMesh()));

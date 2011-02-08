@@ -125,6 +125,7 @@ public slots:
 	void setShowPaint(bool enabled);
 	void setShowInvisible(bool enabled);
 	void generatePaint();
+	void generatePathProgress();
 	void generate2DMap(string filename);
 	void setMapObjectType(MapObject::ObjectType type);
 	void setEditMode(EditMode mode);

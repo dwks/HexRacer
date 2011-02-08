@@ -10,15 +10,25 @@ namespace Map {
 class PathNode
 	: public Math::Vertex3D {
 private:
+
 	std::vector<PathNode*> nextNodes;
+	std::vector<PathNode*> previousNodes;
+	float progress;
+
 public:
 	PathNode(Math::Point position = Math::Point());
 	PathNode(double x, double y, double z);
 
 	int index;
 
-	std::vector<PathNode*>& getNextNodes() { return nextNodes; }
+	void linkToNode(PathNode* node);
+	void disassociateNode(PathNode* node);
+
 	const std::vector<PathNode*>& getNextNodes() const { return nextNodes; }
+	const std::vector<PathNode*>& getPreviousNodes() const { return previousNodes; }
+
+	float getProgress() const { return progress; }
+	void setProgress(float _progress) { progress = _progress; }
 };
 
 }  // namespace Map

@@ -15,6 +15,7 @@
 #include "MeshInstanceObject.h"
 #include "MapEditorConstants.h"
 #include "CubeMapDialog.h"
+#include "map/PathManager.h"
 using namespace Paint;
 
 MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget, Qt::WindowFlags f)
@@ -270,6 +271,13 @@ void MapEditorWidget::paintGL() {
 
 		glPointSize(1.0f);
 
+	}
+
+	//Draw Path Node Progress
+
+	if (selectedObject && editObjectType == MapObject::PATH_NODE) {
+		renderText(10.0, viewHeight-20.0, 0.0,
+			QString::number(((PathNodeObject*)selectedObject)->getNode()->getProgress()));
 	}
 
 	//Draw Precision Scale Filled
@@ -721,6 +729,37 @@ void MapEditorWidget::generatePaint() {
 	updateGL();
 }
 
+void MapEditorWidget::generatePathProgress() {
+
+	const vector<PathNode*>& path_nodes = map->getPathNodes();
+	if (path_nodes.empty())
+		return;
+
+	//Find the path node nearest to the finish plane
+	Point finish_point = map->getFinishPlane().centroid();
+	PathNode* nearest_node = NULL;
+	double min_distance_squared = 0.0;
+
+	for (unsigned int i = 0; i < path_nodes.size(); i++) {
+		double dist_squared = path_nodes[i]->getPosition().distanceSquared(finish_point);
+		if (nearest_node == NULL || dist_squared < min_distance_squared) {
+			nearest_node = path_nodes[i];
+			min_distance_squared = dist_squared;
+		}
+	}
+
+	//Set the start node's progress to 0, set the node previous to it to 1.0
+	nearest_node->setProgress(0.0f);
+	const vector<PathNode*>& previous_nodes = nearest_node->getPreviousNodes();
+	if (previous_nodes.empty())
+		return;
+
+	previous_nodes[0]->setProgress(1.0f);
+
+	//Run the pathing algorithm on the path
+	PathManager::calculatePathProgress(nearest_node, previous_nodes[0]);
+
+}
 void MapEditorWidget::generate2DMap(string filename) {
 
 	MeshGroup* track_mesh = map->getMapMesh(HRMap::TRACK);

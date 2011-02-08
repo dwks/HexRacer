@@ -5,6 +5,7 @@
 #include "math/Point.h"
 #include "physics/PhysicalPlayer.h"
 #include "render/RenderablePlayer.h"
+#include "map/PathTracker.h"
 
 namespace Project {
 namespace Object {
@@ -31,6 +32,7 @@ private:
     Physics::PhysicalPlayer *physical;
     Render::RenderablePlayer *renderable;
     Math::Point suspension[4];
+	Map::PathTracker* tracker;
 public:
     Player();
 	Player(int id, const Math::Point &origin, const Math::Point &direction = Math::Point(0.0, 0.0, 1.0));
@@ -53,6 +55,11 @@ public:
     void setRenderableObject(Render::RenderablePlayer *renderable)
         { this->renderable = renderable; }
     virtual Render::RenderableObject *getRenderableObject();
+
+	void setPathTracker(Map::PathTracker* _tracker)
+		{ tracker = _tracker; }
+	Map::PathTracker* getPathTracker()
+		{ return tracker; }
     
     void applyAcceleration(double acceleration)
         { physical->applyAcceleration(acceleration); }

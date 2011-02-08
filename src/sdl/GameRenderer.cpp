@@ -114,9 +114,6 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
     if(GET_SETTING("render.drawlightspheres", false))
         lightManager->drawActiveLightSpheres(false);
 
-    if(GET_SETTING("render.drawpathnodes", false))
-        renderAIDebug();
-
     if (lod_threshhold < 1.0) {
 
         GLdouble clip_plane [4] = {0.0, 0.0, -1.0, -lod_split_plane};
@@ -238,7 +235,21 @@ void GameRenderer::renderWorld(Object::World *world) {
     glDisable(GL_TEXTURE_2D);
 }
 
-void GameRenderer::renderAIDebug() {
+void GameRenderer::renderDebug(Object::WorldManager *worldManager, Object::Player *player) {
+
+	/*
+	camera->glProjection();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	camera->glLookAt();
+	*/
+	if (GET_SETTING("render.drawpathnodes", false)) {
+		renderAIDebug(player);
+	}
+
+}
+
+void GameRenderer::renderAIDebug(Object::Player *player) {
     // code cloned from MapEditorWidget
     
 #define MAP_EDITOR_PATHNODE_LENGTH 0.4
@@ -254,7 +265,10 @@ void GameRenderer::renderAIDebug() {
     for (unsigned int i = 0; i < nodeList.size(); i++) {
         Map::PathNode* node = nodeList[i];
         
-        OpenGL::Color::glColor(MAP_EDITOR_PATHNODE_COLOR);
+		if (node == player->getPathTracker()->getCurrentNode())
+			OpenGL::Color::glColor(OpenGL::Color::RED);
+		else
+			OpenGL::Color::glColor(MAP_EDITOR_PATHNODE_COLOR);
         
         OpenGL::GeometryDrawing::drawBoundingBox3D(
             BoundingBox3D(MAP_EDITOR_PATHNODE_LENGTH,
@@ -274,7 +288,13 @@ void GameRenderer::renderAIDebug() {
         }
         glEnd();
         glLineWidth(1.0f);
+
     }
+
+	Point p = player->getPathTracker()->getProgressPosition();
+	OpenGL::Color::glColor(OpenGL::Color::WHITE);
+	OpenGL::GeometryDrawing::drawBoundingBox3D(BoundingBox3D(0.5, 0.5, 0.5, p), true);
+
 }
 
 }  // namespace SDL

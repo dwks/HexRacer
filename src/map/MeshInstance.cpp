@@ -9,7 +9,7 @@ namespace Map {
 	MeshInstance::MeshInstance(std::string mesh_name, Math::SimpleTransform _transformation) {
 		meshName = mesh_name;
 		meshGroup = Render::MeshLoader::getInstance()->getModelByName(meshName, true);
-		type = DECOR;
+		type = SOLID_STATIC;
 		transformation = _transformation;
 	}
 
