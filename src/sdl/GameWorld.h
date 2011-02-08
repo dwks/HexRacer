@@ -15,6 +15,8 @@
 #include "physics/PhysicsWorld.h"
 #include "physics/Suspension.h"
 
+#include "map/PathManager.h"
+
 namespace Project {
 namespace SDL {
 
@@ -29,6 +31,8 @@ private:
     boost::shared_ptr<Object::WorldManager> worldManager;
     boost::shared_ptr<Physics::PhysicsWorld> physicsWorld;
     boost::shared_ptr<Physics::Suspension> suspension;
+
+	boost::shared_ptr<Map::PathManager> pathManager;
     
     bool isConnectedToNetwork;
 public:
@@ -43,6 +47,7 @@ public:
     
     void checkNetwork();
     void doPhysics();
+	void updatePlayerPathing();
     
     void render();
 };

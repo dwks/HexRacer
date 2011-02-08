@@ -293,6 +293,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\FocusEvent.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\FocusManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\FontManager.cpp"
 				>
 			</File>
@@ -317,10 +325,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\widget\GUISystem.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\gui\GUISystem.cpp"
 				>
 			</File>
@@ -334,6 +338,14 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\InputManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\KeyboardShortcutProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\KeyEvent.cpp"
 				>
 			</File>
 			<File
@@ -474,6 +486,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\PathNode.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\PathTracker.cpp"
 				>
 			</File>
 			<File
@@ -678,6 +694,10 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\WidgetRenderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\WidgetTextureList.cpp"
 				>
 			</File>
 			<File
@@ -1111,6 +1131,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\FocusEvent.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\FocusManager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\FontManager.h"
 				>
 			</File>
@@ -1139,10 +1167,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\widget\GUISystem.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\map\HRMap.h"
 				>
 			</File>
@@ -1152,6 +1176,14 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\InputManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\KeyboardShortcutProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\KeyEvent.h"
 				>
 			</File>
 			<File
@@ -1284,6 +1316,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\PathNode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\PathTracker.h"
 				>
 			</File>
 			<File
@@ -1500,6 +1536,10 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\WidgetRenderer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\WidgetTextureList.h"
 				>
 			</File>
 			<File

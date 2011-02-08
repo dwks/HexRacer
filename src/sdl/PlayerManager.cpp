@@ -17,6 +17,8 @@
 #include "physics/PhysicsWorld.h"
 #include "physics/PhysicsFactory.h"
 
+#include "map/PathTracker.h"
+
 #include "settings/SettingsManager.h"
 #include "settings/ProgramSettings.h"
 #include "config.h"
@@ -47,11 +49,20 @@ void PlayerManager::PlayerActionHandler::observe(
         break;
     case Event::PlayerAction::FIX_OFF_TRACK:
         delete player->getPhysicalObject();
+		/*
         player->setPhysicalObject(
             Physics::PhysicsFactory::createPhysicalPlayer(
                 manager->raceManager
                     ->startingPointForPlayer(player->getID()),
 					manager->raceManager->startingPlayerDirection()));
+		*/
+		const Map::PathNode* node = player->getPathTracker()->getCurrentNode();
+		Math::Point origin = node->getPosition();
+		origin.setY(origin.getY() + 1.0);
+		Math::Point direction = (node->getNextNodes()[0]->getPosition()-node->getPosition()).normalized();
+		player->setPhysicalObject(
+            Physics::PhysicsFactory::createPhysicalPlayer(origin, direction)
+			);
         break;
     }
 }

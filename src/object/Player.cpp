@@ -11,6 +11,7 @@ namespace Object {
 Player::Player() : AbstractObject(-1) {
     physical = NULL;
     renderable = NULL;
+	tracker = NULL;
 }
 
 Player::Player(int id, const Math::Point &origin, const Math::Point &direction) : AbstractObject(id) {
@@ -22,6 +23,8 @@ Player::Player(int id, const Math::Point &origin, const Math::Point &direction) 
     else {
         physical = NULL;
     }
+
+	tracker = NULL;
     
     initialize();
 }

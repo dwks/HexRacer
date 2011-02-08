@@ -9,6 +9,7 @@
 #include "event/ObserverList.h"
 
 #include "physics/Converter.h"
+#include "map/PathTracker.h"
 
 namespace Project {
 namespace Object {
@@ -119,6 +120,9 @@ void WorldManager::addPlayer(Player *player) {
     
     world->addObject(player);
     playerList->addPlayer(player);
+
+	if (pathManager)
+		player->setPathTracker(new Map::PathTracker(*pathManager));
 }
 
 Player *WorldManager::getPlayer(int id) {

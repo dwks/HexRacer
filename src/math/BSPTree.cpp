@@ -144,7 +144,7 @@ ObjectSpatial* BSPTree::nearestSquared(const Point& point, double max_distance_s
 	if (!leaf) {
 		BoundingSphere sphere = BoundingSphere(point, sqrt(max_distance_squared));
 
-		if (sphere.intersects(child[0]->getBoundingObject())) {
+		if (!bounded || sphere.intersects(child[0]->getBoundingObject())) {
 			ObjectSpatial* child_nearest = child[0]->nearestSquared(point, max_distance_squared, bounded);
 			if (child_nearest) {
 				nearest = child_nearest;
@@ -154,7 +154,7 @@ ObjectSpatial* BSPTree::nearestSquared(const Point& point, double max_distance_s
 			}
 		}
 
-		if (sphere.intersects(child[1]->getBoundingObject())) {
+		if (!bounded || sphere.intersects(child[1]->getBoundingObject())) {
 			ObjectSpatial* child_nearest = child[1]->nearestSquared(point, max_distance_squared, bounded);
 			if (child_nearest) {
 				nearest = child_nearest;

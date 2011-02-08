@@ -6,6 +6,7 @@
 #include "PlayerList.h"
 
 #include "event/MultiObserver.h"
+#include "map/PathManager.h"
 
 namespace Project {
 namespace Object {
@@ -19,6 +20,7 @@ class WorldManager {
 private:
     World *world;
     PlayerList *playerList;
+	Map::PathManager *pathManager;
 private:
     class WorldHandler : public Event::MultiObserver {
     private:
@@ -44,6 +46,7 @@ public:
     Player *getPlayer(int id);
     
 	void initForClient(int id, const Math::Point &location, const Math::Point& direction);
+	void setPathManager(Map::PathManager* manager) { pathManager = manager; }
     
     PlayerIteratorType getPlayerIterator()
         { return playerList->getIterator(); }

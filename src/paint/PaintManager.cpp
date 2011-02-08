@@ -119,13 +119,17 @@ namespace Paint {
 		glPointSize(1.0f);
 
 	}
-	void PaintManager::colorCellsByIndex(const vector<int> &cell_indices, int new_color) {
+	void PaintManager::colorCellsByIndex(const vector<int> &cell_indices, int new_color, bool force_color) {
 		for (unsigned int i = 0; i < cell_indices.size(); i++) {
-			colorCell(paintList[cell_indices[i]], new_color);
+			colorCell(paintList[cell_indices[i]], new_color, force_color);
 		}
 	}
 
-	vector<int> PaintManager::colorCellsInRadius(Point centroid, double radius, int new_color) {
+	void PaintManager::colorCellByIndex(int cell_index, int new_color, bool force_color) {
+		colorCell(paintList[cell_index], new_color, force_color);
+	}
+
+	vector<int> PaintManager::colorCellsInRadius(Point centroid, double radius, int new_color, bool force_color) {
 
 		BoundingSphere query_sphere(centroid, radius);
 		vector<int> colored_indices;
@@ -140,7 +144,7 @@ namespace Paint {
 
 			PaintCell* cell = (PaintCell*) candidate_cells[i];
 			if (cell->center.distanceSquared(centroid) <= query_sphere.getRadiusSquared()) {
-				if (colorCell(cell, new_color)) {
+				if (colorCell(cell, new_color, force_color)) {
 					colored_indices.push_back(cell->index);
 				}
 			}
@@ -192,23 +196,39 @@ namespace Paint {
         }
 	}
 
-	bool PaintManager::colorCell(PaintCell* cell, int new_color) {
+	bool PaintManager::colorCell(PaintCell* cell, int new_color, bool force_color) {
 
-		if (new_color >= 0 && cell->playerColor < 0) {
+		if (new_color >= 0) {
+			
+			if (cell->playerColor < 0) {
 
-			cell->playerColor = new_color;
-			neutralPaintTree->remove(cell);
-			coloredPaintTree->add(cell);
-			return true;
+				cell->playerColor = new_color;
+				neutralPaintTree->remove(cell);
+				coloredPaintTree->add(cell);
+				return true;
+
+			}
+			else if (force_color) {
+				cell->playerColor = new_color;
+				return true;
+			}
 
 		}
 
-		if (new_color < 0 && cell->playerColor >= 0) {
+		if (new_color < 0) {
+			
+			if (cell->playerColor >= 0) {
 
-			cell->playerColor = new_color;
-			coloredPaintTree->remove(cell);
-			neutralPaintTree->add(cell);
-			return true;
+				cell->playerColor = new_color;
+				coloredPaintTree->remove(cell);
+				neutralPaintTree->add(cell);
+				return true;
+
+			}
+			else if (force_color) {
+				cell->playerColor = new_color;
+				return true;
+			}
 
 		}
 

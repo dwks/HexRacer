@@ -45,6 +45,7 @@ void GameLoop::miscellaneous() {
     inputManager->doStep(SDL_GetTicks());
     
     gameWorld->doPhysics();
+	gameWorld->updatePlayerPathing();
     
     viewport->doCamera(SDL_GetTicks());
 }
@@ -55,6 +56,11 @@ void GameLoop::render() {
         gameWorld->getWorldManager()->getWorld());
 
 	gameWorld->render();
+
+	gameRenderer->renderDebug(
+        gameWorld->getWorldManager(),
+        gameWorld->getWorldManager()->getPlayer(
+            gameWorld->getClientData()->getPlayerID()));
     
     gameRenderer->renderHUD(
         gameWorld->getWorldManager(),

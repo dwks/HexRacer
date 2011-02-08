@@ -71,6 +71,8 @@ public:
 	static RayIntersection rayPlaneIntersection(Ray ray, Point plane_point, Point plane_normal);
 
 	static double vectorTo2DAngle(Point vector, Axis project_axis = Z_AXIS);
+
+	static double getUOfLine(Point start, Point end, Point midpoint);
 	
 };
 

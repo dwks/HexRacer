@@ -41,11 +41,12 @@ public:
     
     void render(OpenGL::Camera *camera, Object::World *world);
     void renderHUD(Object::WorldManager *worldManager, Object::Player *player);
+	void renderDebug(Object::WorldManager *worldManager, Object::Player *player);
     
     Map::HRMap *getMap() { return map.get(); }
     Paint::PaintManager *getPaintManager() { return paintManager.get(); }
 private:
-    void renderAIDebug();
+    void renderAIDebug(Object::Player *player);
     void renderWorld(Object::World *world);
 };
 

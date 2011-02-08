@@ -70,7 +70,9 @@ namespace Map {
 					Point p;
 					int num_links;
 					vector<int> links;
+					float progress;
 					in_file >> p;
+					in_file >> progress;
 					in_file >> num_links;
 					while (num_links > 0) {
 						int index;
@@ -78,7 +80,9 @@ namespace Map {
 						links.push_back(index);
 						num_links--;
 					}
-					pathNodes.push_back(new PathNode(p));
+					PathNode* node = new PathNode(p);
+					node->setProgress(progress);
+					pathNodes.push_back(node);
 					pathnode_links.push_back(links);
 				}
 				else if (keyword == HRMAP_STARTPOINT_LABEL) {
@@ -163,7 +167,8 @@ namespace Map {
 		//Link all loaded path nodes
 		for (unsigned int i = 0; i < pathnode_links.size(); i++) {
 			for (unsigned int j = 0; j < pathnode_links[i].size(); j++) {
-				pathNodes[i]->getNextNodes().push_back(pathNodes[pathnode_links[i][j]]);
+				pathNodes[i]->linkToNode(pathNodes[pathnode_links[i][j]]);
+				//pathNodes[i]->getNextNodes().push_back(pathNodes[pathnode_links[i][j]]);
 			}
 		}
 
@@ -227,7 +232,10 @@ namespace Map {
 			pathNodes[i]->index = i;
 
 		for (unsigned int i = 0; i < pathNodes.size(); i++) {
-			out_file << HRMAP_PATHNODE_LABEL << ' ' << (*pathNodes[i]) << ' ';
+
+			out_file << HRMAP_PATHNODE_LABEL << ' ' << (*pathNodes[i])
+				<< ' ' << pathNodes[i]->getProgress() << ' ';
+
 			const std::vector<PathNode*>& next_nodes = pathNodes[i]->getNextNodes();
 			out_file << next_nodes.size() << ' ';
 			for (unsigned int i = 0; i < next_nodes.size(); i++) {
@@ -316,7 +324,7 @@ namespace Map {
 		MeshLoader::getInstance()->deleteModelByName(meshName(type), true);
 		mapMesh[static_cast<int>(type)] = MeshLoader::getInstance()->loadOBJ(meshName(type), filename, true);
 		mapMeshFile[static_cast<int>(type)] = filename;
-		if (type != DECOR)
+		if (meshIsSolid(type))
 			clearCollisionTree();
 	}
 
@@ -325,7 +333,7 @@ namespace Map {
 		if (mapMesh[i] != NULL) {
 			MeshLoader::getInstance()->deleteModelByName(meshName(type));
 			mapMesh[i] = NULL;
-			if (type != DECOR) {
+			if (meshIsSolid(type)) {
 				clearCollisionTree();
 			}
 		}
@@ -435,13 +443,20 @@ namespace Map {
 	}
 
 	void HRMap::removePathNode(PathNode* node) {
-		if (Misc::vectorRemoveOneElement(pathNodes, node)) {
+
+		//Find all nodes with a link to or from the node to delete
+		vector<PathNode*> linked_nodes;
+		linked_nodes.insert(linked_nodes.end(), node->getNextNodes().begin(), node->getNextNodes().end());
+		linked_nodes.insert(linked_nodes.end(), node->getPreviousNodes().begin(), node->getPreviousNodes().end());
+
+		//Disassociate all linked nodes with the deleted node
+		for (unsigned int i = 0; i < linked_nodes.size(); i++)
+			linked_nodes[i]->disassociateNode(node);
+
+		//Delete the node
+		if (Misc::vectorRemoveOneElement(pathNodes, node))
 			delete(node);
-		}
-		for (unsigned int i = 0; i < pathNodes.size(); i++) {
-			vector<PathNode*>& linked_nodes = pathNodes[i]->getNextNodes();
-			vectorRemoveOneElement(linked_nodes, node);
-		}
+		
 	}
 	void HRMap::addStartPoint(Vertex3D* point) {
 		startPoints.push_back(point);
