@@ -1,8 +1,8 @@
 #ifndef PROJECT_PAINT__PAINT_CELL_H
 #define PROJECT_PAINT__PAINT_CELL_H
 
+#include "opengl/OpenGL.h"
 #include "math/BoundingBox3D.h"
-
 #include "config.h"
 
 namespace Project {
@@ -17,6 +17,7 @@ public:
 
 	PaintCell(Math::Point _center);
 	PaintCell(Math::Point _center, Math::Point* vertices, Math::Point _normal, int _index);
+	~PaintCell();
 
 	bool vertexSet [CELL_VERTICES];
 	Math::Point vertex [CELL_VERTICES];
@@ -24,6 +25,7 @@ public:
 	Math::Point center;
 	int playerColor;
 	int index;
+	GLuint displayList;
 
 	int getOppositeVertex(int vert_index);
 	void fillEmptyVertices();
@@ -31,6 +33,7 @@ public:
 	void calculateNormal();
 	void contractVertices(double amount);
 	void setVertex(int vert_index, Math::Point _vertex);
+	void setDisplayList();
 	Math::Point calcVertexLocation(int vert_index, double cell_radius = PAINT_CELL_RADIUS);
 
 };

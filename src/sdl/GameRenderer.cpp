@@ -83,9 +83,8 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
 
     double near_plane = GET_SETTING("render.camera.nearplane", 0.1);
     double far_plane = GET_SETTING("render.camera.farplane", 300.0);
-    double lod_threshhold = GET_SETTING("render.camera.lodthreshhold", 0.5);
     double view_length = far_plane-near_plane;
-    double lod_split_plane = near_plane+view_length*lod_threshhold;
+	double paint_far_plane = near_plane+GET_SETTING("render.camera.paintthreshhold", 0.5)*view_length;
 
     camera->setNearPlane(near_plane);
     camera->setFarPlane(far_plane);
@@ -103,63 +102,34 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
   
     //Activate all lights visible to the camera
     lightManager->activateIntersectingLights(*camera->getFrustrum());
-
-    //BG/Paint/Debug Drawing----------------------------------------------------------------------
     
     //Render the background
     background->render(renderer.get());
 
-    //Render the paint
-    paintManager->render(renderer.get());
-
     //Render the active lights
     if(GET_SETTING("render.drawlightspheres", false))
         lightManager->drawActiveLightSpheres(false);
-
-    if (lod_threshhold < 1.0) {
-
-        GLdouble clip_plane [4] = {0.0, 0.0, -1.0, -lod_split_plane};
-
-        //Low Quality Rendering----------------------------------------------------------------------
-
-        renderer->setLODLow(true);
-
-        //Set camera culling to the further portion of the view frustrum
-        camera->setNearPlane(lod_split_plane);
-        camera->setFrustrumNearPlaneEnabled(true);
-        camera->setFrustrumFarPlaneEnabled(false);
-
-        //Set the clipping plane
-        glLoadIdentity();
-        glEnable(GL_CLIP_PLANE0);
-        glClipPlane(GL_CLIP_PLANE0, clip_plane);
-        camera->glLookAt();
-
-        renderWorld(world);
-
-        //High Quality Rendering----------------------------------------------------------------------
-
-        renderer->setLODLow(false);
-
-        //Set camera culling to the nearer portion of the view frustrum
-        camera->setNearPlane(near_plane);
-        camera->setFarPlane(lod_split_plane);
-        camera->setFrustrumNearPlaneEnabled(false);
-        camera->setFrustrumFarPlaneEnabled(true);
-
-        clip_plane[2] = 1.0;
-        clip_plane[3] = lod_split_plane;
-        //Set the clipping plane
-        glLoadIdentity();
-        glEnable(GL_CLIP_PLANE0);
-        glClipPlane(GL_CLIP_PLANE0, clip_plane);
-        camera->glLookAt();
-
-    }
     
     renderWorld(world);
 
-    glDisable(GL_CLIP_PLANE0);
+	//Paint Rendering----------------------------------------------------------------------
+
+	//Set the camera frustrum far plane to the paint threshhold
+	camera->setFarPlane(paint_far_plane);
+	camera->setFrustrumFarPlaneEnabled(true);
+
+	//Cull backfaces of paint cells
+	glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
+
+	//Render the paint
+    paintManager->render(renderer.get());
+
+	//Revert Rendering Settings
+	glDisable(GL_CULL_FACE);
+
+	camera->setFarPlane(far_plane);
+	camera->setFrustrumFarPlaneEnabled(false);
 
     //Reset the lights
     lightManager->resetLights();

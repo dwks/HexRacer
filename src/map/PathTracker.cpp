@@ -45,12 +45,10 @@ namespace Map {
 		double min_distance_squared = 0.0;
 		for (unsigned int i = 0; i < pairs.size(); i++) {
 
-			Math::Point p;
-			Math::Geometry::intersectLine3D(
+			Math::Point p = Math::Geometry::intersectLine3D(
 				pairs[i].start->getPosition(),
 				pairs[i].end->getPosition(),
-				point,
-				&p);
+				point);
  
 			double dist_squared = p.distanceSquared(point);
 
