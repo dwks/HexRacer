@@ -48,109 +48,105 @@ namespace Map {
 			return false;
 		}
 
-		while (!in_file.eof()) {
+		string keyword;
+		while (in_file >> keyword) {
 
-			bool cube_map = false;
-			
-			string keyword;
-			in_file >> keyword;
-			if (keyword.length() > 0) {
+			if (keyword[0] == '#') {
+				//If the line starts with #, ignore the entire line
+				in_file.ignore(9999, '\n');
+			}
+			else if (keyword == HRMAP_PAINTCELL_LABEL) {
+				PaintCell* cell = new PaintCell(Point());
+				in_file >> *cell;
+				cell->index = paintCells.size();
+				paintCells.push_back(cell);
+			}
+			else if (keyword == HRMAP_PATHNODE_LABEL) {
+				Point p;
+				int num_links;
+				vector<int> links;
+				float progress;
+				in_file >> p;
+				in_file >> progress;
+				in_file >> num_links;
+				while (num_links > 0) {
+					int index;
+					in_file >> index;
+					links.push_back(index);
+					num_links--;
+				}
+				PathNode* node = new PathNode(p);
+				node->index = static_cast<int>(pathNodes.size());
+				node->setProgress(progress);
+				pathNodes.push_back(node);
+				pathnode_links.push_back(links);
+			}
+			else if (keyword == HRMAP_STARTPOINT_LABEL) {
+				Point p;
+				in_file >> p;
+				startPoints.push_back(new Vertex3D(p));
+			}
+			else if (keyword == HRMAP_LIGHT_LABEL) {
+				Light* light = new Light();
+				in_file >> *light;
+				lights.push_back(light);
+			}
+			else if (keyword == HRMAP_MESHINSTANCE_LABEL) {
+				MeshInstance* instance = new MeshInstance("", SimpleTransform());
+				in_file >> *instance;
+				if (!addMeshInstance(instance)) {
+					delete(instance);
+				}
+			}
+			else if (keyword == HRMAP_PROPMESH_LABEL) {
+				string mesh_name;
+				string mesh_filename;
+				in_file >> mesh_name;
+				in_file >> mesh_filename;
+				mesh_filename = DirectoryFunctions::fromRelativeFilename(file_directory, mesh_filename);
+				addPropMesh(mesh_name, mesh_filename);
+			}
+			else if (keyword == HRMAP_FINISHPLANE_LABEL) {
+				in_file >> finishPlane;
+			}
+			else if (keyword == HRMAP_MAP2DFILE_LABEL) {
+				in_file >> map2DFile;
+				map2DFile = DirectoryFunctions::fromRelativeFilename(file_directory, map2DFile);
+			}
+			else if (keyword == HRMAP_MAP2DCENTER_LABEL) {
+				in_file >> map2DCenter;
+			}
+			else if (keyword == HRMAP_MAP2DWIDTH_LABEL) {
+				in_file >> map2DWidth;
+			}
+			else if (keyword == HRMAP_MAP2DHEIGHT_LABEL) {
+				in_file >> map2DHeight;
+			}
+			else if (keyword == HRMAP_VERSION_LABEL) {
+				in_file >> version;
+			}
+			else  {
 
-				if (keyword[0] == '#') {
-					//If the line starts with #, ignore the entire line
-					in_file.ignore(9999, '\n');
-				}
-				else if (keyword == HRMAP_PAINTCELL_LABEL) {
-					PaintCell* cell = new PaintCell(Point());
-					in_file >> *cell;
-					cell->index = paintCells.size();
-					paintCells.push_back(cell);
-				}
-				else if (keyword == HRMAP_PATHNODE_LABEL) {
-					Point p;
-					int num_links;
-					vector<int> links;
-					float progress;
-					in_file >> p;
-					in_file >> progress;
-					in_file >> num_links;
-					while (num_links > 0) {
-						int index;
-						in_file >> index;
-						links.push_back(index);
-						num_links--;
-					}
-					PathNode* node = new PathNode(p);
-					node->index = static_cast<int>(pathNodes.size());
-					node->setProgress(progress);
-					pathNodes.push_back(node);
-					pathnode_links.push_back(links);
-				}
-				else if (keyword == HRMAP_STARTPOINT_LABEL) {
-					Point p;
-					in_file >> p;
-					startPoints.push_back(new Vertex3D(p));
-				}
-				else if (keyword == HRMAP_LIGHT_LABEL) {
-					Light* light = new Light();
-					in_file >> *light;
-					lights.push_back(light);
-				}
-				else if (keyword == HRMAP_MESHINSTANCE_LABEL) {
-					MeshInstance* instance = new MeshInstance("", SimpleTransform());
-					in_file >> *instance;
-					if (!addMeshInstance(instance)) {
-						delete(instance);
-					}
-				}
-				else if (keyword == HRMAP_PROPMESH_LABEL) {
-					string mesh_name;
-					string mesh_filename;
-					in_file >> mesh_name;
-					in_file >> mesh_filename;
-					mesh_filename = DirectoryFunctions::fromRelativeFilename(file_directory, mesh_filename);
-					addPropMesh(mesh_name, mesh_filename);
-				}
-				else if (keyword == HRMAP_FINISHPLANE_LABEL) {
-					in_file >> finishPlane;
-				}
-				else if (keyword == HRMAP_MAP2DFILE_LABEL) {
-					in_file >> map2DFile;
-					map2DFile = DirectoryFunctions::fromRelativeFilename(file_directory, map2DFile);
-				}
-				else if (keyword == HRMAP_MAP2DCENTER_LABEL) {
-					in_file >> map2DCenter;
-				}
-				else if (keyword == HRMAP_MAP2DWIDTH_LABEL) {
-					in_file >> map2DWidth;
-				}
-				else if (keyword == HRMAP_MAP2DHEIGHT_LABEL) {
-					in_file >> map2DHeight;
-				}
-				else if (keyword == HRMAP_VERSION_LABEL) {
-					in_file >> version;
-				}
-				else  {
-					for (int i = 0; i < 6; i++) {
-						if (keyword == CubeMapFile::getSideName(i)) {
-							string side_file;
-							in_file >> side_file;
-							cubeMapFile->setSideFile(i, DirectoryFunctions::fromRelativeFilename(file_directory, side_file));
-							cube_map = true;
-						}
-					}
+				bool cube_map = false;
 
-					if (!cube_map) {
-						for (int i = 0; i < HRMap::NUM_MESHES; i++) {
-							HRMap::MeshType type = static_cast<HRMap::MeshType>(i);
-							if (keyword == meshName(type)) {
-								in_file >> mapMeshFile[i];
-								break;
-							}
+				for (int i = 0; i < 6; i++) {
+					if (keyword == CubeMapFile::getSideName(i)) {
+						string side_file;
+						in_file >> side_file;
+						cubeMapFile->setSideFile(i, DirectoryFunctions::fromRelativeFilename(file_directory, side_file));
+						cube_map = true;
+					}
+				}
+
+				if (!cube_map) {
+					for (int i = 0; i < HRMap::NUM_MESHES; i++) {
+						HRMap::MeshType type = static_cast<HRMap::MeshType>(i);
+						if (keyword == meshName(type)) {
+							in_file >> mapMeshFile[i];
+							break;
 						}
 					}
 				}
-
 			}
 
 		}

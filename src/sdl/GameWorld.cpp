@@ -93,6 +93,9 @@ void GameWorld::doPhysics() {
 
 void GameWorld::updatePlayerPathing() {
 
+	if (!GET_SETTING("game.enablepathing", true))
+		return;
+
 	Object::WorldManager::PlayerIteratorType iterator = worldManager->getPlayerIterator();
 	while (iterator.hasNext()) {
 		Object::Player* player = iterator.next();
