@@ -3,6 +3,7 @@
 
 #include "BaseRenderable.h"
 #include "MeshTriangle.h"
+#include "MeshTriangleFan.h"
 #include "math/BSPTree3D.h"
 #include "opengl/OpenGL.h"
 #include <vector>
@@ -16,15 +17,20 @@ class Mesh
 	: public BaseRenderable {
 private:
 
-	std::vector< MeshTriangle* > triangles;
-	Project::Math::BSPTree3D* triangleTree;
+	std::vector< Math::Triangle3D > triangles;
+	std::vector< MeshTriangleFan* > triangleFans;
+	Math::BSPTree3D* triangleFanTree;
 	Material* material;
 	GLuint displayList;
 
-	void generateTriangleTree();
+	void generateTriangleFanTree();
 	void generateDisplayList();
-	inline
-	void drawTriangle(MeshTriangle* triangle, ShaderParamSetter& setter);
+
+	
+
+	inline void drawTriangle(MeshTriangle* triangle, ShaderParamSetter& setter);
+
+	inline void drawTriangleFan(MeshTriangleFan* fan, ShaderParamSetter& setter);
 
 	static const int TREE_SPLIT_SIZE = 20;
 	static const Math::SpatialContainer::QueryType CULLING_QUERY_TYPE = Math::SpatialContainer::NEARBY;
@@ -37,7 +43,7 @@ public:
 	Mesh(vector< MeshTriangle* > _triangles, Material* _material = NULL, bool cullable = false);
 
 	void renderGeometry(ShaderParamSetter& setter, const  Math::BoundingObject* bounding_object = NULL);
-	vector<Project::Math::Triangle3D> getTriangles();
+	const vector<Project::Math::Triangle3D>& getTriangles() { return triangles; }
 };
 
 }  // namespace Render

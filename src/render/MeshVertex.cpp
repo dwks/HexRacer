@@ -1,4 +1,5 @@
 #include "MeshVertex.h"
+#include "misc/StdVectorFunctions.h"
 using namespace Project;
 using namespace Math;
 
@@ -29,6 +30,12 @@ namespace Render {
 	}
 	float MeshVertex::getTexCoordV() const {
 		return texCoordV;
+	}
+	void MeshVertex::addAdjacentTriangle(MeshTriangle* triangle) {
+		adjacentTriangles.push_back(triangle);
+	}
+	void MeshVertex::removeAdjacentTriangle(MeshTriangle* triangle) {
+		Misc::vectorRemoveOneElement(adjacentTriangles, triangle);
 	}
 
 }  // namespace Render
