@@ -2,6 +2,7 @@
 
 #include "BoundingObject.h"
 #include "ObjectSpatial.h"
+#include "SpatialObjectOperator.h"
 #include <vector>
 #include <list>
 using namespace std;
@@ -46,6 +47,8 @@ public:
 
 	virtual void appendQuery(vector<ObjectSpatial*>& result_vector, const BoundingObject& bounding_object, QueryType query_type) const = 0;
 	virtual void appendAll(vector<ObjectSpatial*>& result_vector) const = 0;
+	virtual void operateQuery(SpatialObjectOperator& op, const BoundingObject& bounding_object, QueryType query_type ) const = 0;
+	virtual void operateAll(SpatialObjectOperator& op) const = 0;
 
 protected:
 

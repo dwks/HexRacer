@@ -45,14 +45,13 @@ namespace Render {
 			return collisionMask;
 
 		if (meshes.size() == 1) {
-			return ((Mesh*)meshes[0])->getTriangles();
+			return meshes[0]->getTriangles();
 		}
+
 		vector<Triangle3D> return_list;
 		for (unsigned int i = 0; i < meshes.size(); i++) {
-			vector<Triangle3D> child_triangles = ((Mesh*)meshes[i])->getTriangles();
-			for (unsigned int j = 0; j < child_triangles.size(); j++) {
-				return_list.push_back(child_triangles[j]);
-			}
+			const vector<Triangle3D>& mesh_triangles = meshes[i]->getTriangles();
+			return_list.insert(return_list.end(), mesh_triangles.begin(), mesh_triangles.end());
 		}
 		return return_list;
 	}

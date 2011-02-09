@@ -2,9 +2,12 @@
 #define PROJECT_RENDER__MESH_VERTEX_H
 
 #include "math/Vertex3D.h"
+#include <vector>
 
 namespace Project {
 namespace Render {
+
+class MeshTriangle;
 
 /** A vertex of a polygon mesh
 */
@@ -18,6 +21,8 @@ private:
 	float texCoordU;
 	float texCoordV;
 
+	std::vector<MeshTriangle*> adjacentTriangles;
+
 public:
 
 	MeshVertex(Project::Math::Point position, Project::Math::Point normal, Project::Math::Point tangent, Project::Math::Point bitangent,
@@ -28,6 +33,11 @@ public:
 	Project::Math::Point getBitangent() const;
 	float getTexCoordU() const;
 	float getTexCoordV() const;
+
+	void addAdjacentTriangle(MeshTriangle* triangle);
+	void removeAdjacentTriangle(MeshTriangle* triangle);
+	const std::vector<MeshTriangle*>& getAdjacentTriangles() const { return adjacentTriangles; }
+	int degree() const { return static_cast<int>(adjacentTriangles.size()); }
 
 
 };

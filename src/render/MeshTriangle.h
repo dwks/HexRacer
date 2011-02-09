@@ -12,15 +12,18 @@ namespace Render {
 class MeshTriangle
 	: public Project::Math::Triangle3D {
 private:
-
 	MeshVertex* vertex [3];
-
 public:
 
 	MeshTriangle(MeshVertex* v1, MeshVertex* v2, MeshVertex* v3);
+	~MeshTriangle();
 
 	Project::Math::Point getVertex(short vert_index) const;
 	MeshVertex* getMeshVertex(short vert_index) const;
+
+	short getVertexIndex(const MeshVertex* vert) const;
+	bool hasVertex(const MeshVertex* vert) const;
+	MeshVertex* getNextFanVertex(const MeshVertex* fan1, const MeshVertex* fan2);
 };
 
 }  // namespace Render

@@ -345,6 +345,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\MeshTriangleFan.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\MeshVertex.cpp"
 				>
 			</File>
@@ -790,6 +794,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\MeshTriangle.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\MeshTriangleFan.h"
 				>
 			</File>
 			<File

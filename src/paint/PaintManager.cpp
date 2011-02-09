@@ -52,12 +52,17 @@ namespace Paint {
 
 		vector<ObjectSpatial*> temp_list;
 
-		temp_list.push_back(paint_cells[0]);
-		BoundingBox3D paint_bound(*paint_cells[0]);
-		paint_cells[0]->index = 0;
-		for (unsigned i = 1; i < paint_cells.size(); i++) {
+		BoundingBox3D paint_bound;
+		for (unsigned i = 0; i < paint_cells.size(); i++) {
+
+			paint_cells[i]->setDisplayList();
+
+			if (i == 0)
+				paint_bound.setToObject(*paint_cells[i]);
+			else
+				paint_bound.expandToInclude(*paint_cells[i]);
+
 			temp_list.push_back(paint_cells[i]);
-			paint_bound.expandToInclude(*paint_cells[i]);
 			paint_cells[i]->index = i;
 		}
 
@@ -70,53 +75,32 @@ namespace Paint {
 
 	void PaintManager::renderGeometry(ShaderParamSetter& setter, const Math::BoundingObject* bounding_object) {
 
-		lastDrawnColor =-2;
-
-		vector<ObjectSpatial*> visible_cells;
+		renderPoints = false;
+		renderAlpha = 1.0f;
 
 		if (bounding_object)
-			coloredPaintTree->appendQuery(visible_cells, *bounding_object, SpatialContainer::NEARBY);
+			coloredPaintTree->operateQuery(*this, *bounding_object, SpatialContainer::NEARBY);
 		else
-			coloredPaintTree->appendAll(visible_cells);
-
-		for (unsigned int i = 0; i < visible_cells.size(); i++) {
-
-			PaintCell* cell = (PaintCell*) visible_cells[i];
-
-			OpenGL::Color::glColor(ColorConstants::playerColor(cell->playerColor));
-
-			glBegin(GL_TRIANGLE_FAN);
-			OpenGL::MathWrapper::glNormal(cell->normal);
-			OpenGL::MathWrapper::glVertex(cell->center);
-			for (int j = 0; j < Paint::PaintCell::CELL_VERTICES; j++) {
-				OpenGL::MathWrapper::glVertex(cell->vertex[j]);
-			}
-			OpenGL::MathWrapper::glVertex(cell->vertex[0]);
-			glEnd();
-		}
+			coloredPaintTree->operateAll(*this);
 
 	}
 
 	void PaintManager::minimapRender(const Math::BoundingObject& bounding_object, float view_height, float alpha) {
 
-		vector<ObjectSpatial*> visible_cells;
-
-		coloredPaintTree->appendQuery(visible_cells, bounding_object, SpatialContainer::NEARBY);
+		renderPoints = true;
+		renderAlpha = alpha;
 
 		GLfloat values [4];
 		glGetFloatv(GL_VIEWPORT, values);
 		float viewportWidth = values[3];
 		glPointSize(viewportWidth/view_height);
 		glBegin(GL_POINTS);
-		for (unsigned int i = 0; i < visible_cells.size(); i++) {
 
-			PaintCell* cell = (PaintCell*) visible_cells[i];
-			OpenGL::Color::glColor(ColorConstants::playerColor(cell->playerColor), alpha);
-			OpenGL::MathWrapper::glVertex(cell->center);
-			
-		}
+		coloredPaintTree->operateQuery(*this, bounding_object, SpatialContainer::NEARBY);
+
 		glEnd();
 		glPointSize(1.0f);
+		
 
 	}
 	void PaintManager::colorCellsByIndex(const vector<int> &cell_indices, int new_color, bool force_color) {
@@ -233,6 +217,15 @@ namespace Paint {
 		}
 
 		return false;
+	}
+
+	void PaintManager::operateOnObject(Math::ObjectSpatial* object) {
+		PaintCell* cell = (PaintCell*)object;
+		OpenGL::Color::glColor(ColorConstants::playerColor(cell->playerColor), renderAlpha);
+		if (renderPoints)
+			OpenGL::MathWrapper::glVertex(cell->center);
+		else
+			glCallList(cell->displayList);
 	}
 
 }  // namespace Paint

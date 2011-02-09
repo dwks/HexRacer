@@ -1,6 +1,7 @@
 #include "PaintCell.h"
 #include "math/Geometry.h"
 #include "math/Values.h"
+#include "opengl/MathWrapper.h"
 #include <ostream>
 #include <istream>
 using namespace Project;
@@ -17,6 +18,7 @@ namespace Paint {
 		index = -1;
 		playerColor = -1;
 		center = _center;
+		displayList = 0;
 		for (int i = 0; i < CELL_VERTICES; i++) {
 			vertexSet[i] = false;
 		}
@@ -25,6 +27,7 @@ namespace Paint {
 	PaintCell::PaintCell(Math::Point _center, Math::Point* vertices, Math::Point _normal, int _index) {
 		playerColor = -1;
 		center = _center;
+		displayList = 0;
 		for (int i = 0; i < CELL_VERTICES; i++) {
 			vertex[i] = vertices[i];
 			vertexSet[i] = true;
@@ -32,6 +35,28 @@ namespace Paint {
 		normal = _normal;
 		index = _index;
 		setBoundingDimensions();
+	}
+
+	void PaintCell::setDisplayList() {
+
+		displayList = glGenLists(1);
+		glNewList(displayList, GL_COMPILE);
+
+		glBegin(GL_TRIANGLE_FAN);
+		OpenGL::MathWrapper::glNormal(normal);
+		OpenGL::MathWrapper::glVertex(center);
+		for (int j = Paint::PaintCell::CELL_VERTICES-1; j >= 0; j--) {
+			OpenGL::MathWrapper::glVertex(vertex[j]);
+		}
+		OpenGL::MathWrapper::glVertex(vertex[Paint::PaintCell::CELL_VERTICES-1]);
+		glEnd();
+
+		glEndList();
+
+	}
+
+	PaintCell::~PaintCell() {
+		glDeleteLists(displayList, 1);
 	}
 
 	void PaintCell::setBoundingDimensions() {
@@ -44,9 +69,9 @@ namespace Paint {
 	void PaintCell::calculateNormal() {
 		normal = Point();
 		for (int i = 0; i < CELL_VERTICES; i++) {
-			normal += Geometry::triangleNormal(center, vertex[i], vertex[(i+1)%CELL_VERTICES]);
+			normal += Geometry::triangleNormal(center, vertex[(i+1)%CELL_VERTICES], vertex[i]);
 		}
-		normal /= static_cast<double>(CELL_VERTICES);
+		normal.normalize();
 	}
 
 	int PaintCell::getOppositeVertex(int vert_index) {

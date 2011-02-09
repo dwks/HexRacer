@@ -23,6 +23,9 @@ public:
 
 	void appendQuery(vector<ObjectSpatial*>& result_vector, const BoundingObject& bounding_object, QueryType query_type) const;
 	void appendAll(vector<ObjectSpatial*>& result_vector) const;
+	void operateQuery(SpatialObjectOperator& op, const BoundingObject& bounding_object, QueryType query_type ) const;
+	void operateAll(SpatialObjectOperator& op) const;
+
 	int getHeight() const;
 
 	ObjectSpatial* nearestSquared(const Point& point, double max_distance_squared, bool bounded) const;

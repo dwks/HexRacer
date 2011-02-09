@@ -1,8 +1,10 @@
 #include "SpatialList.h"
 #include "misc/StdVectorFunctions.h"
 using namespace Project;
-using namespace Math;
 using namespace Misc;
+
+namespace Project {
+namespace Math {
 
 SpatialList::SpatialList(bool use_bounding_box) {
 	if (use_bounding_box)
@@ -58,7 +60,7 @@ void SpatialList::appendQuery(vector<ObjectSpatial*>& result_vector, const Bound
 		return;
 
 	if (query_type == SpatialContainer::NEARBY)
-		result_vector.insert(result_vector.end(), objectsVector.begin(), objectsVector.end());
+		appendAll(result_vector);
 	else {
 		for (unsigned int i = 0; i < objectsVector.size(); i++) {
 			if (queryTypeFilter(objectsVector[i], bounding_object, query_type)) {
@@ -70,6 +72,29 @@ void SpatialList::appendQuery(vector<ObjectSpatial*>& result_vector, const Bound
 
 void SpatialList::appendAll(vector<ObjectSpatial*>& result_vector) const {
 	result_vector.insert(result_vector.end(), objectsVector.begin(), objectsVector.end());
+}
+
+void SpatialList::operateQuery(SpatialObjectOperator& op, const BoundingObject& bounding_object, QueryType query_type ) const {
+
+	if (objectsVector.empty() || (boundingBox && !boundingBox->intersects(bounding_object)))
+		return;
+
+	if (query_type == SpatialContainer::NEARBY)
+		operateAll(op);
+	else {
+		for (unsigned int i = 0; i < objectsVector.size(); i++) {
+			if (queryTypeFilter(objectsVector[i], bounding_object, query_type)) {
+				op.operateOnObject(objectsVector[i]);
+			}
+		}
+	}
+
+}
+
+void SpatialList::operateAll(SpatialObjectOperator& op) const {
+	for (unsigned int i = 0; i < objectsVector.size(); i++) {
+		op.operateOnObject(objectsVector[i]);
+	}
 }
 
 ObjectSpatial* SpatialList::nearestSquared(const Point& point, double max_distance_squared, bool bounded) const {
@@ -123,3 +148,6 @@ void SpatialList::refreshBoundingBox() {
 	}
 
 }
+
+}  // namespace Math
+}  // namespace Project
