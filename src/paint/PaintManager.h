@@ -8,6 +8,7 @@
 #include "render/BaseRenderable.h"
 #include "math/BSPTree3D.h"
 #include "math/BoundingBox2D.h"
+#include "math/SpatialObjectOperator.h"
 
 #include "event/PaintEvent.h"
 #include "event/PaintCellsChanged.h"
@@ -17,7 +18,7 @@ namespace Project {
 namespace Paint {
 
 class PaintManager
-	: public Render::BaseRenderable {
+	: public Render::BaseRenderable, public Math::SpatialObjectOperator {
 private:
     class PaintEventHandler : public Event::TypedObserver<Event::PaintEvent> {
     private:
@@ -44,7 +45,8 @@ private:
 	std::vector<PaintCell*> paintList;
 	Math::BSPTree3D* neutralPaintTree;
 	Math::BSPTree3D* coloredPaintTree;
-	int lastDrawnColor;
+	bool renderPoints;
+	float renderAlpha;
 
 	static const int TREE_SPLIT_SIZE = 30;
 	static const Math::BSPTree3D::SplitMethod TREE_SPLIT_METHOD = Math::BSPTree3D::LARGEST_AXIS;
@@ -89,6 +91,8 @@ public:
 		This number will be in the range [0.5, 2.0].
 	*/
 	double weightedCellsInRadius(Math::Point centroid, double radius, int color);
+
+	void operateOnObject(Math::ObjectSpatial* object);
 	
 };
 

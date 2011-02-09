@@ -281,6 +281,52 @@ void BSPTree::appendAll(vector<ObjectSpatial*>& result_vector) const {
 	}
 }
 
+
+void BSPTree::operateQuery(SpatialObjectOperator& op, const BoundingObject& bounding_object, QueryType query_type ) const {
+
+	if (size() <= 0)
+		return;
+
+	ObjectSpatial::IntersectionType intersect;
+
+	if (getBoundingObject().is2D()) {
+		const BoundingObject2D& this_bound = (const BoundingObject2D&) getBoundingObject();
+		intersect = this_bound.intersectionType(bounding_object);
+	}
+	else {
+		const BoundingObject3D& this_bound = (const BoundingObject3D&) getBoundingObject();
+		intersect = this_bound.intersectionType(bounding_object);
+	}
+
+	switch (intersect) {
+
+		case ObjectSpatial::INTERSECT_INSIDE:
+			operateAll(op);
+			return;
+
+		case ObjectSpatial::INTERSECT_INTERSECTS:
+			list.operateQuery(op, bounding_object, query_type);
+			if (!leaf) {
+				child[0]->operateQuery(op, bounding_object, query_type);
+				child[1]->operateQuery(op, bounding_object, query_type);
+			}
+			return;
+
+		default:
+			return;
+			
+	}
+
+}
+
+void BSPTree::operateAll(SpatialObjectOperator& op) const {
+	list.operateAll(op);
+	if (!leaf) {
+		child[0]->operateAll(op);
+		child[1]->operateAll(op);
+	}
+}
+
 int BSPTree::getHeight() const {
 	if (leaf)
 		return 1;

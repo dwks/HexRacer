@@ -6,6 +6,7 @@
 #include "MeshTriangleFan.h"
 #include "math/BSPTree3D.h"
 #include "opengl/OpenGL.h"
+#include "math/SpatialObjectOperator.h"
 #include <vector>
 
 namespace Project {
@@ -14,7 +15,7 @@ namespace Render {
 /** A triangle-mesh
 */
 class Mesh
-	: public BaseRenderable {
+	: public BaseRenderable, public Math::SpatialObjectOperator {
 private:
 
 	std::vector< Math::Triangle3D > triangles;
@@ -22,13 +23,10 @@ private:
 	Math::BSPTree3D* triangleFanTree;
 	Material* material;
 	GLuint displayList;
+	ShaderParamSetter* paramSetter;
 
 	void generateTriangleFanTree();
 	void generateDisplayList();
-
-	
-
-	inline void drawTriangle(MeshTriangle* triangle, ShaderParamSetter& setter);
 
 	inline void drawTriangleFan(MeshTriangleFan* fan, ShaderParamSetter& setter);
 
@@ -44,6 +42,7 @@ public:
 
 	void renderGeometry(ShaderParamSetter& setter, const  Math::BoundingObject* bounding_object = NULL);
 	const vector<Project::Math::Triangle3D>& getTriangles() { return triangles; }
+	void operateOnObject(Math::ObjectSpatial* object);
 };
 
 }  // namespace Render

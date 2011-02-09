@@ -1471,6 +1471,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\SpatialObjectOperator.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\hud\Speedometer.h"
 				>
 			</File>

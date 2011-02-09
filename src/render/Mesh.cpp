@@ -11,6 +11,7 @@ namespace Project {
 namespace Render {
 
 	Mesh::Mesh() {
+		paramSetter = NULL;
 		triangleFanTree = NULL;
 		material = NULL;
 		displayList = 0;
@@ -167,12 +168,8 @@ namespace Render {
 
 		}
 		else {
-			vector<ObjectSpatial*> culled_fans;
-			triangleFanTree->appendQuery(culled_fans, *bounding_object, CULLING_QUERY_TYPE);
-
-			for (unsigned int i = 0; i < culled_fans.size(); i++) {
-				drawTriangleFan((MeshTriangleFan*)culled_fans[i], setter);
-			}
+			paramSetter = &setter;
+			triangleFanTree->operateQuery(*this, *bounding_object, CULLING_QUERY_TYPE);
 		}
 
 	}
@@ -192,6 +189,10 @@ namespace Render {
 
 		glEnd();
 
+	}
+
+	void Mesh::operateOnObject(Math::ObjectSpatial* object) {
+		drawTriangleFan((MeshTriangleFan*)object, *paramSetter);
 	}
 
 }  // namespace Render
