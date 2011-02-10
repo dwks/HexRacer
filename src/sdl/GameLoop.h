@@ -11,6 +11,9 @@
 #include "GameRenderer.h"
 #include "GameWorld.h"
 
+#include "gui/GUISystem.h"
+#include "GUIInputManager.h"
+
 #include "paint/PaintSubsystem.h"
 #include "InputManager.h"
 
@@ -25,11 +28,17 @@ private:
     
     boost::shared_ptr<Paint::PaintSubsystem> paintSubsystem;
     boost::shared_ptr<InputManager> inputManager;
+    
+    boost::shared_ptr<GUI::GUISystem> gui;
+    boost::shared_ptr<GUIInputManager> guiInputManager;
 public:
     GameLoop(const std::string &host, unsigned short port);
     
     void doConnect(const std::string &host, unsigned short port);
     virtual void construct();
+    
+    void setGuiPointers(boost::shared_ptr<GUI::GUISystem> gui,
+        boost::shared_ptr<GUIInputManager> guiInputManager);
     
     virtual void handleEvent(SDL_Event *event);
     virtual void miscellaneous();

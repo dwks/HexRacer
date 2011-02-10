@@ -10,6 +10,8 @@
 #include "SDL_ttf.h"
 #include "opengl/OpenGL.h"
 
+#include "log/Logger.h"
+
 namespace Project {
 namespace Widget {
 
@@ -19,9 +21,11 @@ TextWidget::TextWidget(const std::string &name, OpenGL::Color color,
     
     this->color = color;
     this->data = data;
+    this->align = align;
     texture = -1;
     
-    preRender(align);
+    preRender();
+    dirty = false;
 }
 
 TextWidget::~TextWidget() {
@@ -37,7 +41,7 @@ int TextWidget::nextPowerOf2(int x) {
     return 1 << int(std::ceil((double) std::log((double) x) / std::log((double) 2.0)));
 }
 
-void TextWidget::preRender(unsigned align) {
+void TextWidget::preRender() {
     SDL_Color c;
     c.r = color.getRedi();
     c.g = color.getGreeni();
@@ -62,8 +66,10 @@ void TextWidget::preRender(unsigned align) {
     // copy data from first to second, translating to new format
     SDL_BlitSurface(first, NULL, second, NULL);
     
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    if(texture == unsigned(-1)) {
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+    }
     
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -73,14 +79,20 @@ void TextWidget::preRender(unsigned align) {
         GL_UNSIGNED_BYTE, second->pixels);
     
     SDL_FreeSurface(first);
-    //SDL_FreeSurface(second);
+    SDL_FreeSurface(second);
     
     double aspectRatio = double(first->h) / first->w;
     
-    setLayout(new NormalTextLayout(align, aspectRatio));
+    if(getLayout() == NULL) {
+        setLayout(new NormalTextLayout(align, aspectRatio));
+    }
 }
 
 void TextWidget::render() {
+    if(dirty) {
+        preRender();
+    }
+    
     WidgetPoint corner = getBoundingRect().getCorner();
     WidgetPoint dimensions = getBoundingRect().getDimensions();
     
@@ -125,6 +137,22 @@ void TextWidget::render() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     glDisable(GL_TEXTURE_2D);
+}
+
+void TextWidget::setText(const std::string &data) {
+    this->data = data;
+    
+    //LOG(WIDGET, "Text widget data set to \"" << data << "\"");
+    
+    if(texture != unsigned(-1)) {
+        // make sure we're finished rendering before deleting the texture
+        glFinish();
+        
+        glDeleteTextures(1, &texture);
+        texture = -1;
+    }
+    
+    dirty = true;
 }
 
 }  // namespace Widget

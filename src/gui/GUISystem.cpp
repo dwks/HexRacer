@@ -1,5 +1,6 @@
 #include "GUISystem.h"
 #include "MainMenuProxy.h"
+#include "RunningProxy.h"
 #include "PauseMenuProxy.h"
 
 #include "widget/WidgetRenderer.h"
@@ -7,6 +8,8 @@
 #include "widget/NormalTextLayout.h"
 #include "widget/MouseButtonEvent.h"
 #include "widget/KeyboardShortcutProxy.h"
+
+#include "GUIObservers.h"
 
 #include "SDL_events.h"
 
@@ -17,6 +20,7 @@ GUISystem::~GUISystem() {
     delete widgets;
     delete textureList;
     delete fontManager;
+    delete observers;
 }
 
 void GUISystem::construct() {
@@ -53,6 +57,7 @@ void GUISystem::construct() {
             Widget::WidgetRect(0.55, 0.8, 0.42, 0.08)));
         
         setShortcut(getWidget("main/join"), SDLK_j);
+        setShortcut(getWidget("main/single"), SDLK_s);
         
         setShortcut(getWidget("main/quit"), SDLK_q);
         setShortcut(getWidget("main/quit"), SDLK_ESCAPE);
@@ -67,12 +72,23 @@ void GUISystem::construct() {
     }
     
     {
+        Widget::CompositeWidget *running
+            = new Widget::CompositeWidget("running");
+        widgets->addChild(running);
+        
+        running->addChild(new Widget::ButtonWidget("menu",
+            "Menu", Widget::WidgetRect(0.0, 0.0, 0.1, 0.05)));
+        
+        getWidget("running/menu")->addEventProxy(new RunningProxy());
+    }
+    
+    {
         Widget::CompositeWidget *paused
             = new Widget::CompositeWidget("paused");
         widgets->addChild(paused);
         
-        paused->addChild(new Widget::ButtonWidget("help",
-            "?", Widget::WidgetRect(0.0, 0.0, 0.1, 0.1)));
+        /*paused->addChild(new Widget::ButtonWidget("help",
+            "?", Widget::WidgetRect(0.0, 0.0, 0.1, 0.1)));*/
         
         paused->addChild(new Widget::ButtonWidget("resume", "Resume",
             Widget::WidgetRect(0.3, 0.4 - 0.15, 0.4, 0.1)));
@@ -81,13 +97,15 @@ void GUISystem::construct() {
         paused->addChild(new Widget::ButtonWidget("quit", "Quit",
             Widget::WidgetRect(0.3, 0.4 + 0.15, 0.4, 0.1)));
         
-        getWidget("paused/help")->addEventProxy(new PauseMenuProxy());
+        //getWidget("paused/help")->addEventProxy(new PauseMenuProxy());
         getWidget("paused/resume")->addEventProxy(new PauseMenuProxy());
         getWidget("paused/settings")->addEventProxy(new PauseMenuProxy());
         getWidget("paused/quit")->addEventProxy(new PauseMenuProxy());
     }
     
     selectScreen("paused");
+    
+    observers = new GUIObservers(this);
 }
 
 void GUISystem::render() {
@@ -129,6 +147,10 @@ Widget::WidgetBase *GUISystem::getWidget(const std::string &path) {
     } while(widget && end != std::string::npos);
     
     return widget;
+}
+
+Widget::CompositeWidget *GUISystem::getScreen(const std::string &path) {
+    return dynamic_cast<Widget::CompositeWidget *>(getWidget(path));
 }
 
 void GUISystem::setShortcut(Widget::WidgetBase *widget, long key) {

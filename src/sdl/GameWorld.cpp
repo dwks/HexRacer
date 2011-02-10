@@ -15,10 +15,8 @@ namespace SDL {
 
 void GameWorld::doConnect(const std::string &host, unsigned short port) {
     network = boost::shared_ptr<NetworkPortal>(new NetworkPortal());
-    if(network->connectTo(
-        GET_SETTING("network.host", "localhost").c_str(),
-        GET_SETTING("network.port", 1820))) {
-        
+    
+    if(host != "" && network->connectTo(host.c_str(), port)) {
         Object::World *world;
         Object::PlayerList *playerList;
         

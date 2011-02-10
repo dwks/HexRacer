@@ -25,6 +25,9 @@ void MainMenuProxy::visit(Widget::WidgetActivateEvent *event) {
             GET_SETTING("network.host", "localhost").c_str(),
             GET_SETTING("network.port", 1820)));
     }
+    else if(name == "single") {
+        EMIT_EVENT(new Event::JoinGame());
+    }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");
     }

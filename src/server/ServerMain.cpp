@@ -80,6 +80,8 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
             player->doJump();
             break;
         case Event::PlayerAction::FIX_OFF_TRACK: {
+            delete player->getPhysicalObject();
+            
             if(player->getPathTracker()
                 && player->getPathTracker()->getCurrentNode()) {
             

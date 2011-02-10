@@ -15,18 +15,23 @@ private:
     std::string data;
     unsigned int texture;
     double widthFactor, heightFactor;
+    unsigned align;
+    bool dirty;
 public:
-    TextWidget(const std::string &name) : AbstractWidget(name), texture(-1) {}
+    TextWidget(const std::string &name)
+        : AbstractWidget(name), texture(-1), dirty(false) {}
     TextWidget(const std::string &name, OpenGL::Color color,
         const std::string &data, unsigned align);
     ~TextWidget();
     
     void render();
     
+    void setText(const std::string &data);
+    
     virtual void accept(WidgetVisitor &visitor) { visitor.visit(this); }
 private:
     int nextPowerOf2(int x);
-    void preRender(unsigned align);
+    void preRender();
 };
 
 }  // namespace Widget
