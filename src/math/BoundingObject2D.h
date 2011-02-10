@@ -16,6 +16,8 @@ public:
 		: Object2D(projectAxis) {}
 	virtual ~BoundingObject2D(void) {}
 	bool is2D() const { return true; }
+	ObjectSpatial& toObjectSpatial() { return (BoundingObject2D&) *this; }
+	const ObjectSpatial& toConstObjectSpatial() const { return (const BoundingObject2D&) *this; }
 };
 
 

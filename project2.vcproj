@@ -361,7 +361,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Light.cpp"
+				RelativePath=".\src\opengl\Light.cpp"
 				>
 			</File>
 			<File
@@ -1219,7 +1219,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Light.h"
+				RelativePath=".\src\opengl\Light.h"
 				>
 			</File>
 			<File

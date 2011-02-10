@@ -190,11 +190,7 @@ ObjectSpatial* BSPTree::nearestSquared(const Point& point, double max_distance_s
 
 RayIntersection BSPTree::rayIntersection(Ray ray) const {
 
-	bool intersects;
-	if (getBoundingObject().is2D())
-		intersects = ((const BoundingObject2D&)getBoundingObject()).rayIntersection(ray).intersects;
-	else
-		intersects = ((const BoundingObject3D&)getBoundingObject()).rayIntersection(ray).intersects;
+	bool intersects = getBoundingObject().toConstObjectSpatial().rayIntersection(ray).intersects;
 
 	if (size() == 0 || !intersects)
 		return RayIntersection();
@@ -209,17 +205,8 @@ RayIntersection BSPTree::rayIntersection(Ray ray) const {
 		ray.maxBounded = true;
 	}
 
-	RayIntersection child_0_intersect;
-	RayIntersection child_1_intersect;
-
-	if (getBoundingObject().is2D()) {
-		child_0_intersect = ((const BoundingObject2D&)child[0]->getBoundingObject()).rayIntersection(ray);
-		child_1_intersect = ((const BoundingObject2D&)child[1]->getBoundingObject()).rayIntersection(ray);
-	}
-	else {
-		child_0_intersect = ((const BoundingObject3D&)child[0]->getBoundingObject()).rayIntersection(ray);
-		child_1_intersect = ((const BoundingObject3D&)child[1]->getBoundingObject()).rayIntersection(ray);
-	}
+	RayIntersection child_0_intersect = child[0]->getBoundingObject().toConstObjectSpatial().rayIntersection(ray);
+	RayIntersection child_1_intersect = child[1]->getBoundingObject().toConstObjectSpatial().rayIntersection(ray);
 
 	if (child_0_intersect.intersects && (!min_intersect.intersects || child_0_intersect < min_intersect)) {
 		child_0_intersect = child[0]->rayIntersection(ray);
@@ -263,14 +250,7 @@ void BSPTree::appendQuery(vector<ObjectSpatial*>& result_vector, const BoundingO
 
 	ObjectSpatial::IntersectionType intersect;
 
-	if (getBoundingObject().is2D()) {
-		const BoundingObject2D& this_bound = (const BoundingObject2D&) getBoundingObject();
-		intersect = this_bound.intersectionType(bounding_object);
-	}
-	else {
-		const BoundingObject3D& this_bound = (const BoundingObject3D&) getBoundingObject();
-		intersect = this_bound.intersectionType(bounding_object);
-	}
+	intersect = getBoundingObject().toConstObjectSpatial().intersectionType(bounding_object);
 
 	switch (intersect) {
 
@@ -310,14 +290,7 @@ void BSPTree::operateQuery(SpatialObjectOperator& op, const BoundingObject& boun
 
 	ObjectSpatial::IntersectionType intersect;
 
-	if (getBoundingObject().is2D()) {
-		const BoundingObject2D& this_bound = (const BoundingObject2D&) getBoundingObject();
-		intersect = this_bound.intersectionType(bounding_object);
-	}
-	else {
-		const BoundingObject3D& this_bound = (const BoundingObject3D&) getBoundingObject();
-		intersect = this_bound.intersectionType(bounding_object);
-	}
+	intersect = getBoundingObject().toConstObjectSpatial().intersectionType(bounding_object);
 
 	switch (intersect) {
 

@@ -5,7 +5,7 @@
 #include "render/RenderList.h"
 #include "opengl/TextureCube.h"
 #include "opengl/CubeMapFile.h"
-#include "render/Light.h"
+#include "opengl/Light.h"
 #include "mesh/TransformedMesh.h"
 #include "mesh/MeshGroup.h"
 #include "paint/PaintCell.h"
@@ -44,7 +44,7 @@ private:
 	std::string filename;
 	OpenGL::CubeMapFile* cubeMapFile;
 	OpenGL::TextureCube* cubeMap;
-	std::vector<Render::Light*> lights;
+	std::vector<OpenGL::Light*> lights;
 	std::vector<PathNode*> pathNodes;
 	std::vector<Paint::PaintCell*> paintCells;
 	std::vector<Math::Vertex3D*> startPoints;
@@ -98,9 +98,9 @@ public:
 	std::vector<std::string> getPropMeshNames() { return propMeshNames; }
 	std::string getPropMeshName(int index);
 
-	const std::vector<Render::Light*>& getLights() const { return lights; }
-	void addLight(Render::Light* light);
-	void removeLight(Render::Light* light);
+	const std::vector<OpenGL::Light*>& getLights() const { return lights; }
+	void addLight(OpenGL::Light* light);
+	void removeLight(OpenGL::Light* light);
 	void clearLights();
 
 	const std::vector<PathNode*>& getPathNodes() const { return pathNodes; }

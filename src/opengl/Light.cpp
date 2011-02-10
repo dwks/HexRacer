@@ -8,7 +8,7 @@ using namespace OpenGL;
 using namespace Math;
 
 namespace Project {
-namespace Render {
+namespace OpenGL {
 
 	Light::Light(Project::Math::Point position)
 		: Vertex3D(position) {

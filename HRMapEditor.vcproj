@@ -241,10 +241,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\CubeMapFile.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\opengl\CubeMapFile.cpp"
 				>
 			</File>
@@ -281,7 +277,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Light.cpp"
+				RelativePath=".\src\opengl\Light.cpp"
 				>
 			</File>
 			<File
@@ -358,10 +354,6 @@
 			</File>
 			<File
 				RelativePath=".\src\log\MessageType.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\model_obj.cpp"
 				>
 			</File>
 			<File
@@ -509,15 +501,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Texture.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\opengl\TextureCube.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\TextureCube.cpp"
 				>
 			</File>
 			<File
@@ -673,10 +657,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\src\render\CubeMapFile.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\opengl\CubeMapFile.h"
 				>
 			</File>
@@ -731,7 +711,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\src\render\Light.h"
+				RelativePath=".\src\opengl\Light.h"
 				>
 			</File>
 			<File
@@ -838,10 +818,6 @@
 			</File>
 			<File
 				RelativePath=".\src\mesh\model_obj.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\model_obj.h"
 				>
 			</File>
 			<File
@@ -1019,15 +995,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Texture.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\opengl\TextureCube.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\TextureCube.h"
 				>
 			</File>
 			<File

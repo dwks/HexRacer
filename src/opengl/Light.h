@@ -6,7 +6,7 @@
 #include "opengl/Color.h"
 
 namespace Project {
-namespace Render {
+namespace OpenGL {
 
 class Light
 	: public Project::Math::Vertex3D {

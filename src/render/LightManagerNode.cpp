@@ -7,7 +7,7 @@
 namespace Project {
 namespace Render {
 
-	LightManagerNode::LightManagerNode(Light* _light) {
+	LightManagerNode::LightManagerNode(OpenGL::Light* _light) {
 		light = _light;
 		active = false;
 		prevQuadAttenuation = FLT_MAX;

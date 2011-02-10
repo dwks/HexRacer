@@ -1,8 +1,8 @@
 #pragma once
 #include "MapObject.h"
-#include "render/Light.h"
+#include "opengl/Light.h"
 using namespace Project;
-using namespace Render;
+using namespace OpenGL;
 using namespace Math;
 
 class LightObject :

@@ -1,7 +1,7 @@
 #ifndef PROJECT_RENDER__LIGHT_MANAGER_NODE_H
 #define PROJECT_RENDER__LIGHT_MANAGER_NODE_H
 
-#include "Light.h"
+#include "opengl/Light.h"
 #include "math/BoundingSphere.h"
 
 namespace Project {
@@ -12,11 +12,11 @@ class LightManagerNode
 private:
 	float prevQuadAttenuation;
 public:
-	Light* light;
+	OpenGL::Light* light;
 	bool active;
 	float factorAtPoint;
 
-	LightManagerNode(Light* _light);
+	LightManagerNode(OpenGL::Light* _light);
 	void update();
 	void setLightFactorPoint(const Math::Point& point);
 

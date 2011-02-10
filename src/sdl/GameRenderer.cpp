@@ -52,7 +52,7 @@ void GameRenderer::construct(OpenGL::Camera *camera) {
     }
     
     //Add the map lights to the light manager
-    std::vector<Render::Light*> map_lights = map->getLights();
+    std::vector<OpenGL::Light*> map_lights = map->getLights();
     for (unsigned i = 0; i < map_lights.size(); i++) {
         lightManager->addLight(map_lights[i], !map_lights[i]->getHasAttenuation(), false);
     }
