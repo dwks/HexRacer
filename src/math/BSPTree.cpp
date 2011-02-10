@@ -101,21 +101,42 @@ bool BSPTree::remove(ObjectSpatial* object) {
 		return true;
 
 	if (!leaf) {
+
+		bool removed = false;
+
 		if (object->isInside(child[0]->getBoundingObject())) {
 			if (child[0]->remove(object)) {
 				subtreeSize--;
-				return true;
+				removed = true;
 			}
 		}
 		else if (object->isInside(child[1]->getBoundingObject())) {
 			if (child[1]->remove(object)) {
 				subtreeSize--;
-				return true;
+				removed = true;
 			}
 		}
+
+		if (removed && size() < splitCount/2) {
+			vector<ObjectSpatial*> child_objects;
+
+			child[0]->appendAll(child_objects);
+			child[1]->appendAll(child_objects);
+
+			delete(child[0]);
+			delete(child[1]);
+
+			subtreeSize = 0;
+			list.add(child_objects);
+
+			leaf = true;
+		}
+
+		return removed;
 	}
 
 	return false;
+
 }
 
 bool BSPTree::contains(ObjectSpatial* object) const {
