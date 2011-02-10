@@ -21,7 +21,7 @@ private:
 	
 public:
 
-	Material(std::string _name);
+	Material(std::string _name = "");
 
 	std::string getName() const;
 

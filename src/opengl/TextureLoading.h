@@ -1,40 +1,14 @@
-#ifndef PROJECT_RENDER__TEXTURE_H
-#define PROJECT_RENDER__TEXTURE_H
+#ifndef PROJECT_OPENGL__TEXTURE_LOADING_H
+#define PROJECT_OPENGL__TEXTURE_LOADING_H
 
 #include "opengl/OpenGL.h"
 #include <string>
 
 namespace Project {
-namespace Render {
+namespace OpenGL {
 
-/** Represents a texture made up of multiple images
-*/
-class Texture {
-
-private:
-
-	std::string name;
-	GLuint colorMap;
-	GLuint normalMap;
-	GLuint glowMap;
-
+class TextureLoading {
 public:
-
-	Texture(std::string _name,
-		std::string color_map_filename,
-		std::string normal_map_filename,
-		std::string glow_map_filename);
-	~Texture();
-
-	std::string getName() const;
-
-	bool hasColorMap() const;
-	GLuint getColorMap() const;
-	bool hasNormalMap() const;
-	GLuint getNormalMap() const;
-	bool hasGlowMap() const;
-	GLuint getGlowMap() const;
-	//virtual GLenum targetTexture() { return GL_TEXTURE_2D; }
 
 	/** Load a texture into openGL from the file @a filename
 		Returns the texture id of the loaded texture, 0 if unsuccessful
@@ -56,10 +30,9 @@ public:
 
 	static GLint toGLFormat(int bytes_per_pixel);
 
-
 };
 
-}  // namespace Render
+}  // namespace OpenGL
 }  // namespace Project
 
 #endif

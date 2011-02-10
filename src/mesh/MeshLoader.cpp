@@ -19,7 +19,7 @@ namespace Mesh {
             delete models[x];
         }
         
-		for(vector< Render::Texture* >::size_type x = 0; x < textures.size(); x ++) {
+		for(vector< Render::TexturePack* >::size_type x = 0; x < textures.size(); x ++) {
             delete textures[x];
         }
     }
@@ -77,7 +77,7 @@ namespace Mesh {
 		return false;
 	}
 
-	Render::Texture* MeshLoader::getTextureByName(string name) {
+	Render::TexturePack* MeshLoader::getTextureByName(string name) {
 		for (unsigned int i = 0; i < textures.size(); i++) {
 			if (textures[i]->getName() == name) {
 				return textures[i];
@@ -153,7 +153,7 @@ namespace Mesh {
 				}
 			}
 
-			Render::Texture* tex = NULL;
+			Render::TexturePack* tex = NULL;
 
 			if (hasColorMap || hasNormalMap || hasGlowMap) {
 
@@ -165,7 +165,7 @@ namespace Mesh {
 					string normal_map_name = DirectoryFunctions::fromRelativeFilename(directory, obj_mat.bumpMapFilename);
 					string glow_map_name = DirectoryFunctions::fromRelativeFilename(directory, obj_mat.glowMapFilename);
 
-					tex = new Render::Texture(tex_name, color_map_name, normal_map_name, glow_map_name);
+					tex = new Render::TexturePack(tex_name, color_map_name, normal_map_name, glow_map_name);
 					textures.push_back(tex);
 				}
 			}
@@ -187,7 +187,7 @@ namespace Mesh {
 			if (mat)
 				properties->setWantsShaderName(obj_mat.shaderName);
 			if (tex)
-				properties->setTexture(tex);
+				properties->setTexturePack(tex);
 
 			mesh_list.push_back(sub_mesh);
 		}

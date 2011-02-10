@@ -1,6 +1,6 @@
 #include "Speedometer.h"
 #include "math/Values.h"
-#include "render/Texture.h"
+#include "opengl/TextureLoading.h"
 
 namespace Project {
 namespace HUD {
@@ -12,7 +12,7 @@ namespace HUD {
 		startAngle = PI*1.25;
 		angleRange = PI*1.5;
 
-		alphaMaskTexture = Render::Texture::loadTexture2D(
+		alphaMaskTexture = OpenGL::TextureLoading::loadTexture2D(
 			"data/hud/speedometer_alpha_mask.png",
 			GL_CLAMP_TO_EDGE,
 			GL_CLAMP_TO_EDGE,

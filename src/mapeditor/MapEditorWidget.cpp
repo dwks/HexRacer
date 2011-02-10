@@ -781,7 +781,7 @@ void MapEditorWidget::generate2DMap(string filename) {
 		RenderList render_list;
 		render_list.getRenderProperties()->setTransformation(Matrix());
 		render_list.getRenderProperties()->setColorOverride(true);
-		render_list.getRenderProperties()->setTextureOverride(true);
+		render_list.getRenderProperties()->setTexturePackOverride(true);
 		render_list.getRenderProperties()->setMaterialOverride(true);
 		render_list.getRenderProperties()->setShaderOverride(true);
 
@@ -987,7 +987,7 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 					if (object_buffer) {
 						glBufferIndexColor(i);
 						render_list.getRenderProperties()->setColorOverride(true);
-						render_list.getRenderProperties()->setTextureOverride(true);
+						render_list.getRenderProperties()->setTexturePackOverride(true);
 					}
 				}
 

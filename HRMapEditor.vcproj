@@ -245,6 +245,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\opengl\CubeMapFile.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\DirectoryFunctions.cpp"
 				>
 			</File>
@@ -357,11 +361,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\mesh\model_obj.cpp"
+				RelativePath=".\src\render\model_obj.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\model_obj.cpp"
+				RelativePath=".\src\mesh\model_obj.cpp"
 				>
 			</File>
 			<File
@@ -509,7 +513,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\opengl\TextureCube.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\TextureCube.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\opengl\TextureLoading.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TexturePack.cpp"
 				>
 			</File>
 			<File
@@ -517,11 +533,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\TransformedMesh.cpp"
+				RelativePath=".\src\mesh\TransformedMesh.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\mesh\TransformedMesh.cpp"
+				RelativePath=".\src\render\TransformedMesh.cpp"
 				>
 			</File>
 			<File
@@ -658,6 +674,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\CubeMapFile.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\opengl\CubeMapFile.h"
 				>
 			</File>
 			<File
@@ -817,11 +837,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\model_obj.h"
+				RelativePath=".\src\mesh\model_obj.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\mesh\model_obj.h"
+				RelativePath=".\src\render\model_obj.h"
 				>
 			</File>
 			<File
@@ -1003,7 +1023,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\opengl\TextureCube.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\TextureCube.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\opengl\TextureLoading.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TexturePack.h"
 				>
 			</File>
 			<File
@@ -1011,11 +1043,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\mesh\TransformedMesh.h"
+				RelativePath=".\src\render\TransformedMesh.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\TransformedMesh.h"
+				RelativePath=".\src\mesh\TransformedMesh.h"
 				>
 			</File>
 			<File

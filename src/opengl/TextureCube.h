@@ -2,11 +2,11 @@
 #define PROJECT_RENDER__TEXTURE_CUBE_H
 
 #include "opengl/OpenGL.h"
-#include "render/CubeMapFile.h"
+#include "opengl/CubeMapFile.h"
 #include <string>
 
 namespace Project {
-namespace Render {
+namespace OpenGL {
 
 class TextureCube {
 private:

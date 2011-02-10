@@ -265,7 +265,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\CubeMapFile.cpp"
+				RelativePath=".\src\opengl\CubeMapFile.cpp"
 				>
 			</File>
 			<File
@@ -322,6 +322,10 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\GUIInputManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\GUIObservers.cpp"
 				>
 			</File>
 			<File
@@ -573,6 +577,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\RunningProxy.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\SDLGame.cpp"
 				>
 			</File>
@@ -637,11 +645,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Texture.cpp"
+				RelativePath=".\src\opengl\TextureCube.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\TextureCube.cpp"
+				RelativePath=".\src\opengl\TextureLoading.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TexturePack.cpp"
 				>
 			</File>
 			<File
@@ -1111,7 +1123,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\CubeMapFile.h"
+				RelativePath=".\src\opengl\CubeMapFile.h"
 				>
 			</File>
 			<File
@@ -1168,6 +1180,10 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\GUIInputManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\GUIObservers.h"
 				>
 			</File>
 			<File
@@ -1415,6 +1431,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\RunningProxy.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\SDLGame.h"
 				>
 			</File>
@@ -1491,11 +1511,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Texture.h"
+				RelativePath=".\src\opengl\TextureCube.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\TextureCube.h"
+				RelativePath=".\src\opengl\TextureLoading.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TexturePack.h"
 				>
 			</File>
 			<File

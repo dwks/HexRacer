@@ -9,7 +9,7 @@
 #include "opengl/OpenGL.h"
 #include "opengl/Camera.h"
 #include "RenderSettings.h"
-#include "TextureCube.h"
+#include "opengl/TextureCube.h"
 #include <string>
 #include <vector>
 #include <stack>
@@ -54,7 +54,7 @@ private:
 	LightManager* lightManager;
 	RenderSettings* settings;
 	OpenGL::Camera* camera;
-	TextureCube* cubeMap;
+	OpenGL::TextureCube* cubeMap;
 
 	bool shadersEnabled;
 	bool texturesEnabled;
@@ -70,7 +70,7 @@ private:
 
 	stack<int> shaderStack;
 	stack<Material*> materialStack;
-	stack<Texture*> textureStack;
+	stack<TexturePack*> textureStack;
 	stack<OpenGL::Color> colorStack;
 	vector< vector<ShaderParameter*> > shaderParams;
 
@@ -118,7 +118,7 @@ public:
 	bool hasTransformation() const;
 	const Math::BoundingObject* getBoundingObject() const;
 
-	void setCubeMap(TextureCube* cube_map);
+	void setCubeMap(OpenGL::TextureCube* cube_map);
 	
 
 private:

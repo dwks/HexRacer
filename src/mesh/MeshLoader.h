@@ -33,12 +33,12 @@ public:
 		Returns true if successful
 	*/
 	bool deleteModelByName(string model_name, bool expectFailure = false);
-	Render::Texture* getTextureByName(string name);
+	Render::TexturePack* getTextureByName(string name);
 
 private:
 
 	vector< MeshGroup* > models;
-	vector< Render::Texture* > textures;
+	vector< Render::TexturePack* > textures;
 
 	bool objLoadMeshes(string filename, bool cullable, vector<SubMesh*>& mesh_list, vector<MeshVertex*>& vertex_list);
 	bool objLoadTriangles(string filename, vector<Math::Triangle3D>& triangles);

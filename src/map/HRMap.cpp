@@ -9,6 +9,7 @@ using namespace Render;
 using namespace Mesh;
 using namespace Math;
 using namespace Paint;
+using namespace OpenGL;
 using namespace std;
 
 namespace Project {
@@ -394,7 +395,7 @@ namespace Map {
 				return true;
 		}
 	}
-	Render::TextureCube* HRMap::getCubeMap() {
+	OpenGL::TextureCube* HRMap::getCubeMap() {
 		if (cubeMap == NULL) {
 			cubeMap = new TextureCube(*cubeMapFile);
 		}

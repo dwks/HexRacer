@@ -1,11 +1,11 @@
 #include "TextureCube.h"
-#include "Texture.h"
+#include "TextureLoading.h"
 
 namespace Project {
-namespace Render {
+namespace OpenGL {
 
 	TextureCube::TextureCube(const CubeMapFile& file) {
-		cubeMap = Texture::loadTextureCube(
+		cubeMap = TextureLoading::loadTextureCube(
 			file.getSideFile(0),
 			file.getSideFile(1),
 			file.getSideFile(2),
@@ -22,7 +22,7 @@ namespace Render {
 				std::string positive_z_file,
 				std::string negative_z_file) {
 
-					cubeMap = Texture::loadTextureCube(positive_x_file,
+					cubeMap = TextureLoading::loadTextureCube(positive_x_file,
 						negative_x_file,
 						positive_y_file,
 						negative_y_file,

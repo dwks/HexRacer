@@ -4,7 +4,7 @@
 #include <string>
 
 namespace Project {
-namespace Render {
+namespace OpenGL {
 
 class CubeMapFile {
 

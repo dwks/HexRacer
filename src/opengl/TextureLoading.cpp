@@ -1,54 +1,11 @@
-#include "Texture.h"
+#include "TextureLoading.h"
 #include <SDL_image.h>
 #include <SDL.h>
 
 namespace Project {
-namespace Render {
+namespace OpenGL {
 
-	Texture::Texture(std::string _name,
-		std::string color_map_filename,
-		std::string normal_map_filename,
-		std::string glow_map_filename) {
-		name = _name;
-		colorMap = loadTexture2D(color_map_filename);
-		normalMap = loadTexture2D(normal_map_filename);
-		glowMap = loadTexture2D(glow_map_filename);
-	}
-
-	Texture::~Texture() {
-		glDeleteTextures(1, &colorMap);
-		glDeleteTextures(1, &normalMap);
-	}
-
-	std::string Texture::getName() const {
-		return name;
-	}
-
-	bool Texture::hasColorMap() const {
-		return (colorMap > 0);
-	}
-
-	GLuint Texture::getColorMap() const {
-		return colorMap;
-	}
-
-	bool Texture::hasNormalMap() const {
-		return (normalMap > 0);
-	}
-
-	GLuint Texture::getNormalMap() const {
-		return normalMap;
-	}
-
-	bool Texture::hasGlowMap() const {
-		return (glowMap > 0);
-	}
-
-	GLuint Texture::getGlowMap() const {
-		return glowMap;
-	}
-
-	GLuint Texture::loadTexture2D(std::string filename,
+	GLuint TextureLoading::loadTexture2D(std::string filename,
 		GLint wrap_s, GLint wrap_t,
 		GLint filter_min, GLint filter_mag,
 		bool generate_mipmaps) {
@@ -92,7 +49,7 @@ namespace Render {
 
 	}
 
-	GLuint Texture::loadTextureCube(
+	GLuint TextureLoading::loadTextureCube(
 		std::string positive_x_file,
 		std::string negative_x_file,
 		std::string positive_y_file,
@@ -148,7 +105,7 @@ namespace Render {
 	}
 
 
-	GLint Texture::toGLFormat(int bytes_per_pixel) {
+	GLint TextureLoading::toGLFormat(int bytes_per_pixel) {
 		switch (bytes_per_pixel) {
 			case 1:
 				return GL_LUMINANCE;
@@ -162,12 +119,5 @@ namespace Render {
 	}
 
 
-
-	/*
-	void Texture::loadSurfaceToTexture(SDLSurface* surface, GLenum target) {
-		//Get the right image format
-		
-	}
-	*/
-}  // namespace Render
+}  // namespace OpenGL
 }  // namespace Project

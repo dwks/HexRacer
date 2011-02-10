@@ -137,12 +137,12 @@ namespace Render {
 		bool hasNormalMap = false;
 		bool hasGlowMap = false;
 
-		if (properties->hasTexture()) {
+		if (properties->hasTexturePack()) {
 
 			if (!texturesOverridden()) {
 				
 				//Bind the textures
-				Texture* texture = properties->getTexture();
+				TexturePack* texture = properties->getTexturePack();
 				//textureStack.push(texture);
 
 				if (texture->hasGlowMap()) {
@@ -176,7 +176,7 @@ namespace Render {
 
 		}
 
-		if (properties->getTextureOverride())
+		if (properties->getTexturePackOverride())
 			numTextureOverrides++;
 
 		if (!hasColorMap) {
@@ -274,8 +274,7 @@ namespace Render {
 	void RenderManager::revertRenderTexture(RenderProperties* properties) {
 		glActiveTexture(colorMapTexture);
 		glDisable(GL_TEXTURE_2D);
-		//glEnable(GL_COLOR_MATERIAL);
-		if (properties->getTextureOverride())
+		if (properties->getTexturePackOverride())
 			numTextureOverrides--;
 	}
 	ShaderParamSetter RenderManager::getShaderParamSetter() {

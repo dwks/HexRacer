@@ -1,5 +1,5 @@
 #include "Minimap.h"
-#include "render/Texture.h"
+#include "opengl/TextureLoading.h"
 #include "render/ColorConstants.h"
 #include "render/Shader.h"
 #include "opengl/Color.h"
@@ -23,7 +23,7 @@ namespace HUD {
 		halfMap2DWidth = 0.0;
 		halfMap2DHeight = 0.0;
 
-		alphaMaskTexture = Render::Texture::loadTexture2D(
+		alphaMaskTexture = OpenGL::TextureLoading::loadTexture2D(
 			"data/hud/minimap_alpha_mask.png",
 			GL_CLAMP_TO_EDGE,
 			GL_CLAMP_TO_EDGE,
@@ -48,7 +48,7 @@ namespace HUD {
 		if (trackTexture > 0)
 			glDeleteTextures(1, &trackTexture);
 
-		trackTexture = Render::Texture::loadTexture2D(
+		trackTexture = OpenGL::TextureLoading::loadTexture2D(
 			map->getMap2DFile(),
 			GL_CLAMP_TO_EDGE,
 			GL_CLAMP_TO_EDGE,

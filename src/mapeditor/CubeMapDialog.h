@@ -2,9 +2,9 @@
 #define CUBEMAPDIALOG_H
 
 #include <QtGui>
-#include "render/CubeMapFile.h"
+#include "opengl/CubeMapFile.h"
 using namespace Project;
-using namespace Render;
+using namespace OpenGL;
 
 
 class CubeMapDialog : public QDialog

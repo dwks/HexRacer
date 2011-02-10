@@ -3,7 +3,7 @@
 
 #include "math/Matrix.h"
 #include "Material.h"
-#include "Texture.h"
+#include "TexturePack.h"
 #include "Shader.h"
 #include "ShaderParameter.h"
 #include <string>
@@ -24,7 +24,7 @@ private:
 	Material* material;
 	bool materialOverrideChildren;
 
-	Texture* texture;
+	TexturePack* texture;
 	bool textureOverrideChildren;
 
 	int shader;
@@ -73,12 +73,12 @@ public:
 	bool getMaterialOverride() const { return materialOverrideChildren; }
 	void setMaterialOverride(bool override_children) { materialOverrideChildren = override_children; }
 
-	bool hasTexture() const { return (texture != NULL); }
-	void clearTexture() { texture = NULL; }
-	void setTexture(Texture* _texture) { texture = _texture; }
-	Texture* getTexture() const { return texture; }
-	bool getTextureOverride() const { return textureOverrideChildren; }
-	void setTextureOverride(bool override_children) {
+	bool hasTexturePack() const { return (texture != NULL); }
+	void clearTexturePack() { texture = NULL; }
+	void setTexturePack(TexturePack* _texture) { texture = _texture; }
+	TexturePack* getTexturePack() const { return texture; }
+	bool getTexturePackOverride() const { return textureOverrideChildren; }
+	void setTexturePackOverride(bool override_children) {
 		textureOverrideChildren = override_children;
 		empty = false;
 	}

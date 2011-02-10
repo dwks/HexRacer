@@ -1,7 +1,7 @@
 #include "CubeMapFile.h"
 
 namespace Project {
-namespace Render {
+namespace OpenGL {
 
 	CubeMapFile::CubeMapFile(std::string positive_x_file,
 				std::string negative_x_file,

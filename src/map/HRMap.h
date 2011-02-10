@@ -3,8 +3,8 @@
 
 #include "mesh/MeshLoader.h"
 #include "render/RenderList.h"
-#include "render/TextureCube.h"
-#include "render/CubeMapFile.h"
+#include "opengl/TextureCube.h"
+#include "opengl/CubeMapFile.h"
 #include "render/Light.h"
 #include "mesh/TransformedMesh.h"
 #include "mesh/MeshGroup.h"
@@ -42,8 +42,8 @@ private:
 	Render::RenderList* trackRenderable;
 	std::string version;
 	std::string filename;
-	Render::CubeMapFile* cubeMapFile;
-	Render::TextureCube* cubeMap;
+	OpenGL::CubeMapFile* cubeMapFile;
+	OpenGL::TextureCube* cubeMap;
 	std::vector<Render::Light*> lights;
 	std::vector<PathNode*> pathNodes;
 	std::vector<Paint::PaintCell*> paintCells;
@@ -71,9 +71,9 @@ public:
 	bool saveMapFile(std::string _filename);
 	Mesh::MeshGroup* getMapMesh(MeshType type) const { return mapMesh[static_cast<int>(type)]; }
 	Render::RenderList* getTrackRenderable() const { return trackRenderable; }
-	Render::TextureCube* getCubeMap();
-	const Render::CubeMapFile* getCubeMapFile() const { return cubeMapFile; }
-	void setCubeMapFile(const Render::CubeMapFile& file);
+	OpenGL::TextureCube* getCubeMap();
+	const OpenGL::CubeMapFile* getCubeMapFile() const { return cubeMapFile; }
+	void setCubeMapFile(const OpenGL::CubeMapFile& file);
 	void clearCubeMap();
 	const std::vector<Paint::PaintCell*>& getPaintCells() const { return paintCells; }
 	Math::BSPTree3D* getCollisionTree();

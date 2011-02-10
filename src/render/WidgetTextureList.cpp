@@ -1,5 +1,5 @@
 #include "WidgetTextureList.h"
-#include "Texture.h"
+#include "opengl/TextureLoading.h"
 
 #include "settings/SettingsManager.h"
 #include "log/Logger.h"
@@ -29,7 +29,7 @@ void WidgetTextureList::addTexture(const std::string &name, GLuint texture) {
 void WidgetTextureList::addTexture(const std::string &name,
     const std::string &filename) {
     
-    addTexture(name, Texture::loadTexture2D(filename));
+	addTexture(name, OpenGL::TextureLoading::loadTexture2D(filename));
 }
 
 GLuint WidgetTextureList::getTexture(const std::string &name) {
