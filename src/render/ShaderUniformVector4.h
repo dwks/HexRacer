@@ -14,7 +14,7 @@ private:
 public:
 
 	ShaderUniformVector4(const char *_name, Project::OpenGL::Color _color);
-
+	void setColor(OpenGL::Color _color) { color = _color; }
 	void setShaderParameters(ShaderParamSetter& setter);
 };
 

@@ -5,6 +5,9 @@
 
 #include "settings/ProgramSettings.h"
 
+#include "render/ShaderUniformVector4.h"
+#include "render/ColorConstants.h"
+
 namespace Project {
 namespace Object {
 
@@ -81,6 +84,17 @@ void Player::preRender() {
             physical->getFrontDirection()));
 
 	renderable->updatePhysicalData(physical->getOrigin());
+
+	if (renderable->getRenderProperties()->hasShaderParams()) {
+
+		float glow_scale = static_cast<float>(getSpeedBoost())*0.5f+0.35f;
+		OpenGL::Color trim_color = Render::ColorConstants::playerColor(getID())*glow_scale;
+
+		Render::ShaderUniformVector4* shader_param = (Render::ShaderUniformVector4*)renderable->getRenderProperties()->getShaderParams()[0];
+		shader_param->setColor(trim_color);
+
+	}
+
 }
 
 }  // namespace Object

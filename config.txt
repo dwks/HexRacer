@@ -40,7 +40,7 @@ physics.driving.lineardrag        = 0.5
 physics.driving.angulardrag       = 0.5
 physics.driving.sidewaysdrag      = 20.0
 
-game.enablepathing = 0
+game.enablepathing = 1
 
 ########
 ### Rendering settings
