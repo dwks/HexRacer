@@ -44,7 +44,7 @@ using namespace std;
 //-----------------------------------------------------------------------------
 
 namespace Project {
-namespace Render {
+namespace Mesh {
 
 class ModelOBJ
 {

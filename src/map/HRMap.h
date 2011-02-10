@@ -1,13 +1,13 @@
 #ifndef PROJECT_MAP__MAP_FILE_H
 #define PROJECT_MAP__MAP_FILE_H
 
-#include "render/MeshLoader.h"
+#include "mesh/MeshLoader.h"
 #include "render/RenderList.h"
 #include "render/TextureCube.h"
 #include "render/CubeMapFile.h"
-#include "render/MeshGroup.h"
 #include "render/Light.h"
-#include "render/TransformedMesh.h"
+#include "mesh/TransformedMesh.h"
+#include "mesh/MeshGroup.h"
 #include "paint/PaintCell.h"
 #include "math/BoundingPlane3D.h"
 #include "PathNode.h"
@@ -36,7 +36,7 @@ namespace Map {
 class HRMap {
 private:
 
-	Render::MeshGroup* mapMesh[HRMAP_NUM_MESHES];
+	Mesh::MeshGroup* mapMesh[HRMAP_NUM_MESHES];
 	std::string mapMeshFile[HRMAP_NUM_MESHES];
 
 	Render::RenderList* trackRenderable;
@@ -69,7 +69,7 @@ public:
 	~HRMap();
 	bool loadMapFile(std::string _filename);
 	bool saveMapFile(std::string _filename);
-	Render::MeshGroup* getMapMesh(MeshType type) const { return mapMesh[static_cast<int>(type)]; }
+	Mesh::MeshGroup* getMapMesh(MeshType type) const { return mapMesh[static_cast<int>(type)]; }
 	Render::RenderList* getTrackRenderable() const { return trackRenderable; }
 	Render::TextureCube* getCubeMap();
 	const Render::CubeMapFile* getCubeMapFile() const { return cubeMapFile; }

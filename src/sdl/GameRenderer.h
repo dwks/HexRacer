@@ -3,7 +3,7 @@
 
 #include "boost/smart_ptr/shared_ptr.hpp"
 
-#include "render/MeshLoader.h"
+#include "mesh/MeshLoader.h"
 #include "render/RenderManager.h"
 #include "render/LightManager.h"
 #include "render/RenderList.h"
@@ -27,7 +27,7 @@ namespace SDL {
 
 class GameRenderer {
 private:
-    boost::shared_ptr<Render::MeshLoader> meshLoader;
+    boost::shared_ptr<Mesh::MeshLoader> meshLoader;
     boost::shared_ptr<Render::RenderManager> renderer;
     Render::LightManager *lightManager;  // not allocated here
     boost::shared_ptr<Render::RenderList> mapRenderable;

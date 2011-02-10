@@ -5,7 +5,7 @@
 #include "MeshVertex.h"
 
 namespace Project {
-namespace Render {
+namespace Mesh {
 
 /** A triangle that is linked to mesh vertices
 */
@@ -26,7 +26,7 @@ public:
 	MeshVertex* getNextFanVertex(const MeshVertex* fan1, const MeshVertex* fan2);
 };
 
-}  // namespace Render
+}  // namespace Mesh
 }  // namespace Project
 
 #endif

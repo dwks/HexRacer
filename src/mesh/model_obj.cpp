@@ -47,7 +47,7 @@
 #endif
 
 using namespace Project;
-using namespace Render;
+using namespace Mesh;
 
 namespace
 {

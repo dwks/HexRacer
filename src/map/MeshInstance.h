@@ -2,7 +2,7 @@
 #define PROJECT_MAP__MESH_INSTANCE_H
 
 #include "math/SimpleTransform.h"
-#include "render/MeshGroup.h"
+#include "mesh/MeshGroup.h"
 #include <string>
 
 namespace Project {
@@ -14,7 +14,7 @@ public:
 	enum InstanceType { DECOR, SOLID_STATIC, SOLID_DYNAMIC };
 private:
 	std::string meshName;
-	Render::MeshGroup* meshGroup;
+	Mesh::MeshGroup* meshGroup;
 	InstanceType type;
 	Math::SimpleTransform transformation;
 public:
@@ -22,7 +22,7 @@ public:
 	std::string getMeshName() const { return meshName; }
 	InstanceType getType() const { return type; }
 	Math::SimpleTransform getTransformation() const { return transformation; }
-	Render::MeshGroup* getMeshGroup() const { return meshGroup; }
+	Mesh::MeshGroup* getMeshGroup() const { return meshGroup; }
 
 	void setType(InstanceType _type) { type = _type; }
 	void setTransformation(Math::SimpleTransform _transformation) { transformation = _transformation; }

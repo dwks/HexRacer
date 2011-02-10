@@ -26,7 +26,6 @@ namespace Render {
 
 		texturesEnabled = true;
 		shadersEnabled = true;
-		lodLow = false;
 
 		numTransformations = 0;
 

@@ -2,8 +2,7 @@
 #define PROJECT_RENDER__RENDERABLE_PLAYER_H
 
 #include "RenderableObject.h"
-#include "MeshGroup.h"
-#include "MeshLoader.h"
+#include "mesh/MeshGroup.h"
 #include "RenderList.h"
 
 #include "math/Values.h"
@@ -17,7 +16,7 @@ class RenderablePlayer : public RenderableObject {
 private:
     Math::Point origin;
     
-    MeshGroup *player_cube_mesh;
+	Mesh::MeshGroup *player_cube_mesh;
     RenderList *player_tire;
     
     double wheelRotationDegrees; 

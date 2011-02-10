@@ -4,13 +4,14 @@
 #include <QtGui>
 #include <QtGui/QMainWindow>
 #include "MapEditorWidget.h"
-#include "render/MeshLoader.h"
+#include "mesh/MeshLoader.h"
 #include "opengl/Color.h"
 #include "settings/SettingsManager.h"
 using namespace Project;
 using namespace Render;
 using namespace OpenGL;
 using namespace Settings;
+using namespace Mesh;
 using namespace std;
 
 class HRMEMainWindow : public QMainWindow

@@ -6,10 +6,10 @@
 #include "math/BoundingSphere.h"
 
 namespace Project {
-namespace Render {
+namespace Mesh {
 
 class TransformedMesh
-	: public RenderableObject {
+	: public Render::RenderableObject {
 private:
 	MeshGroup* meshGroup;
 	Math::BoundingSphere meshGroupSphere;
@@ -22,7 +22,7 @@ public:
 	void setTransformation(Math::SimpleTransform transform);
 	Math::SimpleTransform getTransformation() const { return transformation; }
 	bool shouldDraw( const Math::BoundingObject& bounding_obj );
-	void subRender(RenderManager* manager) { meshGroup->render(manager); }
+	void subRender(Render::RenderManager* manager) { meshGroup->render(manager); }
 	MeshGroup* getMeshGroup() const { return meshGroup; }
 	Math::BoundingSphere getBoundingSphere() const { return transformedSphere; }
 	vector<Math::Triangle3D> getTransformedTriangles() const;

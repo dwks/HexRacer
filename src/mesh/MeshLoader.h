@@ -1,14 +1,14 @@
 #ifndef PROJECT_RENDER__MESH_LOADER_H
 #define PROJECT_RENDER__MESH_LOADER_H
 
-#include "Mesh.h"
+#include "SubMesh.h"
 #include "MeshGroup.h"
 #include <vector>
 #include <string>
 using namespace std;
 
 namespace Project {
-namespace Render {
+namespace Mesh {
 
 /** Loads and stores groups of meshes
 */
@@ -33,19 +33,19 @@ public:
 		Returns true if successful
 	*/
 	bool deleteModelByName(string model_name, bool expectFailure = false);
-	Texture* getTextureByName(string name);
+	Render::Texture* getTextureByName(string name);
 
 private:
 
 	vector< MeshGroup* > models;
-	vector< Texture* > textures;
+	vector< Render::Texture* > textures;
 
-	bool objLoadMeshes(string filename, bool cullable, vector<Mesh*>& mesh_list, vector<MeshVertex*>& vertex_list);
+	bool objLoadMeshes(string filename, bool cullable, vector<SubMesh*>& mesh_list, vector<MeshVertex*>& vertex_list);
 	bool objLoadTriangles(string filename, vector<Math::Triangle3D>& triangles);
 
 };
 
-}  // namespace Render
+}  // namespace Mesh
 }  // namespace Project
 
 #endif

@@ -1,7 +1,7 @@
 #include "TransformedMesh.h"
 
 namespace Project {
-namespace Render {
+namespace Mesh {
 
 	TransformedMesh::TransformedMesh(MeshGroup* mesh_group, Math::SimpleTransform transform) {
 
