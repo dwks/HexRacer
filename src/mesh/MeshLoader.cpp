@@ -120,10 +120,10 @@ namespace Mesh {
 
 			//Look for a pre-loaded material with the same name
 			//Material* mat = getMaterialByName(obj_mat.name);
-			Render::Material* mat = NULL;
+			OpenGL::Material* mat = NULL;
 			if (mat == NULL && obj_mat.name.length() > 0) {
 				//Create a new material
-				mat = new Render::Material(obj_mat.name);
+				mat = new OpenGL::Material(obj_mat.name);
 
 				mat->setDiffuse(
 					Color(obj_mat.diffuse[0], obj_mat.diffuse[1], obj_mat.diffuse[2], obj_mat.diffuse[3])

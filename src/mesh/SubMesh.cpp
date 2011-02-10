@@ -17,7 +17,7 @@ namespace Mesh {
 		displayList = 0;
 	}
 
-	SubMesh::SubMesh(vector< MeshTriangle* > _triangles, Render::Material* _material, bool cullable) {
+	SubMesh::SubMesh(vector< MeshTriangle* > _triangles, OpenGL::Material* _material, bool cullable) {
 
 		material = _material;
 		getRenderProperties()->setMaterial(material);

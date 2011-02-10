@@ -2,7 +2,7 @@
 #define PROJECT_RENDER__RENDER_PROPERTIES_H
 
 #include "math/Matrix.h"
-#include "Material.h"
+#include "opengl/Material.h"
 #include "TexturePack.h"
 #include "Shader.h"
 #include "ShaderParameter.h"
@@ -21,7 +21,7 @@ private:
 	bool transformationSet;
 	Project::Math::Matrix transformation;
 
-	Material* material;
+	OpenGL::Material* material;
 	bool materialOverrideChildren;
 
 	TexturePack* texture;
@@ -65,11 +65,11 @@ public:
 
 	bool hasMaterial() const { return (material != NULL); }
 	void clearMaterial() { material = NULL; }
-	void setMaterial(Material* _material) {
+	void setMaterial(OpenGL::Material* _material) {
 		material = _material;
 		empty = false;
 	}
-	Material* getMaterial() const { return material; }
+	OpenGL::Material* getMaterial() const { return material; }
 	bool getMaterialOverride() const { return materialOverrideChildren; }
 	void setMaterialOverride(bool override_children) { materialOverrideChildren = override_children; }
 

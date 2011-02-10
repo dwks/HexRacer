@@ -69,7 +69,7 @@ private:
 	int enabledShaderIndex;
 
 	stack<int> shaderStack;
-	stack<Material*> materialStack;
+	stack<OpenGL::Material*> materialStack;
 	stack<TexturePack*> textureStack;
 	stack<OpenGL::Color> colorStack;
 	vector< vector<ShaderParameter*> > shaderParams;

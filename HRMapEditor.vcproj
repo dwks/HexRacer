@@ -309,7 +309,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Material.cpp"
+				RelativePath=".\src\opengl\Material.cpp"
 				>
 			</File>
 			<File
@@ -517,11 +517,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\mesh\TransformedMesh.cpp"
+				RelativePath=".\src\render\TransformedMesh.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\TransformedMesh.cpp"
+				RelativePath=".\src\mesh\TransformedMesh.cpp"
 				>
 			</File>
 			<File
@@ -769,7 +769,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Material.h"
+				RelativePath=".\src\opengl\Material.h"
 				>
 			</File>
 			<File
@@ -1011,11 +1011,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\TransformedMesh.h"
+				RelativePath=".\src\mesh\TransformedMesh.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\mesh\TransformedMesh.h"
+				RelativePath=".\src\render\TransformedMesh.h"
 				>
 			</File>
 			<File

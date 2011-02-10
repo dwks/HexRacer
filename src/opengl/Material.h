@@ -6,7 +6,7 @@
 #include <string>
 
 namespace Project {
-namespace Render {
+namespace OpenGL {
 
 /** Represents a renderable material
 */

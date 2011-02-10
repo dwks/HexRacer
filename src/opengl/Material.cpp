@@ -1,7 +1,7 @@
 #include "Material.h"
 
 namespace Project {
-namespace Render {
+namespace OpenGL {
 
 	Material::Material(std::string _name) {
 		name = _name;

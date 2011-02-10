@@ -317,7 +317,9 @@ namespace Render {
 						shaderMappings.push_back(mapping);
 					}
 					else {
-						loadShader(shader_name, string(directory).append(frag_file), string(directory).append(vert_file));
+						loadShader(shader_name,
+							Misc::DirectoryFunctions::toRelativeFilename(directory, frag_file),
+							Misc::DirectoryFunctions::toRelativeFilename(directory, vert_file));
 					}
 
 				}

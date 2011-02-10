@@ -397,7 +397,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Material.cpp"
+				RelativePath=".\src\opengl\Material.cpp"
 				>
 			</File>
 			<File
@@ -1243,7 +1243,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Material.h"
+				RelativePath=".\src\opengl\Material.h"
 				>
 			</File>
 			<File

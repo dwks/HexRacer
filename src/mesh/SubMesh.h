@@ -21,7 +21,7 @@ private:
 	std::vector< Math::Triangle3D > triangles;
 	std::vector< MeshTriangleFan* > triangleFans;
 	Math::BSPTree3D* triangleFanTree;
-	Render::Material* material;
+	OpenGL::Material* material;
 	GLuint displayList;
 	Render::ShaderParamSetter* paramSetter;
 
@@ -38,7 +38,7 @@ public:
 
 	SubMesh();
 	~SubMesh();
-	SubMesh(vector< MeshTriangle* > _triangles, Render::Material* _material = NULL, bool cullable = false);
+	SubMesh(vector< MeshTriangle* > _triangles, OpenGL::Material* _material = NULL, bool cullable = false);
 
 	void renderGeometry(Render::ShaderParamSetter& setter, const  Math::BoundingObject* bounding_object = NULL);
 	const vector<Project::Math::Triangle3D>& getTriangles() { return triangles; }
