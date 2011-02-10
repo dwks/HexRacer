@@ -15,6 +15,7 @@ aux_source_directory(log LOG_SOURCES)
 aux_source_directory(map MAP_SOURCES)
 aux_source_directory(mapeditor MAP_EDITOR_DIR_SOURCES)
 aux_source_directory(math MATH_SOURCES)
+aux_source_directory(mesh MESH_SOURCES)
 aux_source_directory(misc MISC_SOURCES)
 aux_source_directory(network NETWORK_SOURCES)
 aux_source_directory(object OBJECT_SOURCES)
@@ -44,7 +45,8 @@ set(SOURCES
     ${PAINT_SOURCES}
     ${TIMING_SOURCES}
     ${HANDLER_SOURCES}
-    ${MAP_SOURCES})
+    ${MAP_SOURCES}
+    ${MESH_SOURCES})
 
 set(SDL_SOURCES
     ${SDL_DIR_SOURCES}

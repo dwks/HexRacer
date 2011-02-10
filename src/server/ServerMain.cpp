@@ -26,8 +26,8 @@
 #include "physics/PhysicsFactory.h"
 #include "physics/Suspension.h"
 
-#include "render/MeshGroup.h"
-#include "render/MeshLoader.h"
+#include "mesh/MeshGroup.h"
+#include "mesh/MeshLoader.h"
 #include "map/MapLoader.h"
 #include "map/PathTracker.h"
 
@@ -161,7 +161,7 @@ void ServerMain::run() {
     
     networkPortal = new ServerNetworkPortal(&clients);
     
-    Render::MeshLoader *meshLoader = new Render::MeshLoader();
+    Mesh::MeshLoader *meshLoader = new Mesh::MeshLoader();
     /*meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
     Render::MeshGroup *test_terrain = meshLoader->getModelByName("testTerrain");
     
