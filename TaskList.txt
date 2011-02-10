@@ -28,3 +28,6 @@ GUI:
 Refactoring:
 - refactor HRMap into several component parts
 - remove Suspension's dependency on Renderer?
+
+Important:
+- add currentPlayer to WorldManager

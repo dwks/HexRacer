@@ -63,16 +63,15 @@ void Player::applyForce(const Math::Point &movement, const Math::Point &at) {
 }
 
 void Player::initialize() {
-    if(Settings::ProgramSettings::getInstance()->isClient()) {
-        renderable = new Render::RenderablePlayer();
-        renderable->initialize(getID());
-    }
-    else {
-        renderable = NULL;
-    }
+    renderable = NULL;
 }
 
 void Player::preRender() {
+    if(!renderable && Settings::ProgramSettings::getInstance()->isClient()) {
+        renderable = new Render::RenderablePlayer();
+        renderable->initialize(getID());
+    }
+    
     AbstractObject::preRender();
     
     for(int wheel = 0; wheel < 4; wheel ++) {

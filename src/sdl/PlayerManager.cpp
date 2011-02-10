@@ -50,13 +50,24 @@ void PlayerManager::PlayerActionHandler::observe(
     case Event::PlayerAction::FIX_OFF_TRACK:
         delete player->getPhysicalObject();
 
-		const Map::PathNode* node = player->getPathTracker()->getCurrentNode();
-		Math::Point origin = node->getPosition();
-		origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
-		Math::Point direction = (node->getNextNodes()[0]->getPosition() - node->getPosition()).normalized();
-		player->setPhysicalObject(
-            Physics::PhysicsFactory::createPhysicalPlayer(origin, direction)
-			);
+        const Map::PathNode* node = player->getPathTracker()->getCurrentNode();
+        if(node != NULL) {
+            Math::Point origin = node->getPosition();
+            Math::Point direction = (node->getNextNodes()[0]->getPosition() - node->getPosition()).normalized();
+            
+            origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
+            player->setPhysicalObject(
+                Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
+        }
+        else {
+            Math::Point origin = manager->raceManager->startingPointForPlayer(player->getID());
+            Math::Point direction = Math::Point(0.0, 0.0, -1.0);
+            
+            origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
+            player->setPhysicalObject(
+                Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
+        }
+        
         break;
     }
 }
