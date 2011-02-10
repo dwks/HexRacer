@@ -321,11 +321,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Mesh.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\MeshGroup.cpp"
+				RelativePath=".\src\mesh\MeshGroup.cpp"
 				>
 			</File>
 			<File
@@ -337,19 +333,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshLoader.cpp"
+				RelativePath=".\src\mesh\MeshLoader.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshTriangle.cpp"
+				RelativePath=".\src\mesh\MeshTriangle.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshTriangleFan.cpp"
+				RelativePath=".\src\mesh\MeshTriangleFan.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshVertex.cpp"
+				RelativePath=".\src\mesh\MeshVertex.cpp"
 				>
 			</File>
 			<File
@@ -358,6 +354,10 @@
 			</File>
 			<File
 				RelativePath=".\src\log\MessageType.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\mesh\model_obj.cpp"
 				>
 			</File>
 			<File
@@ -497,6 +497,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\mesh\SubMesh.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\log\Subsystem.cpp"
 				>
 			</File>
@@ -514,6 +518,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\TransformedMesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\mesh\TransformedMesh.cpp"
 				>
 			</File>
 			<File
@@ -773,11 +781,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Mesh.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\MeshGroup.h"
+				RelativePath=".\src\mesh\MeshGroup.h"
 				>
 			</File>
 			<File
@@ -789,19 +793,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshLoader.h"
+				RelativePath=".\src\mesh\MeshLoader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshTriangle.h"
+				RelativePath=".\src\mesh\MeshTriangle.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshTriangleFan.h"
+				RelativePath=".\src\mesh\MeshTriangleFan.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshVertex.h"
+				RelativePath=".\src\mesh\MeshVertex.h"
 				>
 			</File>
 			<File
@@ -814,6 +818,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\model_obj.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\mesh\model_obj.h"
 				>
 			</File>
 			<File
@@ -983,6 +991,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\mesh\SubMesh.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\log\Subsystem.h"
 				>
 			</File>
@@ -996,6 +1008,10 @@
 			</File>
 			<File
 				RelativePath=".\src\opengl\Trackball.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\mesh\TransformedMesh.h"
 				>
 			</File>
 			<File

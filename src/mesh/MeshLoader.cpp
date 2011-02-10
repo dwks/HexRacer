@@ -10,7 +10,7 @@ using namespace Misc;
 using namespace std;
 
 namespace Project {
-namespace Render {
+namespace Mesh {
 
     MeshLoader *MeshLoader::instance = 0;
 
@@ -19,7 +19,7 @@ namespace Render {
             delete models[x];
         }
         
-        for(vector< Texture* >::size_type x = 0; x < textures.size(); x ++) {
+		for(vector< Render::Texture* >::size_type x = 0; x < textures.size(); x ++) {
             delete textures[x];
         }
     }
@@ -31,7 +31,7 @@ namespace Render {
 		if (group)
 			return group;
 
-		vector<Mesh*> meshes;
+		vector<SubMesh*> meshes;
 		vector<MeshVertex*> vertices;
 
 		if (!objLoadMeshes(filename, cullable, meshes, vertices)) {
@@ -44,16 +44,7 @@ namespace Render {
 		string mask_filename = string(filename).insert(filename.length()-4, "_c");
 		objLoadTriangles(mask_filename, collision_triangles);
 
-		//Load the lod mesh
-		MeshGroup* lod_group = NULL;
-		vector<Mesh*> lod_meshes;
-		vector<MeshVertex*> lod_vertices;
-		string lod_filename = string(filename).insert(filename.length()-4, "_l");
-		if (objLoadMeshes(lod_filename, cullable, lod_meshes, lod_vertices)) {
-			lod_group = new MeshGroup(model_name.append("_lod"), lod_meshes, lod_vertices);
-		}
-
-		MeshGroup* new_group = new MeshGroup(model_name, meshes, vertices, collision_triangles, lod_group);
+		MeshGroup* new_group = new MeshGroup(model_name, meshes, vertices, collision_triangles);
 		models.push_back(new_group);
 
 		return new_group;
@@ -86,7 +77,7 @@ namespace Render {
 		return false;
 	}
 
-	Texture* MeshLoader::getTextureByName(string name) {
+	Render::Texture* MeshLoader::getTextureByName(string name) {
 		for (unsigned int i = 0; i < textures.size(); i++) {
 			if (textures[i]->getName() == name) {
 				return textures[i];
@@ -95,7 +86,7 @@ namespace Render {
 		return NULL;
 	}
 
-	bool MeshLoader::objLoadMeshes(string filename, bool cullable, vector<Mesh*>& mesh_list, vector<MeshVertex*>& vertex_list) {
+	bool MeshLoader::objLoadMeshes(string filename, bool cullable, vector<SubMesh*>& mesh_list, vector<MeshVertex*>& vertex_list) {
 
 		string directory = DirectoryFunctions::extractDirectory(filename);
 
@@ -129,10 +120,10 @@ namespace Render {
 
 			//Look for a pre-loaded material with the same name
 			//Material* mat = getMaterialByName(obj_mat.name);
-			Material* mat = NULL;
+			Render::Material* mat = NULL;
 			if (mat == NULL && obj_mat.name.length() > 0) {
 				//Create a new material
-				mat = new Material(obj_mat.name);
+				mat = new Render::Material(obj_mat.name);
 
 				mat->setDiffuse(
 					Color(obj_mat.diffuse[0], obj_mat.diffuse[1], obj_mat.diffuse[2], obj_mat.diffuse[3])
@@ -162,7 +153,7 @@ namespace Render {
 				}
 			}
 
-			Texture* tex = NULL;
+			Render::Texture* tex = NULL;
 
 			if (hasColorMap || hasNormalMap || hasGlowMap) {
 
@@ -174,7 +165,7 @@ namespace Render {
 					string normal_map_name = DirectoryFunctions::fromRelativeFilename(directory, obj_mat.bumpMapFilename);
 					string glow_map_name = DirectoryFunctions::fromRelativeFilename(directory, obj_mat.glowMapFilename);
 
-					tex = new Texture(tex_name, color_map_name, normal_map_name, glow_map_name);
+					tex = new Render::Texture(tex_name, color_map_name, normal_map_name, glow_map_name);
 					textures.push_back(tex);
 				}
 			}
@@ -191,8 +182,8 @@ namespace Render {
 				vert_index += 3;
 			}
 
-			Mesh* sub_mesh = new Mesh(face_list, mat, cullable);
-			RenderProperties* properties = sub_mesh->getRenderProperties();
+			SubMesh* sub_mesh = new SubMesh(face_list, mat, cullable);
+			Render::RenderProperties* properties = sub_mesh->getRenderProperties();
 			if (mat)
 				properties->setWantsShaderName(obj_mat.shaderName);
 			if (tex)
@@ -240,5 +231,5 @@ namespace Render {
 	}
 
 
-}  // namespace Render
+}  // namespace Mesh
 }  // namespace Project

@@ -1,13 +1,14 @@
 #pragma once
 
 #include "MapObject.h"
-#include "render/TransformedMesh.h"
+#include "mesh/TransformedMesh.h"
 #include "math/SimpleTransform.h"
 #include "map/MeshInstance.h"
 using namespace Project;
 using namespace Render;
 using namespace Math;
 using namespace Map;
+using namespace Mesh;
 
 class MeshInstanceObject
 	: public MapObject

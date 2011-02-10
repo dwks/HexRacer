@@ -4,7 +4,7 @@ using namespace Project;
 using namespace Math;
 
 namespace Project {
-namespace Render {
+namespace Mesh {
 
 	MeshVertex::MeshVertex(Point position, Point normal, Point tangent, Point bitangent,
 		float texCoordU, float texCoordV)
@@ -38,5 +38,5 @@ namespace Render {
 		Misc::vectorRemoveOneElement(adjacentTriangles, triangle);
 	}
 
-}  // namespace Render
+}  // namespace Mesh
 }  // namespace Project

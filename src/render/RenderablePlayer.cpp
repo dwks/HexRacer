@@ -5,6 +5,7 @@
 
 #include "math/BoundingBox3D.h"
 #include "opengl/GeometryDrawing.h"
+#include "mesh/MeshLoader.h"
 #include "config.h"
 
 #include "log/Logger.h"
@@ -16,9 +17,9 @@ namespace Render {
 void RenderablePlayer::initialize(int id) {
     this->wheelRotationDegrees = 0;
     
-    player_cube_mesh = MeshLoader::getInstance()->getModelByName(VEHICLE_CHASSIS_MODEL_NAME);
+	player_cube_mesh = Mesh::MeshLoader::getInstance()->getModelByName(VEHICLE_CHASSIS_MODEL_NAME);
     player_tire = new RenderList();
-	player_tire->addRenderable(MeshLoader::getInstance()->getModelByName(VEHICLE_WHEEL_MODEL_NAME));
+	player_tire->addRenderable(Mesh::MeshLoader::getInstance()->getModelByName(VEHICLE_WHEEL_MODEL_NAME));
 
 	//Set the radius of the bounding sphere for camera culling
 	boundingSphere.setRadius(

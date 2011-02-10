@@ -5,7 +5,7 @@
 #include <vector>
 
 namespace Project {
-namespace Render {
+namespace Mesh {
 
 class MeshTriangle;
 
@@ -42,7 +42,7 @@ public:
 
 };
 
-}  // namespace Render
+}  // namespace Mesh
 }  // namespace Project
 
 #endif

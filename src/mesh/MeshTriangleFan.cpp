@@ -1,7 +1,7 @@
 #include "MeshTriangleFan.h"
 
 namespace Project {
-namespace Render {
+namespace Mesh {
 
 	MeshTriangleFan::MeshTriangleFan(std::vector<MeshVertex*> _vertices) {
 		vertices = _vertices;
@@ -13,5 +13,5 @@ namespace Render {
 		}
 	}
 
-}  // namespace Render
+}  // namespace Mesh
 }  // namespace Project

@@ -18,8 +18,8 @@ namespace SDL {
 
 void GameRenderer::construct(OpenGL::Camera *camera) {
     //Instantiate the rendering objects
-    meshLoader = boost::shared_ptr<Render::MeshLoader>(
-        new Render::MeshLoader());
+    meshLoader = boost::shared_ptr<Mesh::MeshLoader>(
+        new Mesh::MeshLoader());
     renderer = boost::shared_ptr<Render::RenderManager>(
         new Render::RenderManager());
     lightManager = renderer->getLightManager();

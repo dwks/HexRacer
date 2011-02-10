@@ -6,7 +6,7 @@
 #include <vector>
 
 namespace Project {
-namespace Render {
+namespace Mesh {
 
 class MeshTriangleFan
 	: public Math::BoundingBox3D {
@@ -17,7 +17,7 @@ public:
 	const std::vector<MeshVertex*>& getVertices() const { return vertices; }
 };
 
-}  // namespace Render
+}  // namespace Mesh
 }  // namespace Project
 
 #endif

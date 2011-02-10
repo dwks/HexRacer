@@ -3,7 +3,7 @@ using namespace Project;
 using namespace Math;
 
 namespace Project {
-namespace Render {
+namespace Mesh {
 
 	MeshTriangle::MeshTriangle(MeshVertex* v1, MeshVertex* v2, MeshVertex* v3) 
 		: Triangle3D(v1->getPosition(), v2->getPosition(), v3->getPosition()) {
@@ -58,5 +58,5 @@ namespace Render {
 		return NULL;
 	}
 
-}  // namespace Render
+}  // namespace Mesh
 }  // namespace Project

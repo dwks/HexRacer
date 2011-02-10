@@ -1,5 +1,5 @@
 #include "MeshInstance.h"
-#include "render/MeshLoader.h"
+#include "mesh/MeshLoader.h"
 #include <istream>
 #include <ostream>
 
@@ -8,7 +8,7 @@ namespace Map {
 
 	MeshInstance::MeshInstance(std::string mesh_name, Math::SimpleTransform _transformation) {
 		meshName = mesh_name;
-		meshGroup = Render::MeshLoader::getInstance()->getModelByName(meshName, true);
+		meshGroup = Mesh::MeshLoader::getInstance()->getModelByName(meshName, true);
 		type = SOLID_STATIC;
 		transformation = _transformation;
 	}

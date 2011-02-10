@@ -1,4 +1,4 @@
-#include "Mesh.h"
+#include "SubMesh.h"
 #include "opengl/MathWrapper.h"
 #include "misc/StdVectorFunctions.h"
 #include "log/Logger.h"
@@ -8,16 +8,16 @@ using namespace OpenGL;
 using namespace Math;
 
 namespace Project {
-namespace Render {
+namespace Mesh {
 
-	Mesh::Mesh() {
+	SubMesh::SubMesh() {
 		paramSetter = NULL;
 		triangleFanTree = NULL;
 		material = NULL;
 		displayList = 0;
 	}
 
-	Mesh::Mesh(vector< MeshTriangle* > _triangles, Material* _material, bool cullable) {
+	SubMesh::SubMesh(vector< MeshTriangle* > _triangles, Render::Material* _material, bool cullable) {
 
 		material = _material;
 		getRenderProperties()->setMaterial(material);
@@ -86,7 +86,7 @@ namespace Render {
 
 	}
 
-	Mesh::~Mesh() {
+	SubMesh::~SubMesh() {
 
 		for (unsigned int i = 0; i < triangleFans.size(); i++)
 			delete(triangleFans[i]);
@@ -101,7 +101,7 @@ namespace Render {
 			glDeleteLists(displayList, 1);
 	}
 
-	void Mesh::generateDisplayList() {
+	void SubMesh::generateDisplayList() {
 
 
 		displayList = glGenLists(1);
@@ -127,7 +127,7 @@ namespace Render {
 
 	}
 
-	void Mesh::generateTriangleFanTree() {
+	void SubMesh::generateTriangleFanTree() {
 
 		BoundingBox3D bounding_box;
 
@@ -151,7 +151,7 @@ namespace Render {
 
 	}
 
-	void Mesh::renderGeometry(ShaderParamSetter& setter, const BoundingObject* bounding_object) {
+	void SubMesh::renderGeometry(Render::ShaderParamSetter& setter, const BoundingObject* bounding_object) {
 
 		if (bounding_object == NULL || triangleFanTree == NULL) {
 
@@ -174,7 +174,7 @@ namespace Render {
 
 	}
 
-	inline void Mesh::drawTriangleFan(MeshTriangleFan* fan, ShaderParamSetter& setter) {
+	inline void SubMesh::drawTriangleFan(MeshTriangleFan* fan, Render::ShaderParamSetter& setter) {
 
 		glBegin(GL_TRIANGLE_FAN);
 
@@ -191,9 +191,9 @@ namespace Render {
 
 	}
 
-	void Mesh::operateOnObject(Math::ObjectSpatial* object) {
+	void SubMesh::operateOnObject(Math::ObjectSpatial* object) {
 		drawTriangleFan((MeshTriangleFan*)object, *paramSetter);
 	}
 
-}  // namespace Render
+}  // namespace Mesh
 }  // namespace Project
