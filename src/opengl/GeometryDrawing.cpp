@@ -62,49 +62,10 @@ void GeometryDrawing::drawObject(const ObjectSpatial& object, bool wireframe) {
 		return;
 	}
 
-
-
-	/*
-    
-	BoundingBox3D* bb3D = dynamic_cast<BoundingBox3D*>(&object);
-	if (bb3D) {
-		drawBoundingBox3D(*bb3D, wireframe);
-		return;
-	}
-	BoundingBox2D* bb2D = dynamic_cast<BoundingBox2D*>(&object);
-	if (bb2D) {
-		drawBoundingBox2D(*bb2D, wireframe);
-		return;
-	}
-	BoundingTriangle2D* bt2D = dynamic_cast<BoundingTriangle2D*>(&object);
-	if (bt2D) {
-		drawBoundingTriangle2D(*bt2D, wireframe);
-		return;
-	}
-
-	Triangle3D* t3D = dynamic_cast<Triangle3D*>(&object);
-	if (t3D) {
-		drawTriangle3D(*t3D, wireframe);
-		return;
-	}
-
-	*/
-
 }
 
 void GeometryDrawing::drawBoundingObject(const Math::BoundingObject& object, bool wireframe) {
-
-	const BoundingObject3D* obj_3D = dynamic_cast<const BoundingObject3D*>(&object);
-	if (obj_3D) {
-		drawObject(*obj_3D, wireframe);
-		return;
-	}
-	const BoundingObject2D* obj_2D = dynamic_cast<const BoundingObject2D*>(&object);
-	if (obj_2D) {
-		drawObject(*obj_2D, wireframe);
-		return;
-	}
-
+	drawObject(object.toConstObjectSpatial(), wireframe);
 }
 
 void GeometryDrawing::drawBoundingBox3D(const BoundingBox3D& object, bool wireframe) {

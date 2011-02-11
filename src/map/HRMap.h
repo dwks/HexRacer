@@ -1,13 +1,13 @@
 #ifndef PROJECT_MAP__MAP_FILE_H
 #define PROJECT_MAP__MAP_FILE_H
 
-#include "render/MeshLoader.h"
+#include "mesh/MeshLoader.h"
 #include "render/RenderList.h"
-#include "render/TextureCube.h"
-#include "render/CubeMapFile.h"
-#include "render/MeshGroup.h"
-#include "render/Light.h"
-#include "render/TransformedMesh.h"
+#include "opengl/TextureCube.h"
+#include "opengl/CubeMapFile.h"
+#include "opengl/Light.h"
+#include "mesh/TransformedMesh.h"
+#include "mesh/MeshGroup.h"
 #include "paint/PaintCell.h"
 #include "math/BoundingPlane3D.h"
 #include "PathNode.h"
@@ -36,15 +36,15 @@ namespace Map {
 class HRMap {
 private:
 
-	Render::MeshGroup* mapMesh[HRMAP_NUM_MESHES];
+	Mesh::MeshGroup* mapMesh[HRMAP_NUM_MESHES];
 	std::string mapMeshFile[HRMAP_NUM_MESHES];
 
 	Render::RenderList* trackRenderable;
 	std::string version;
 	std::string filename;
-	Render::CubeMapFile* cubeMapFile;
-	Render::TextureCube* cubeMap;
-	std::vector<Render::Light*> lights;
+	OpenGL::CubeMapFile* cubeMapFile;
+	OpenGL::TextureCube* cubeMap;
+	std::vector<OpenGL::Light*> lights;
 	std::vector<PathNode*> pathNodes;
 	std::vector<Paint::PaintCell*> paintCells;
 	std::vector<Math::Vertex3D*> startPoints;
@@ -69,11 +69,11 @@ public:
 	~HRMap();
 	bool loadMapFile(std::string _filename);
 	bool saveMapFile(std::string _filename);
-	Render::MeshGroup* getMapMesh(MeshType type) const { return mapMesh[static_cast<int>(type)]; }
+	Mesh::MeshGroup* getMapMesh(MeshType type) const { return mapMesh[static_cast<int>(type)]; }
 	Render::RenderList* getTrackRenderable() const { return trackRenderable; }
-	Render::TextureCube* getCubeMap();
-	const Render::CubeMapFile* getCubeMapFile() const { return cubeMapFile; }
-	void setCubeMapFile(const Render::CubeMapFile& file);
+	OpenGL::TextureCube* getCubeMap();
+	const OpenGL::CubeMapFile* getCubeMapFile() const { return cubeMapFile; }
+	void setCubeMapFile(const OpenGL::CubeMapFile& file);
 	void clearCubeMap();
 	const std::vector<Paint::PaintCell*>& getPaintCells() const { return paintCells; }
 	Math::BSPTree3D* getCollisionTree();
@@ -98,9 +98,9 @@ public:
 	std::vector<std::string> getPropMeshNames() { return propMeshNames; }
 	std::string getPropMeshName(int index);
 
-	const std::vector<Render::Light*>& getLights() const { return lights; }
-	void addLight(Render::Light* light);
-	void removeLight(Render::Light* light);
+	const std::vector<OpenGL::Light*>& getLights() const { return lights; }
+	void addLight(OpenGL::Light* light);
+	void removeLight(OpenGL::Light* light);
 	void clearLights();
 
 	const std::vector<PathNode*>& getPathNodes() const { return pathNodes; }

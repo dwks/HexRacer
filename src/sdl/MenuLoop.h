@@ -24,6 +24,10 @@ public:
     virtual void miscellaneous() {}
     virtual void render();
     
+    boost::shared_ptr<GUI::GUISystem> getGUI() { return gui; }
+    boost::shared_ptr<GUIInputManager> getGUIInput()
+        { return guiInputManager; }
+    
     virtual void setProjection(const Point2D &size) {}
 };
 

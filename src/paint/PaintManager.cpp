@@ -73,7 +73,7 @@ namespace Paint {
 		paintList = vector<PaintCell*>(paint_cells);
 	}
 
-	void PaintManager::renderGeometry(ShaderParamSetter& setter, const Math::BoundingObject* bounding_object) {
+	void PaintManager::renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object) {
 
 		renderPoints = false;
 		renderAlpha = 1.0f;

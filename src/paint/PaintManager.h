@@ -67,7 +67,7 @@ public:
 	*/
 	void setPaintCells(const std::vector<PaintCell*>& paint_cells);
 
-	void renderGeometry(Render::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object = NULL);
+	void renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object = NULL);
 
 	void minimapRender(const Math::BoundingObject& bounding_object, float view_height, float alpha = 1.0f);
 

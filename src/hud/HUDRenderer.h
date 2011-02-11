@@ -1,7 +1,7 @@
 #ifndef PROJECT_HUD__HUDRENDERER_H
 #define PROJECT_HUD__HUDRENDERER_H
 
-#include "render/Shader.h"
+#include "shader/ShaderProgram.h"
 
 namespace Project {
 namespace HUD {
@@ -9,7 +9,7 @@ namespace HUD {
 class HUDRenderer {
 private:
 
-	Render::Shader* alphaMaskShader;
+	Shader::ShaderProgram* alphaMaskShader;
 	int alphaMaskLoc;
 	int renderTextureLoc;
 	int usingTextureLoc;

@@ -29,10 +29,21 @@ void GameLoop::construct() {
     inputManager->init();
 }
 
+void GameLoop::setGuiPointers(boost::shared_ptr<GUI::GUISystem> gui,
+    boost::shared_ptr<GUIInputManager> guiInputManager) {
+    
+    this->gui = gui;
+    this->guiInputManager = guiInputManager;
+    
+    gameRenderer->setGUI(gui);
+}
+
 void GameLoop::handleEvent(SDL_Event *event) {
     viewport->checkForDebugCameraEvents(event);
     
     inputManager->handleEvent(event);
+    
+    guiInputManager->handleEvent(event);
 }
 
 void GameLoop::miscellaneous() {
@@ -66,10 +77,12 @@ void GameLoop::render() {
         gameWorld->getWorldManager(),
         gameWorld->getWorldManager()->getPlayer(
             gameWorld->getClientData()->getPlayerID()));
+    
+    gui->render();
 }
 
 void GameLoop::setProjection(const Point2D &size) {
-     viewport->setProjection(size);
+    viewport->setProjection(size);
 }
 
 }  // namespace SDL

@@ -2,7 +2,7 @@
 #define PROJECT_RENDER__RENDERABLE_OBJECT_H
 
 #include "RenderProperties.h"
-#include "ShaderParamSetter.h"
+#include "shader/ShaderParamSetter.h"
 #include "math/BoundingObject.h"
 
 namespace Project {

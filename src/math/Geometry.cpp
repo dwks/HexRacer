@@ -162,6 +162,7 @@ bool Geometry::lineVLineIntersects2D(Point line_a, Point line_b,
 
 bool Geometry::sameSideOfLine2D(Point line_a, Point line_b, Point point_1, Point point_2, Axis project_axis) {
 
+	/*
 	line_a = Point::point2D(line_a, project_axis);
 	line_b = Point::point2D(line_b, project_axis);
 	point_1 = Point::point2D(point_1, project_axis);
@@ -169,12 +170,11 @@ bool Geometry::sameSideOfLine2D(Point line_a, Point line_b, Point point_1, Point
 
 	Point line_normal = (line_b-line_a).rotate90CW(project_axis);
 	return (frontOfPlane(line_a, line_normal, point_1) == frontOfPlane(line_a, line_normal, point_2));
+	*/
 
-	/*
 	Point cp1 = (line_b - line_a).crossProduct(point_1 - line_a);
     Point cp2 = (line_b - line_a).crossProduct(point_2 - line_a);
 	return (cp1.dotProduct(cp2) >= 0.0f);
-	*/
 
 }
 

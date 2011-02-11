@@ -26,9 +26,14 @@ void SDLMainLoop::QuitObserver::observe(Event::QuitEvent *event) {
 }
 
 void SDLMainLoop::JoinGameObserver::observe(Event::JoinGame *event) {
-    LoopBase *loop = new GameLoop(event->getHost(), event->getPort());
+    GameLoop *loop = new GameLoop(event->getHost(), event->getPort());
     loop->construct();
-
+    
+    loop->setGuiPointers(
+        mainLoop->menuLoop->getGUI(),
+        mainLoop->menuLoop->getGUIInput());
+    mainLoop->menuLoop->getGUI()->selectScreen("running");
+    
 	// set up camera if necessary
     loop->setProjection(Point2D(
         SDL_GetVideoSurface()->w,
@@ -64,6 +69,7 @@ void SDLMainLoop::useLoopBase(LoopBase *loop) {
 }
 
 void SDLMainLoop::useMenuLoop() {
+    menuLoop->getGUI()->selectScreen("main");
     this->loop = menuLoop;
 }
 

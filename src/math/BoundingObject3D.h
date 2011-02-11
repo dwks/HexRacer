@@ -15,6 +15,8 @@ public:
 	BoundingObject3D(void) {}
 	virtual ~BoundingObject3D(void) {}
 	bool is2D() const { return false; }
+	ObjectSpatial& toObjectSpatial() { return (BoundingObject3D&) *this; }
+	const ObjectSpatial& toConstObjectSpatial() const { return (const BoundingObject3D&) *this; }
 };
 
 }  // namespace Math

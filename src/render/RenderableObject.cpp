@@ -33,9 +33,9 @@ namespace Render {
 			)
 			return;
 
-		manager->setRenderProperties(this);
+		manager->setRenderProperties(renderProperties);
 		subRender(manager);
-		manager->revertRenderProperties(this);
+		manager->revertRenderProperties(renderProperties);
 	}
 
 	RenderProperties* RenderableObject::getRenderProperties() const {

@@ -265,7 +265,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\CubeMapFile.cpp"
+				RelativePath=".\src\opengl\CubeMapFile.cpp"
 				>
 			</File>
 			<File
@@ -325,6 +325,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\GUIObservers.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\gui\GUISystem.cpp"
 				>
 			</File>
@@ -357,7 +361,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Light.cpp"
+				RelativePath=".\src\opengl\Light.cpp"
 				>
 			</File>
 			<File
@@ -393,7 +397,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Material.cpp"
+				RelativePath=".\src\opengl\Material.cpp"
 				>
 			</File>
 			<File
@@ -405,11 +409,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Mesh.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\MeshGroup.cpp"
+				RelativePath=".\src\mesh\MeshGroup.cpp"
 				>
 			</File>
 			<File
@@ -417,19 +417,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshLoader.cpp"
+				RelativePath=".\src\mesh\MeshLoader.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshTriangle.cpp"
+				RelativePath=".\src\mesh\MeshTriangle.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshTriangleFan.cpp"
+				RelativePath=".\src\mesh\MeshTriangleFan.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshVertex.cpp"
+				RelativePath=".\src\mesh\MeshVertex.cpp"
 				>
 			</File>
 			<File
@@ -437,7 +437,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\model_obj.cpp"
+				RelativePath=".\src\mesh\model_obj.cpp"
 				>
 			</File>
 			<File
@@ -545,10 +545,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\RenderableBox.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\render\RenderableObject.cpp"
 				>
 			</File>
@@ -569,11 +565,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\RenderParent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\RenderProperties.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\render\RenderSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\RunningProxy.cpp"
 				>
 			</File>
 			<File
@@ -597,23 +601,27 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Shader.cpp"
+				RelativePath=".\src\shader\ShaderAttributeLocation.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderAttributeLocation.cpp"
+				RelativePath=".\src\shader\ShaderManager.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderParameter.cpp"
+				RelativePath=".\src\shader\ShaderParameter.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderParamSetter.cpp"
+				RelativePath=".\src\shader\ShaderParamSetter.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderUniformVector4.cpp"
+				RelativePath=".\src\shader\ShaderParamVector4.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\shader\ShaderProgram.cpp"
 				>
 			</File>
 			<File
@@ -633,15 +641,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\mesh\SubMesh.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\Suspension.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Texture.cpp"
+				RelativePath=".\src\opengl\TextureCube.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\TextureCube.cpp"
+				RelativePath=".\src\opengl\TextureLoading.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TexturePack.cpp"
 				>
 			</File>
 			<File
@@ -657,7 +673,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\TransformedMesh.cpp"
+				RelativePath=".\src\mesh\TransformedMesh.cpp"
 				>
 			</File>
 			<File
@@ -976,10 +992,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\opengl\Shader.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\src\opengl\Trackball.cpp"
 					>
 				</File>
@@ -1111,7 +1123,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\CubeMapFile.h"
+				RelativePath=".\src\opengl\CubeMapFile.h"
 				>
 			</File>
 			<File
@@ -1171,6 +1183,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\GUIObservers.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\gui\GUISystem.h"
 				>
 			</File>
@@ -1203,7 +1219,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Light.h"
+				RelativePath=".\src\opengl\Light.h"
 				>
 			</File>
 			<File
@@ -1227,7 +1243,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Material.h"
+				RelativePath=".\src\opengl\Material.h"
 				>
 			</File>
 			<File
@@ -1239,11 +1255,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Mesh.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\MeshGroup.h"
+				RelativePath=".\src\mesh\MeshGroup.h"
 				>
 			</File>
 			<File
@@ -1251,19 +1263,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshLoader.h"
+				RelativePath=".\src\mesh\MeshLoader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshTriangle.h"
+				RelativePath=".\src\mesh\MeshTriangle.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshTriangleFan.h"
+				RelativePath=".\src\mesh\MeshTriangleFan.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\MeshVertex.h"
+				RelativePath=".\src\mesh\MeshVertex.h"
 				>
 			</File>
 			<File
@@ -1271,7 +1283,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\model_obj.h"
+				RelativePath=".\src\mesh\model_obj.h"
 				>
 			</File>
 			<File
@@ -1383,10 +1395,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\RenderableBox.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\render\RenderableObject.h"
 				>
 			</File>
@@ -1407,6 +1415,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\RenderParent.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\RenderProperties.h"
 				>
 			</File>
@@ -1416,6 +1428,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\RotationAxis.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\RunningProxy.h"
 				>
 			</File>
 			<File
@@ -1439,23 +1455,27 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Shader.h"
+				RelativePath=".\src\shader\ShaderAttributeLocation.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderAttributeLocation.h"
+				RelativePath=".\src\shader\ShaderManager.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderParameter.h"
+				RelativePath=".\src\shader\ShaderParameter.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderParamSetter.h"
+				RelativePath=".\src\shader\ShaderParamSetter.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderUniformVector4.h"
+				RelativePath=".\src\shader\ShaderParamVector4.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\shader\ShaderProgram.h"
 				>
 			</File>
 			<File
@@ -1487,15 +1507,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\mesh\SubMesh.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\Suspension.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Texture.h"
+				RelativePath=".\src\opengl\TextureCube.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\TextureCube.h"
+				RelativePath=".\src\opengl\TextureLoading.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TexturePack.h"
 				>
 			</File>
 			<File
@@ -1511,7 +1539,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\TransformedMesh.h"
+				RelativePath=".\src\mesh\TransformedMesh.h"
 				>
 			</File>
 			<File
@@ -1659,10 +1687,6 @@
 				</File>
 				<File
 					RelativePath=".\src\opengl\OpenGL.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\opengl\Shader.h"
 					>
 				</File>
 				<File

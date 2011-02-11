@@ -6,7 +6,7 @@ namespace HUD {
 
 	HUDRenderer::HUDRenderer() {
 
-		alphaMaskShader = new Render::Shader("shaders/alphaMask.frag", "shaders/alphaMask.vert");
+		alphaMaskShader = new Shader::ShaderProgram("shaders/alphaMask.frag", "shaders/alphaMask.vert");
 		alphaMaskLoc = alphaMaskShader->getUniLoc("alphaMaskTexture");
 		renderTextureLoc = alphaMaskShader->getUniLoc("renderTexture");
 		usingTextureLoc = alphaMaskShader->getUniLoc("usingTexture");

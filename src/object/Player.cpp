@@ -5,6 +5,9 @@
 
 #include "settings/ProgramSettings.h"
 
+#include "shader/ShaderParamVector4.h"
+#include "render/ColorConstants.h"
+
 namespace Project {
 namespace Object {
 
@@ -60,16 +63,15 @@ void Player::applyForce(const Math::Point &movement, const Math::Point &at) {
 }
 
 void Player::initialize() {
-    if(Settings::ProgramSettings::getInstance()->isClient()) {
-        renderable = new Render::RenderablePlayer();
-        renderable->initialize(getID());
-    }
-    else {
-        renderable = NULL;
-    }
+    renderable = NULL;
 }
 
 void Player::preRender() {
+    if(!renderable && Settings::ProgramSettings::getInstance()->isClient()) {
+        renderable = new Render::RenderablePlayer();
+        renderable->initialize(getID());
+    }
+    
     AbstractObject::preRender();
     
     for(int wheel = 0; wheel < 4; wheel ++) {
@@ -81,6 +83,12 @@ void Player::preRender() {
             physical->getFrontDirection()));
 
 	renderable->updatePhysicalData(physical->getOrigin());
+
+	float glow_scale = static_cast<float>(getSpeedBoost())*0.5f+0.35f;
+	OpenGL::Color trim_color = Render::ColorConstants::playerColor(getID())*glow_scale;
+
+	renderable->setGlowColor(trim_color);
+
 }
 
 }  // namespace Object

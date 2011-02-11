@@ -26,8 +26,8 @@
 #include "physics/PhysicsFactory.h"
 #include "physics/Suspension.h"
 
-#include "render/MeshGroup.h"
-#include "render/MeshLoader.h"
+#include "mesh/MeshGroup.h"
+#include "mesh/MeshLoader.h"
 #include "map/MapLoader.h"
 #include "map/PathTracker.h"
 
@@ -79,17 +79,31 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         case Event::PlayerAction::JUMP:
             player->doJump();
             break;
-        case Event::PlayerAction::FIX_OFF_TRACK:
+        case Event::PlayerAction::FIX_OFF_TRACK: {
             delete player->getPhysicalObject();
-
-			const Map::PathNode* node = player->getPathTracker()->getCurrentNode();
-			Math::Point origin = node->getPosition();
-			origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
-			Math::Point direction = (node->getNextNodes()[0]->getPosition() - node->getPosition()).normalized();
-			player->setPhysicalObject(
-				Physics::PhysicsFactory::createPhysicalPlayer(origin, direction)
-				);
+            
+            if(player->getPathTracker()
+                && player->getPathTracker()->getCurrentNode()) {
+            
+                const Map::PathNode* node = player->getPathTracker()->getCurrentNode();
+                
+                Math::Point origin = node->getPosition();
+                Math::Point direction = (node->getNextNodes()[0]->getPosition() - node->getPosition()).normalized();
+                
+                origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
+                player->setPhysicalObject(
+                    Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
+            }
+            else {
+                Math::Point origin = main->raceManager->startingPointForPlayer(player->getID());
+                Math::Point direction = Math::Point(0.0, 0.0, -1.0);
+                
+                origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
+                player->setPhysicalObject(
+                    Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
+            }
             break;
+        }
         }
         
         break;
@@ -147,7 +161,7 @@ void ServerMain::run() {
     
     networkPortal = new ServerNetworkPortal(&clients);
     
-    Render::MeshLoader *meshLoader = new Render::MeshLoader();
+    Mesh::MeshLoader *meshLoader = new Mesh::MeshLoader();
     /*meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
     Render::MeshGroup *test_terrain = meshLoader->getModelByName("testTerrain");
     

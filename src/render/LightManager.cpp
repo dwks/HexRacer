@@ -25,7 +25,7 @@ namespace Render {
 		staticLightTree = new BSPTree3D(bounding_box);
 	}
 
-	void LightManager::addLight(Light* light, bool high_priorty, bool dynamic) {
+	void LightManager::addLight(OpenGL::Light* light, bool high_priorty, bool dynamic) {
 
 		LightManagerNode* new_node = new LightManagerNode(light);
 		if (dynamic) {

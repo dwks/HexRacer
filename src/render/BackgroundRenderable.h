@@ -16,7 +16,7 @@ private:
 public:
 	BackgroundRenderable(OpenGL::Camera* _camera) { camera = _camera;}
 	void setCamera(OpenGL::Camera* _camera) { camera = _camera; }
-	void renderGeometry(ShaderParamSetter& setter, const Math::BoundingObject* bounding_object = NULL);
+	void renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object = NULL);
 };
 
 }  // namespace Render

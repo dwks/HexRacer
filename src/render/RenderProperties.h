@@ -2,10 +2,10 @@
 #define PROJECT_RENDER__RENDER_PROPERTIES_H
 
 #include "math/Matrix.h"
-#include "Material.h"
-#include "Texture.h"
-#include "Shader.h"
-#include "ShaderParameter.h"
+#include "opengl/Material.h"
+#include "TexturePack.h"
+#include "shader/ShaderProgram.h"
+#include "shader/ShaderParameter.h"
 #include <string>
 #include <vector>
 
@@ -18,79 +18,74 @@ class RenderProperties {
 
 private:
 
-	bool transformationSet;
-	Project::Math::Matrix transformation;
+	//bool transformationSet;
+	Project::Math::Matrix* transformation;
 
-	Material* material;
+	OpenGL::Material* material;
 	bool materialOverrideChildren;
 
-	Texture* texture;
+	TexturePack* texture;
 	bool textureOverrideChildren;
 
 	int shader;
 	bool shaderOverrideChildren;
 
-	bool colorSet;
-	Project::OpenGL::Color color;
+	//bool colorSet;
+	Project::OpenGL::Color* color;
 	bool colorOverrideChildren;
+
+	std::string wantsShaderName;
+	std::vector<Shader::ShaderParameter*> shaderParams;
 
 	bool empty;
 
-	std::string wantsShaderName;
-	std::vector<ShaderParameter*> shaderParams;
+	void changed();
 
 public:
 
 	RenderProperties();
+	~RenderProperties();
 
-	bool hasTransformation() const { return transformationSet; }
-	void clearTransformation() { transformationSet = false; }
-	void setTransformation(Project::Math::Matrix _transform) {
-		transformation = _transform;
-		transformationSet = true;
-		empty = false;
-	}
-	const Project::Math::Matrix& getTransformation() const { return transformation; }
+	bool hasTransformation() const { return (transformation != NULL); }
+	void clearTransformation();
+	void setTransformation(const Math::Matrix& _transform);
+	const Project::Math::Matrix& getTransformation() const { return *transformation; }
 
-	bool hasColor() const { return colorSet; }
-	void clearColor() { colorSet = false; }
-	void setColor(Project::OpenGL::Color _color) {
-		color = _color;
-		colorSet = true;
-		empty = false;
-	}
-	const Project::OpenGL::Color& getColor() const { return color; }
+	bool hasColor() const { return (color != NULL); }
+	void clearColor();
+	void setColor(const OpenGL::Color& _color);
+	const OpenGL::Color& getColor() const { return *color; }
 	bool getColorOverride() const { return colorOverrideChildren; }
 	void setColorOverride(bool override_children) { colorOverrideChildren = override_children; }
 
 	bool hasMaterial() const { return (material != NULL); }
-	void clearMaterial() { material = NULL; }
-	void setMaterial(Material* _material) {
+	void clearMaterial() { material = NULL; changed(); }
+	void setMaterial(OpenGL::Material* _material) {
 		material = _material;
-		empty = false;
+		changed();
 	}
-	Material* getMaterial() const { return material; }
+	OpenGL::Material* getMaterial() const { return material; }
 	bool getMaterialOverride() const { return materialOverrideChildren; }
 	void setMaterialOverride(bool override_children) { materialOverrideChildren = override_children; }
 
-	bool hasTexture() const { return (texture != NULL); }
-	void clearTexture() { texture = NULL; }
-	void setTexture(Texture* _texture) { texture = _texture; }
-	Texture* getTexture() const { return texture; }
-	bool getTextureOverride() const { return textureOverrideChildren; }
-	void setTextureOverride(bool override_children) {
+	bool hasTexturePack() const { return (texture != NULL); }
+	void clearTexturePack() { texture = NULL; changed(); }
+	void setTexturePack(TexturePack* _texture) { texture = _texture; }
+	TexturePack* getTexturePack() const { return texture; }
+	bool getTexturePackOverride() const { return textureOverrideChildren; }
+	void setTexturePackOverride(bool override_children) {
 		textureOverrideChildren = override_children;
-		empty = false;
+		changed();
 	}
 
-	bool hasShader() const { return (shader >= 0); }
-	void clearShader() { shader = -1; }
+	bool hasShaderIndex() const { return (shader >= 0); }
+	void clearShaderIndex() { shader = -1; changed(); }
 	void setShaderIndex(int _shader) { shader = _shader; }
 	int getShaderIndex() const { return shader; }
 	bool getShaderOverride() const { return shaderOverrideChildren; }
 	void setShaderOverride(bool override_children) {
 		shaderOverrideChildren = override_children;
-		empty = false;
+		changed();
 	}
 
 	bool wantsShader() const;
@@ -98,10 +93,10 @@ public:
 	void setWantsShaderName(std::string shader_name);
 
 	bool hasShaderParams() const;
-	std::vector<ShaderParameter*>& getShaderParams();
-	void setShaderParams(std::vector<ShaderParameter*> params);
-	void addShaderParameter(ShaderParameter* param);
-	void clearShaderParams() { shaderParams.clear(); }
+	std::vector<Shader::ShaderParameter*>& getShaderParams();
+	void setShaderParams(std::vector<Shader::ShaderParameter*> params);
+	void addShaderParameter(Shader::ShaderParameter* param);
+	void clearShaderParams() { shaderParams.clear(); changed(); }
 
 	bool isEmpty() const { return empty; }
 

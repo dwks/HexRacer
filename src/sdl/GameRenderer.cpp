@@ -1,3 +1,4 @@
+#include <iomanip>  // for std::setprecision()
 #include <vector>
 
 #include "SDL.h"  // for SDL_GetVideoSurface()
@@ -18,28 +19,20 @@ namespace SDL {
 
 void GameRenderer::construct(OpenGL::Camera *camera) {
     //Instantiate the rendering objects
-    meshLoader = boost::shared_ptr<Render::MeshLoader>(
-        new Render::MeshLoader());
+    meshLoader = boost::shared_ptr<Mesh::MeshLoader>(
+        new Mesh::MeshLoader());
     renderer = boost::shared_ptr<Render::RenderManager>(
         new Render::RenderManager());
     lightManager = renderer->getLightManager();
     mapRenderable = boost::shared_ptr<Render::RenderList>(
         new Render::RenderList());
     
-    renderer->loadShadersFile("shaders.txt");
+    renderer->getShaderManager()->loadShadersFile("shaders.txt");
     
     //Load the vehicle model
-    Render::RenderableObject *object
-        = meshLoader->loadOBJ(VEHICLE_CHASSIS_MODEL_NAME, GET_SETTING("render.model.vehicle", ""));
-        
-    Render::RenderableObject *objectTire
-        = meshLoader->loadOBJ(VEHICLE_WHEEL_MODEL_NAME, GET_SETTING("render.model.tire", ""));
-      
-    object->getRenderProperties()->setTransformation(
-        Math::Matrix::getScalingMatrix(GET_SETTING("render.vehicle.scale", 2.0)));
-    
-    objectTire->getRenderProperties()->setTransformation(
-        Math::Matrix::getScalingMatrix(GET_SETTING("render.tire.scale", 2.5)));
+    meshLoader->loadOBJ(VEHICLE_CHASSIS_MODEL_NAME, GET_SETTING("render.model.vehicle", ""));
+	meshLoader->loadOBJ(VEHICLE_GLOW_MODEL_NAME, GET_SETTING("render.model.vehicleglow", ""));
+    meshLoader->loadOBJ(VEHICLE_WHEEL_MODEL_NAME, GET_SETTING("render.model.tire", ""));
     
     //Instantiate the map
     map = boost::shared_ptr<Map::HRMap>(new Map::HRMap());
@@ -51,7 +44,7 @@ void GameRenderer::construct(OpenGL::Camera *camera) {
     }
     
     //Add the map lights to the light manager
-    std::vector<Render::Light*> map_lights = map->getLights();
+    std::vector<OpenGL::Light*> map_lights = map->getLights();
     for (unsigned i = 0; i < map_lights.size(); i++) {
         lightManager->addLight(map_lights[i], !map_lights[i]->getHasAttenuation(), false);
     }
@@ -202,12 +195,27 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 		HUD::LapProgressBar bar;
 		bar.setProgress(player->getPathTracker()->getLapProgress());
 		bar.render();
+        percentageComplete->setText(Misc::StreamAsString() << std::setprecision(3)
+            << player->getPathTracker()->getLapProgress() * 100 << "%");
 
     }
 
 	hudRenderer->renderingStateReset();
 	hudRenderer->resetViewport();
 
+}
+
+void GameRenderer::setGUI(boost::shared_ptr<GUI::GUISystem> gui) {
+
+    this->gui = gui;
+    
+    percentageComplete = new Widget::TextWidget(
+        "percentageComplete", OpenGL::Color::WHITE, "0%",
+        Widget::NormalTextLayout::ALIGN_HCENTRE | Widget::NormalTextLayout::ALIGN_VCENTRE);
+    percentageComplete->updateLayout(Widget::WidgetRect(0.0, 0.9, 0.1, 0.05));
+    /*percentageComplete = new Widget::ButtonWidget("percentageComplete",
+        "0%", Widget::WidgetRect(0.0, 0.1, 0.1, 0.05));*/
+    gui->getScreen("running")->addChild(percentageComplete);
 }
 
 void GameRenderer::renderWorld(Object::World *world) {

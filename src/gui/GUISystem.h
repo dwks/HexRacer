@@ -11,6 +11,8 @@
 namespace Project {
 namespace GUI {
 
+class GUIObservers;
+
 class GUISystem {
 private:
     Render::FontManager *fontManager;
@@ -21,6 +23,8 @@ private:
     Widget::WidgetBase *currentScreen;
     
     Widget::WidgetPoint screenSize;
+    
+    GUIObservers *observers;
 public:
     GUISystem() : widgets(0), currentScreen(0) {}
     ~GUISystem();
@@ -33,6 +37,7 @@ public:
     void selectScreen(const std::string &screen);
     
     Widget::WidgetBase *getWidget(const std::string &path);
+    Widget::CompositeWidget *getScreen(const std::string &path);
     
     void setScreenSize(Widget::WidgetPoint screenSize)
         { this->screenSize = screenSize; }

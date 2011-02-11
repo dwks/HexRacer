@@ -47,7 +47,7 @@ void MapLoader::load(HRMap *map, Render::RenderList *mapRenderable) {
     std::vector<Map::MeshInstance*> instances = map->getMeshInstances();
     for (unsigned i = 0; i < instances.size(); i++) {
         
-        Render::TransformedMesh* transformed_mesh = new Render::TransformedMesh(
+        Mesh::TransformedMesh* transformed_mesh = new Mesh::TransformedMesh(
             instances[i]->getMeshGroup(), instances[i]->getTransformation());
         
         //Add the mesh to the map renderable

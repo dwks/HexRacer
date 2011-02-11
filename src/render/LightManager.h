@@ -1,7 +1,7 @@
 #ifndef PROJECT_RENDER__LIGHT_MANAGER_H
 #define PROJECT_RENDER__LIGHT_MANAGER_H
 
-#include "Light.h"
+#include "opengl/Light.h"
 #include "opengl/OpenGL.h"
 #include "math/BSPTree3D.h"
 #include "LightManagerNode.h"
@@ -31,7 +31,7 @@ private:
 public:
 	LightManager(int max_active_lights = 8);
 
-	void addLight(Light* light, bool high_priorty = false, bool dynamic = true);
+	void addLight(OpenGL::Light* light, bool high_priorty = false, bool dynamic = true);
 	void drawActiveLightSpheres(bool show_influence_radius = false);
 	void setSceneBoundingBox(Math::BoundingBox3D bounding_box);
 	void activateNearFocalPoint(Math::Point focal_point, double radius = 0.0);

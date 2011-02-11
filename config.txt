@@ -40,6 +40,8 @@ physics.driving.lineardrag        = 0.5
 physics.driving.angulardrag       = 0.5
 physics.driving.sidewaysdrag      = 20.0
 
+game.enablepathing = 1
+
 ########
 ### Rendering settings
 
@@ -66,6 +68,7 @@ render.drawlightspheres = 1
 
 # Models
 render.model.vehicle = data/vehicle/vehicle01.obj
+render.model.vehicleglow = data/vehicle/vehicle01glow.obj
 render.model.tire = data/vehicle/carTires.obj
 
 render.vehicle.scale = 2.0
