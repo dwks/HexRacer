@@ -4,6 +4,7 @@
 #include "RenderableObject.h"
 #include "mesh/MeshGroup.h"
 #include "RenderParent.h"
+#include "RenderList.h"
 #include "opengl/Color.h"
 
 #include "math/Values.h"
@@ -18,8 +19,9 @@ private:
     Math::Point origin;
     
 	RenderParent *chassisMesh;
-	RenderParent *glowMesh;
     RenderParent *tireMesh;
+
+	OpenGL::Material* materialTint;
     
     double wheelRotationDegrees; 
     Math::Point suspension[4];
@@ -29,6 +31,7 @@ private:
 	Math::Matrix tireScaleMatrix;
 
 public:
+
     virtual void initialize(int id);
     
     virtual void preRenderUpdate(const Math::Matrix &transformation);

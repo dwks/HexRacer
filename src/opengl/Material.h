@@ -38,6 +38,8 @@ public:
 	/** Apply this material to the specified polygon face @a face
 	*/
 	void glApply(GLenum face = GL_FRONT_AND_BACK);
+
+	Material operator * (const Material &other) const;
 };
 
 }  // namespace Render

@@ -13,6 +13,7 @@ namespace Render {
 		colorOverrideChildren = false;
 		material = NULL;
 		materialOverrideChildren = false;
+		materialTint = NULL;
 		texture = NULL;
 		textureOverrideChildren = false;
 		shader = -1;
@@ -85,6 +86,7 @@ namespace Render {
 			hasTransformation() ||
 			hasColor() || getColorOverride() ||
 			hasMaterial() || getMaterialOverride() ||
+			hasMaterialTint() ||
 			hasTexturePack() || getTexturePackOverride() ||
 			hasShaderIndex() || getShaderOverride() ||
 			wantsShader() || hasShaderParams() );

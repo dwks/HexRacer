@@ -31,7 +31,6 @@ void GameRenderer::construct(OpenGL::Camera *camera) {
     
     //Load the vehicle model
     meshLoader->loadOBJ(VEHICLE_CHASSIS_MODEL_NAME, GET_SETTING("render.model.vehicle", ""));
-	meshLoader->loadOBJ(VEHICLE_GLOW_MODEL_NAME, GET_SETTING("render.model.vehicleglow", ""));
     meshLoader->loadOBJ(VEHICLE_WHEEL_MODEL_NAME, GET_SETTING("render.model.tire", ""));
     
     //Instantiate the map

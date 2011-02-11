@@ -68,7 +68,6 @@ render.drawlightspheres = 1
 
 # Models
 render.model.vehicle = data/vehicle/vehicle01.obj
-render.model.vehicleglow = data/vehicle/vehicle01glow.obj
 render.model.tire = data/vehicle/carTires.obj
 
 render.vehicle.scale = 2.0
