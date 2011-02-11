@@ -28,11 +28,11 @@ public:
 	MeshVertex(Project::Math::Point position, Project::Math::Point normal, Project::Math::Point tangent, Project::Math::Point bitangent,
 		float texCoordU, float texCoordV);
 
-	Project::Math::Point getNormal() const;
-	Project::Math::Point getTangent() const;
-	Project::Math::Point getBitangent() const;
-	float getTexCoordU() const;
-	float getTexCoordV() const;
+	const Project::Math::Point& getNormal() const { return normal; }
+	const Project::Math::Point& getTangent() const { return tangent; }
+	const Project::Math::Point& getBitangent() const { return bitangent; }
+	float getTexCoordU() const { return texCoordU; }
+	float getTexCoordV() const { return texCoordV; }
 
 	void addAdjacentTriangle(MeshTriangle* triangle);
 	void removeAdjacentTriangle(MeshTriangle* triangle);

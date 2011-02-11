@@ -92,7 +92,7 @@ void MapEditorWidget::initializeGL() {
 	glEndList();
 
 	renderer = new RenderManager();
-	renderer->loadShadersFile("shaders.txt");
+	renderer->getShaderManager()->loadShadersFile("shaders.txt");
 	lightManager = renderer->getLightManager();
 	renderer->setCamera(camera);
 

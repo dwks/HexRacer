@@ -545,10 +545,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\RenderableBox.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\render\RenderableObject.cpp"
 				>
 			</File>
@@ -601,23 +597,27 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Shader.cpp"
+				RelativePath=".\src\shader\ShaderAttributeLocation.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderAttributeLocation.cpp"
+				RelativePath=".\src\shader\ShaderManager.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderParameter.cpp"
+				RelativePath=".\src\shader\ShaderParameter.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderParamSetter.cpp"
+				RelativePath=".\src\shader\ShaderParamSetter.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderUniformVector4.cpp"
+				RelativePath=".\src\shader\ShaderParamVector4.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\shader\ShaderProgram.cpp"
 				>
 			</File>
 			<File
@@ -1395,10 +1395,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\RenderableBox.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\render\RenderableObject.h"
 				>
 			</File>
@@ -1455,23 +1451,27 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\Shader.h"
+				RelativePath=".\src\shader\ShaderAttributeLocation.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderAttributeLocation.h"
+				RelativePath=".\src\shader\ShaderManager.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderParameter.h"
+				RelativePath=".\src\shader\ShaderParameter.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderParamSetter.h"
+				RelativePath=".\src\shader\ShaderParamSetter.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ShaderUniformVector4.h"
+				RelativePath=".\src\shader\ShaderParamVector4.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\shader\ShaderProgram.h"
 				>
 			</File>
 			<File

@@ -1,6 +1,7 @@
 #include "SubMesh.h"
 #include "opengl/MathWrapper.h"
 #include "misc/StdVectorFunctions.h"
+#include "shader/ShaderManager.h"
 #include "log/Logger.h"
 using namespace std;
 using namespace Project;
@@ -14,7 +15,6 @@ namespace Mesh {
 		paramSetter = NULL;
 		triangleFanTree = NULL;
 		material = NULL;
-		displayList = 0;
 	}
 
 	SubMesh::SubMesh(vector< MeshTriangle* > _triangles, OpenGL::Material* _material, bool cullable) {
@@ -23,8 +23,6 @@ namespace Mesh {
 		getRenderProperties()->setMaterial(material);
 
 		triangleFanTree = NULL;
-		displayList = 0;
-
 		for (unsigned int i = 0; i < _triangles.size(); i++)
 			triangles.push_back(Triangle3D(*_triangles[i]));
 
@@ -81,9 +79,6 @@ namespace Mesh {
 
 		if (cullable)
 			generateTriangleFanTree();
-		else
-			generateDisplayList();
-
 	}
 
 	SubMesh::~SubMesh() {
@@ -96,36 +91,8 @@ namespace Mesh {
 
 		if (triangleFanTree)
 			delete(triangleFanTree);
-
-		if (displayList > 0)
-			glDeleteLists(displayList, 1);
 	}
 
-	void SubMesh::generateDisplayList() {
-
-
-		displayList = glGenLists(1);
-		glNewList(displayList, GL_COMPILE);
-
-		for (unsigned int i = 0; i < triangleFans.size(); i++) {
-
-			glBegin(GL_TRIANGLE_FAN);
-
-			const vector<MeshVertex*>& vertices = triangleFans[i]->getVertices();
-			for (unsigned int j = 0; j < vertices.size(); j++) {
-				MeshVertex* vert = vertices[j];
-				MathWrapper::glNormal(vert->getNormal());
-				glTexCoord2d(vert->getTexCoordU(), vert->getTexCoordV());
-				MathWrapper::glVertex(vert->getPosition());
-			}
-
-			glEnd();
-
-		}
-
-		glEndList();
-
-	}
 
 	void SubMesh::generateTriangleFanTree() {
 
@@ -151,21 +118,12 @@ namespace Mesh {
 
 	}
 
-	void SubMesh::renderGeometry(Render::ShaderParamSetter& setter, const BoundingObject* bounding_object) {
+	void SubMesh::renderGeometry(const Shader::ShaderParamSetter& setter, const BoundingObject* bounding_object) {
 
 		if (bounding_object == NULL || triangleFanTree == NULL) {
-
-			if (setter.getHasTangentSpace() || displayList == 0) {
-
-				for (unsigned int i = 0; i < triangleFans.size(); i++) {
-					drawTriangleFan(triangleFans[i], setter);
-				}
-
+			for (unsigned int i = 0; i < triangleFans.size(); i++) {
+				drawTriangleFan(triangleFans[i], setter);
 			}
-			else {
-				glCallList(displayList);
-			}
-
 		}
 		else {
 			paramSetter = &setter;
@@ -174,7 +132,7 @@ namespace Mesh {
 
 	}
 
-	inline void SubMesh::drawTriangleFan(MeshTriangleFan* fan, Render::ShaderParamSetter& setter) {
+	inline void SubMesh::drawTriangleFan(MeshTriangleFan* fan, const Shader::ShaderParamSetter& setter) {
 
 		glBegin(GL_TRIANGLE_FAN);
 
@@ -182,7 +140,12 @@ namespace Mesh {
 		for (unsigned int j = 0; j < vertices.size(); j++) {
 			MeshVertex* vert = vertices[j];
 			MathWrapper::glNormal(vert->getNormal());
-			setter.setTangents(vert->getTangent(), vert->getBitangent());
+			setter.setStandardParamVector3(Shader::ShaderParameter::ATTRIBUTE,
+				static_cast<int>(Shader::ShaderManager::AV3_TANGENT),
+				vert->getTangent());
+			setter.setStandardParamVector3(Shader::ShaderParameter::ATTRIBUTE,
+				static_cast<int>(Shader::ShaderManager::AV3_BITANGENT),
+				vert->getBitangent());
 			glTexCoord2d(vert->getTexCoordU(), vert->getTexCoordV());
 			MathWrapper::glVertex(vert->getPosition());
 		}

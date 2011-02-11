@@ -5,17 +5,17 @@
 #include "opengl/Color.h"
 
 namespace Project {
-namespace Render {
+namespace Shader {
 
-class ShaderUniformVector4
+class ShaderParamVector4
 	: public ShaderParameter {
 private:
 	Project::OpenGL::Color color;
 public:
 
-	ShaderUniformVector4(const char *_name, Project::OpenGL::Color _color);
+	ShaderParamVector4(const char *_name, ShaderParamType _type, Project::OpenGL::Color _color);
 	void setColor(OpenGL::Color _color) { color = _color; }
-	void setShaderParameters(ShaderParamSetter& setter);
+	void set(const ShaderParamSetter& setter);
 };
 
 }  // namespace Render

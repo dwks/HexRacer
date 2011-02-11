@@ -5,13 +5,13 @@
 using namespace std;
 
 namespace Project {
-namespace Render {
+namespace Shader {
 
 /** A GLSL Shader Program
 */
-class Shader {
+class ShaderProgram {
 public:
-	Shader(GLchar *fs, GLchar *vs);
+	ShaderProgram(GLchar *fs, GLchar *vs);
 
 	void turnShaderOn() const;
 	void turnShaderOff() const;

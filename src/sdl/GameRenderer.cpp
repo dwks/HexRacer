@@ -27,7 +27,7 @@ void GameRenderer::construct(OpenGL::Camera *camera) {
     mapRenderable = boost::shared_ptr<Render::RenderList>(
         new Render::RenderList());
     
-    renderer->loadShadersFile("shaders.txt");
+    renderer->getShaderManager()->loadShadersFile("shaders.txt");
     
     //Load the vehicle model
     Render::RenderableObject *object

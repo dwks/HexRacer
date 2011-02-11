@@ -10,7 +10,7 @@
 #include "render/RenderManager.h"
 #include "mesh/MeshGroup.h"
 #include "mesh/MeshLoader.h"
-#include "render/ShaderUniformVector4.h"
+#include "shader/ShaderParamVector4.h"
 #include "render/RenderList.h"
 #include "render/ColorConstants.h"
 

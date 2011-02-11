@@ -1,6 +1,6 @@
 #include "RenderablePlayer.h"
 
-#include "ShaderUniformVector4.h"
+#include "shader/ShaderParamVector4.h"
 #include "ColorConstants.h"
 
 #include "math/BoundingBox3D.h"
@@ -27,7 +27,7 @@ void RenderablePlayer::initialize(int id) {
 		);
     
     getRenderProperties()->addShaderParameter(
-        new Render::ShaderUniformVector4("playerColor",
+		new Shader::ShaderParamVector4("playerColor", Shader::ShaderParameter::UNIFORM,
             ColorConstants::playerColor(id)));
 
 }

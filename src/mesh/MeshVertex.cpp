@@ -16,21 +16,6 @@ namespace Mesh {
 		this->texCoordV = texCoordV;
 	}
 
-	Point MeshVertex::getNormal() const {
-		return normal;
-	}
-	Point MeshVertex::getTangent() const {
-		return tangent;
-	}
-	Point MeshVertex::getBitangent() const {
-		return bitangent;
-	}
-	float MeshVertex::getTexCoordU() const {
-		return texCoordU;
-	}
-	float MeshVertex::getTexCoordV() const {
-		return texCoordV;
-	}
 	void MeshVertex::addAdjacentTriangle(MeshTriangle* triangle) {
 		adjacentTriangles.push_back(triangle);
 	}

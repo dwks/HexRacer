@@ -1,17 +1,16 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+using namespace std;
 
-#include "Shader.h"
+#include "ShaderProgram.h"
 #include "log/Logger.h"
 #include "settings/SettingsManager.h"
 
-using namespace Project;
-using namespace Render;
-using namespace std;
+namespace Project {
+namespace Shader {
 
-
-Shader::Shader(GLchar *fs, GLchar *vs) { // Built the shader program
+ShaderProgram::ShaderProgram(GLchar *fs, GLchar *vs) { // Built the shader program
 	char *vsf = NULL;
 	char *fsf = NULL;
 	vsf = textFileRead(vs);
@@ -51,16 +50,16 @@ Shader::Shader(GLchar *fs, GLchar *vs) { // Built the shader program
 	}
 }
 
-void Shader::turnShaderOn() const{
+void ShaderProgram::turnShaderOn() const{
 	glUseProgram(p);
 }
 
-void Shader::turnShaderOff() const{
+void ShaderProgram::turnShaderOff() const{
 	glUseProgram(NULL);
 }
 
 // Code below provided by Wojtek Palubicki in tutorials
-char *Shader::textFileRead(const char *fn) {
+char *ShaderProgram::textFileRead(const char *fn) {
 	FILE *fp;
 	char *content = NULL;
 
@@ -86,7 +85,7 @@ char *Shader::textFileRead(const char *fn) {
 	return content;
 }
 
-int Shader::textFileWrite(char *fn, char *s) {
+int ShaderProgram::textFileWrite(char *fn, char *s) {
 
 	FILE *fp;
 	int status = 0;
@@ -112,7 +111,7 @@ name -> the name of the variable to get
 return -> the location of the variable
 
 */
-int Shader::getUniLoc(const char *name) {
+int ShaderProgram::getUniLoc(const char *name) {
 	int loc;
 	loc = glGetUniformLocation(p, name);
 
@@ -133,7 +132,7 @@ return -> the location of the variable
 if location = -1 there was an error
 
 */
-int Shader::getAttrLoc(const char *name) {
+int ShaderProgram::getAttrLoc(const char *name) {
 	int loc;
 	loc = glGetAttribLocation(p, name);
 
@@ -144,3 +143,6 @@ int Shader::getAttrLoc(const char *name) {
 
 	return loc;
 }
+
+}  // namespace Render
+}  // namespace Project

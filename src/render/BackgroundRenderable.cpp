@@ -4,7 +4,7 @@
 namespace Project {
 namespace Render {
 
-	void BackgroundRenderable::renderGeometry(ShaderParamSetter& setter, const Math::BoundingObject* bounding_object) {
+	void BackgroundRenderable::renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object) {
 
 		double z = camera->getFarPlane()*0.99;
 

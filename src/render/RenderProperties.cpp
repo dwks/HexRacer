@@ -7,8 +7,9 @@ namespace Render {
 
 	RenderProperties::RenderProperties() {
 		empty = true;
-		transformationSet = false;
-		colorSet = false;
+		transformation = NULL;
+		//colorSet = false;
+		color = NULL;
 		colorOverrideChildren = false;
 		material = NULL;
 		materialOverrideChildren = false;
@@ -19,6 +20,38 @@ namespace Render {
 		wantsShaderName = "";
 	}
 
+
+
+
+	RenderProperties::~RenderProperties() {
+		delete transformation;
+		delete color;
+	}
+	void RenderProperties::clearTransformation() {
+		delete(transformation);
+		transformation = NULL;
+		changed();
+	}
+
+	void RenderProperties::setTransformation(const Math::Matrix& _transform) {
+		if (!transformation)
+			transformation = new Math::Matrix(_transform);
+		else
+			*transformation = Math::Matrix(_transform);
+		changed();
+	}
+	void RenderProperties::clearColor() {
+		delete(color);
+		color = NULL;
+		changed();
+	}
+	void RenderProperties::setColor(const OpenGL::Color& _color) {
+		if (!color)
+			color = new OpenGL::Color(_color);
+		else
+			*color = OpenGL::Color(_color);
+		changed();
+	}
 	bool RenderProperties::wantsShader() const {
 		return (wantsShaderName.length() > 0);
 	}
@@ -27,23 +60,35 @@ namespace Render {
 	}
 	void RenderProperties::setWantsShaderName(std::string shader_name) {
 		wantsShaderName = shader_name;
-		empty = false;
+		setShaderIndex(-1);
+		changed();
 	}
 	bool RenderProperties::hasShaderParams() const {
-		return (shaderParams.size() > 0);
+		return (!shaderParams.empty());
 	}
-	std::vector<ShaderParameter*>& RenderProperties::getShaderParams() {
+	std::vector<Shader::ShaderParameter*>& RenderProperties::getShaderParams() {
 		return shaderParams;
 	}
-	void RenderProperties::setShaderParams(std::vector<ShaderParameter*> params) {
+	void RenderProperties::setShaderParams(std::vector<Shader::ShaderParameter*> params) {
 		shaderParams = params;
-		empty = false;
+		changed();
 	}
 
-	void RenderProperties::addShaderParameter(ShaderParameter* param) {
+	void RenderProperties::addShaderParameter(Shader::ShaderParameter* param) {
 		shaderParams.push_back(param);
-		empty = false;
+		changed();
 	}
 
+	void RenderProperties::changed() {
+
+		empty = !(
+			hasTransformation() ||
+			hasColor() || getColorOverride() ||
+			hasMaterial() || getMaterialOverride() ||
+			hasTexturePack() || getTexturePackOverride() ||
+			hasShaderIndex() || getShaderOverride() ||
+			wantsShader() || hasShaderParams() );
+
+	}
 }  // namespace Render
 }  // namespace Project

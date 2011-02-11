@@ -22,13 +22,11 @@ private:
 	std::vector< MeshTriangleFan* > triangleFans;
 	Math::BSPTree3D* triangleFanTree;
 	OpenGL::Material* material;
-	GLuint displayList;
-	Render::ShaderParamSetter* paramSetter;
+	const Shader::ShaderParamSetter* paramSetter;
 
 	void generateTriangleFanTree();
-	void generateDisplayList();
 
-	inline void drawTriangleFan(MeshTriangleFan* fan, Render::ShaderParamSetter& setter);
+	inline void drawTriangleFan(MeshTriangleFan* fan, const Shader::ShaderParamSetter& setter);
 
 	static const int TREE_SPLIT_SIZE = 20;
 	static const Math::SpatialContainer::QueryType CULLING_QUERY_TYPE = Math::SpatialContainer::NEARBY;
@@ -40,7 +38,7 @@ public:
 	~SubMesh();
 	SubMesh(vector< MeshTriangle* > _triangles, OpenGL::Material* _material = NULL, bool cullable = false);
 
-	void renderGeometry(Render::ShaderParamSetter& setter, const  Math::BoundingObject* bounding_object = NULL);
+	void renderGeometry(const Shader::ShaderParamSetter& setter, const  Math::BoundingObject* bounding_object = NULL);
 	const vector<Project::Math::Triangle3D>& getTriangles() { return triangles; }
 	void operateOnObject(Math::ObjectSpatial* object);
 };

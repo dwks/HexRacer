@@ -1,7 +1,7 @@
 #include "Minimap.h"
 #include "opengl/TextureLoading.h"
 #include "render/ColorConstants.h"
-#include "render/Shader.h"
+#include "shader/ShaderProgram.h"
 #include "opengl/Color.h"
 #include "opengl/GeometryDrawing.h"
 #include "opengl/MathWrapper.h"
