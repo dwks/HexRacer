@@ -84,15 +84,10 @@ void Player::preRender() {
 
 	renderable->updatePhysicalData(physical->getOrigin());
 
-	if (renderable->getRenderProperties()->hasShaderParams()) {
+	float glow_scale = static_cast<float>(getSpeedBoost())*0.5f+0.35f;
+	OpenGL::Color trim_color = Render::ColorConstants::playerColor(getID())*glow_scale;
 
-		float glow_scale = static_cast<float>(getSpeedBoost())*0.5f+0.35f;
-		OpenGL::Color trim_color = Render::ColorConstants::playerColor(getID())*glow_scale;
-
-		Shader::ShaderParamVector4* shader_param = (Shader::ShaderParamVector4*)renderable->getRenderProperties()->getShaderParams()[0];
-		shader_param->setColor(trim_color);
-
-	}
+	renderable->setGlowColor(trim_color);
 
 }
 

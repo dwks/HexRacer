@@ -30,17 +30,9 @@ void GameRenderer::construct(OpenGL::Camera *camera) {
     renderer->getShaderManager()->loadShadersFile("shaders.txt");
     
     //Load the vehicle model
-    Render::RenderableObject *object
-        = meshLoader->loadOBJ(VEHICLE_CHASSIS_MODEL_NAME, GET_SETTING("render.model.vehicle", ""));
-        
-    Render::RenderableObject *objectTire
-        = meshLoader->loadOBJ(VEHICLE_WHEEL_MODEL_NAME, GET_SETTING("render.model.tire", ""));
-      
-    object->getRenderProperties()->setTransformation(
-        Math::Matrix::getScalingMatrix(GET_SETTING("render.vehicle.scale", 2.0)));
-    
-    objectTire->getRenderProperties()->setTransformation(
-        Math::Matrix::getScalingMatrix(GET_SETTING("render.tire.scale", 2.5)));
+    meshLoader->loadOBJ(VEHICLE_CHASSIS_MODEL_NAME, GET_SETTING("render.model.vehicle", ""));
+	meshLoader->loadOBJ(VEHICLE_GLOW_MODEL_NAME, GET_SETTING("render.model.vehicleglow", ""));
+    meshLoader->loadOBJ(VEHICLE_WHEEL_MODEL_NAME, GET_SETTING("render.model.tire", ""));
     
     //Instantiate the map
     map = boost::shared_ptr<Map::HRMap>(new Map::HRMap());

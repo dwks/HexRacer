@@ -47,6 +47,7 @@ namespace OpenGL {
 		glLightfv(light, GL_POSITION, values);
 
 		glLightf(light, GL_QUADRATIC_ATTENUATION, quadAttenuation);
+		glLightf(light, GL_LINEAR_ATTENUATION, 0.0f);
 		glLightf(light, GL_CONSTANT_ATTENUATION, getConstantAttenuation());
 	}
 

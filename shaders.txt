@@ -1,6 +1,5 @@
 #Shader File
 
-all playerGlow shaders/playerGlow.frag shaders/playerGlow.vert
 all backgroundShader shaders/backgroundShader.frag shaders/backgroundShader.vert
 all paintShader shaders/paintShader.frag shaders/paintShader.vert
 all gouraudShader shaders/gouraudShader.frag shaders/genericShaderMed.vert
