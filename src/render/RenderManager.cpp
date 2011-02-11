@@ -30,6 +30,8 @@ namespace Render {
 		camera = NULL;
 		cubeMap = NULL;
 
+		activeShaderChanged = true;
+
 		for (int i = 0; i < NUM_STANDARD_TEXTURES; i++)
 			hasTexture[i] = 0;
 
@@ -119,15 +121,8 @@ namespace Render {
 				if (properties->getShaderIndex() != shaderManager->getActiveShaderIndex()) {
 					shaderManager->disableShader();
 					shaderManager->enableShader(properties->getShaderIndex());
+					activeShaderChanged = true;
 				}
-				//shaderManager->enableShader(properties->getShaderIndex());
-				/*
-				if (properties->getShaderIndex() != enabledShaderIndex) {
-					//Disable the old shader and apply the new one
-					disableShader(enabledShaderIndex);
-					enableShader(properties->getShaderIndex());
-				}
-				*/
 			}
 		}
 
@@ -259,156 +254,6 @@ namespace Render {
 			numTextureOverrides--;
 	}
 
-	/*
-	void RenderManager::loadShadersFile(string filename) {
-
-		if (settings->getGraphicsQuality() == RenderSettings::GRAPHICS_VERY_LOW)
-			return;
-
-		string directory = DirectoryFunctions::extractDirectory(filename);
-		LOG(OPENGL, "Loading Shader File " << filename);
-
-		ifstream in_file;
-		in_file.open(filename.c_str());
-		while (!in_file.eof()) {
-			string shader_type;
-			in_file >> shader_type;
-			if (shader_type[0] == '#') {
-				//Ignore lines starting with #
-				in_file.ignore(9999,'\n');
-			}
-			if (shader_type == "all"
-				|| (shader_type == "high" && settings->getGraphicsQuality() >= RenderSettings::GRAPHICS_HIGH)
-				|| (shader_type == "med" && settings->getGraphicsQuality() == RenderSettings::GRAPHICS_MED)
-				|| (shader_type == "low" && settings->getGraphicsQuality() <= RenderSettings::GRAPHICS_LOW)) {
-				string shader_name;
-				in_file >> shader_name;
-				if (shader_name.length() > 0) {
-
-					string frag_file;
-					string vert_file;
-					in_file >> frag_file;
-					in_file >> vert_file;
-					if (frag_file == "mapping") {
-						struct ShaderMapping mapping;
-						mapping.name = shader_name;
-						mapping.mapped_name = vert_file;
-						shaderMappings.push_back(mapping);
-					}
-					else {
-						loadShader(shader_name,
-							Misc::DirectoryFunctions::toRelativeFilename(directory, frag_file),
-							Misc::DirectoryFunctions::toRelativeFilename(directory, vert_file));
-					}
-
-				}
-			}
-		}
-		in_file.close();
-		
-	}
-	void RenderManager::loadShader(string name, string fragment_file, string vertex_file) {
-
-		if (settings->getGraphicsQuality() == RenderSettings::GRAPHICS_VERY_LOW)
-			return;
-
-		if (name.length() > 0) {
-			Shader::ShaderProgram* new_shader = new Shader::ShaderProgram((GLchar*) fragment_file.c_str(),(GLchar*) vertex_file.c_str());
-			new_shader->turnShaderOff();
-			shader.push_back(new_shader);
-			shaderName.push_back(name);
-			
-			vector< ShaderAttributeLocation > attributes;
-
-			//Temporary solution to Attribute problem
-			//Preload potential vertex shader attribute locations
-			int loc = new_shader->getAttrLoc(SHADER_TANGENT_ATTRIBUTE_NAME);
-			if (loc > -1)
-				attributes.push_back(ShaderAttributeLocation(SHADER_TANGENT_ATTRIBUTE_NAME, loc));
-
-			loc = new_shader->getAttrLoc(SHADER_BITANGENT_ATTRIBUTE_NAME);
-			if (loc > -1)
-				attributes.push_back(ShaderAttributeLocation(SHADER_BITANGENT_ATTRIBUTE_NAME, loc));
-
-			LOG(OPENGL, "Shader loaded: " << name);
-			LOG(OPENGL, "	Fragment Shader: " << fragment_file);
-			LOG(OPENGL, "	Vertex Shader: " << vertex_file);
-			shaderAttributeLocation.push_back(attributes);
-		}
-		else {
-			LOG(OPENGL, "Empty shader name provided");
-		}
-	}
-
-
-	void RenderManager::enableShader(int shader_index) {
-		if (shader_index < 0 || static_cast<unsigned int>(shader_index) > shader.size())
-			return;
-		enabledShaderIndex = shader_index;
-		shader[shader_index]->turnShaderOn();
-		setShaderParameters();
-	}
-
-	void RenderManager::disableShader(int shader_index) {
-		if (shader_index < 0 || static_cast<unsigned int>(shader_index) > shader.size())
-			return;
-		if (shader_index == enabledShaderIndex)
-			enabledShaderIndex = -1;
-		shader[shader_index]->turnShaderOff();
-		//paramSetter.setHasTangentSpace(false);
-	}
-
-	Shader::ShaderProgram* RenderManager::getShaderByIndex(int shader_index) {
-		if (shader_index < 0 || static_cast<unsigned int>(shader_index) > shader.size())
-			return NULL;
-		
-		return shader[shader_index];
-	}
-
-	int RenderManager::getShaderAttributeLocation(int shader_index, string name) {
-		if (shader_index < 0 || static_cast<unsigned int>(shader_index) > shader.size())
-			return -1;
-		for (unsigned int i = 0; i < shaderAttributeLocation[shader_index].size(); i++) {
-			if (shaderAttributeLocation[shader_index][i].name == name) {
-				return shaderAttributeLocation[shader_index][i].location;
-			}
-		}
-		return -1;
-	}
-	int RenderManager::getShaderUniformLocation(int shader_index, const char *name) {
-		if (shader_index < 0 || static_cast<unsigned int>(shader_index) > shader.size())
-			return -1;
-		return (shader[shader_index]->getUniLoc(name));
-	}
-	
-	void RenderManager::setShaderParameters() {
-
-		for (unsigned int i = 0; i < shaderParams.size(); i++) {
-			for (unsigned int j = 0; j < shaderParams[i].size(); j++) {
-				shaderParams[i][j]->setShaderParameters(paramSetter);
-			}
-		}
-
-		//Get tangent space locations
-		tangentLocation = getShaderAttributeLocation(enabledShaderIndex, SHADER_TANGENT_ATTRIBUTE_NAME);
-		bitangentLocation = getShaderAttributeLocation(enabledShaderIndex, SHADER_BITANGENT_ATTRIBUTE_NAME);
-		//paramSetter.setHasTangentSpace( tangentLocation >= 0 || bitangentLocation >= 0 );
-
-
-		//Set standard parameters
-		setUniformInt(SHADER_NUMLIGHTS_UNIFORM_NAME, lightManager->getNumActiveLights());
-		if (cubeMap && camera) {
-			glActiveTexture(cubeMapTexture);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->getCubeMap());
-			glDisable(GL_TEXTURE_CUBE_MAP);
-			glActiveTexture(colorMapTexture);
-			setUniformInt(SHADER_CUBEMAP_UNIFORM_NAME, cubeMapTextureNum);
-			setUniformMatrix4(SHADER_CAMERA_MATRIX_UNIFORM_NAME, GL_FALSE, camera->getCameraMatrix());
-		}
-
-	}
-	*/
-
 	void RenderManager::setShaderParameters() {
 
 		if (!shaderManager->getIsShaderActive())
@@ -420,39 +265,45 @@ namespace Render {
 		setter.setStandardParamInt(Shader::ShaderParameter::UNIFORM,
 			static_cast<int>(Shader::ShaderManager::UINT_NUM_LIGHTS),
 			lightManager->getNumActiveLights());
-		//Color map
-		setter.setStandardParamInt(Shader::ShaderParameter::UNIFORM,
-			static_cast<int>(Shader::ShaderManager::UINT_COLOR_MAP),
-			COLOR_MAP_TEXTURE_INDEX);
-		//Normal map
-		setter.setStandardParamInt(Shader::ShaderParameter::UNIFORM,
-			static_cast<int>(Shader::ShaderManager::UINT_NORMAL_MAP),
-			NORMAL_MAP_TEXTURE_INDEX);
-		//Glow map
-		setter.setStandardParamInt(Shader::ShaderParameter::UNIFORM,
-			static_cast<int>(Shader::ShaderManager::UINT_GLOW_MAP),
-			GLOW_MAP_TEXTURE_INDEX);
-		//Has textures array
-		setter.setStandardParamIntArray(Shader::ShaderParameter::UNIFORM,
-			static_cast<int>(Shader::ShaderManager::UINTV_HAS_TEXTURE),
-			hasTexture, NUM_STANDARD_TEXTURES);
 
-		if (cubeMap) {
-			glActiveTexture(CUBE_MAP_TEXTURE_UNIT);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->getCubeMap());
-			glActiveTexture(COLOR_MAP_TEXTURE_UNIT);
-			//Cube map
+		if (activeShaderChanged) {
+
+			//Color map
 			setter.setStandardParamInt(Shader::ShaderParameter::UNIFORM,
-				static_cast<int>(Shader::ShaderManager::UINT_CUBE_MAP),
-				CUBE_MAP_TEXTURE_INDEX);
-		}
+				static_cast<int>(Shader::ShaderManager::UINT_COLOR_MAP),
+				COLOR_MAP_TEXTURE_INDEX);
+			//Normal map
+			setter.setStandardParamInt(Shader::ShaderParameter::UNIFORM,
+				static_cast<int>(Shader::ShaderManager::UINT_NORMAL_MAP),
+				NORMAL_MAP_TEXTURE_INDEX);
+			//Glow map
+			setter.setStandardParamInt(Shader::ShaderParameter::UNIFORM,
+				static_cast<int>(Shader::ShaderManager::UINT_GLOW_MAP),
+				GLOW_MAP_TEXTURE_INDEX);
+			//Has textures array
+			setter.setStandardParamIntArray(Shader::ShaderParameter::UNIFORM,
+				static_cast<int>(Shader::ShaderManager::UINTV_HAS_TEXTURE),
+				hasTexture, NUM_STANDARD_TEXTURES);
 
-		if (camera) {
-			//Camera matrix
-			setter.setStandardParamMatrix4(Shader::ShaderParameter::UNIFORM,
-				static_cast<int>(Shader::ShaderManager::UM4_CAMERA_MATRIX),
-				GL_FALSE,
-				camera->getCameraMatrix());
+			if (cubeMap) {
+				glActiveTexture(CUBE_MAP_TEXTURE_UNIT);
+				glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->getCubeMap());
+				glActiveTexture(COLOR_MAP_TEXTURE_UNIT);
+				//Cube map
+				setter.setStandardParamInt(Shader::ShaderParameter::UNIFORM,
+					static_cast<int>(Shader::ShaderManager::UINT_CUBE_MAP),
+					CUBE_MAP_TEXTURE_INDEX);
+			}
+
+			if (camera) {
+				//Camera matrix
+				setter.setStandardParamMatrix4(Shader::ShaderParameter::UNIFORM,
+					static_cast<int>(Shader::ShaderManager::UM4_CAMERA_MATRIX),
+					GL_FALSE,
+					camera->getCameraMatrix());
+			}
+
+			activeShaderChanged = false;
 		}
 
 		//Set custom shader parameters

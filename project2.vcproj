@@ -988,10 +988,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\opengl\Shader.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\src\opengl\Trackball.cpp"
 					>
 				</File>
@@ -1683,10 +1679,6 @@
 				</File>
 				<File
 					RelativePath=".\src\opengl\OpenGL.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\opengl\Shader.h"
 					>
 				</File>
 				<File

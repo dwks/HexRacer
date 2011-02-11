@@ -57,8 +57,7 @@ private:
 	stack<OpenGL::Color> colorStack;
 	vector< vector<Shader::ShaderParameter*> > shaderParams;
 
-	int tangentLocation;
-	int bitangentLocation;
+	bool activeShaderChanged;
 
 	int numTransformations;
 

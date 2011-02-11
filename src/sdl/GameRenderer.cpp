@@ -214,6 +214,7 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 }
 
 void GameRenderer::setGUI(boost::shared_ptr<GUI::GUISystem> gui) {
+
     this->gui = gui;
     
     percentageComplete = new Widget::TextWidget(
