@@ -53,6 +53,7 @@ private:
 
 	stack<int> shaderStack;
 	stack<OpenGL::Material*> materialStack;
+	stack<OpenGL::Material*> materialTintStack;
 	stack<TexturePack*> textureStack;
 	stack<OpenGL::Color> colorStack;
 	vector< vector<Shader::ShaderParameter*> > shaderParams;

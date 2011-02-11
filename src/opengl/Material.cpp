@@ -37,5 +37,14 @@ namespace OpenGL {
 
 	}
 
+	Material Material::operator * (const Material &other) const {
+		Material mat;
+		mat.setDiffuse(diffuse*other.getDiffuse());
+		mat.setSpecular(specular*other.getSpecular());
+		mat.setAmbient(ambient*other.getAmbient());
+		mat.setShininess(shininess*other.getShininess());
+		return mat;
+	}
+
 }  // namespace Render
 }  // namespace Project

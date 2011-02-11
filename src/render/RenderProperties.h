@@ -24,6 +24,8 @@ private:
 	OpenGL::Material* material;
 	bool materialOverrideChildren;
 
+	OpenGL::Material* materialTint;
+
 	TexturePack* texture;
 	bool textureOverrideChildren;
 
@@ -67,6 +69,14 @@ public:
 	OpenGL::Material* getMaterial() const { return material; }
 	bool getMaterialOverride() const { return materialOverrideChildren; }
 	void setMaterialOverride(bool override_children) { materialOverrideChildren = override_children; }
+
+	bool hasMaterialTint() const { return (materialTint != NULL); }
+	void clearMaterialTint() { materialTint = NULL; changed(); }
+	void setMaterialTint(OpenGL::Material* material_tint) {
+		materialTint = material_tint;
+		changed();
+	}
+	OpenGL::Material* getMaterialTint() const { return materialTint; }
 
 	bool hasTexturePack() const { return (texture != NULL); }
 	void clearTexturePack() { texture = NULL; changed(); }

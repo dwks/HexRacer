@@ -18,6 +18,8 @@ namespace Render {
 void RenderablePlayer::initialize(int id) {
     this->wheelRotationDegrees = 0;
 
+	//Note: All these things need a place to be deleted!
+
 	drawScale = GET_SETTING("render.vehicle.scale", 2.0);
 	Math::Matrix scale_matrix = Math::Matrix::getScalingMatrix(drawScale);
 	tireScaleMatrix =  Math::Matrix::getScalingMatrix(GET_SETTING("render.tire.scale", 2.5));
@@ -26,20 +28,16 @@ void RenderablePlayer::initialize(int id) {
 	chassisMesh = new RenderParent(chassis_mesh_group);
 	chassisMesh->getRenderProperties()->setTransformation(scale_matrix);
 
-	Mesh::MeshGroup* glow_mesh_group = Mesh::MeshLoader::getInstance()->getModelByName(VEHICLE_GLOW_MODEL_NAME);
-	glowMesh = new RenderParent(glow_mesh_group);
-	//Creating new material object for glow mesh (should delete in destructor)
-	OpenGL::Material* glow_mat = new OpenGL::Material("glowMat");
-	glow_mat->setDiffuse(OpenGL::Color::DARKGREY);
-	glowMesh->getRenderProperties()->setMaterial(glow_mat);
-	glowMesh->getRenderProperties()->setMaterialOverride(true);
-	glowMesh->getRenderProperties()->setTransformation(scale_matrix);
-
 	tireMesh = new RenderParent(Mesh::MeshLoader::getInstance()->getModelByName(VEHICLE_WHEEL_MODEL_NAME));
 
+	materialTint = new OpenGL::Material("matTint");
+	materialTint->setDiffuse(OpenGL::Color::WHITE);
+	materialTint->setSpecular(OpenGL::Color::WHITE);
+	materialTint->setAmbient(OpenGL::Color::WHITE);
+	getRenderProperties()->setMaterialTint(materialTint);
+
 	//Set the radius of the bounding sphere for camera culling
-	double max_mesh_radius = Math::maximum(glow_mesh_group->getRadiusFromOrigin(), glow_mesh_group->getRadiusFromOrigin());
-	boundingSphere.setRadius(max_mesh_radius*drawScale);
+	boundingSphere.setRadius(chassis_mesh_group->getRadiusFromOrigin()*drawScale);
 
 }
 
@@ -56,7 +54,6 @@ void RenderablePlayer::updatePhysicalData(const Math::Point &origin) {
 void RenderablePlayer::subRender(RenderManager* manager) {
 
     chassisMesh->render(manager);
-	glowMesh->render(manager);
     
     for (int wheel = 0; wheel < 4; wheel ++) {
 	Math::Matrix matrix = Math::Matrix::getTranslationMatrix(suspension[wheel]);
@@ -92,7 +89,7 @@ bool RenderablePlayer::shouldDraw(const Math::BoundingObject& bounding_obj) {
 }
 
 void RenderablePlayer::setGlowColor(OpenGL::Color color) {
-	glowMesh->getRenderProperties()->getMaterial()->setAmbient(color);
+	materialTint->setAmbient(color);
 }
 
 }  // namespace Render

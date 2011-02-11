@@ -92,12 +92,21 @@ namespace Render {
 			numColorOverrides++;
 	}
 	void RenderManager::setRenderMaterial(RenderProperties* properties) {
+
+		if (properties->hasMaterialTint()) {
+			materialTintStack.push(properties->getMaterialTint());
+		}
+
 		if (properties->hasMaterial()) {
 
 			if (!materialsOverridden()) {
 				//Apply the new material if not overridden
 				materialStack.push(properties->getMaterial());
-				properties->getMaterial()->glApply();
+				if (materialTintStack.empty())
+					properties->getMaterial()->glApply();
+				else {
+					(*(materialTintStack.top())*(*(properties->getMaterial()))).glApply();
+				}
 			}
 		}
 
@@ -210,13 +219,22 @@ namespace Render {
 			numColorOverrides--;
 	}
 	void RenderManager::revertRenderMaterial(RenderProperties* properties) {
+
+		if (properties->hasMaterialTint()) {
+			materialTintStack.pop();
+		}
+
 		if (properties->hasMaterial()) {
 
 			if (!materialsOverridden()) {
 				materialStack.pop();
 				//Reapply the previous material
 				if (!materialStack.empty()) {
-					materialStack.top()->glApply();
+					if (materialTintStack.empty())
+						materialStack.top()->glApply();
+					else {
+						(*(materialTintStack.top())*(*(materialStack.top()))).glApply();
+					}
 				}
 			}
 		}
