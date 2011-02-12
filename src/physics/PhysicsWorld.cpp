@@ -7,10 +7,13 @@
 #include "opengl/GeometryDrawing.h"
 #include "opengl/OpenGL.h"
 
+#include "event/PhysicsTick.h"
 #include "event/ObserverList.h"
 #include "PhysicsFactory.h"
 
 #include "settings/SettingsManager.h"
+
+#include "log/Logger.h"
 
 namespace Project {
 namespace Physics {
@@ -25,6 +28,7 @@ PhysicsWorld::PhysicsWorld() {
     instance = this;
     debugging = false;
     setupPhysicsWorld();
+    registerTickCallback();
 }
 
 PhysicsWorld::~PhysicsWorld() {
@@ -148,6 +152,16 @@ bool PhysicsWorld::raycastPoint(const Math::Point &from, const Math::Point &to, 
 
 	return false;
 
+}
+
+void tickCallback(btDynamicsWorld *world, btScalar timeStep) {
+    EMIT_EVENT(new Event::PhysicsTick(timeStep));
+    
+    //LOG(PHYSICS, "Physics ticked by " << timeStep);
+}
+
+void PhysicsWorld::registerTickCallback() {
+    dynamicsWorld->setInternalTickCallback(tickCallback, NULL, true);
 }
 
 }  // namespace Physics

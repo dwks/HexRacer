@@ -46,7 +46,7 @@ void GameWorld::construct(const std::string &host, unsigned short port) {
     physicsWorld = boost::shared_ptr<Physics::PhysicsWorld>(
         new Physics::PhysicsWorld());
     suspension = boost::shared_ptr<Physics::Suspension>(
-        new Physics::Suspension(10));
+        new Physics::Suspension());
     
     doConnect(host, port);
 }
@@ -131,8 +131,6 @@ void GameWorld::updatePlayerPathing() {
 }
 
 void GameWorld::render() {
-    suspension->doStep(SDL_GetTicks());
-    
     physicsWorld->render();
 }
 

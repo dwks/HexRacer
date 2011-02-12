@@ -6,7 +6,8 @@
 #include "render/RenderManager.h"
 #include "object/WorldManager.h"
 
-#include "timing/TimedSubsystem.h"
+#include "event/PhysicsTick.h"
+#include "event/TypedObserver.h"
 
 namespace Project {
 namespace Physics {
@@ -15,7 +16,17 @@ namespace Physics {
     A bit of a misnomer: this class is currently reponsible for
     suspension, drag force, and turning force (basically all car mechanics).
 */
-class Suspension : public Timing::TimedSubsystem {
+class Suspension {
+private:
+    class PhysicsTickObserver
+        : public Event::TypedObserver<Event::PhysicsTick> {
+    private:
+        Suspension *suspension;
+    public:
+        PhysicsTickObserver(Suspension *suspension) : suspension(suspension) {}
+        
+        virtual void observe(Event::PhysicsTick *event);
+    };
 private:
     class Displacement {
     private:
@@ -63,12 +74,13 @@ private:
     Object::WorldManager *worldManager;
     Render::RenderManager *renderManager;
 public:
-    Suspension(unsigned long tickTime) : TimedSubsystem(tickTime),
-        worldManager(NULL), renderManager(NULL) {}
+    Suspension();
     
     void checkForWheelsOnGround();
     int wheelsOnGround(int playerID);
     
+    /** Called automatically by PhysicsTickObserver.
+    */
     void doAction(unsigned long currentTime);
     
     /** This function should be called before doStep().
