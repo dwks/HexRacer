@@ -31,6 +31,7 @@ public:
         UPDATE_WORLD,
         ENTIRE_WORLD,
         JOIN_GAME,
+        PHYSICS_TICK,
         TYPES
     };
 };

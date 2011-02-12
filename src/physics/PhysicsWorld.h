@@ -54,6 +54,8 @@ public:
     DebugDrawer &getDebug() { return debug; }
 private:
     void setDebug(bool on);
+    
+    void registerTickCallback();
 private:
     btBroadphaseInterface *broadPhaseInterface;
     btCollisionDispatcher *collisionDispatcher;

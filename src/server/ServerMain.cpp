@@ -124,6 +124,8 @@ bool ServerMain::ServerObserver::interestedIn(Event::EventType::type_t type) {
     case Event::EventType::CREATE_OBJECT:
     case Event::EventType::DESTROY_OBJECT:
         return false;
+    case Event::EventType::PHYSICS_TICK:  // don't care for the moment
+        return false;
     default:
         break;
     }
@@ -180,7 +182,7 @@ void ServerMain::run() {
     
     ADD_OBSERVER(new ServerObserver(this));
     
-    Physics::Suspension *suspension = new Physics::Suspension(10);
+    Physics::Suspension *suspension = new Physics::Suspension();
     
     worldManager = new Object::WorldManager();
     paintSubsystem = new Paint::PaintSubsystem(worldManager, &paintManager, 20);
@@ -258,8 +260,6 @@ void ServerMain::run() {
             physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
             lastPhysicsTime = thisTime;
         }
-        
-        suspension->doStep(Misc::Sleeper::getTimeMilliseconds());
         
         static int loops = 0;
         if(++loops == 5) {

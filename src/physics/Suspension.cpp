@@ -11,10 +11,16 @@
 
 #include "PhysicsWorld.h"
 
+#include "event/ObserverList.h"
+
 #define WHEEL_DIAMETER 0.2
 
 namespace Project {
 namespace Physics {
+
+void Suspension::PhysicsTickObserver::observe(Event::PhysicsTick *event) {
+    suspension->doAction(event->getElapsed() * 1000.0);
+}
 
 Suspension::Displacement Suspension::Spring::doRaycast() {
     double length = Physics::PhysicsWorld::getInstance()
@@ -77,6 +83,10 @@ double Suspension::Spring::calculateForceFactor(
     //LOG(PHYSICS, "     " << -K*displacement << ", " << C*displacementSpeed);
     
     return factor;
+}
+
+Suspension::Suspension() : worldManager(NULL), renderManager(NULL) {
+    ADD_OBSERVER(new PhysicsTickObserver(this));
 }
 
 void Suspension::checkForWheelsOnGround() {
