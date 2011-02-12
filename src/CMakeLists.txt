@@ -10,6 +10,7 @@ aux_source_directory(connection CONNECTION_SOURCES)
 aux_source_directory(event EVENT_SOURCES)
 aux_source_directory(gui GUI_SOURCES)
 aux_source_directory(handler HANDLER_SOURCES)
+aux_source_directory(history HISTORY_SOURCES)
 aux_source_directory(hud HUD_SOURCES)
 aux_source_directory(log LOG_SOURCES)
 aux_source_directory(map MAP_SOURCES)
@@ -55,7 +56,8 @@ set(SDL_SOURCES
     ${SOUND_SOURCES}
     ${WIDGET_SOURCES}
     ${GUI_SOURCES}
-    ${HUD_SOURCES})
+    ${HUD_SOURCES}
+    ${HISTORY_SOURCES})
 
 set(SERVER_SOURCES
     ${SERVER_DIR_SOURCES})

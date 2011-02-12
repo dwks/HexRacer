@@ -32,7 +32,7 @@ void ServerManager::registerHandler(boost::asio::ip::tcp::acceptor *acceptor) {
             boost::asio::placeholders::error));
 }
 
-void ServerManager::handleAccept(Connection::Socket *socket,
+void ServerManager::handleAccept(Socket *socket,
     boost::asio::ip::tcp::acceptor *acceptor,
     const boost::system::error_code &error) {
     
@@ -48,7 +48,7 @@ void ServerManager::handleAccept(Connection::Socket *socket,
     }
 }
 
-Connection::Socket *ServerManager::checkForConnections() {
+Socket *ServerManager::checkForConnections() {
     // !!! For some reason if poll_one() is called when nothing has been
     // registered with the io_service, all future calls to poll_one() will
     // do nothing. Hence the code to only call poll_one() if at least one

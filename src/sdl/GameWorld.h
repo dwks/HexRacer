@@ -6,6 +6,8 @@
 #include <string>
 
 #include "NetworkPortal.h"
+#include "history/Historian.h"
+
 #include "map/HRMap.h"
 #include "map/RaceManager.h"
 
@@ -23,6 +25,7 @@ namespace SDL {
 class GameWorld {
 private:
     boost::shared_ptr<NetworkPortal> network;
+    boost::shared_ptr<History::Historian> historian;
     boost::shared_ptr<Map::RaceManager> raceManager;
     
     boost::shared_ptr<PlayerManager> playerManager;

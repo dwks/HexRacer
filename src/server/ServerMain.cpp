@@ -16,6 +16,7 @@
 #include "event/PaintEvent.h"
 #include "event/PaintCellsChanged.h"
 #include "event/CreateObject.h"
+#include "event/DestroyObject.h"
 #include "event/UpdateObject.h"
 #include "event/UpdateWorld.h"
 #include "event/EntireWorld.h"
@@ -108,6 +109,49 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         
         break;
     }
+    case Event::EventType::CREATE_OBJECT: {
+        Event::CreateObject *createObject
+            = dynamic_cast<Event::CreateObject *>(event);
+        
+        if(dynamic_cast<Object::Player *>(createObject->getObject())) {
+            Object::Player *player
+                = dynamic_cast<Object::Player *>(createObject->getObject());
+            
+            if(true /*Settings::ProgramSettings::getInstance()->isServer()*/) {
+                player->setPathTracker(
+                    new Map::PathTracker(*main->getWorldManager()->getPathManager()));
+            }
+            
+            main->getWorldManager()->addPlayer(player);
+        }
+        else {
+            main->getWorldManager()->getWorld()->addObject(createObject->getObject());
+        }
+        break;
+    }
+    case Event::EventType::DESTROY_OBJECT: {
+        Event::DestroyObject *destroyObject
+            = dynamic_cast<Event::DestroyObject *>(event);
+        
+        main->getWorldManager()->getWorld()->removeObject(
+            main->getWorldManager()->getWorld()->getObject(destroyObject->getID()));
+        
+        break;
+    }
+    case Event::EventType::UPDATE_OBJECT: {
+        Event::UpdateObject *updateObject
+            = dynamic_cast<Event::UpdateObject *>(event);
+        
+        Object::ObjectBase *object
+            = main->getWorldManager()->getWorld()->getObject(updateObject->getID());
+        
+        object->getPhysicalObject()->setData(
+            updateObject->getTransformation(),
+            updateObject->getLinearVelocity(),
+            updateObject->getAngularVelocity());
+        
+        break;
+    }
     default:
         LOG2(NETWORK, WARNING,
             "Don't know how to handle events of type " << event->getType());
@@ -120,9 +164,6 @@ bool ServerMain::ServerObserver::interestedIn(Event::EventType::type_t type) {
     case Event::EventType::PAINT_EVENT:
     case Event::EventType::TOGGLE_PAINT:  // handled by PaintSubsystem
     case Event::EventType::PAUSE_GAME:  // handled by AccelControl
-        return false;
-    case Event::EventType::CREATE_OBJECT:
-    case Event::EventType::DESTROY_OBJECT:
         return false;
     case Event::EventType::PHYSICS_TICK:  // don't care for the moment
         return false;
@@ -159,7 +200,7 @@ void ServerMain::run() {
     Connection::ServerManager server;
     ClientManager clients;
     
-    server.addServer(GET_SETTING("network.port", 1820));
+    server.addServer(GET_SETTING("network.serverport", 1820));
     
     networkPortal = new ServerNetworkPortal(&clients);
     

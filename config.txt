@@ -120,10 +120,12 @@ camera.follow.z = -7.0
 ########
 ### Network settings
 
-# Network settings for both client and server
+# Network settings for both client
 network.port = 1820
 network.host = localhost
 
+# Network settings for server
+network.serverport = 1820
 
 ########
 include guiconfig.txt

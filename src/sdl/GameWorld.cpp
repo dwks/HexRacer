@@ -10,6 +10,8 @@
 
 #include "timing/AccelControl.h"
 
+#include "history/PingTimeMeasurer.h"
+
 namespace Project {
 namespace SDL {
 
@@ -40,6 +42,9 @@ void GameWorld::doConnect(const std::string &host, unsigned short port) {
             new PlayerManager(0, worldManager.get()));
         isConnectedToNetwork = false;
     }
+    
+    historian = boost::shared_ptr<History::Historian>(
+        new History::Historian(worldManager.get()));
 }
 
 void GameWorld::construct(const std::string &host, unsigned short port) {
@@ -104,12 +109,13 @@ void GameWorld::updatePlayerPathing() {
 		dir_pos.setY(dir_pos.getY() - VEHICLE_PATH_RAY_MAX_HEIGHT);
 
 		Math::Point update_pos;
-
+        
 		//Update if the player is above the track
 		if (physicsWorld->raycastPoint(origin_pos, dir_pos, &update_pos)) {
-
+            if(!player->getPathTracker()) continue;  // no path tracker
+            
 			player->getPathTracker()->update(update_pos);
-
+            
 			//Start a new lap for the player if they have crossed the finish plane
 			if (player->getPathTracker()->readyforNewLap() &&
 				raceManager->getBoundingPlane().pointInside(origin_pos)) {
