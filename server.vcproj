@@ -580,6 +580,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\RenderParent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\RenderProperties.cpp"
 				>
 			</File>
@@ -1215,6 +1219,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderParent.h"
 				>
 			</File>
 			<File

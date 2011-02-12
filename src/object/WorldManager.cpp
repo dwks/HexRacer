@@ -6,6 +6,8 @@
 #include "event/UpdateObject.h"
 #include "event/UpdateWorld.h"
 
+#include "settings/ProgramSettings.h"
+
 #include "event/ObserverList.h"
 
 #include "physics/Converter.h"
@@ -21,8 +23,10 @@ void WorldManager::WorldHandler::observe(Event::EventBase *event) {
             = dynamic_cast<Event::CreateObject *>(event);
         
         if(dynamic_cast<Player *>(createObject->getObject())) {
-            worldManager->addPlayer(
-                dynamic_cast<Player *>(createObject->getObject()));
+			Player *player = dynamic_cast<Player *>(createObject->getObject());
+			if (Settings::ProgramSettings::getInstance()->isServer())
+				player->setPathTracker(new Map::PathTracker(*worldManager->pathManager));
+            worldManager->addPlayer(player);
         }
         else {
             worldManager->getWorld()->addObject(createObject->getObject());

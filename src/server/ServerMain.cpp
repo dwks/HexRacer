@@ -187,6 +187,10 @@ void ServerMain::run() {
     
     Map::MapLoader().load(map, NULL);
     raceManager = new Map::RaceManager(map);
+	boost::shared_ptr<Map::PathManager> pathManager = boost::shared_ptr<Map::PathManager>(
+		new Map::PathManager(map->getPathNodes()));
+
+	worldManager->setPathManager(pathManager.get());
     
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
     quit = false;
@@ -208,6 +212,7 @@ void ServerMain::run() {
             
             clients.addClient(socket);
             Object::Player *player = new Object::Player(clientCount, location);
+			player->setPathTracker(new Map::PathTracker(*pathManager.get()));
             //worldManager->addPlayer(player);
             
             Event::EntireWorld *entireWorld = new Event::EntireWorld(
