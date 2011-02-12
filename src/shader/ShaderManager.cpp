@@ -147,6 +147,7 @@ namespace Shader {
 			case UINT_COLOR_MAP: return "colorMap";
 			case UINT_NORMAL_MAP: return "normalMap";
 			case UINT_GLOW_MAP: return "glowMap";
+			case UINT_SHADOW_MAP: return "shadowMap";
 			case UINT_CUBE_MAP: return "cubeMap";
 			case UM4_CAMERA_MATRIX: return "cameraMatrix";
 			default: return "";

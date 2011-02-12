@@ -88,7 +88,7 @@ namespace HUD {
 		glLoadIdentity();
 		camera.glLookAt();
 
-		renderer->enableAlphaMask(alphaMaskTexture, static_cast<float>(camera.getOrthoWidth()), static_cast<float>(camera.getOrthoHeight()));
+		renderer->enableAlphaMask(alphaMaskTexture);
 		renderer->bindTexture(trackTexture);
 		
 		//Draw the map texture
@@ -142,14 +142,12 @@ namespace HUD {
 				OpenGL::MathWrapper::glVertex(v3);
 				glEnd();
 
-				/*
-				OpenGL::Color::glColor(OpenGL::Color::WHITE, 0.5f);
+				OpenGL::Color::glColor(player_color*0.5f);
 				glBegin(GL_LINE_LOOP);
 				OpenGL::MathWrapper::glVertex(v1);
 				OpenGL::MathWrapper::glVertex(v2);
 				OpenGL::MathWrapper::glVertex(v3);
 				glEnd();
-				*/
 
 			}
 		}

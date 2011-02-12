@@ -27,6 +27,15 @@ namespace Shader {
 		}
 	}
 
+	void ShaderParamSetter::setParamFloat(ShaderParameter::ShaderParamType type, const char* name, GLfloat value) const {
+		if (!shaderProgram)
+			return;
+
+		switch (type) {
+			case ShaderParameter::UNIFORM: glUniform1f(shaderProgram->getUniLoc(name), value); break;
+			case ShaderParameter::ATTRIBUTE: glVertexAttrib1f(shaderProgram->getAttrLoc(name), value); break;
+		}
+	}
 	void ShaderParamSetter::setParamIntArray(ShaderParameter::ShaderParamType type, const char *name, GLint values[], int num_values) const {
 		if (!shaderProgram)
 			return;
@@ -37,6 +46,15 @@ namespace Shader {
 		}
 	}
 
+	void ShaderParamSetter::setParamFloatArray(ShaderParameter::ShaderParamType type, const char *name, GLfloat values[], int num_values) const {
+		if (!shaderProgram)
+			return;
+
+		switch (type) {
+			case ShaderParameter::UNIFORM: glUniform1fv(shaderProgram->getUniLoc(name), num_values, values); break;
+			default: break;
+		}
+	}
 	void ShaderParamSetter::setParamVector3(ShaderParameter::ShaderParamType type, const char *name, const Math::Point& point) const {
 		if (!shaderProgram)
 			return;
@@ -81,6 +99,15 @@ namespace Shader {
 			case ShaderParameter::ATTRIBUTE: glVertexAttrib1s(standardAttributeLocations[standard_type], (GLshort) value); break;
 		}
 	}
+	void ShaderParamSetter::setStandardParamFloat(ShaderParameter::ShaderParamType type, int standard_type, GLfloat value) const {
+		if (!shaderProgram)
+			return;
+
+		switch (type) {
+			case ShaderParameter::UNIFORM: glUniform1f(standardUniformLocations[standard_type], value); break;
+			case ShaderParameter::ATTRIBUTE: glVertexAttrib1f(standardAttributeLocations[standard_type], value); break;
+		}
+	}
 	void ShaderParamSetter::setStandardParamIntArray(ShaderParameter::ShaderParamType type, int standard_type, GLint values[], int num_values) const {
 		if (!shaderProgram)
 			return;
@@ -90,6 +117,15 @@ namespace Shader {
 			default: break;
 		}
 
+	}
+	void ShaderParamSetter::setStandardParamFloatArray(ShaderParameter::ShaderParamType type, int standard_type, GLfloat values[], int num_values) const {
+		if (!shaderProgram)
+			return;
+
+		switch (type) {
+			case ShaderParameter::UNIFORM: glUniform1fv(standardUniformLocations[standard_type], num_values, values); break;
+			default: break;
+		}
 	}
 	void ShaderParamSetter::setStandardParamVector3(ShaderParameter::ShaderParamType type, int standard_type, const Math::Point& point) const {
 		if (!shaderProgram)

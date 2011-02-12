@@ -11,7 +11,7 @@ varying vec4 vertexColor;
 uniform sampler2D colorMap;
 uniform sampler2D normalMap;
 uniform sampler2D glowMap;
-uniform int hasTexture [3];
+uniform int hasTexture [4];
 uniform int numLights;
 
 void main() {

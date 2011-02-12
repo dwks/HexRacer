@@ -10,7 +10,6 @@ namespace HUD {
 		alphaMaskLoc = alphaMaskShader->getUniLoc("alphaMaskTexture");
 		renderTextureLoc = alphaMaskShader->getUniLoc("renderTexture");
 		usingTextureLoc = alphaMaskShader->getUniLoc("usingTexture");
-		viewSizeLoc = alphaMaskShader->getUniLoc("viewSize");
 
 	}
 
@@ -64,17 +63,13 @@ namespace HUD {
 		glViewport(0, 0, viewWidth, viewHeight);
 	}
 
-	void HUDRenderer::enableAlphaMask(GLuint alpha_mask_texture, float projection_width, float projection_height) {
+	void HUDRenderer::enableAlphaMask(GLuint alpha_mask_texture) {
 
 		alphaMaskShader->turnShaderOn();
 
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, alpha_mask_texture);
 		glUniform1i(alphaMaskLoc, 1);
-
-		GLfloat view_size [2] = {projection_width, projection_height};
-		glUniform1fv(viewSizeLoc, 2, view_size);
-
 		glUniform1i(usingTextureLoc, 0);
 	}
 

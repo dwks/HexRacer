@@ -53,13 +53,23 @@ game.enablepathing = 1
 render.quality = 2
 render.shaderoutput = 1
 
+render.bloom.enable = 1
+render.bloom.width = 640
+render.bloom.height = 480
+render.bloom.farplane = 40.0
+render.bloom.blurpasses = 3
+
+render.playerglow.min = 0.6
+render.playerglow.factor = 1.5
+render.playerglow.constant = -0.80
+
 ########
 ### Rendering frustrum settings
 render.camera.nearplane = 0.1
 render.camera.farplane = 200.0
 render.camera.paintthreshhold = 0.5
 render.camera.fieldofview = 60.0
-render.camera.speedboostfov = 50.0
+render.camera.speedboostfov = 60.0
 #render.camera.lodthreshhold = 1.0
 
 # for AI debugging

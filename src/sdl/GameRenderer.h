@@ -21,12 +21,25 @@
 #include "widget/TextWidget.h"
 
 #include "opengl/Camera.h"
+#include "opengl/OpenGL.h"
 
 namespace Project {
 namespace SDL {
 
 class GameRenderer {
 private:
+
+	GLuint bloomFBO;
+	GLuint bloomColorTexture;
+	GLuint bloomDepthTexture;
+	Render::RenderProperties* bloomProperties;
+
+	GLuint bloomBlurFBO;
+	GLuint bloomBlurTexture;
+
+	int hBlurShaderIndex;
+	int vBlurShaderIndex;
+
     boost::shared_ptr<Mesh::MeshLoader> meshLoader;
     boost::shared_ptr<Render::RenderManager> renderer;
     Render::LightManager *lightManager;  // not allocated here
@@ -42,6 +55,7 @@ private:
     
     boost::shared_ptr<GUI::GUISystem> gui;
     Widget::TextWidget *percentageComplete;
+
 public:
     void construct(OpenGL::Camera *camera);
     
@@ -49,13 +63,20 @@ public:
     
     void render(OpenGL::Camera *camera, Object::World *world);
     void renderHUD(Object::WorldManager *worldManager, Object::Player *player);
-	void renderDebug(Object::WorldManager *worldManager, Object::Player *player);
+	void renderDebug(OpenGL::Camera *camera, Object::WorldManager *worldManager, Object::Player *player);
     
     Map::HRMap *getMap() { return map.get(); }
     Paint::PaintManager *getPaintManager() { return paintManager.get(); }
 private:
     void renderAIDebug(Object::Player *player);
     void renderWorld(Object::World *world);
+
+	void initBloom();
+	void renderToBloomBuffer(Render::RenderableObject& renderable);
+	void preBloomBlur();
+	void bloomBlurPass();
+	void applyBloomBuffer();
+	void drawQuad();
 };
 
 }  // namespace SDL

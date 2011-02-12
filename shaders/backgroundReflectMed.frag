@@ -9,7 +9,7 @@ varying mat3 cameraNormalMatrix;
 uniform samplerCube cubeMap;
 
 uniform sampler2D colorMap;
-uniform int hasTexture [3];
+uniform int hasTexture [4];
 uniform int numLights;
 
 void main() {
