@@ -16,14 +16,18 @@ private:
     void serialize(Archive &ar, const unsigned version) {
         ar & boost::serialization::base_object<Packet>(*this);
         ar & clientID;
+        ar & milliseconds;
     }
 private:
     int clientID;
+    unsigned long milliseconds;
 public:
     HandshakePacket() {}
-    HandshakePacket(int clientID) : clientID(clientID) {}
+    HandshakePacket(int clientID, unsigned long milliseconds)
+        : clientID(clientID), milliseconds(milliseconds) {}
     
     int getClientID() const { return clientID; }
+    unsigned long getMilliseconds() const { return milliseconds; }
     
     virtual void accept(PacketVisitor &visitor) { visitor.visit(*this); }
 };

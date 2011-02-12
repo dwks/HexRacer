@@ -17,6 +17,9 @@
 #include "event/TogglePainting.h"
 #include "event/EntireWorld.h"
 
+#include "history/PingTimeMeasurer.h"
+#include "misc/Sleeper.h"
+
 namespace Project {
 namespace SDL {
 
@@ -110,7 +113,15 @@ void NetworkPortal::waitForWorld(Object::World *&world,
         if(packet) {
             Network::HandshakePacket *handshake
                 = dynamic_cast<Network::HandshakePacket *>(packet);
+            
             id = handshake->getClientID();
+            
+            unsigned long sent = handshake->getMilliseconds();
+            unsigned long now = Misc::Sleeper::getTimeMilliseconds();
+            long offset = -long(now - sent);
+            History::PingTimeMeasurer::getInstance()->setClockOffset(offset);
+            LOG(NETWORK, "ClockOffset set to " << offset);
+            
             delete packet;
             break;
         }
@@ -128,6 +139,7 @@ void NetworkPortal::waitForWorld(Object::World *&world,
                 = dynamic_cast<Network::EventPacket *>(packet);
             Event::EntireWorld *entireWorld
                 = dynamic_cast<Event::EntireWorld *>(event->getEvent());
+            
             world = entireWorld->getWorld();
             playerList = entireWorld->getPlayerList();
             delete entireWorld;

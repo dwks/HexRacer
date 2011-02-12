@@ -243,7 +243,8 @@ void ServerMain::run() {
             if(!socket) break;
             
             Network::PacketSerializer packetSerializer;
-            Network::Packet *packet = new Network::HandshakePacket(clientCount);
+            Network::Packet *packet = new Network::HandshakePacket(
+                clientCount, Misc::Sleeper::getTimeMilliseconds());
             
             Network::StringSerializer stringSerializer(socket);
             stringSerializer.sendString(

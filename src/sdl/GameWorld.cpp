@@ -18,6 +18,9 @@ namespace SDL {
 void GameWorld::doConnect(const std::string &host, unsigned short port) {
     network = boost::shared_ptr<NetworkPortal>(new NetworkPortal());
     
+    historian = boost::shared_ptr<History::Historian>(
+        new History::Historian());
+    
     if(host != "" && network->connectTo(host.c_str(), port)) {
         Object::World *world;
         Object::PlayerList *playerList;
@@ -43,8 +46,7 @@ void GameWorld::doConnect(const std::string &host, unsigned short port) {
         isConnectedToNetwork = false;
     }
     
-    historian = boost::shared_ptr<History::Historian>(
-        new History::Historian(worldManager.get()));
+    historian->setWorldManager(worldManager.get());
 }
 
 void GameWorld::construct(const std::string &host, unsigned short port) {

@@ -20,6 +20,7 @@ public:
     ~PingTimeMeasurer() { instance = 0; }
     
     void setClockOffset(int offset) { clockOffset = offset; }
+    void addClockOffset(int offset) { clockOffset += offset; }
     int getClockOffset() const { return clockOffset; }
 };
 

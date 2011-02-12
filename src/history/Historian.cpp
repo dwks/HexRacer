@@ -103,28 +103,37 @@ bool Historian::WorldHandler::interestedIn(Event::EventType::type_t type) {
     return false;
 }
 
-Historian::Historian(Object::WorldManager *worldManager)
-    : worldManager(worldManager) {
-    
+Historian::Historian() {
     pingTime = new PingTimeMeasurer();
-    
-    ADD_OBSERVER(new WorldHandler(worldManager, this));
 }
 
 Historian::~Historian() {
     delete pingTime;
 }
 
+void Historian::setWorldManager(Object::WorldManager *worldManager) {
+    this->worldManager = worldManager;
+    ADD_OBSERVER(new WorldHandler(worldManager, this));
+}
+
 void Historian::handleUpdateWorld(Event::UpdateWorld *updateWorld) {
-    if(pingTime->getClockOffset() == PingTimeMeasurer::NO_CLOCK_OFFSET) {
+    if(false && pingTime->getClockOffset() == PingTimeMeasurer::NO_CLOCK_OFFSET) {
         unsigned long sent = updateWorld->getMilliseconds();
         unsigned long now = Misc::Sleeper::getTimeMilliseconds();
         
-        long offset = long(now - sent);
+        long offset = -long(now - sent);
         
         LOG(NETWORK, "ClockOffset set to " << offset);
         
         pingTime->setClockOffset(offset);
+    }
+    else {
+        unsigned long sent = updateWorld->getMilliseconds();
+        unsigned long now = Misc::Sleeper::getTimeMilliseconds();
+        
+        long offset = long(now - sent) + pingTime->getClockOffset();
+        
+        LOG(NETWORK, "UpdateWorld is " << offset << " milliseconds old");
     }
 }
 

@@ -28,8 +28,10 @@ private:
     Object::WorldManager *worldManager;
     PingTimeMeasurer *pingTime;
 public:
-    Historian(Object::WorldManager *worldManager);
+    Historian();
     ~Historian();
+    
+    void setWorldManager(Object::WorldManager *worldManager);
     
     void handleUpdateWorld(Event::UpdateWorld *updateWorld);
 };
