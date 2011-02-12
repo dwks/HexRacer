@@ -3,7 +3,7 @@
 
 #include "ShaderProgram.h"
 #include "ShaderParamSetter.h"
-#include "Render/RenderSettings.h"
+#include "render/RenderSettings.h"
 #include <vector>
 
 namespace Project {
@@ -27,7 +27,7 @@ public:
 	static const int NUM_STANDARD_ATTRIBUTES = 2;
 	enum StandardAttribute {
 		AV3_TANGENT,
-		AV3_BITANGENT,
+		AV3_BITANGENT
 	};
 	static const char* standardUniformName(StandardUniform uniform);
 	static const char* standardAttributeName(StandardAttribute attribute);
@@ -52,7 +52,7 @@ private:
 public:
 
 	ShaderManager(Render::RenderSettings& _settings);
-	ShaderManager::~ShaderManager();
+	~ShaderManager();
 
 	void loadShadersFile(std::string filename);
 	void loadShader(std::string name, string fragment_file, string vertex_file);
