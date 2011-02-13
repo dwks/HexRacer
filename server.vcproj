@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glew32.lib SDL.lib SDLmain.lib SDL_image.lib opengl.lib glu32.lib glu.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
+				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -133,6 +133,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="1"

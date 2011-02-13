@@ -28,6 +28,7 @@ Makefile
 
 # Windows project stuff
 /Debug
+/Release
 /GeneratedFiles
 *.ncb
 *.suo
