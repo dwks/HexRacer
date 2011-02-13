@@ -96,7 +96,7 @@ namespace SDL {
             length = Physics::PhysicsWorld::getInstance()
                 ->raycastLength(cameraPosition, lookAtPosition);
 
-                zOffset -= interpolationInc;
+                zOffset -= 0.001;
                 intendedLength = cameraPosition.distance(lookAtPosition);
                 
         } while(length < intendedLength && zOffset >= 0.0);
