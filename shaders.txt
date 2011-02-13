@@ -2,7 +2,7 @@
 
 all backgroundShader shaders/backgroundShader.frag shaders/backgroundShader.vert
 all paintShader shaders/paintShader.frag shaders/paintShader.vert
-all gouraudShader shaders/gouraudShader.frag shaders/genericShaderMed.vert
+all gouraudShader shaders/gouraudShader.frag shaders/gouraudShader.vert
 
 high genericShader shaders/genericShaderHighUnrolled.frag shaders/genericShaderHigh.vert
 med genericShader shaders/genericShaderMed.frag shaders/genericShaderMed.vert
@@ -10,8 +10,9 @@ med genericShader shaders/genericShaderMed.frag shaders/genericShaderMed.vert
 high bgReflectShader shaders/backgroundReflectHighUnrolled.frag shaders/backgroundReflectHigh.vert
 med bgReflectShader shaders/backgroundReflectMed.frag shaders/backgroundReflectMed.vert
 
-#high bloomShader shaders/bloomHigh.frag shaders/bloomHigh.vert
-all bloomShader shaders/bloomMed.frag shaders/bloomMed.vert
+high bloomShader shaders/bloomHigh.frag shaders/bloomHigh.vert
+med bloomShader shaders/bloomMed.frag shaders/bloomMed.vert
+low bloomShader shaders/bloomMed.frag shaders/bloomMed.vert
 
 all hBlurShader shaders/hBlurShader.frag shaders/blurShader.vert
 all vBlurShader shaders/vBlurShader.frag shaders/blurShader.vert

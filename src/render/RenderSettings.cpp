@@ -22,7 +22,7 @@ namespace Render {
 			case GRAPHICS_HIGH:
 				return 8;
 			case GRAPHICS_MED:
-				return 2;
+				return 4;
 			case GRAPHICS_LOW:
 				return 4;
 			default:

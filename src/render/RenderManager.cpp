@@ -151,18 +151,18 @@ namespace Render {
 				TexturePack* texture = properties->getTexturePack();
 
 				if (texture->hasGlowMap()) {
-					glActiveTexture(GLOW_MAP_TEXTURE_UNIT);
+					glActiveTextureARB(GLOW_MAP_TEXTURE_UNIT);
 					glBindTexture(GL_TEXTURE_2D, texture->getGlowMap());
 					hasTexture[GLOW_MAP_TEXTURE_INDEX] = 1;
 				}
 
 				if (texture->hasNormalMap()) {
-					glActiveTexture(NORMAL_MAP_TEXTURE_UNIT);
+					glActiveTextureARB(NORMAL_MAP_TEXTURE_UNIT);
 					glBindTexture(GL_TEXTURE_2D, texture->getNormalMap());
 					hasTexture[NORMAL_MAP_TEXTURE_INDEX] = 1;
 				}
 
-				glActiveTexture(COLOR_MAP_TEXTURE_UNIT);
+				glActiveTextureARB(COLOR_MAP_TEXTURE_UNIT);
 				if (texture->hasColorMap()) {
 					glEnable(GL_TEXTURE_2D);
 					glBindTexture(GL_TEXTURE_2D, texture->getColorMap());
@@ -266,7 +266,7 @@ namespace Render {
 	}
 
 	void RenderManager::revertRenderTexture(RenderProperties* properties) {
-		glActiveTexture(COLOR_MAP_TEXTURE_UNIT);
+		glActiveTextureARB(COLOR_MAP_TEXTURE_UNIT);
 		glDisable(GL_TEXTURE_2D);
 		if (properties->getTexturePackOverride())
 			numTextureOverrides--;
@@ -304,7 +304,7 @@ namespace Render {
 				GLOW_MAP_TEXTURE_INDEX);
 
 			if (shadowMap > 0) {
-				glActiveTexture(SHADOW_MAP_TEXTURE_UNIT);
+				glActiveTextureARB(SHADOW_MAP_TEXTURE_UNIT);
 				glBindTexture(GL_TEXTURE_2D, shadowMap);
 				//Shadow map
 				setter.setStandardParamInt(Shader::ShaderParameter::UNIFORM,
@@ -312,7 +312,7 @@ namespace Render {
 					SHADOW_MAP_TEXTURE_INDEX);
 			}
 			if (cubeMap) {
-				glActiveTexture(CUBE_MAP_TEXTURE_UNIT);
+				glActiveTextureARB(CUBE_MAP_TEXTURE_UNIT);
 				glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->getCubeMap());
 				//Cube map
 				setter.setStandardParamInt(Shader::ShaderParameter::UNIFORM,
@@ -320,7 +320,7 @@ namespace Render {
 					CUBE_MAP_TEXTURE_INDEX);
 			}
 
-			glActiveTexture(COLOR_MAP_TEXTURE_UNIT);
+			glActiveTextureARB(COLOR_MAP_TEXTURE_UNIT);
 
 			if (camera) {
 				//Camera matrix

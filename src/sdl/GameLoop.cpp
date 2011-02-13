@@ -63,8 +63,6 @@ void GameLoop::miscellaneous() {
 
 void GameLoop::render() {
 
-	gameWorld->render();
-
     gameRenderer->render(
         viewport->getCamera(),
         gameWorld->getWorldManager()->getWorld());
@@ -74,6 +72,8 @@ void GameLoop::render() {
         gameWorld->getWorldManager(),
         gameWorld->getWorldManager()->getPlayer(
             gameWorld->getClientData()->getPlayerID()));
+
+	gameWorld->render();
     
     gameRenderer->renderHUD(
         gameWorld->getWorldManager(),

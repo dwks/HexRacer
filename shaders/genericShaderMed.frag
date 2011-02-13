@@ -55,6 +55,26 @@ void main() {
 			specular_color += gl_LightSource[1].specular*kspec*attenuation;
 		}
 	}
+	if (numLights > 2) {
+		light_dist = length((position-gl_LightSource[2].position).xyz);
+		attenuation = min(1.0/(gl_LightSource[2].constantAttenuation + gl_LightSource[2].quadraticAttenuation*light_dist*light_dist), 1.0);
+		if (attenuation >= 0.004) {
+			light = normalize((position-gl_LightSource[2].position).xyz);
+			kspec =-dot(reflection,light);
+			kspec = max(pow(kspec, gl_FrontMaterial.shininess), 0.0);
+			specular_color += gl_LightSource[2].specular*kspec*attenuation;
+		}
+	}
+	if (numLights > 3) {
+		light_dist = length((position-gl_LightSource[3].position).xyz);
+		attenuation = min(1.0/(gl_LightSource[3].constantAttenuation + gl_LightSource[3].quadraticAttenuation*light_dist*light_dist), 1.0);
+		if (attenuation >= 0.004) {
+			light = normalize((position-gl_LightSource[3].position).xyz);
+			kspec =-dot(reflection,light);
+			kspec = max(pow(kspec, gl_FrontMaterial.shininess), 0.0);
+			specular_color += gl_LightSource[3].specular*kspec*attenuation;
+		}
+	}
 
 	//Apply Material----------------------------------------------------------------------------------------
 

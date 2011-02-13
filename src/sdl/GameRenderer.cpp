@@ -389,16 +389,16 @@ void GameRenderer::initBloom() {
 
 	//Main bloom FBO
 
-	glGenFramebuffers(1, &bloomFBO);
-	glBindFramebuffer(GL_FRAMEBUFFER, bloomFBO);
+	glGenFramebuffersEXT(1, &bloomFBO);
+	glBindFramebufferEXT(GL_FRAMEBUFFER, bloomFBO);
 
-	glFramebufferTexture2D(GL_FRAMEBUFFER,
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER,
 		GL_COLOR_ATTACHMENT0,
 		GL_TEXTURE_2D,
 		bloomColorTexture,
 		0);
 
-	glFramebufferTexture2D(GL_FRAMEBUFFER,
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER,
 		GL_DEPTH_ATTACHMENT,
 		GL_TEXTURE_2D,
 		bloomDepthTexture,
@@ -406,16 +406,16 @@ void GameRenderer::initBloom() {
 
 	//FBO for performing blur passes
 
-	glGenFramebuffers(1, &bloomBlurFBO);
-	glBindFramebuffer(GL_FRAMEBUFFER, bloomBlurFBO);
+	glGenFramebuffersEXT(1, &bloomBlurFBO);
+	glBindFramebufferEXT(GL_FRAMEBUFFER, bloomBlurFBO);
 
-	glFramebufferTexture2D(GL_FRAMEBUFFER,
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER,
 		GL_COLOR_ATTACHMENT0,
 		GL_TEXTURE_2D,
 		bloomBlurTexture,
 		0);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
 
 	bloomProperties = new Render::RenderProperties();
 	bloomProperties->setWantsShaderName("bloomShader");
@@ -432,7 +432,7 @@ void GameRenderer::renderToBloomBuffer(Render::RenderableObject& renderable) {
 
 	glViewport(0, 0,
 		renderer->getRenderSettings()->getBloomWidth(), renderer->getRenderSettings()->getBloomHeight());
-	glBindFramebuffer(GL_FRAMEBUFFER, bloomFBO);
+	glBindFramebufferEXT(GL_FRAMEBUFFER, bloomFBO);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -460,11 +460,11 @@ void GameRenderer::preBloomBlur() {
 }
 void GameRenderer::bloomBlurPass() {
 
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTextureARB(GL_TEXTURE0);
 
 	//Perform horizontal pass
 
-	glBindFramebuffer(GL_FRAMEBUFFER, bloomBlurFBO);
+	glBindFramebufferEXT(GL_FRAMEBUFFER, bloomBlurFBO);
 	glBindTexture(GL_TEXTURE_2D, bloomColorTexture);
 
 	renderer->getShaderManager()->enableShader(hBlurShaderIndex);
@@ -481,7 +481,7 @@ void GameRenderer::bloomBlurPass() {
 
 	//Perform vertical pass
 
-	glBindFramebuffer(GL_FRAMEBUFFER, bloomFBO);
+	glBindFramebufferEXT(GL_FRAMEBUFFER, bloomFBO);
 	glBindTexture(GL_TEXTURE_2D, bloomBlurTexture);
 
 	renderer->getShaderManager()->enableShader(vBlurShaderIndex);
@@ -497,18 +497,18 @@ void GameRenderer::bloomBlurPass() {
 	drawQuad();
 
 	renderer->getShaderManager()->disableShader();
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
 }
 
 void GameRenderer::applyBloomBuffer() {
 
 	glViewport(0, 0, SDL_GetVideoSurface()->w, SDL_GetVideoSurface()->h);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
 
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTextureARB(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, bloomColorTexture);
 

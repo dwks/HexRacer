@@ -1,7 +1,5 @@
 //Drawing paint cells
 
-varying float kOrient;
-
 varying vec4 vertColor;
 uniform float fadePlanes [2];
 
@@ -12,7 +10,7 @@ void main()
 	vec4 position = gl_ModelViewMatrix * gl_Vertex;
 	
 	vec3 view = normalize(position.xyz);
-	kOrient = abs(dot(view, eyeNormal));
+	float kOrient = abs(dot(view, eyeNormal));
 	kOrient *= 1.5;
 	kOrient = pow(kOrient, 0.5);
 	kOrient = min(kOrient, 1.0);

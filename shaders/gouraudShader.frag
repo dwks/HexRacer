@@ -7,7 +7,7 @@ uniform sampler2D glowMap;
 uniform int hasTexture [4];
 
 void main() {
-	
+
 	vec4 diffuse_base;
 	if (hasTexture[0] == 1)
 		diffuse_base = texture2D(colorMap, gl_TexCoord[0].st);

@@ -48,6 +48,27 @@ void main() {
 		}
 	}
 	
+	if (numLights > 2) {
+		light_dist = length((position-gl_LightSource[0].position).xyz);
+		attenuation = min(1.0/(gl_LightSource[0].constantAttenuation + gl_LightSource[0].quadraticAttenuation*light_dist*light_dist), 1.0);
+		if (attenuation >= 0.004) {
+			light = normalize((position-gl_LightSource[0].position).xyz);
+			kspec =-dot(reflection,light);
+			kspec = max(pow(kspec, gl_FrontMaterial.shininess), 0.0);
+			specular_color += gl_LightSource[0].specular*kspec*attenuation;
+		}
+	}
+	if (numLights > 3) {
+		light_dist = length((position-gl_LightSource[3].position).xyz);
+		attenuation = min(1.0/(gl_LightSource[3].constantAttenuation + gl_LightSource[3].quadraticAttenuation*light_dist*light_dist), 1.0);
+		if (attenuation >= 0.004) {
+			light = normalize((position-gl_LightSource[3].position).xyz);
+			kspec =-dot(reflection,light);
+			kspec = max(pow(kspec, gl_FrontMaterial.shininess), 0.0);
+			specular_color += gl_LightSource[3].specular*kspec*attenuation;
+		}
+	}
+	
 	vec4 diffuse_base;
 	//Use the texture color as diffuse base if it exists
 	if (hasTexture[0] == 1)
