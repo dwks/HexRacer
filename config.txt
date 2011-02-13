@@ -69,7 +69,8 @@ render.camera.nearplane = 0.1
 render.camera.farplane = 200.0
 render.camera.paintthreshhold = 0.5
 render.camera.fieldofview = 60.0
-render.camera.speedboostfov = 60.0
+render.camera.fovboost = 60.0
+render.camera.fovslow = 60.0
 #render.camera.lodthreshhold = 1.0
 
 # for AI debugging
@@ -103,29 +104,29 @@ hud.lapprogress.drawheight = 0.75
 # This is how fast the
 # camera interpolates between current
 # and destination positions
-camera.step = 0.03
-
-# This is how fast the
-# camera interpolates between current
-# and destination orientations
-### this value is currently not used ###
-# because we are testing a camera
-# without quaternion rotations.
-camera.rotationstep = 0.005
+camera.step = 0.075
 
 # This is how fast the
 # camera interpolates between current
 # and destination FOVs Speedburst
 # fov value can be changed in this file as well
-camera.fovstep = 0.01
+camera.fovstep = 0.001
 
 # The following values let you set the 
 # destination position behind a player.
 # You can modify how the default follow
 # orientation looks here.
-camera.follow.x = 0.0
-camera.follow.y = 2.0
-camera.follow.z = -7.0
+camera.followdefault.x = 0.0
+camera.followdefault.y = 2.0
+camera.followdefault.z = -7.0
+
+camera.followboost.x = 0.0
+camera.followboost.y = 1.0
+camera.followboost.z = -5.0
+
+camera.followslow.x = 0.0
+camera.followslow.y = 2.0
+camera.followslow.z = -7.0
 
 ########
 ### Network settings
