@@ -100,33 +100,20 @@ hud.lapprogress.drawheight = 0.75
 
 ########
 ### Camera settings
-# step is the Interpolation Increment.
-# This is how fast the
-# camera interpolates between current
-# and destination positions
-camera.step = 0.075
+camera.step = 0.1
+camera.fovstep = 0.05
 
-# This is how fast the
-# camera interpolates between current
-# and destination FOVs Speedburst
-# fov value can be changed in this file as well
-camera.fovstep = 0.001
-
-# The following values let you set the 
-# destination position behind a player.
-# You can modify how the default follow
-# orientation looks here.
 camera.followdefault.x = 0.0
 camera.followdefault.y = 2.0
-camera.followdefault.z = -7.0
+camera.followdefault.z = -6.0
 
 camera.followboost.x = 0.0
-camera.followboost.y = 1.0
-camera.followboost.z = -5.0
+camera.followboost.y = 1.75
+camera.followboost.z = -5.5
 
 camera.followslow.x = 0.0
-camera.followslow.y = 2.0
-camera.followslow.z = -7.0
+camera.followslow.y = 2.25
+camera.followslow.z = -6.25
 
 ########
 ### Network settings
