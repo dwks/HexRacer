@@ -70,7 +70,7 @@ void GameViewport::checkForDebugCameraEvents(SDL_Event *event) {
 }
 
 void GameViewport::doCamera(unsigned long milliseconds) {
-    cameraObject->doStep(milliseconds);
+    //cameraObject->doAction(milliseconds);
 }
 
 }  // namespace SDL
