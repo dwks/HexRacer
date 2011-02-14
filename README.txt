@@ -1,6 +1,23 @@
 README for HexRacers
 ====================
 
+Status of the game
+------------------
+
+Some notes:
+
+- While painting or erasing, you have a speed penalty applied.
+- If you are traveling on your own paint, you get an appropriate speed burst.
+  Also the colour of the vehicle's trim changes if you currently have a burst.
+- When you fall off the track (or press 'h') you are warped to the nearest
+  point on the track.
+- The bar on the left shows the percentage you have completed of the track.
+- Shadows were just implemented and may have a few bugs.
+- Most of the GUI is unimplemented, don't be surprised when clicking on
+  buttons results in nothing happening (except maybe debug console output).
+- Networking is still jerky; it works but is not very playable at the moment.
+
+
 
 Using the game
 --------------
@@ -33,8 +50,6 @@ Debug controls:
 - Toggle path node painting with the backslash key.
 
 Settings (can be changed without recompiling in config.txt)
-- Paint generation can be disabled by setting "render.paint.enabled = 0":
-  this speeds up the game launch time
 - The screen resolution can be changed (try 0, 0 for the entire screen)
   [Note that the game window is also resizable.]
 
