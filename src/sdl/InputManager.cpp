@@ -102,6 +102,18 @@ void InputManager::doPausedChecks() {
         debug = !debug;
         EMIT_EVENT(new Event::SetDebugDrawing(debug));
     }
+    if(keyDown[SDLK_BACKSLASH]) {
+        keyDown[SDLK_BACKSLASH] = false;
+        
+        if(!GET_SETTING("render.drawpathnodes", 0)) {
+            Settings::SettingsManager::getInstance()->set(
+                "render.drawpathnodes", "1");
+        }
+        else {
+            Settings::SettingsManager::getInstance()->set(
+                "render.drawpathnodes", "0");
+        }
+    }
     if(keyDown[SDLK_c]) {
         keyDown[SDLK_c] = false;
         
