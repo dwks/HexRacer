@@ -1,0 +1,15 @@
+To implement the new networking code with rollback, Historian needs:
+- Proper clock synchronization. Send ping packets from the client to the server
+  at least three times after receiving the WorldUpdate. [For now, can ignore
+  this if the absolute time of day is used.]
+- Knowledge of game state before each physics tick. Registering as a
+  PhysicsTick observer and querying WorldManager for the physical state of
+  players should do the trick.
+- Knowledge of the time that each physics tick was supposed to occur at (could
+  be passed through the PhysicsTick event).
+- Knowledge of how far offset into the current bullet internal frame this
+  game loop iteration is.
+- All input events, so that frames can be replayed with acceleration etc.
+
+Also, CameraObject should use a milliseconds-passed system rather than ticking
+every 5 milliseconds.

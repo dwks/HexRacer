@@ -42,10 +42,6 @@ void InputManager::handleEvent(SDL_Event *event) {
     case SDL_KEYUP:
         keyDown[event->key.keysym.sym] = false;
         
-        if(event->key.keysym.sym == SDLK_ESCAPE) {
-            EMIT_EVENT(new Event::QuitEvent());
-        }
-        
         break;
     }
 }
@@ -81,15 +77,15 @@ void InputManager::doAction(unsigned long currentTime) {
 }
 
 void InputManager::doPausedChecks() {
-    if(keyDown[SDLK_F1]) {
-        keyDown[SDLK_F1] = false;
+    /*if(keyDown[SDLK_ESCAPE]) {
+        keyDown[SDLK_ESCAPE] = false;
         
         bool pause = Timing::AccelControl::getInstance()->getPaused();
         pause = !pause;
         
         LOG2(SDL, INPUT, (pause ? "Game paused" : "Game unpaused"));
         EMIT_EVENT(new Event::PauseGame(pause));
-    }
+    }*/
     if(keyDown[SDLK_F5]) {
         keyDown[SDLK_F5] = false;
         
@@ -105,6 +101,18 @@ void InputManager::doPausedChecks() {
         static bool debug = false;
         debug = !debug;
         EMIT_EVENT(new Event::SetDebugDrawing(debug));
+    }
+    if(keyDown[SDLK_BACKSLASH]) {
+        keyDown[SDLK_BACKSLASH] = false;
+        
+        if(!GET_SETTING("render.drawpathnodes", 0)) {
+            Settings::SettingsManager::getInstance()->set(
+                "render.drawpathnodes", "1");
+        }
+        else {
+            Settings::SettingsManager::getInstance()->set(
+                "render.drawpathnodes", "0");
+        }
     }
     if(keyDown[SDLK_c]) {
         keyDown[SDLK_c] = false;

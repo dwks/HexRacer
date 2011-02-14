@@ -55,6 +55,8 @@ SDLMainLoop::SDLMainLoop() {
     initSDL();
     initOpenGL();
     
+    
+    
     menuLoop = new MenuLoop();
     loop = menuLoop;
 }
@@ -104,6 +106,7 @@ void SDLMainLoop::initSDL() {
     }
     
     SDL_SetVideoMode(width, height, bpp, sdl_init_flags);
+    projector.setCurrentDimensions(Point2D(width, height));
 }
 
 void SDLMainLoop::initOpenGL() {
@@ -118,6 +121,8 @@ void SDLMainLoop::initOpenGL() {
 }
 
 void SDLMainLoop::resizeGL(int width, int height) {
+    LOG(SDL, "Resizing viewport to " << width << " by " << height);
+    
     // in case of divide by zero
     if (height == 0) height = 1;
     
@@ -180,8 +185,8 @@ void SDLMainLoop::handleEvents() {
             SDL_SetVideoMode(event.resize.w, event.resize.h,
                 0, sdl_init_flags);
             resizeGL(event.resize.w, event.resize.h);
-            projector.setCurrentDimensions(
-                Point2D(event.resize.w, event.resize.h));
+            /*projector.setCurrentDimensions(
+                Point2D(event.resize.w, event.resize.h));*/
             break;
         }
         

@@ -79,6 +79,8 @@ void GUISystem::construct() {
         running->addChild(new Widget::ButtonWidget("menu",
             "Menu", Widget::WidgetRect(0.0, 0.0, 0.1, 0.05)));
         
+        setShortcut(getWidget("running/menu"), SDLK_ESCAPE);
+        
         getWidget("running/menu")->addEventProxy(new RunningProxy());
     }
     
@@ -96,6 +98,10 @@ void GUISystem::construct() {
             Widget::WidgetRect(0.3, 0.4, 0.4, 0.1)));
         paused->addChild(new Widget::ButtonWidget("quit", "Quit",
             Widget::WidgetRect(0.3, 0.4 + 0.15, 0.4, 0.1)));
+        
+        setShortcut(getWidget("paused/resume"), SDLK_ESCAPE);
+        setShortcut(getWidget("paused/resume"), SDLK_r);
+        setShortcut(getWidget("paused/quit"), SDLK_q);
         
         //getWidget("paused/help")->addEventProxy(new PauseMenuProxy());
         getWidget("paused/resume")->addEventProxy(new PauseMenuProxy());
