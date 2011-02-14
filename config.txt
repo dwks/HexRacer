@@ -30,8 +30,8 @@ physics.constant.centripetal      = 1.0
 # Vehicle suspension
 physics.driving.enablesuspension  = 1
 physics.driving.minlength         = 0.0
-physics.driving.restlength        = 0.5
-physics.driving.stretchlength     = 1.0
+physics.driving.restlength        = 0.4
+physics.driving.stretchlength     = 0.75
 physics.driving.constant.k        = 5.0
 physics.driving.constant.c        = 30.0
 physics.driving.mindownfactor = 0.25
@@ -61,8 +61,9 @@ render.bloom.farplane = 40.0
 render.bloom.blurpasses = 4
 
 render.shadow.enable = 1
-render.shadow.width = 1280
-render.shadow.height = 960
+render.shadow.width = 4096
+render.shadow.height = 4096
+render.shadow.farplane = 40.0
 
 render.playerglow.min = 0.6
 render.playerglow.factor = 1.5

@@ -86,7 +86,7 @@ private:
 	void drawQuad();
 
 	void initShadowMap();
-	void updateShadowCamera(const Math::Point& position, const Math::Point& focus);
+	void updateShadowCamera(const Math::Point& light_position, OpenGL::Camera* camera);
 	void renderToShadowMap(Render::RenderableObject& renderable);
 
 };

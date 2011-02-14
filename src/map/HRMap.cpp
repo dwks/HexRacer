@@ -325,6 +325,7 @@ namespace Map {
 		mapMeshFile[static_cast<int>(type)] = filename;
 		if (meshIsSolid(type))
 			clearCollisionTree();
+		updateMapBoundingBox();
 	}
 
 	void HRMap::clearMapMesh(HRMap::MeshType type) {
@@ -335,6 +336,7 @@ namespace Map {
 			if (meshIsSolid(type)) {
 				clearCollisionTree();
 			}
+			updateMapBoundingBox();
 		}
 		mapMeshFile[i] = "";
 	}
@@ -569,6 +571,44 @@ namespace Map {
 		if (index >= 0 && index < static_cast<int>(propMeshNames.size()))
 			return propMeshNames[index];
 		return "";
+	}
+
+	void HRMap::updateMapBoundingBox() {
+
+		bool set = false;
+
+		for (int i = 0; i < NUM_MESHES; i++) {
+			MeshType type = static_cast<MeshType>(i);
+			if (getMapMesh(type)) {
+				if (!set) {
+					mapBoundingBox.setToObject(getMapMesh(type)->getBoundingBox());
+					set = true;
+				}
+				else {
+					mapBoundingBox.expandToInclude(getMapMesh(type)->getBoundingBox());
+				}
+			}
+		}
+
+	}
+
+	void HRMap::scaleAll(double scale) {
+		for (unsigned int i = 0; i < lights.size(); i++) {
+			lights[i]->moveCentroid(lights[i]->getPosition()*scale);
+		}
+		for (unsigned int i = 0; i < pathNodes.size(); i++) {
+			pathNodes[i]->moveCentroid(pathNodes[i]->getPosition()*scale);
+		}
+		for (unsigned int i = 0; i < startPoints.size(); i++) {
+			startPoints[i]->moveCentroid(startPoints[i]->getPosition()*scale);
+		}
+		for (unsigned int i = 0; i < meshInstances.size(); i++) {
+			SimpleTransform transform = meshInstances[i]->getTransformation();
+			transform.setScale(transform.getScale()*scale);
+			transform.setTranslation(transform.getTranslation()*scale);
+			meshInstances[i]->setTransformation(transform);
+		}
+		finishPlane.moveCentroid(finishPlane.centroid()*scale);
 	}
 }  // namespace Map
 }  // namespace Project

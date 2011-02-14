@@ -50,6 +50,7 @@ private:
 	std::vector<Math::Vertex3D*> startPoints;
 	std::vector<MeshInstance*> meshInstances;
 	Math::BoundingPlane3D finishPlane;
+	Math::BoundingBox3D mapBoundingBox;
 
 	std::vector<std::string> propMeshNames;
 	std::vector<std::string> propMeshFilenames;
@@ -119,16 +120,22 @@ public:
 	void removeMeshInstance(MeshInstance* mesh);
 	void clearMeshInstances();
 
+	Math::BoundingBox3D getMapBoundingBox() const { return mapBoundingBox; }
+
 	std::string getFilename() const { return filename; }
 
 	static std::string meshName(MeshType type);
 	static std::string meshTitle(MeshType type);
 	static bool meshIsInvisible(MeshType type);
 	static bool meshIsSolid(MeshType type);
+	
+	void scaleAll(double scale);
+
 
 private:
 
 	void clearCollisionTree();
+	void updateMapBoundingBox();
 
 };
 

@@ -97,7 +97,7 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
 	OpenGL::Light* strongest_light = renderer->getLightManager()->getActiveLight(0);
 
 	if (renderer->getRenderSettings()->getShadowMappingEnabled() && strongest_light) {
-		updateShadowCamera(strongest_light->getPosition(), camera->getLookPosition());
+		updateShadowCamera(strongest_light->getPosition(), camera);
 		renderToShadowMap(scene_render_list);
 		renderer->setShadowMapTexture(shadowDepthTexture);
 	}
@@ -606,11 +606,14 @@ void GameRenderer::initShadowMap() {
 	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
 
 	shadowCamera = new OpenGL::Camera();
+	shadowCamera->setFrustrumFarPlaneEnabled(true);
+	/*
 	shadowCamera->setAspect(
 		(double) renderer->getRenderSettings()->getShadowMapWidth()
 		/ (double) renderer->getRenderSettings()->getShadowMapHeight()
 		);
 	shadowCamera->setFieldOfViewDegrees(15.0);
+	*/
 
 	shadowProperties = new Render::RenderProperties();
 	shadowProperties->setShaderOverride(true);
@@ -620,17 +623,74 @@ void GameRenderer::initShadowMap() {
 
 }
 
-void GameRenderer::updateShadowCamera(const Math::Point& position, const Math::Point& focus) {
+void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL::Camera* camera) {
 
-	shadowCamera->setPosition(position);
-	shadowCamera->setLookPosition(focus);
+	double far_plane = GET_SETTING("render.shadow.farplane", 100.0);
 
+	shadowCamera->setPosition(light_position);
+	shadowCamera->setLookPosition(camera->cameraToWorld(0.5, 0.5, far_plane*0.5));
+	shadowCamera->setUpDirection(camera->getUpDirection());
+	//shadowCamera->setUpDirection(camera->getLookDirection().crossProduct(shadowCamera->getLookDirection()));
+
+	vector<Math::Point> include_points;
+	include_points.push_back(camera->getPosition());
+	include_points.push_back(camera->cameraToWorld(0.0, 0.0, far_plane));
+	include_points.push_back(camera->cameraToWorld(1.0, 0.0, far_plane));
+	include_points.push_back(camera->cameraToWorld(1.0, 1.0, far_plane));
+	include_points.push_back(camera->cameraToWorld(0.0, 1.0, far_plane));
+
+	double shadow_near_plane = 0.1;
+	bool near_plane_set = false;
+	for (int i = 0; i < 5 && !near_plane_set; i++) {
+		double ray_x = 0.5;
+		double ray_y = 0.5;
+		switch (i) {
+			case 1: ray_x = 0.0f; ray_y = 0.0f; break;
+			case 2: ray_x = 1.0f; ray_y = 0.0f; break;
+			case 3: ray_x = 1.0f; ray_y = 1.0f; break;
+			case 4: ray_x = 0.0f; ray_y = 1.0f; break;
+			default: break;
+		}
+		Math::Ray ray = shadowCamera->cameraRay(ray_x, ray_y);
+		Math::RayIntersection intersect = map->getMapBoundingBox().rayIntersection(ray);
+		if (intersect.intersects) {
+			if (!near_plane_set)
+				shadow_near_plane = intersect.t;
+			else {
+				shadow_near_plane = Math::minimum(shadow_near_plane,
+					intersect.t*(ray.direction.dotProduct(shadowCamera->getLookDirection())));
+			}
+			near_plane_set = true;
+		}
+	}
+
+	double shadow_far_plane = 0.0;
+	double x_fov = 0.0;
+	double y_fov = 0.0;
+	for (unsigned int i = 0; i < include_points.size(); i++) {
+
+		Math::Point to_vector = include_points[i]-shadowCamera->getPosition();
+
+		double x = to_vector.dotProduct(shadowCamera->getRightDirection());
+		double y = to_vector.dotProduct(shadowCamera->getUpDirection());
+		double z = to_vector.dotProduct(shadowCamera->getLookDirection());
+		x_fov = Math::maximum(x_fov, abs(std::atan(x/z)));
+		y_fov = Math::maximum(y_fov, abs(std::atan(y/z)));
+		shadow_far_plane = Math::maximum(shadow_far_plane, z);
+	}
+
+	shadowCamera->setNearPlane(shadow_near_plane);
+	shadowCamera->setFarPlane(shadow_far_plane+10.0);
+	shadowCamera->setFieldOfViewDegrees(y_fov/PI*360.0);
+	shadowCamera->setAspect(std::sin(x_fov)/std::sin(y_fov));
+	/*
 	double dist_to_plane = (focus - shadowCamera->getPosition()).projectOnto(shadowCamera->getLookDirection()).length();
 
 	shadowCamera->setNearPlane(dist_to_plane - 40.0);
 	shadowCamera->setFarPlane(dist_to_plane + 40.0);
 	shadowCamera->setFieldOfViewDegrees(std::atan(20.0/dist_to_plane)/PI*360.0);
-	
+	*/
+
 
 }
 
