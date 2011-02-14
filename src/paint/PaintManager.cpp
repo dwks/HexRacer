@@ -31,6 +31,10 @@ namespace Paint {
 		neutralPaintTree = new BSPTree3D(BoundingBox3D(), TREE_SPLIT_METHOD, TREE_SPLIT_SIZE);
 		coloredPaintTree = new BSPTree3D(BoundingBox3D(), TREE_SPLIT_METHOD, TREE_SPLIT_SIZE);
 		getRenderProperties()->setWantsShaderName("paintShader");
+
+		fadePlaneNear = 0.0f;
+		fadePlaneFar = 0.0f;
+		targetList = 0;
         
         ADD_OBSERVER(new PaintEventHandler(this));
         ADD_OBSERVER(new PaintCellsChangedHandler(this));
@@ -73,21 +77,35 @@ namespace Paint {
 		paintList = vector<PaintCell*>(paint_cells);
 	}
 
-	void PaintManager::renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object) {
+	void PaintManager::renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object, const Render::RenderSettings& settings) {
 
-		renderPoints = false;
-		renderAlpha = 1.0f;
+		renderMinimap = false;
 
-		if (bounding_object)
-			coloredPaintTree->operateQuery(*this, *bounding_object, SpatialContainer::NEARBY);
-		else
-			coloredPaintTree->operateAll(*this);
+		GLfloat fade_planes [2] = {fadePlaneNear, fadePlaneFar};
+		setter.setParamFloatArray(
+			Shader::ShaderParameter::UNIFORM,
+			"fadePlanes",
+			fade_planes,
+			2);
+
+		if (!settings.getRedrawMode()) {
+			redrawBuffer.clear();
+			if (bounding_object)
+				coloredPaintTree->operateQuery(*this, *bounding_object, SpatialContainer::NEARBY);
+			else
+				coloredPaintTree->operateAll(*this);
+		}
+		else {
+			for (unsigned int i = 0; i < redrawBuffer.size(); i++) {
+				renderCell(redrawBuffer[i]);
+			}
+		}
 
 	}
 
 	void PaintManager::minimapRender(const Math::BoundingObject& bounding_object, float view_height, float alpha) {
 
-		renderPoints = true;
+		renderMinimap = true;
 		renderAlpha = alpha;
 
 		GLfloat values [4];
@@ -220,12 +238,27 @@ namespace Paint {
 	}
 
 	void PaintManager::operateOnObject(Math::ObjectSpatial* object) {
-		PaintCell* cell = (PaintCell*)object;
+		if (renderMinimap)
+			renderCellMinimap((PaintCell*)object);
+		else {
+			renderCell((PaintCell*)object);
+			redrawBuffer.push_back((PaintCell*)object);
+		}
+	}
+
+	void PaintManager::renderCell(PaintCell* cell) {
+		OpenGL::Color cell_color = ColorConstants::playerColor(cell->playerColor);
+		OpenGL::Color::glColor(cell_color);
+		OpenGL::MathWrapper::glVertex(cell->center);
+		cell_color *= 0.85f;
+		GLfloat values [4] = {cell_color.redf(), cell_color.greenf(), cell_color.bluef(), cell_color.alphaf()};
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, values);
+		glCallList(cell->displayList);
+	}
+
+	void PaintManager::renderCellMinimap(PaintCell* cell) {
 		OpenGL::Color::glColor(ColorConstants::playerColor(cell->playerColor), renderAlpha);
-		if (renderPoints)
-			OpenGL::MathWrapper::glVertex(cell->center);
-		else
-			glCallList(cell->displayList);
+		OpenGL::MathWrapper::glVertex(cell->center);
 	}
 
 }  // namespace Paint

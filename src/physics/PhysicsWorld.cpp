@@ -111,7 +111,7 @@ void PhysicsWorld::setDebug(bool on) {
 }
 
 void PhysicsWorld::render() {
-    if(debugging) {
+    if (debugging) {
         dynamicsWorld->debugDrawWorld();
     }
 }

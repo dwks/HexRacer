@@ -8,7 +8,14 @@ namespace Render {
 
 class RenderSettings {
 private:
+	
 	short graphicsQuality;
+	bool bloomLighting;
+	int bloomWidth;
+	int bloomHeight;
+
+	bool redrawMode;
+
 public:
 
 	static const short GRAPHICS_HIGH = 3;
@@ -16,8 +23,19 @@ public:
 	static const short GRAPHICS_LOW = 1;
 	static const short GRAPHICS_VERY_LOW = 0;
 
-	short getGraphicsQuality() { return GET_SETTING("render.quality", 2); }
+	RenderSettings();
+
+	//Config file set constants
+	short getGraphicsQuality() { return graphicsQuality; }
 	short getMaxLights();
+	bool getBloomEnabled() { return bloomLighting; }
+	int getBloomWidth() { return bloomWidth; }
+	int getBloomHeight() { return bloomHeight; }
+
+	//Rendering modes changeable before rendering
+	void setRedrawMode(bool redraw) { redrawMode = redraw; }
+	bool getRedrawMode() const { return redrawMode; }
+	
 };
 
 }  // namespace Render

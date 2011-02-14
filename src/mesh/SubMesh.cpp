@@ -118,7 +118,7 @@ namespace Mesh {
 
 	}
 
-	void SubMesh::renderGeometry(const Shader::ShaderParamSetter& setter, const BoundingObject* bounding_object) {
+	void SubMesh::renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object, const Render::RenderSettings& settings) {
 
 		if (bounding_object == NULL || triangleFanTree == NULL) {
 			for (unsigned int i = 0; i < triangleFans.size(); i++) {
@@ -126,8 +126,16 @@ namespace Mesh {
 			}
 		}
 		else {
-			paramSetter = &setter;
-			triangleFanTree->operateQuery(*this, *bounding_object, CULLING_QUERY_TYPE);
+			if (settings.getRedrawMode()) {
+				for (unsigned int i = 0; i < redrawBuffer.size(); i++) {
+					drawTriangleFan(redrawBuffer[i], setter);
+				}
+			}
+			else {
+				redrawBuffer.clear();
+				paramSetter = &setter;
+				triangleFanTree->operateQuery(*this, *bounding_object, CULLING_QUERY_TYPE);
+			}
 		}
 
 	}
@@ -155,7 +163,9 @@ namespace Mesh {
 	}
 
 	void SubMesh::operateOnObject(Math::ObjectSpatial* object) {
-		drawTriangleFan((MeshTriangleFan*)object, *paramSetter);
+		MeshTriangleFan* fan = (MeshTriangleFan*)object;
+		drawTriangleFan(fan, *paramSetter);
+		redrawBuffer.push_back(fan);
 	}
 
 }  // namespace Mesh

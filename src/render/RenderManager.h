@@ -31,7 +31,7 @@ private:
 	};
 
 
-	static const int NUM_STANDARD_TEXTURES = 3;
+	static const int NUM_STANDARD_TEXTURES = 4;
 	int hasTexture [NUM_STANDARD_TEXTURES];
 
 	static const GLenum COLOR_MAP_TEXTURE_UNIT = GL_TEXTURE0;
@@ -40,6 +40,8 @@ private:
 	static const int NORMAL_MAP_TEXTURE_INDEX = 1;
 	static const GLenum GLOW_MAP_TEXTURE_UNIT = GL_TEXTURE2;
 	static const int GLOW_MAP_TEXTURE_INDEX = 2;
+	static const GLenum SHADOW_MAP_TEXTURE_UNIT = GL_TEXTURE3;
+	static const int SHADOW_MAP_TEXTURE_INDEX = 3;
 
 	static const GLenum CUBE_MAP_TEXTURE_UNIT = GL_TEXTURE4;
 	static const int CUBE_MAP_TEXTURE_INDEX = 4;
@@ -50,6 +52,7 @@ private:
 	
 	OpenGL::Camera* camera;
 	OpenGL::TextureCube* cubeMap;
+	GLuint shadowMap;
 
 	stack<int> shaderStack;
 	stack<OpenGL::Material*> materialStack;
@@ -88,9 +91,9 @@ public:
 	void setCamera(OpenGL::Camera* _camera) { camera = _camera; }
 	bool hasTransformation() const;
 	const Math::BoundingObject* getBoundingObject() const;
-
 	void setCubeMap(OpenGL::TextureCube* cube_map);
-	
+
+	RenderSettings* getRenderSettings() const { return settings; }
 
 private:
 

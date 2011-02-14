@@ -14,13 +14,14 @@ class ShaderParamSetter;
 class ShaderManager {
 public:
 
-	static const int NUM_STANDARD_UNIFORMS = 7;
+	static const int NUM_STANDARD_UNIFORMS = 8;
 	enum StandardUniform {
 		UINT_NUM_LIGHTS,
 		UINTV_HAS_TEXTURE,
 		UINT_COLOR_MAP,
 		UINT_NORMAL_MAP,
 		UINT_GLOW_MAP,
+		UINT_SHADOW_MAP,
 		UINT_CUBE_MAP,
 		UM4_CAMERA_MATRIX
 	};

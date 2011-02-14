@@ -99,6 +99,15 @@ void MapEditorWidget::initializeGL() {
 	background = new BackgroundRenderable(camera);
 	background->getRenderProperties()->setWantsShaderName("backgroundShader");
 
+	normalRenderProperties = new RenderProperties();
+	normalRenderProperties->setShaderOverride(true);
+
+	objectBufferProperties = new RenderProperties();
+	objectBufferProperties->setShaderOverride(true);
+	objectBufferProperties->setMaterialOverride(true);
+	objectBufferProperties->setColorOverride(true);
+	objectBufferProperties->setTexturePackOverride(true);
+
 }
 
 void MapEditorWidget::resizeGL(int w, int h) {
@@ -138,19 +147,20 @@ void MapEditorWidget::paintGL() {
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_COLOR_MATERIAL);
 
-	RenderList rootRenderable;
 	if (!advancedRendering) {
-		rootRenderable.getRenderProperties()->setShaderOverride(true);
+		renderer->setRenderProperties(normalRenderProperties);
+		//rootRenderable.getRenderProperties()->setShaderOverride(true);
 	}
 
 	for (int i = 0; i < HRMap::NUM_MESHES; i++) {
 		HRMap::MeshType type = static_cast<HRMap::MeshType>(i);
 		if (map->getMapMesh(type) && (showInvisible || !HRMap::meshIsInvisible(type))) {
-			rootRenderable.addRenderable(map->getMapMesh(type));
+			map->getMapMesh(type)->render(renderer);
 		}
 	}
 
-	rootRenderable.render(renderer);
+	if (!advancedRendering)
+		renderer->revertRenderProperties(normalRenderProperties);
 
 	//Render Mesh Instances
 	renderObjects(MapObject::MESH_INSTANCE, false);
@@ -187,13 +197,6 @@ void MapEditorWidget::paintGL() {
 		MathWrapper::glMultMatrix(selectedObject->getTransformMatrix());
 		GeometryDrawing::drawBoundingBox3D(selectedObject->getBoundingBox(), true);
 	}
-
-	/*
-	if (map->getMapMesh(HRMap::TRACK)) {
-		Color::glColor(Color::WHITE);
-		GeometryDrawing::drawBoundingBox3D(map->getMapMesh(HRMap::TRACK)->getBoundingBox(), true);
-	}
-	*/
 
 	lightManager->resetLights();
 
@@ -975,24 +978,26 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 			break;
 
 		case MapObject::MESH_INSTANCE:
+
+			if (object_buffer)
+				renderer->setRenderProperties(objectBufferProperties);
+			else if (!advancedRendering)
+				renderer->setRenderProperties(normalRenderProperties);
 			
 			for (int i = 0; i < mapObjects[type_index].size(); i++) {
-				RenderList render_list;
+			
+				if (object_buffer)
+					glBufferIndexColor(i);
+
 				TransformedMesh* mesh_instance = ((MeshInstanceObject*)mapObjects[type_index][i])->getTransformedMesh();
-				render_list.addRenderable(mesh_instance);
-
-				if (object_buffer || !advancedRendering) {
-					render_list.getRenderProperties()->setShaderOverride(true);
-					render_list.getRenderProperties()->setMaterialOverride(true);
-					if (object_buffer) {
-						glBufferIndexColor(i);
-						render_list.getRenderProperties()->setColorOverride(true);
-						render_list.getRenderProperties()->setTexturePackOverride(true);
-					}
-				}
-
-				render_list.render(renderer);
+				mesh_instance->render(renderer);
 			}
+
+			if (object_buffer)
+				renderer->revertRenderProperties(objectBufferProperties);
+			else if (!advancedRendering)
+				renderer->revertRenderProperties(normalRenderProperties);
+
 			break;
 
 		default:

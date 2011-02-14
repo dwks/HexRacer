@@ -43,6 +43,9 @@ private:
 	GLuint sphereList;
 	GLuint hudCircleList;
 
+	RenderProperties* objectBufferProperties;
+	RenderProperties* normalRenderProperties;
+
 	HRMap* map;
 	RenderManager* renderer;
 	LightManager* lightManager;

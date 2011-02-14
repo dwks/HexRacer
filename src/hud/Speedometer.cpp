@@ -33,7 +33,7 @@ namespace HUD {
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		renderer->enableAlphaMask(alphaMaskTexture, 2.0f, 2.0f);
+		renderer->enableAlphaMask(alphaMaskTexture);
 
 		//Draw the background
 		OpenGL::Color::glColor(OpenGL::Color::WHITE, 0.35);

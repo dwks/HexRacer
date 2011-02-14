@@ -45,13 +45,20 @@ private:
 	std::vector<PaintCell*> paintList;
 	Math::BSPTree3D* neutralPaintTree;
 	Math::BSPTree3D* coloredPaintTree;
-	bool renderPoints;
+	bool renderMinimap;
 	float renderAlpha;
+	float fadePlaneNear;
+	float fadePlaneFar;
+	GLuint targetList;
+
+	std::vector<PaintCell*> redrawBuffer;
 
 	static const int TREE_SPLIT_SIZE = 30;
 	static const Math::BSPTree3D::SplitMethod TREE_SPLIT_METHOD = Math::BSPTree3D::LARGEST_AXIS;
 
 	bool colorCell(PaintCell* cell, int new_color, bool force_color = false);
+	void renderCell(PaintCell* cell);
+	void renderCellMinimap(PaintCell* cell);
 
 public:
 
@@ -67,9 +74,14 @@ public:
 	*/
 	void setPaintCells(const std::vector<PaintCell*>& paint_cells);
 
-	void renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object = NULL);
+	void renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object, const Render::RenderSettings& settings);
 
 	void minimapRender(const Math::BoundingObject& bounding_object, float view_height, float alpha = 1.0f);
+
+	void setFadePlanes(float near_plane, float far_plane) {
+		fadePlaneNear = near_plane;
+		fadePlaneFar = far_plane;
+	}
 
 	/** Color paint cells by their numerical index
 		@param cell_indices A vector with the indices of all paint cells to color

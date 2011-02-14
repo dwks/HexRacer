@@ -62,22 +62,24 @@ void GameLoop::miscellaneous() {
 }
 
 void GameLoop::render() {
+
     gameRenderer->render(
         viewport->getCamera(),
         gameWorld->getWorldManager()->getWorld());
 
-	gameWorld->render();
-
 	gameRenderer->renderDebug(
+		viewport->getCamera(),
         gameWorld->getWorldManager(),
         gameWorld->getWorldManager()->getPlayer(
             gameWorld->getClientData()->getPlayerID()));
+
+	gameWorld->render();
     
     gameRenderer->renderHUD(
         gameWorld->getWorldManager(),
         gameWorld->getWorldManager()->getPlayer(
             gameWorld->getClientData()->getPlayerID()));
-    
+
     gui->render();
 }
 

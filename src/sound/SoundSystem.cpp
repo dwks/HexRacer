@@ -72,7 +72,7 @@ void SoundSystem::setupMusic() {
     ALboolean loop;
     
     // !!! this is deprecated
-    alutLoadWAVFile((ALbyte *)"sound/footsteps.wav",
+    alutLoadWAVFile((ALbyte *)"data/sound/music/mainloop.wav",
         &format, &data, &size, &freq, &loop);
     alBufferData(musicBuffer, format, data, size, freq);
     alutUnloadWAV(format, data, size, freq);

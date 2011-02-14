@@ -6,12 +6,23 @@ using namespace std;
 namespace Project {
 namespace Render {
 
+	RenderSettings::RenderSettings() {
+
+		graphicsQuality = GET_SETTING("render.quality", 2);
+		bloomLighting = GET_SETTING("render.bloom.enable", false);
+		bloomWidth = GET_SETTING("render.bloom.width", 800);
+		bloomHeight  = GET_SETTING("render.bloom.height", 600);
+
+		redrawMode = false;
+
+	}
+
 	short RenderSettings::getMaxLights() {
 		switch (getGraphicsQuality()) {
 			case GRAPHICS_HIGH:
 				return 8;
 			case GRAPHICS_MED:
-				return 2;
+				return 4;
 			case GRAPHICS_LOW:
 				return 4;
 			default:
