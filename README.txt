@@ -5,20 +5,32 @@ README for HexRacers
 Using the game
 --------------
 
-The game can be launched standalone by running "sdl"; or if the "server" is
-run first then any "sdl" clients launched will connect to the server.
+Launch the game by running "sdl". Then click on "Start game" to launch a
+single player game, or "Join game" to attempt to join a server (this defaults
+to a single-player game if no server is running). A server can be run by just
+launching "server"; make sure the port specified in config.txt (1820 by
+default) is not blocked by your firewall.
 
 Note: sdl.exe and server.exe are Windows executables,
       sdl and server are Linux ones.
 
 Controls:
-- Move the camera with a joystick (which must be plugged in before the game
-  runs), or with the left mouse button and the keys 'w', 'a', 's', and 'd'.
-- Drive the car with the arrow keys (add levitation with the space key)
+- Drive the car with the arrow keys (add levitation with the space key), or
+  with the two hats on a joystick (which must be plugged in before the game
+  starts).
 - Lay down paint behind the car with 'p'; erase existing paint with 'o'
   [You can also paint in front of the camera with the right mouse button,
   and erase with the middle mouse button.]
-- Pressing ESCAPE (or clicking the X button) closes the game.
+- Press ESCAPE (or click the menu button) to get to the game menu, where you
+  can click on the Quit button. Also, the first letter of a button's label is
+  often mapped as its shortcut.
+
+Debug controls:
+- Toggle the debug camera by pressing 'c'.
+- Move the camera with the rightt mouse button and translate it with the keys
+  'w', 'a', 's', and 'd'.
+- Toggle debug drawing with the enter key.
+- Toggle path node painting with the backslash key.
 
 Settings (can be changed without recompiling in config.txt)
 - Paint generation can be disabled by setting "render.paint.enabled = 0":
