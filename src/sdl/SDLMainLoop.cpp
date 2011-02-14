@@ -180,8 +180,8 @@ void SDLMainLoop::handleEvents() {
             SDL_SetVideoMode(event.resize.w, event.resize.h,
                 0, sdl_init_flags);
             resizeGL(event.resize.w, event.resize.h);
-            projector.setCurrentDimensions(
-                Point2D(event.resize.w, event.resize.h));
+            /*projector.setCurrentDimensions(
+                Point2D(event.resize.w, event.resize.h));*/
             break;
         }
         
