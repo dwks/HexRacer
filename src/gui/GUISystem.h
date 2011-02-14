@@ -38,6 +38,7 @@ public:
     
     Widget::WidgetBase *getWidget(const std::string &path);
     Widget::CompositeWidget *getScreen(const std::string &path);
+    Widget::WidgetBase *getCurrentScreen() { return currentScreen; }
     
     void setScreenSize(Widget::WidgetPoint screenSize)
         { this->screenSize = screenSize; }
