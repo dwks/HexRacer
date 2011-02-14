@@ -40,6 +40,13 @@ private:
 	int hBlurShaderIndex;
 	int vBlurShaderIndex;
 
+	GLuint shadowFBO;
+	GLuint shadowColorTexture;
+	GLuint shadowDepthTexture;
+
+	OpenGL::Camera* shadowCamera;
+	Render::RenderProperties* shadowProperties;
+
     boost::shared_ptr<Mesh::MeshLoader> meshLoader;
     boost::shared_ptr<Render::RenderManager> renderer;
     Render::LightManager *lightManager;  // not allocated here
@@ -77,6 +84,11 @@ private:
 	void bloomBlurPass();
 	void applyBloomBuffer();
 	void drawQuad();
+
+	void initShadowMap();
+	void updateShadowCamera(const Math::Point& position, const Math::Point& focus);
+	void renderToShadowMap(Render::RenderableObject& renderable);
+
 };
 
 }  // namespace SDL

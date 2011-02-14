@@ -23,13 +23,8 @@ class RenderableObject;
 /** Manages the rendering state when rendering renderable objects
 */
 class RenderManager {
-private:
 
-	struct ShaderMapping {
-		string name;
-		string mapped_name;
-	};
-
+public:
 
 	static const int NUM_STANDARD_TEXTURES = 4;
 	int hasTexture [NUM_STANDARD_TEXTURES];
@@ -45,6 +40,13 @@ private:
 
 	static const GLenum CUBE_MAP_TEXTURE_UNIT = GL_TEXTURE4;
 	static const int CUBE_MAP_TEXTURE_INDEX = 4;
+
+private:
+
+	struct ShaderMapping {
+		string name;
+		string mapped_name;
+	};
 
 	RenderSettings* settings;
 	LightManager* lightManager;
@@ -92,6 +94,7 @@ public:
 	bool hasTransformation() const;
 	const Math::BoundingObject* getBoundingObject() const;
 	void setCubeMap(OpenGL::TextureCube* cube_map);
+	void setShadowMapTexture(GLuint shadow_map) { shadowMap = shadow_map; }
 
 	RenderSettings* getRenderSettings() const { return settings; }
 

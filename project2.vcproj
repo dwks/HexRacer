@@ -334,6 +334,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\history\Historian.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\HRMap.cpp"
 				>
 			</File>
@@ -523,6 +527,10 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\PhysicsWorld.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\history\PingTimeMeasurer.cpp"
 				>
 			</File>
 			<File
@@ -1192,6 +1200,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\history\Historian.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\HRMap.h"
 				>
 			</File>
@@ -1373,6 +1385,10 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\PhysicsWorld.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\history\PingTimeMeasurer.h"
 				>
 			</File>
 			<File

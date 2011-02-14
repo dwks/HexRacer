@@ -8,6 +8,8 @@ varying vec3 eyeBitangent;
 
 varying mat3 cameraNormalMatrix;
 
+varying vec4 shadowPosition;
+
 attribute vec3 tangent;
 attribute vec3 bitangent;
 
@@ -23,6 +25,8 @@ void main()
 	
 	eyeTangent = normalize(gl_NormalMatrix * tangent);
 	eyeBitangent = normalize(gl_NormalMatrix * bitangent);
+	
+	shadowPosition = gl_TextureMatrix[3] * gl_Vertex;
 	
 	cameraNormalMatrix[0][0] = -cameraMatrix[0][0];
 	cameraNormalMatrix[0][1] = cameraMatrix[0][1];

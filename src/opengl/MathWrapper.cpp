@@ -24,7 +24,7 @@ void MathWrapper::glGetDouble(Math::Matrix &matrix, int openglMatrix) {
 }
 
 void MathWrapper::glTranslate(const Math::Point &point) {
-	glTranslatef(point.getX(), point.getY(), point.getZ());
+	glTranslated(point.getX(), point.getY(), point.getZ());
 }
 
 }  // namespace OpenGL

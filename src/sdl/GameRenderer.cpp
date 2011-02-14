@@ -1,5 +1,6 @@
 #include <iomanip>  // for std::setprecision()
 #include <vector>
+#include <math.h>
 
 #include "SDL.h"  // for SDL_GetVideoSurface()
 
@@ -69,15 +70,39 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     
     Map::MapLoader().load(map.get(), mapRenderable.get());
 
+	bloomProperties = NULL;
+	shadowProperties = NULL;
+	shadowCamera = NULL;
+
 	if (renderer->getRenderSettings()->getBloomEnabled())
 		initBloom();
+
+	if (renderer->getRenderSettings()->getShadowMappingEnabled())
+		initShadowMap();
 }
 
 void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
+
+	//Activate all lights visible to the camera
+    lightManager->activateIntersectingLights(*camera->getFrustrum());
+
+	Render::RenderList scene_render_list;
+	scene_render_list.addRenderable(world->getRenderableObject());
+	scene_render_list.addRenderable(mapRenderable.get());
     
     //Init Rendering----------------------------------------------------------------------
 
 	world->preRender();
+
+	OpenGL::Light* strongest_light = renderer->getLightManager()->getActiveLight(0);
+
+	if (renderer->getRenderSettings()->getShadowMappingEnabled() && strongest_light) {
+		updateShadowCamera(strongest_light->getPosition(), camera->getLookPosition());
+		renderToShadowMap(scene_render_list);
+		renderer->setShadowMapTexture(shadowDepthTexture);
+	}
+	else
+		renderer->setShadowMapTexture(0);
 
     double near_plane = GET_SETTING("render.camera.nearplane", 0.1);
     double far_plane = GET_SETTING("render.camera.farplane", 300.0);
@@ -95,18 +120,19 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
     glLoadIdentity();
     camera->glLookAt();
 
+	renderer->getLightManager()->reapplyActiveLights();
+
     OpenGL::Color::glColor(OpenGL::Color::WHITE);
     renderer->setCamera(camera);
-  
-    //Activate all lights visible to the camera
-    lightManager->activateIntersectingLights(*camera->getFrustrum());
-    
-    //Render the background
+
+	 //Render the background
     background->render(renderer.get());
 
-    //Render the active lights
+	//Render the active lights
     if(GET_SETTING("render.drawlightspheres", false))
         lightManager->drawActiveLightSpheres(false);
+
+	renderer->getRenderSettings()->setApplyToShadowMatrix(true);
     
     renderWorld(world);
 
@@ -128,19 +154,17 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
     paintManager->render(renderer.get());
 
 	//Revert Rendering Settings
+	renderer->getRenderSettings()->setApplyToShadowMatrix(false);
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
 
 	if (renderer->getRenderSettings()->getBloomEnabled()) {
 
-		Render::RenderList bloom_render_list;
-		bloom_render_list.addRenderable(world->getRenderableObject());
-		bloom_render_list.addRenderable(mapRenderable.get());
-		bloom_render_list.addRenderable(paintManager.get());
+		scene_render_list.addRenderable(paintManager.get());
 
 		//Render to the bloom buffer
 		camera->setFarPlane(GET_SETTING("render.bloom.farplane", 50.0));
-		renderToBloomBuffer(bloom_render_list);
+		renderToBloomBuffer(scene_render_list);
 		preBloomBlur();
 		int blur_passes = GET_SETTING("render.bloom.blurpasses", 5);
 		for (int i = 0; i < blur_passes; i++)
@@ -540,6 +564,134 @@ void GameRenderer::drawQuad() {
 	glVertex2f(0.0f, 1.0f);
 
 	glEnd();
+
+}
+
+void GameRenderer::initShadowMap() {
+
+	glGenTextures(1, &shadowDepthTexture);
+	glBindTexture(GL_TEXTURE_2D, shadowDepthTexture);
+
+	GLfloat border_color [4] = {1.0f, 1.0f, 1.0f, 1.0f};
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border_color);
+
+	glTexImage2D(GL_TEXTURE_2D,
+		0,
+		GL_DEPTH_COMPONENT,
+		renderer->getRenderSettings()->getShadowMapWidth(),
+		renderer->getRenderSettings()->getShadowMapHeight(),
+		0,
+		GL_DEPTH_COMPONENT,
+		GL_UNSIGNED_BYTE,
+		0);
+
+
+	glGenFramebuffersEXT(1, &shadowFBO);
+	glBindFramebufferEXT(GL_FRAMEBUFFER, shadowFBO);
+
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER,
+		GL_DEPTH_ATTACHMENT,
+		GL_TEXTURE_2D,
+		shadowDepthTexture,
+		0);
+
+	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
+
+	shadowCamera = new OpenGL::Camera();
+	shadowCamera->setAspect(
+		(double) renderer->getRenderSettings()->getShadowMapWidth()
+		/ (double) renderer->getRenderSettings()->getShadowMapHeight()
+		);
+	shadowCamera->setFieldOfViewDegrees(15.0);
+
+	shadowProperties = new Render::RenderProperties();
+	shadowProperties->setShaderOverride(true);
+	shadowProperties->setTexturePackOverride(true);
+	shadowProperties->setMaterialOverride(true);
+	shadowProperties->setColorOverride(true);
+
+}
+
+void GameRenderer::updateShadowCamera(const Math::Point& position, const Math::Point& focus) {
+
+	shadowCamera->setPosition(position);
+	shadowCamera->setLookPosition(focus);
+
+	double dist_to_plane = (focus - shadowCamera->getPosition()).projectOnto(shadowCamera->getLookDirection()).length();
+
+	shadowCamera->setNearPlane(dist_to_plane - 40.0);
+	shadowCamera->setFarPlane(dist_to_plane + 40.0);
+	shadowCamera->setFieldOfViewDegrees(std::atan(20.0/dist_to_plane)/PI*360.0);
+	
+
+}
+
+void GameRenderer::renderToShadowMap(Render::RenderableObject& renderable) {
+
+	glViewport(0, 0,
+		renderer->getRenderSettings()->getShadowMapWidth(), renderer->getRenderSettings()->getShadowMapHeight());
+
+	glBindFramebufferEXT(GL_FRAMEBUFFER, shadowFBO);
+
+	//Set up the camera and matrices
+	shadowCamera->glProjection();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	shadowCamera->glLookAt();
+
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	//Save the matrices to the texture matrix
+
+	const GLdouble bias[16] = {	
+		0.5, 0.0, 0.0, 0.0, 
+		0.0, 0.5, 0.0, 0.0,
+		0.0, 0.0, 0.5, 0.0,
+	0.5, 0.5, 0.5, 1.0};
+
+	double modelView[16];
+	double projection[16];
+
+	// Grab modelview and transformation matrices
+	glGetDoublev(GL_MODELVIEW_MATRIX, modelView);
+	glGetDoublev(GL_PROJECTION_MATRIX, projection);
+	
+	//Set the texture matrix
+	glMatrixMode(GL_TEXTURE);
+	glActiveTexture(Render::RenderManager::SHADOW_MAP_TEXTURE_UNIT);
+	glLoadIdentity();
+	glLoadMatrixd(bias);
+	glMultMatrixd(projection);
+	glMultMatrixd(modelView);
+
+	glMatrixMode(GL_MODELVIEW);
+
+	//Cull front faces
+	glCullFace(GL_FRONT);
+	glEnable(GL_CULL_FACE);
+
+	renderer->setCamera(shadowCamera);
+	renderer->setRenderProperties(shadowProperties);
+
+	//Render the scene from the shadow camera
+	renderable.render(renderer.get());
+
+	renderer->revertRenderProperties(shadowProperties);
+
+	//Revert to standard rendering settings
+	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glDisable(GL_CULL_FACE);
+	glViewport(0, 0, SDL_GetVideoSurface()->w, SDL_GetVideoSurface()->h);
 
 }
 

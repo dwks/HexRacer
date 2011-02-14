@@ -12,6 +12,7 @@
 #include "PhysicsWorld.h"
 
 #include "event/ObserverList.h"
+#include "math/Values.h"
 
 #define WHEEL_DIAMETER 0.2
 
@@ -49,6 +50,12 @@ double Suspension::Spring::calculateForceFactor(
     if(!thisDisplacement.isOnGround()) {
         return 0.0;
     }
+
+	//Set the force scaling factor depending on the orientation of the wheel
+	double downwardsFactor = Math::maximum(
+		axis.unitDotProduct(Math::Point(0.0, -1.0, 0.0)),
+		GET_SETTING("physics.driving.mindownfactor", 0.25)
+		);
     
     double displacement = thisDisplacement.getDisplacement();
     double displacementSpeed
@@ -82,7 +89,7 @@ double Suspension::Spring::calculateForceFactor(
     
     //LOG(PHYSICS, "     " << -K*displacement << ", " << C*displacementSpeed);
     
-    return factor;
+    return factor*downwardsFactor;
 }
 
 Suspension::Suspension() : worldManager(NULL), renderManager(NULL) {

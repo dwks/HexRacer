@@ -66,6 +66,16 @@ namespace Render {
 			glPushMatrix(); //Save previous transformation
 			MathWrapper::glMultMatrix(properties->getTransformation());//Apply new transformation
 			numTransformations++;
+
+			if (settings->getApplyToShadowMatrix()) {
+				//Apply the transformation to the shadow matrix
+				glMatrixMode(GL_TEXTURE);
+				glActiveTexture(SHADOW_MAP_TEXTURE_UNIT);
+				glPushMatrix();
+				MathWrapper::glMultMatrix(properties->getTransformation());
+				glMatrixMode(GL_MODELVIEW);
+				glActiveTexture(COLOR_MAP_TEXTURE_UNIT);
+			}
 		}
 
 		setRenderColor(properties);
@@ -187,6 +197,16 @@ namespace Render {
 			return;
 		
 		if (properties->hasTransformation()) {
+
+			if (settings->getApplyToShadowMatrix()) {
+				//Revert the shadow matrix
+				glMatrixMode(GL_TEXTURE);
+				glActiveTexture(SHADOW_MAP_TEXTURE_UNIT);
+				glPopMatrix();
+				glMatrixMode(GL_MODELVIEW);
+				glActiveTexture(COLOR_MAP_TEXTURE_UNIT);
+			}
+
 			glPopMatrix(); //Restore old transformation
 			numTransformations--;
 		}

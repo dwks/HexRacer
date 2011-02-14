@@ -224,7 +224,7 @@ double Point::dotProduct(const Point &other) const {
 }
 
 double Point::unitDotProduct(const Point &other) const {
-	return dotProduct(other)/(length()+other.length());
+	return dotProduct(other)/(length()*other.length());
 }
 
 Point Point::crossProduct(const Point &other) const {

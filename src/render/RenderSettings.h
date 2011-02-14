@@ -13,8 +13,13 @@ private:
 	bool bloomLighting;
 	int bloomWidth;
 	int bloomHeight;
+	
+	bool shadowMapping;
+	int shadowMapWidth;
+	int shadowMapHeight;
 
 	bool redrawMode;
+	bool applyToShadowMatrix;
 
 public:
 
@@ -31,10 +36,15 @@ public:
 	bool getBloomEnabled() { return bloomLighting; }
 	int getBloomWidth() { return bloomWidth; }
 	int getBloomHeight() { return bloomHeight; }
+	bool getShadowMappingEnabled() { return shadowMapping; }
+	int getShadowMapWidth() { return shadowMapWidth; }
+	int getShadowMapHeight() { return shadowMapHeight; }
 
 	//Rendering modes changeable before rendering
 	void setRedrawMode(bool redraw) { redrawMode = redraw; }
 	bool getRedrawMode() const { return redrawMode; }
+	void setApplyToShadowMatrix(bool apply) { applyToShadowMatrix = apply; }
+	bool getApplyToShadowMatrix() const { return applyToShadowMatrix; }
 	
 };
 

@@ -6,7 +6,10 @@ varying vec4 position;
 varying vec3 eyeTangent; 
 varying vec3 eyeBitangent;
 
+varying vec4 light0diffuse;
 varying vec4 vertexColor;
+
+varying vec4 shadowPosition;
 
 attribute vec3 tangent;
 attribute vec3 bitangent;
@@ -24,8 +27,11 @@ void main()
 	eyeTangent = normalize(gl_NormalMatrix * tangent);
 	eyeBitangent = normalize(gl_NormalMatrix * bitangent);
 	
+	shadowPosition = gl_TextureMatrix[3] * gl_Vertex;
+	
 	//Calculate Diffuse and Ambient Lighting----------------------------------------------------------
 	
+	light0diffuse = vec4(0.0, 0.0, 0.0, 0.0);
 	vertexColor = vec4(0.0, 0.0, 0.0, 0.0);
 	float light_dist;
 	float attenuation;
@@ -38,7 +44,8 @@ void main()
 		if (attenuation >= 0.004) {
 			light = normalize((position-gl_LightSource[0].position).xyz);
 			kdiff = max(-dot(light, eyeNormal), 0.0);
-			vertexColor += (gl_LightSource[0].diffuse*kdiff + gl_LightSource[0].ambient) *attenuation;
+			light0diffuse = gl_LightSource[0].diffuse*kdiff*attenuation;
+			vertexColor += (gl_LightSource[0].ambient) *attenuation;
 		}
 	}
 	if (numLights > 1) {

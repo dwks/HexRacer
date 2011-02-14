@@ -7,9 +7,12 @@ varying vec4 position;
 varying vec3 eyeTangent; 
 varying vec3 eyeBitangent;
 
+varying vec4 shadowPosition;
+
 uniform sampler2D colorMap;
 uniform sampler2D normalMap;
 uniform sampler2D glowMap;
+uniform sampler2D shadowMap;
 uniform int hasTexture [4];
 uniform int numLights;
 
@@ -34,6 +37,14 @@ void main() {
 	vec4 specular_color = vec4(0.0, 0.0, 0.0, 0.0);
 	vec4 ambient_color = vec4(0.0, 0.0, 0.0, 0.0);
 	
+	float distanceFromLight = 1.0;
+	vec4 shadowCoordinateWdivide = vec4(0.0, 0.0, 0.0, 0.0);
+	if (hasTexture[3] == 1) {
+		shadowCoordinateWdivide = shadowPosition / shadowPosition.w;
+		shadowCoordinateWdivide.z -= 0.0005;
+		distanceFromLight = texture2D(shadowMap, shadowCoordinateWdivide.xy).z;
+	}
+	
 	if (numLights > 0) {
 		float light_dist = length((position-gl_LightSource[0].position).xyz);
 		float attenuation = min(1.0/(gl_LightSource[0].constantAttenuation + gl_LightSource[0].quadraticAttenuation*light_dist*light_dist), 1.0);
@@ -45,8 +56,10 @@ void main() {
 			float kspec =-dot(reflection,light);
 			kspec = max( pow(kspec, gl_FrontMaterial.shininess) , 0.0);
 			
-			diffuse_color += gl_LightSource[0].diffuse*kdiff*attenuation;
-			specular_color += gl_LightSource[0].specular*kspec*attenuation;
+			if (distanceFromLight > shadowCoordinateWdivide.z) {
+				diffuse_color += gl_LightSource[0].diffuse*kdiff*attenuation;
+				specular_color += gl_LightSource[0].specular*kspec*attenuation;
+			}
 			ambient_color += gl_LightSource[0].ambient*attenuation;
 		}
 	}

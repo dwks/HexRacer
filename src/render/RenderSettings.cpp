@@ -11,9 +11,14 @@ namespace Render {
 		graphicsQuality = GET_SETTING("render.quality", 2);
 		bloomLighting = GET_SETTING("render.bloom.enable", false);
 		bloomWidth = GET_SETTING("render.bloom.width", 800);
-		bloomHeight  = GET_SETTING("render.bloom.height", 600);
+		bloomHeight = GET_SETTING("render.bloom.height", 600);
+
+		shadowMapping = GET_SETTING("render.shadow.enable", false);
+		shadowMapWidth = GET_SETTING("render.shadow.width", 800);
+		shadowMapHeight = GET_SETTING("render.shadow.height", 600);
 
 		redrawMode = false;
+		applyToShadowMatrix = false;
 
 	}
 
