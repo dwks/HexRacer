@@ -52,6 +52,11 @@ Debug controls:
 Settings (can be changed without recompiling in config.txt)
 - The screen resolution can be changed (try 0, 0 for the entire screen)
   [Note that the game window is also resizable.]
+  
+ Changing the Map:
+ Change the map by uncommenting (removing the #) the map setting and commenting the others in the config file.
+ By default, the map is a very large version of a prototype map we created. The other two
+ are smaller versions of it. testtrack2 uses darker lighting, and testtrack3 uses brigter lighting.
 
 
 Compiling the game
