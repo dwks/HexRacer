@@ -36,7 +36,8 @@ void main() {
 	vec4 shadowCoordinateWdivide = vec4(0.0, 0.0, 0.0, 0.0);
 	if (hasTexture[3] == 1) {
 		shadowCoordinateWdivide = shadowPosition / shadowPosition.w;
-		shadowCoordinateWdivide.z -= 0.0005;
+		shadowCoordinateWdivide.z = min(shadowCoordinateWdivide.z, 1.0);
+		shadowCoordinateWdivide.z -= 0.00001;
 		distanceFromLight = texture2D(shadowMap, shadowCoordinateWdivide.xy).z;
 	}
 	

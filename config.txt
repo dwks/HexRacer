@@ -57,12 +57,12 @@ render.bloom.enable = 1
 render.bloom.width = 640
 render.bloom.height = 480
 render.bloom.farplane = 40.0
-render.bloom.blurpasses = 4
+render.bloom.blurpasses = 5
 
 render.shadow.enable = 1
 render.shadow.width = 4096
 render.shadow.height = 4096
-render.shadow.farplane = 40.0
+render.shadow.farplane = 35.0
 
 render.playerglow.min = 0.6
 render.playerglow.factor = 1.5
@@ -81,6 +81,7 @@ render.camera.fovslow = 60.0
 # for AI debugging
 render.drawpathnodes = 0
 render.drawlightspheres = 1
+render.drawshadowcamera = 0
 
 # Models
 render.model.vehicle = data/vehicle/vehicle01.obj

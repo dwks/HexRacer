@@ -31,6 +31,9 @@ namespace Paint {
 		neutralPaintTree = new BSPTree3D(BoundingBox3D(), TREE_SPLIT_METHOD, TREE_SPLIT_SIZE);
 		coloredPaintTree = new BSPTree3D(BoundingBox3D(), TREE_SPLIT_METHOD, TREE_SPLIT_SIZE);
 		getRenderProperties()->setWantsShaderName("paintShader");
+		OpenGL::Material* material = new OpenGL::Material("paintMaterial");
+		material->setShininess(4.0f);
+		getRenderProperties()->setMaterial(material);
 
 		fadePlaneNear = 0.0f;
 		fadePlaneFar = 0.0f;
@@ -43,6 +46,7 @@ namespace Paint {
 	PaintManager::~PaintManager() {
         delete(neutralPaintTree);
 		delete(coloredPaintTree);
+		delete(getRenderProperties()->getMaterial());
     }
 
 	void PaintManager::setPaintCells(const std::vector<PaintCell*>& paint_cells) {
@@ -253,6 +257,12 @@ namespace Paint {
 		cell_color *= 0.85f;
 		GLfloat values [4] = {cell_color.redf(), cell_color.greenf(), cell_color.bluef(), cell_color.alphaf()};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, values);
+		cell_color = cell_color*0.5f+OpenGL::Color(OpenGL::Color::DARKGREY)*0.25f;
+		values[0] = cell_color[0];
+		values[1] = cell_color[1];
+		values[2] = cell_color[2];
+		values[3] = cell_color[3];
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, values);
 		glCallList(cell->displayList);
 	}
 
