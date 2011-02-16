@@ -77,6 +77,8 @@ public:
 	void operator *= (float factor);
 	void operator /= (float factor);
 
+	float operator [] (int index) const;
+
 };
 
 std::ostream &operator << (std::ostream &stream, const Color &color);

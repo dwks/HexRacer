@@ -1,6 +1,8 @@
 #ifndef PROJECT_SDL__GAME_RENDERER_H
 #define PROJECT_SDL__GAME_RENDERER_H
 
+#include <vector>
+
 #include "boost/smart_ptr/shared_ptr.hpp"
 
 #include "mesh/MeshLoader.h"
@@ -46,6 +48,7 @@ private:
 
 	OpenGL::Camera* shadowCamera;
 	Render::RenderProperties* shadowProperties;
+	std::vector<Math::Point> shadowFocusFrustrum;
 
     boost::shared_ptr<Mesh::MeshLoader> meshLoader;
     boost::shared_ptr<Render::RenderManager> renderer;
@@ -76,17 +79,18 @@ public:
     Paint::PaintManager *getPaintManager() { return paintManager.get(); }
 private:
     void renderAIDebug(Object::Player *player);
+	void renderShadowDebug();
     void renderWorld(Object::World *world);
 
 	void initBloom();
 	void renderToBloomBuffer(Render::RenderableObject& renderable);
-	void preBloomBlur();
+	void textureProjection();
 	void bloomBlurPass();
 	void applyBloomBuffer();
 	void drawQuad();
 
 	void initShadowMap();
-	void updateShadowCamera(const Math::Point& position, const Math::Point& focus);
+	void updateShadowCamera(const Math::Point& light_position, OpenGL::Camera* camera);
 	void renderToShadowMap(Render::RenderableObject& renderable);
 
 };

@@ -1,10 +1,9 @@
 ################
 # Settings for the project
 
-#map = data/testtrack.hrm
 #map = data/testtrack2.hrm
-map = data/testtrack2.hrm
-#map = data/testtrackbanking.hrm
+#map = data/testtrack3.hrm
+map = data/testtrack2big.hrm
 
 ########
 ### Display settings
@@ -30,8 +29,8 @@ physics.constant.centripetal      = 1.0
 # Vehicle suspension
 physics.driving.enablesuspension  = 1
 physics.driving.minlength         = 0.0
-physics.driving.restlength        = 0.5
-physics.driving.stretchlength     = 1.0
+physics.driving.restlength        = 0.4
+physics.driving.stretchlength     = 0.75
 physics.driving.constant.k        = 5.0
 physics.driving.constant.c        = 30.0
 physics.driving.mindownfactor = 0.25
@@ -58,11 +57,12 @@ render.bloom.enable = 1
 render.bloom.width = 640
 render.bloom.height = 480
 render.bloom.farplane = 40.0
-render.bloom.blurpasses = 4
+render.bloom.blurpasses = 5
 
 render.shadow.enable = 1
-render.shadow.width = 1280
-render.shadow.height = 960
+render.shadow.width = 4096
+render.shadow.height = 4096
+render.shadow.farplane = 35.0
 
 render.playerglow.min = 0.6
 render.playerglow.factor = 1.5
@@ -81,6 +81,7 @@ render.camera.fovslow = 60.0
 # for AI debugging
 render.drawpathnodes = 0
 render.drawlightspheres = 1
+render.drawshadowcamera = 0
 
 # Models
 render.model.vehicle = data/vehicle/vehicle01.obj

@@ -517,6 +517,14 @@ void MapEditorWidget::keyPressEvent(QKeyEvent *event) {
 				translateCamera(camera->getUpDirection()*-CAMERA_MOVE_INC*precisionScale);
 			;break;
 
+		case Qt::Key_I:
+			if (event->modifiers() & Qt::ControlModifier) {
+				map->scaleAll(2.0);
+				mapObjectsChanged(MapObject::MESH_INSTANCE);
+				updateGL();
+			}
+			;break;
+
 	}
 
 }
