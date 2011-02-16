@@ -290,6 +290,9 @@ void GameRenderer::renderWorld(Object::World *world) {
 
 void GameRenderer::renderDebug(OpenGL::Camera *camera, Object::WorldManager *worldManager, Object::Player *player) {
 
+	if (GET_SETTING("render.drawshadowcamera", false))
+		renderShadowDebug();
+
 	camera->glProjection();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -298,9 +301,7 @@ void GameRenderer::renderDebug(OpenGL::Camera *camera, Object::WorldManager *wor
 	if (GET_SETTING("render.drawpathnodes", false))
 		renderAIDebug(player);
 
-	if (GET_SETTING("render.drawshadowcamera", false))
-		renderShadowDebug();
-
+	
 }
 
 void GameRenderer::renderAIDebug(Object::Player *player) {

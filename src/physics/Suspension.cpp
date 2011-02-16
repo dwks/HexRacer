@@ -141,11 +141,17 @@ void Suspension::setData(Object::WorldManager *worldManager,
 void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
     // add +0.01 to Y so that suspension points are not usually underground
     // multiply Z by 0.9 to shift suspension points inwards slightly
+
+	double front_sep = GET_SETTING("physics.wheel.frontsep", 0.4);
+	double front_z = GET_SETTING("physics.wheel.frontz", 0.68);
+	double back_sep = GET_SETTING("physics.wheel.backsep", 0.4);
+	double back_z = GET_SETTING("physics.wheel.backz", -0.68);
+
     static const Math::Point suspensionPoint[] = {
-        Math::Point(0.4, -0.2 + 0.05, 0.8 * 0.85),
-        Math::Point(-0.4, -0.2 + 0.05, 0.8 * 0.85),
-        Math::Point(-0.4, -0.2 + 0.05, -0.8 * 0.85),
-        Math::Point(0.4, -0.2 + 0.05, -0.8 * 0.85),
+        Math::Point(front_sep, -0.2 + 0.05,front_z),
+        Math::Point(-front_sep, -0.2 + 0.05, front_z),
+        Math::Point(-back_sep, -0.2 + 0.05, back_z),
+        Math::Point(back_sep, -0.2 + 0.05, back_z),
     };
     
     // bullet rays appear to have radius 0.01.
@@ -198,7 +204,7 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
         
         player->setSuspension(wheel,
             suspensionPoint[wheel]
-                + Math::Point(0.0, -down - WHEEL_DIAMETER - 0.05, 0.0));
+                + Math::Point(0.0, -down - GET_SETTING("physics.wheel.diameter", 0.2), 0.0));
         
         /*debugDrawWheel(matrix, suspensionPoint[wheel]
             + Math::Point(0.0, -down - WHEEL_DIAMETER - 0.05, 0.0));*/

@@ -28,12 +28,18 @@ physics.constant.centripetal      = 1.0
 
 # Vehicle suspension
 physics.driving.enablesuspension  = 1
-physics.driving.minlength         = 0.0
-physics.driving.restlength        = 0.4
-physics.driving.stretchlength     = 0.75
+physics.driving.minlength         = 0.20
+physics.driving.restlength        = 0.35
+physics.driving.stretchlength     = 0.5
 physics.driving.constant.k        = 5.0
 physics.driving.constant.c        = 30.0
 physics.driving.mindownfactor = 0.25
+
+physics.wheel.diameter = 0.155
+physics.wheel.frontsep = 0.35
+physics.wheel.frontz = 0.65
+physics.wheel.backsep = 0.35
+physics.wheel.backz = -0.5
 
 # Drag forces
 physics.driving.lineardrag        = 0.5
