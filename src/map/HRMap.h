@@ -129,7 +129,7 @@ public:
 	static bool meshIsInvisible(MeshType type);
 	static bool meshIsSolid(MeshType type);
 	
-	void scaleAll(double scale);
+	void scaleAll(double scale, Math::Point origin = Math::Point());
 
 
 private:

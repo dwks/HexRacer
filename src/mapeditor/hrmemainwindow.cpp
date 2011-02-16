@@ -9,6 +9,7 @@
 #include "MeshInstanceObject.h"
 #include "map/MeshInstance.h"
 #include "misc/DirectoryFunctions.h"
+#include "ScaleAllDialog.h"
 using namespace Misc;
 using namespace Map;
 #include <vector>
@@ -83,6 +84,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	mapMenu->addAction("&Load Cube Map", mapEditor, SLOT(loadCubeMap()));
 	mapMenu->addAction("&Load Prop Mesh", this, SLOT(loadPropMesh()));
 	mapMenu->addAction("&Remove Prop Mesh", mapEditor, SLOT(removePropMesh()));
+	mapMenu->addAction("&Scale All Map Objects", this, SLOT(scaleAll()));
 
 	menuBar->addMenu(fileMenu);
 	menuBar->addMenu(editMenu);
@@ -637,4 +639,11 @@ void HRMEMainWindow::setPropMeshes(vector<string> prop_mesh_names) {
 	for (unsigned int i = 0; i < prop_mesh_names.size(); i++) {
 		propMeshBox->addItem(QString(prop_mesh_names[i].c_str()));
 	}
+}
+
+void HRMEMainWindow::scaleAll() {
+	ScaleAllDialog dialog(this);
+	int ret = dialog.exec();
+	if (ret)
+		mapEditor->scaleAll(dialog.getScale(), dialog.getOrigin());
 }

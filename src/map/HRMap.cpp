@@ -592,23 +592,33 @@ namespace Map {
 
 	}
 
-	void HRMap::scaleAll(double scale) {
+	void HRMap::scaleAll(double scale, Point origin) {
 		for (unsigned int i = 0; i < lights.size(); i++) {
+			lights[i]->translate(-origin);
 			lights[i]->moveCentroid(lights[i]->getPosition()*scale);
+			lights[i]->translate(origin);
 		}
 		for (unsigned int i = 0; i < pathNodes.size(); i++) {
+			pathNodes[i]->translate(-origin);
 			pathNodes[i]->moveCentroid(pathNodes[i]->getPosition()*scale);
+			pathNodes[i]->translate(origin);
 		}
 		for (unsigned int i = 0; i < startPoints.size(); i++) {
+			startPoints[i]->translate(-origin);
 			startPoints[i]->moveCentroid(startPoints[i]->getPosition()*scale);
+			startPoints[i]->translate(origin);
 		}
 		for (unsigned int i = 0; i < meshInstances.size(); i++) {
 			SimpleTransform transform = meshInstances[i]->getTransformation();
 			transform.setScale(transform.getScale()*scale);
+			transform.translate(-origin);
 			transform.setTranslation(transform.getTranslation()*scale);
+			transform.translate(origin);
 			meshInstances[i]->setTransformation(transform);
 		}
+		finishPlane.translate(-origin);
 		finishPlane.moveCentroid(finishPlane.centroid()*scale);
+		finishPlane.translate(origin);
 	}
 }  // namespace Map
 }  // namespace Project

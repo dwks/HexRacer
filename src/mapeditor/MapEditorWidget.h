@@ -12,6 +12,7 @@
 #include "render/RenderList.h"
 #include "render/BackgroundRenderable.h"
 #include "map/HRMap.h"
+#include "CubeMapDialog.h"
 using namespace Project;
 using namespace OpenGL;
 using namespace Math;
@@ -147,6 +148,7 @@ public slots:
 	void setLightStrength(double strength);
 	void setLightHasAttenuation(bool has);
 	void setMeshInstanceType(int type);
+	void scaleAll(double scale, Point origin);
 
 	void setPropMeshIndex(int index);
 	void addPropMesh(string name, string filename);

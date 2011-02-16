@@ -517,14 +517,6 @@ void MapEditorWidget::keyPressEvent(QKeyEvent *event) {
 				translateCamera(camera->getUpDirection()*-CAMERA_MOVE_INC*precisionScale);
 			;break;
 
-		case Qt::Key_I:
-			if (event->modifiers() & Qt::ControlModifier) {
-				map->scaleAll(2.0);
-				mapObjectsChanged(MapObject::MESH_INSTANCE);
-				updateGL();
-			}
-			;break;
-
 	}
 
 }
@@ -1256,4 +1248,10 @@ void MapEditorWidget::removePropMesh() {
 		propMeshesChanged(map->getPropMeshNames());
 		updateGL();
 	}
+}
+
+void MapEditorWidget::scaleAll(double scale, Point origin) {
+	map->scaleAll(scale, origin);
+	mapObjectsChanged(MapObject::MESH_INSTANCE);
+	updateGL();
 }

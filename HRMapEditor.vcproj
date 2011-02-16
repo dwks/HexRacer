@@ -441,6 +441,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\mapeditor\ScaleAllDialog.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\settings\SettingsManager.cpp"
 				>
 			</File>
@@ -517,11 +521,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\TransformedMesh.cpp"
+				RelativePath=".\src\mesh\TransformedMesh.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\mesh\TransformedMesh.cpp"
+				RelativePath=".\src\render\TransformedMesh.cpp"
 				>
 			</File>
 			<File
@@ -931,6 +935,32 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\mapeditor\ScaleAllDialog.h"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputFileName)..."
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; &quot;-I$(QTDIR)\include&quot; &quot;-I$(QTDIR)\include\QtCore&quot; &quot;-I$(QTDIR)\include\QtGui&quot; &quot;-I$(QTDIR)\include\qtmain&quot; &quot;-I$(QTDIR)\include\QtOpenGL&quot; &quot;-I.&quot; &quot;-I.\GeneratedFiles&quot; &quot;-I.\GeneratedFiles\$(ConfigurationName)\.&quot; &quot;-I.\mapeditor&quot; &quot;-I.\src\mapeditor&quot; -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DQT_OPENGL_LIB -DUNICODE -DWIN32&#x0D;&#x0A;"
+						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputFileName)..."
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; &quot;-I$(QTDIR)\include&quot; &quot;-I$(QTDIR)\include\QtCore&quot; &quot;-I$(QTDIR)\include\QtGui&quot; &quot;-I$(QTDIR)\include\qtmain&quot; &quot;-I$(QTDIR)\include\QtOpenGL&quot; &quot;-I.&quot; &quot;-I.\GeneratedFiles&quot; &quot;-I.\GeneratedFiles\$(ConfigurationName)\.&quot; &quot;-I.\mapeditor&quot; &quot;-I.\src\mapeditor&quot; -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_OPENGL_LIB -DUNICODE -DWIN32&#x0D;&#x0A;"
+						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\src\settings\SettingsManager.h"
 				>
 			</File>
@@ -1011,11 +1041,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\TransformedMesh.h"
+				RelativePath=".\src\mesh\TransformedMesh.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\mesh\TransformedMesh.h"
+				RelativePath=".\src\render\TransformedMesh.h"
 				>
 			</File>
 			<File
@@ -1115,6 +1145,18 @@
 						/>
 					</FileConfiguration>
 				</File>
+				<File
+					RelativePath=".\GeneratedFiles\Release\moc_ScaleAllDialog.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
 			</Filter>
 			<Filter
 				Name="Debug"
@@ -1159,6 +1201,18 @@
 				</File>
 				<File
 					RelativePath=".\GeneratedFiles\Debug\moc_MouseSelectorWidget.cpp"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\GeneratedFiles\Debug\moc_ScaleAllDialog.cpp"
 					>
 					<FileConfiguration
 						Name="Release|Win32"

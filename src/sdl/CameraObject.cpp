@@ -85,21 +85,14 @@ namespace SDL {
             desiredFOV = defaultFOV;
             desiredOrientation = defaultOrientation;
         }
-        
-        do {
-            cameraPosition = playerManager->getPlayer()->getTransformation()
+
+		cameraPosition = playerManager->getPlayer()->getTransformation()
             * Math::Point(desiredOrientation.getX(), 
                 desiredOrientation.getY(),
                 desiredOrientation.getZ()*zOffset
                          );
-        
-            length = Physics::PhysicsWorld::getInstance()
-                ->raycastLength(cameraPosition, lookAtPosition);
 
-                zOffset -= 0.001;
-                intendedLength = cameraPosition.distance(lookAtPosition);
-                
-        } while(length < intendedLength && zOffset >= 0.0);
+		Physics::PhysicsWorld::getInstance()->raycastPoint(lookAtPosition,  cameraPosition, &cameraPosition);
         
         CameraObject::setCameraDestination(lookAtPosition, cameraPosition, desiredFOV);
     }

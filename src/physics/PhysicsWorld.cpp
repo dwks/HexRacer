@@ -146,9 +146,12 @@ bool PhysicsWorld::raycastPoint(const Math::Point &from, const Math::Point &to, 
 		if (point) {
 			*point = Converter::toPoint(ray.m_hitPointWorld);
 		}
-
 		return true;
     }
+
+	if (point) {
+		*point = Math::Point(to);
+	}
 
 	return false;
 
