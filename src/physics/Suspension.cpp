@@ -205,9 +205,6 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
         player->setSuspension(wheel,
             suspensionPoint[wheel]
                 + Math::Point(0.0, -down - GET_SETTING("physics.wheel.diameter", 0.2), 0.0));
-        
-        /*debugDrawWheel(matrix, suspensionPoint[wheel]
-            + Math::Point(0.0, -down - WHEEL_DIAMETER - 0.05, 0.0));*/
     }
 }
 
@@ -232,8 +229,18 @@ void Suspension::applyDragForce(Object::Player *player) {
     Math::Point linearVelocity = physicalPlayer->getLinearVelocity();
     Math::Point angularVelocity = physicalPlayer->getAngularVelocity();
     
-    double linear = GET_SETTING("physics.driving.lineardrag", 0.1);
-    double angular = GET_SETTING("physics.driving.angulardrag", 0.1);
+    double linear;
+	double angular;
+
+	if (player->getOnGround()) {
+		linear = GET_SETTING("physics.driving.lineardrag", 0.1);
+		angular = GET_SETTING("physics.driving.angulardrag", 0.1);
+	}
+	else {
+		linear = GET_SETTING("physics.driving.airlineardrag", 0.1);
+		angular = GET_SETTING("physics.driving.airangulardrag", 0.1);
+	}
+
     Math::Point linearDrag = -linear * linearVelocity;
     Math::Point angularDrag = -angular * angularVelocity;
     

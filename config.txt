@@ -2,8 +2,8 @@
 # Settings for the project
 
 #map = data/testtrack2.hrm
-#map = data/testtrack3.hrm
-map = data/testtrack2big.hrm
+map = data/testtrack3.hrm
+#map = data/testtrack2big.hrm
 
 ########
 ### Display settings
@@ -31,8 +31,8 @@ physics.driving.enablesuspension  = 1
 physics.driving.minlength         = 0.20
 physics.driving.restlength        = 0.35
 physics.driving.stretchlength     = 0.5
-physics.driving.constant.k        = 5.0
-physics.driving.constant.c        = 30.0
+physics.driving.constant.k        = 7.5
+physics.driving.constant.c        = 45.0
 physics.driving.mindownfactor = 0.25
 
 physics.wheel.diameter = 0.155
@@ -43,7 +43,9 @@ physics.wheel.backz = -0.5
 
 # Drag forces
 physics.driving.lineardrag        = 0.5
+physics.driving.airlineardrag		= 0.2
 physics.driving.angulardrag       = 0.5
+physics.driving.airangulardrag       = 0.2
 physics.driving.sidewaysdrag      = 20.0
 
 game.enablepathing = 1
@@ -56,16 +58,16 @@ game.enablepathing = 1
 #    1 = low
 #    2 = medium
 #    3 = high
-render.quality = 3
-render.shaderoutput = 1
+render.quality = 2
+render.shaderoutput = 0
 
-render.bloom.enable = 1
+render.bloom.enable = 0
 render.bloom.width = 640
 render.bloom.height = 480
 render.bloom.farplane = 40.0
 render.bloom.blurpasses = 5
 
-render.shadow.enable = 1
+render.shadow.enable = 0
 render.shadow.width = 4096
 render.shadow.height = 4096
 render.shadow.farplane = 35.0
@@ -82,7 +84,6 @@ render.camera.paintthreshhold = 0.35
 render.camera.fieldofview = 60.0
 render.camera.fovboost = 60.0
 render.camera.fovslow = 60.0
-#render.camera.lodthreshhold = 1.0
 
 # for AI debugging
 render.drawpathnodes = 0
