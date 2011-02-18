@@ -686,12 +686,9 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 	double far_plane = GET_SETTING("render.shadow.farplane", 100.0);
 
 	shadowCamera->setPosition(light_position);
-	/*
-	shadowCamera->setLookPosition(camera->cameraToWorld(0.5, 0.5, far_plane*0.5+
-		std::abs((camera->getPosition()-light_position).normalized().dotProduct(camera->getLookDirection()))));
-	*/
 	shadowCamera->setLookPosition(camera->cameraToWorld(0.5, 0.5, far_plane*0.5));
 	shadowCamera->setUpDirection(camera->getUpDirection());
+	//shadowCamera->setUpDirection(shadowCamera->getLookDirection().crossProduct(camera->getLookDirection()));
 
 	shadowFocusFrustrum.clear();
 	shadowFocusFrustrum.push_back(camera->getPosition());
@@ -741,23 +738,6 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 		shadow_far_plane = Math::maximum(shadow_far_plane, z);
 	}
 
-	/*
-	double shadow_far_plane = 0.0;
-	double x_fov = 0.0;
-	double y_fov = 0.0;
-	for (unsigned int i = 0; i < shadowFocusFrustrum.size(); i++) {
-
-		Math::Point to_vector = shadowFocusFrustrum[i]-shadowCamera->getPosition();
-
-		double x = to_vector.dotProduct(shadowCamera->getRightDirection());
-		double y = to_vector.dotProduct(shadowCamera->getUpDirection());
-		double z = to_vector.dotProduct(shadowCamera->getLookDirection());
-		x_fov = Math::maximum(x_fov, abs(std::atan(x/z)));
-		y_fov = Math::maximum(y_fov, abs(std::atan(y/z)));
-		shadow_far_plane = Math::maximum(shadow_far_plane, z);
-	}
-	*/
-
 	double shadow_near_plane = 0.01;
 	Math::BoundingBox3D map_bound = map->getMapBoundingBox();
 	if (!map_bound.pointInside(shadowCamera->getPosition())) {
@@ -776,8 +756,6 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 	shadowCamera->setFarPlane(shadow_far_plane);
 	shadowCamera->setFieldOfViewDegrees(Math::radiansToDegrees(y_angle_max-y_angle_min));
 	shadowCamera->setAspect(std::sin(x_angle_max-x_angle_min)/std::sin(y_angle_max-y_angle_min));
-	//shadowCamera->setFieldOfViewDegrees(y_fov/PI*360.0);
-	//shadowCamera->setAspect(std::sin(x_fov)/std::sin(y_fov));
 
 }
 
