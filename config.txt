@@ -19,11 +19,11 @@ display.bpp        = 0
 ### Physics settings
 
 # World settings
-physics.constant.gravity          = 12
+physics.constant.gravity          = 11
 
 # Acceleration and responsiveness of input
-physics.constant.turn             = 0.15
-physics.constant.accel            = 3.5
+physics.constant.turn             = 0.12
+physics.constant.accel            = 3.1
 physics.constant.centripetal      = 1.0
 
 # Vehicle suspension
@@ -31,7 +31,7 @@ physics.driving.enablesuspension  = 1
 physics.driving.minlength         = 0.20
 physics.driving.restlength        = 0.35
 physics.driving.stretchlength     = 0.5
-physics.driving.constant.k        = 7.5
+physics.driving.constant.k        = 8
 physics.driving.constant.c        = 45.0
 physics.driving.mindownfactor = 0.25
 
