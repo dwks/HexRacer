@@ -11,6 +11,7 @@
 #include "timing/AccelControl.h"
 
 #include "history/PingTimeMeasurer.h"
+#include "misc/Sleeper.h"
 
 namespace Project {
 namespace SDL {
@@ -90,10 +91,12 @@ void GameWorld::doPhysics() {
             ->getPauseSkip();
         Uint32 thisTime = SDL_GetTicks();
         
+        /*LOG(PHYSICS,
+            "step physics by " << (thisTime - lastPhysicsTime) * 1000);*/
+        
         physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
         lastPhysicsTime = thisTime;
     }
-
 }
 
 void GameWorld::updatePlayerPathing() {

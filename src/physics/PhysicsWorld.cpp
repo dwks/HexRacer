@@ -51,7 +51,8 @@ void PhysicsWorld::stepWorld(float microseconds) {
     //LOG2( PHYSICS, TIMESTEP, "Stepping simulation by: " << microseconds << " microseconds");
     
     if ( dynamicsWorld ) {
-        dynamicsWorld->stepSimulation ( microseconds / 1000000.f );
+        // allow at most 5 physics timesteps (at 60 FPS)
+        dynamicsWorld->stepSimulation ( microseconds / 1000000.f, 5 );
     }
 }
 

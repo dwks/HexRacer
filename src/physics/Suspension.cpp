@@ -20,6 +20,7 @@ namespace Project {
 namespace Physics {
 
 void Suspension::PhysicsTickObserver::observe(Event::PhysicsTick *event) {
+    //LOG(PHYSICS, "    internal physics step");
     suspension->doAction(event->getElapsed() * 1000.0);
 }
 
