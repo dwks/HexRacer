@@ -48,6 +48,7 @@ void GameWorld::doConnect(const std::string &host, unsigned short port) {
     }
     
     historian->setWorldManager(worldManager.get());
+    historian->setPhysicsWorld(physicsWorld.get());
 }
 
 void GameWorld::construct(const std::string &host, unsigned short port) {

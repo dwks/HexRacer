@@ -5,6 +5,7 @@
 
 #include "object/WorldManager.h"
 #include "event/UpdateWorld.h"
+#include "physics/PhysicsWorld.h"
 
 #include "event/MultiObserver.h"
 
@@ -26,14 +27,17 @@ private:
     };
 private:
     Object::WorldManager *worldManager;
+    Physics::PhysicsWorld *physicsWorld;
     PingTimeMeasurer *pingTime;
 public:
     Historian();
     ~Historian();
     
     void setWorldManager(Object::WorldManager *worldManager);
+    void setPhysicsWorld(Physics::PhysicsWorld *physicsWorld);
     
     void handleUpdateWorld(Event::UpdateWorld *updateWorld);
+    void advanceWorld(Event::UpdateWorld *updateWorld);
 };
 
 }  // namespace History

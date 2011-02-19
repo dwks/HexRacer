@@ -82,6 +82,8 @@ void Historian::WorldHandler::observe(Event::EventBase *event) {
                 updateObject->getAngularVelocity());
         }
         
+        historian->advanceWorld(updateWorld);
+        
         break;
     }
     default:
@@ -116,6 +118,10 @@ void Historian::setWorldManager(Object::WorldManager *worldManager) {
     ADD_OBSERVER(new WorldHandler(worldManager, this));
 }
 
+void Historian::setPhysicsWorld(Physics::PhysicsWorld *physicsWorld) {
+    this->physicsWorld = physicsWorld;
+}
+
 void Historian::handleUpdateWorld(Event::UpdateWorld *updateWorld) {
     if(false && pingTime->getClockOffset() == PingTimeMeasurer::NO_CLOCK_OFFSET) {
         unsigned long sent = updateWorld->getMilliseconds();
@@ -134,6 +140,17 @@ void Historian::handleUpdateWorld(Event::UpdateWorld *updateWorld) {
         long offset = long(now - sent) + pingTime->getClockOffset();
         
         //LOG(NETWORK, "UpdateWorld is " << offset << " milliseconds old");
+    }
+}
+
+void Historian::advanceWorld(Event::UpdateWorld *updateWorld) {
+    unsigned long sent = updateWorld->getMilliseconds();
+    unsigned long now = Misc::Sleeper::getTimeMilliseconds();
+    
+    long offset = long(now - sent) + pingTime->getClockOffset();
+    
+    if(offset > 0) {
+        physicsWorld->stepWorld(offset);
     }
 }
 
