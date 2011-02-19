@@ -23,7 +23,7 @@ void Historian::WorldHandler::observe(Event::EventBase *event) {
             Object::Player *player
                 = dynamic_cast<Object::Player *>(createObject->getObject());
             
-            if(Settings::ProgramSettings::getInstance()->isServer()) {
+            if(Settings::ProgramSettings::getInstance()->isClient()) {
                 player->setPathTracker(
                     new Map::PathTracker(*worldManager->getPathManager()));
             }

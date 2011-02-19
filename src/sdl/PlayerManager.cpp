@@ -58,6 +58,8 @@ void PlayerManager::PlayerActionHandler::observe(
             origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
             player->setPhysicalObject(
                 Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
+            
+            LOG(WORLD, "Fixing player off track to " << origin);
         }
         else {
             Math::Point origin = manager->raceManager->startingPointForPlayer(player->getID());
@@ -66,6 +68,8 @@ void PlayerManager::PlayerActionHandler::observe(
             origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
             player->setPhysicalObject(
                 Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
+            
+            LOG(WORLD, "Fixing player off track to starting position");
         }
         
         break;

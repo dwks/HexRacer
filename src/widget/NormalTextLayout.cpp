@@ -50,7 +50,7 @@ void NormalTextLayout::update(const WidgetRect &newBounds) {
         }
     }
     
-    LOG(WIDGET, "Text layout gives " << bounds << " in " << hardBounds);
+    //LOG(WIDGET, "Text layout gives " << bounds << " in " << hardBounds);
 }
 
 }  // namespace Widget

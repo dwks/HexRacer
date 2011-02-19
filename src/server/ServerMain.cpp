@@ -94,6 +94,9 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
                 origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
                 player->setPhysicalObject(
                     Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
+                
+                LOG(WORLD, "Fixing player " << player->getID()
+                    << " off track to " << origin);
             }
             else {
                 Math::Point origin = main->raceManager->startingPointForPlayer(player->getID());
@@ -102,6 +105,9 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
                 origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
                 player->setPhysicalObject(
                     Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
+                
+                LOG(WORLD, "Fixing player " << player->getID()
+                    << " off track to starting position");
             }
             break;
         }
