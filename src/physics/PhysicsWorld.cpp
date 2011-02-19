@@ -47,12 +47,13 @@ PhysicsWorld::~PhysicsWorld() {
     delete broadPhaseInterface;
 }
 
-void PhysicsWorld::stepWorld(float microseconds) {
-    //LOG2( PHYSICS, TIMESTEP, "Stepping simulation by: " << microseconds << " microseconds");
+void PhysicsWorld::stepWorld(unsigned long milliseconds) {
+    //LOG2( PHYSICS, TIMESTEP, "Stepping simulation by: " << milliseconds << " milliseconds");
     
     if ( dynamicsWorld ) {
-        // allow at most 5 physics timesteps (at 60 FPS)
-        dynamicsWorld->stepSimulation ( microseconds / 1000000.f, 5 );
+        // allow at most some number of physics timesteps (at 60 FPS)
+        dynamicsWorld->stepSimulation ( milliseconds / 1000.0,
+            GET_SETTING( "physics.maxtimesteps", 5 ) );
     }
 }
 

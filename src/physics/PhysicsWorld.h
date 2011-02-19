@@ -36,7 +36,7 @@ public:
     ~PhysicsWorld();
     
     void setupPhysicsWorld();
-    void stepWorld(float microseconds);
+    void stepWorld(unsigned long milliseconds);
     void setGravity(float xAccel, float yAccel, float zAccel);
     
     void registerRigidBody(btRigidBody *body);

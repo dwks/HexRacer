@@ -305,7 +305,7 @@ void ServerMain::run() {
             lastPhysicsTime += Timing::AccelControl::getInstance()
                 ->getPauseSkip();
             unsigned long thisTime = Misc::Sleeper::getTimeMilliseconds();
-            physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
+            physicsWorld->stepWorld((thisTime - lastPhysicsTime));
             lastPhysicsTime = thisTime;
         }
         

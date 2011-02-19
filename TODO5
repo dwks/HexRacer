@@ -1,0 +1,11 @@
+- more flexible input mapping (left can be 'a' or something)
+- turning moves the front car wheels
+- use rollback in networking code
+- non-linear turning scaling!
+- use less foolable lap tracking
+
+- AI
+- sound
+
+- make the server do player pathing updates (GameWorld::updatePlayerPathing())
+

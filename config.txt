@@ -18,6 +18,9 @@ display.bpp        = 0
 ########
 ### Physics settings
 
+# Physics simulation settings
+physics.maxtimesteps              = 5
+
 # World settings
 physics.constant.gravity          = 11
 
@@ -35,17 +38,18 @@ physics.driving.constant.k        = 8
 physics.driving.constant.c        = 45.0
 physics.driving.mindownfactor = 0.25
 
+# Display options for the vehicle wheels
 physics.wheel.diameter = 0.155
 physics.wheel.frontsep = 0.35
 physics.wheel.frontz = 0.65
 physics.wheel.backsep = 0.35
 physics.wheel.backz = -0.5
 
-# Drag forces
+# Drag forces (when on the ground and when in the air)
 physics.driving.lineardrag        = 0.5
-physics.driving.airlineardrag		= 0.2
+physics.driving.airlineardrag     = 0.2
 physics.driving.angulardrag       = 0.5
-physics.driving.airangulardrag       = 0.2
+physics.driving.airangulardrag    = 0.2
 physics.driving.sidewaysdrag      = 20.0
 
 game.enablepathing = 1

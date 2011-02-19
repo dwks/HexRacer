@@ -95,7 +95,7 @@ void GameWorld::doPhysics() {
         /*LOG(PHYSICS,
             "step physics by " << (thisTime - lastPhysicsTime) * 1000);*/
         
-        physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
+        physicsWorld->stepWorld((thisTime - lastPhysicsTime));
         lastPhysicsTime = thisTime;
     }
 }
