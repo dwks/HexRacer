@@ -232,9 +232,13 @@ void GUISystem::selectScreen(const std::string &screen) {
     // hack to enable unicode translation for screens with edit widgets
     if(screen == "connect" || screen == "settings") {
         SDL_EnableUNICODE(1);
+        SDL_EnableKeyRepeat(
+            SDL_DEFAULT_REPEAT_DELAY,
+            SDL_DEFAULT_REPEAT_INTERVAL);
     }
     else {
         SDL_EnableUNICODE(0);
+        SDL_EnableKeyRepeat(0, 0);
     }
 }
 
