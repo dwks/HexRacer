@@ -53,15 +53,23 @@ void EditEventProxy::visit(KeyEvent *event) {
             widget->setData(oldText.substr(0, oldText.length() - 1));
         }
     }
+    else if(event->getDown() && event->getKey() == SDLK_ESCAPE) {
+        widget->restoreOldText();
+        FocusManager::getInstance()->setKeyFocus(NULL);
+    }
     else if(event->getDown() && event->getKey() == SDLK_RETURN) {
+        bool changed = widget->oldTextChanged();
+        widget->saveOldText();
         FocusManager::getInstance()->setKeyFocus(NULL);
         
-        WidgetModifiedEvent newEvent(widget);
-        
-        LOG(WIDGET, "Edit \"" << widget->getName()
-            << "\" has text \"" << widget->getData() << "\"");
-        
-        widget->handleEvent(&newEvent);
+        if(changed) {
+            WidgetModifiedEvent newEvent(widget);
+            
+            LOG(WIDGET, "Edit \"" << widget->getName()
+                << "\" has text \"" << widget->getData() << "\"");
+            
+            widget->handleEvent(&newEvent);
+        }
     }
 }
 

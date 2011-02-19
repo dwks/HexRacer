@@ -8,6 +8,7 @@
 #include "widget/WidgetModifiedEvent.h"
 
 #include "event/SwitchToScreen.h"
+#include "event/ChangeScreenMode.h"
 #include "event/ObserverList.h"
 
 #include "settings/SettingsManager.h"
@@ -43,18 +44,9 @@ void SettingsProxy::visit(Widget::WidgetModifiedEvent *event) {
             return;
         }
         
-        Settings::SettingsManager::getInstance()->set(
-            "display.width", Misc::StreamAsString() << width);
-        Settings::SettingsManager::getInstance()->set(
-            "display.height", Misc::StreamAsString() << height);
         int bpp = GET_SETTING("display.bpp", 0);
         
-        int sdl_init_flags = SDL_HWSURFACE | SDL_OPENGL | SDL_RESIZABLE;
-        if(GET_SETTING("display.fullscreen", 0)) {
-            sdl_init_flags |= SDL_FULLSCREEN;
-        }
-        
-        SDL_SetVideoMode(width, height, bpp, sdl_init_flags);
+        EMIT_EVENT(new Event::ChangeScreenMode(width, height, bpp));
     }
     else {
         LOG2(GUI, WARNING, "No action for modifying \"" << name << "\"");

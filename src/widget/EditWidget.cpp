@@ -11,6 +11,7 @@ EditWidget::EditWidget(const std::string &name, const std::string &initialData,
     box = new BoxWidget("edit-box", "corners/in/normal");
     box->setLayout(new AbsoluteLayout(bounds));
     
+    oldText = initialData;
     text = new TextWidget("edit-text", OpenGL::Color::WHITE, initialData,
         NormalTextLayout::ALIGN_LEFT | NormalTextLayout::ALIGN_VCENTRE);
     WidgetRect textBounds = bounds;
@@ -34,6 +35,18 @@ void EditWidget::setData(const std::string &data) {
 
 const std::string &EditWidget::getData() {
     return text->getData();
+}
+
+void EditWidget::saveOldText() {
+    oldText = text->getData();
+}
+
+void EditWidget::restoreOldText() {
+    text->setText(oldText);
+}
+
+bool EditWidget::oldTextChanged() {
+    return oldText != text->getData();
 }
 
 void EditWidget::addCharacter(char add) {

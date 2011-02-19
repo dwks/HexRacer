@@ -25,6 +25,24 @@ void SDLMainLoop::QuitObserver::observe(Event::QuitEvent *event) {
     }
 }
 
+void SDLMainLoop::ChangeScreenModeObserver::observe(
+    Event::ChangeScreenMode *event) {
+    
+    int width = event->getWidth();
+    int height = event->getHeight();
+    int bpp = event->getBPP();
+    
+    Settings::SettingsManager::getInstance()->set(
+        "display.width", Misc::StreamAsString() << width);
+    Settings::SettingsManager::getInstance()->set(
+        "display.height", Misc::StreamAsString() << height);
+    Settings::SettingsManager::getInstance()->set(
+        "display.bpp", Misc::StreamAsString() << bpp);
+    
+    SDL_SetVideoMode(width, height, bpp, mainLoop->sdl_init_flags);
+    mainLoop->resizeGL(width, height);
+}
+
 void SDLMainLoop::JoinGameObserver::observe(Event::JoinGame *event) {
     GameLoop *loop = new GameLoop(event->getHost(), event->getPort());
     loop->construct();
@@ -50,6 +68,7 @@ SDLMainLoop::SDLMainLoop() {
     // we know that SDLMainLoop was not constructed from within an event, so
     // it's okay.
     ADD_OBSERVER(new QuitObserver(this));
+    ADD_OBSERVER(new ChangeScreenModeObserver(this));
     ADD_OBSERVER(new JoinGameObserver(this));
     
     initSDL();

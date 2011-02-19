@@ -8,6 +8,7 @@
 
 #include "event/QuitEvent.h"
 #include "event/JoinGame.h"
+#include "event/ChangeScreenMode.h"
 #include "event/TypedObserver.h"
 
 #include "timing/AccelControl.h"
@@ -35,6 +36,16 @@ private:
         QuitObserver(SDLMainLoop *mainLoop) : mainLoop(mainLoop) {}
         
         virtual void observe(Event::QuitEvent *event);
+    };
+    
+    class ChangeScreenModeObserver
+        : public Event::TypedObserver<Event::ChangeScreenMode> {
+    private:
+        SDLMainLoop *mainLoop;
+    public:
+        ChangeScreenModeObserver(SDLMainLoop *mainLoop) : mainLoop(mainLoop) {}
+        
+        virtual void observe(Event::ChangeScreenMode *event);
     };
     
     class JoinGameObserver : public Event::TypedObserver<Event::JoinGame> {

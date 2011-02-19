@@ -7,8 +7,12 @@
 #include "widget/WidgetRenderer.h"
 #include "widget/ButtonWidget.h"
 #include "widget/EditWidget.h"
+
 #include "widget/NormalTextLayout.h"
+
+#include "widget/KeyEvent.h"
 #include "widget/MouseButtonEvent.h"
+
 #include "widget/KeyboardShortcutProxy.h"
 
 #include "GUIObservers.h"
@@ -158,7 +162,14 @@ void GUISystem::render() {
 }
 
 void GUISystem::handleEvent(Widget::WidgetEvent *event) {
-    currentScreen->handleEvent(event);
+    if(dynamic_cast<Widget::KeyEvent *>(event)
+        && focusManager->getKeyFocus()) {
+        
+        focusManager->getKeyFocus()->handleEvent(event);
+    }
+    else {
+        currentScreen->handleEvent(event);
+    }
     
     if(dynamic_cast<Widget::MouseButtonEvent *>(event)) {
         Widget::MouseButtonEvent *button

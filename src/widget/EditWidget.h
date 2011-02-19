@@ -12,6 +12,7 @@ class EditWidget : public AbstractWidget {
 private:
     BoxWidget *box;
     TextWidget *text;
+    std::string oldText;
 public:
     EditWidget(const std::string &name, const std::string &initialData,
         const WidgetRect &bounds);
@@ -33,6 +34,10 @@ public:
     /** Returns the data currently stored in this EditWidget.
     */
     const std::string &getData();
+    
+    void saveOldText();
+    void restoreOldText();
+    bool oldTextChanged();
     
     void addCharacter(char add);
     

@@ -33,6 +33,7 @@ public:
         JOIN_GAME,
         PHYSICS_TICK,
         SWITCH_TO_SCREEN,
+        CHANGE_SCREEN_MODE,
         TYPES
     };
 };
