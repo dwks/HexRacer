@@ -26,12 +26,15 @@ public:
     
     void render();
     
+    const std::string &getData();
     void setText(const std::string &data);
+    void addText(const std::string &add);
     
     virtual void accept(WidgetVisitor &visitor) { visitor.visit(this); }
 private:
     int nextPowerOf2(int x);
     void preRender();
+    void textChanged();
 };
 
 }  // namespace Widget

@@ -4,6 +4,7 @@
 #include "TextWidget.h"
 #include "ButtonWidget.h"
 #include "CompositeWidget.h"
+#include "EditWidget.h"
 
 #include "opengl/OpenGL.h"
 #include "opengl/MathWrapper.h"
@@ -61,6 +62,11 @@ void WidgetRenderer::visit(CompositeWidget *widget) {
         
         child->accept(*this);
     }
+}
+
+void WidgetRenderer::visit(EditWidget *widget) {
+    widget->getBox()->accept(*this);
+    widget->getText()->accept(*this);
 }
 
 void WidgetRenderer::glVertex(const WidgetPoint &point) {

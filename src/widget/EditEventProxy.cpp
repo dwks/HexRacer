@@ -1,36 +1,30 @@
-#include "ButtonEventProxy.h"
+#include <cctype>
+#include "SDL_keysym.h"
+
+#include "EditEventProxy.h"
 
 #include "MouseMoveEvent.h"
 #include "MouseButtonEvent.h"
+#include "KeyEvent.h"
 #include "WidgetActivateEvent.h"
 #include "FocusEvent.h"
 
 #include "FocusManager.h"
 
-#include "log/Logger.h"
-
 namespace Project {
 namespace Widget {
 
-void ButtonEventProxy::visit(MouseMoveEvent *event) {
+void EditEventProxy::visit(MouseMoveEvent *event) {
     FocusManager::getInstance()->setMotionFocus(widget);
-    
-    //widget->getBox()->setArtwork("corners/out/hover");
 }
 
-void ButtonEventProxy::visit(MouseButtonEvent *event) {
+void EditEventProxy::visit(MouseButtonEvent *event) {
     if(event->getButton() == MouseButtonEvent::BUTTON_LEFT) {
         if(event->getDown()) {
             FocusManager::getInstance()->setClickFocus(widget);
-            //widget->getBox()->setArtwork("corners/in/active");
         }
         else if(FocusManager::getInstance()->getClickFocus() == widget) {
-            //widget->getBox()->setArtwork("corners/out/normal");
-            
             WidgetActivateEvent newEvent(widget, true);
-            
-            LOG(WIDGET, "Button \"" << widget->getName()
-                << "\" clicked at " << event->getWhere());
             
             widget->handleEvent(&newEvent);
         }
@@ -41,7 +35,26 @@ void ButtonEventProxy::visit(MouseButtonEvent *event) {
     }
 }
 
-void ButtonEventProxy::visit(FocusEvent *event) {
+void EditEventProxy::visit(KeyEvent *event) {
+    if(event->getUnicode() && std::isprint(event->getUnicode())) {
+        // unicode translation enabled, got a printable key
+        
+        widget->addCharacter(static_cast<char>(event->getUnicode()));
+    }
+    else if(event->getDown() && event->getKey() == SDLK_BACKSPACE) {
+        std::string oldText = widget->getData();
+        
+        if(oldText.length() > 0) {
+            widget->setData(oldText.substr(0, oldText.length() - 1));
+        }
+    }
+}
+
+void EditEventProxy::visit(WidgetActivateEvent *event) {
+    
+}
+
+void EditEventProxy::visit(FocusEvent *event) {
     FocusManager *focus = FocusManager::getInstance();
     bool motionFocus = (focus->getMotionFocus() == widget);
     bool clickFocus = (focus->getClickFocus() == widget);
@@ -53,27 +66,15 @@ void ButtonEventProxy::visit(FocusEvent *event) {
         clickFocus = false;
     }
     
-    if(clickFocus && motionFocus) {
+    if(clickFocus) {
         widget->getBox()->setArtwork("corners/in/active");
     }
-    else if(clickFocus) {
-        widget->getBox()->setArtwork("corners/out/active");
-    }
     else if(motionFocus) {
-        widget->getBox()->setArtwork("corners/out/hover");
+        widget->getBox()->setArtwork("corners/in/hover");
     }
     else {
-        widget->getBox()->setArtwork("corners/out/normal");
+        widget->getBox()->setArtwork("corners/in/normal");
     }
-    
-    /*if(event->getFocus() == FocusEvent::FOCUS_MOTION) {
-        if(event->wasGained()) {
-            widget->getBox()->setArtwork("corners/out/hover");
-        }
-        else {
-            widget->getBox()->setArtwork("corners/out/normal");
-        }
-    }*/
 }
 
 }  // namespace Widget

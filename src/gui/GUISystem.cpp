@@ -6,13 +6,18 @@
 
 #include "widget/WidgetRenderer.h"
 #include "widget/ButtonWidget.h"
+#include "widget/EditWidget.h"
 #include "widget/NormalTextLayout.h"
 #include "widget/MouseButtonEvent.h"
 #include "widget/KeyboardShortcutProxy.h"
 
 #include "GUIObservers.h"
 
+#include "SDL.h"
 #include "SDL_events.h"
+
+#include "settings/SettingsManager.h"
+#include "log/Logger.h"
 
 namespace Project {
 namespace GUI {
@@ -115,6 +120,13 @@ void GUISystem::construct() {
             = new Widget::CompositeWidget("settings");
         widgets->addChild(settings);
         
+        Misc::StreamAsString currentSize;
+        currentSize
+            << GET_SETTING("display.width", 0) << 'x'
+            << GET_SETTING("display.height", 0);
+        settings->addChild(new Widget::EditWidget("screenmode",
+            currentSize, Widget::WidgetRect(0.1, 0.1, 0.35, 0.08)));
+        
         settings->addChild(new Widget::ButtonWidget("accept",
             "Accept settings", Widget::WidgetRect(0.3, 0.9, 0.4, 0.08)));
         
@@ -152,6 +164,14 @@ void GUISystem::handleEvent(Widget::WidgetEvent *event) {
 
 void GUISystem::selectScreen(const std::string &screen) {
     currentScreen = getWidget(screen);
+    
+    // hack to enable unicode translation for screens with edit widgets
+    if(screen == "settings") {
+        SDL_EnableUNICODE(1);
+    }
+    else {
+        SDL_EnableUNICODE(0);
+    }
 }
 
 Widget::WidgetBase *GUISystem::getWidget(const std::string &path) {

@@ -42,6 +42,11 @@ int TextWidget::nextPowerOf2(int x) {
 }
 
 void TextWidget::preRender() {
+    if(data.empty()) {
+        texture = -1;
+        return;
+    }
+    
     SDL_Color c;
     c.r = color.getRedi();
     c.g = color.getGreeni();
@@ -66,10 +71,10 @@ void TextWidget::preRender() {
     // copy data from first to second, translating to new format
     SDL_BlitSurface(first, NULL, second, NULL);
     
-    if(texture == unsigned(-1)) {
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
-    }
+    glEnable(GL_TEXTURE_2D);
+    
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
     
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -77,6 +82,9 @@ void TextWidget::preRender() {
     // we assume this copies the pixels from second, and later free second
     glTexImage2D(GL_TEXTURE_2D, 0, 4, w, h, 0, GL_BGRA, 
         GL_UNSIGNED_BYTE, second->pixels);
+    
+    //glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
     
     SDL_FreeSurface(first);
     SDL_FreeSurface(second);
@@ -86,11 +94,20 @@ void TextWidget::preRender() {
     if(getLayout() == NULL) {
         setLayout(new NormalTextLayout(align, aspectRatio));
     }
+    else {
+        static_cast<NormalTextLayout *>(getLayout())
+            ->setAspectRatio(aspectRatio);
+        getLayout()->update();
+    }
 }
 
 void TextWidget::render() {
     if(dirty) {
         preRender();
+    }
+    
+    if(texture == unsigned(-1)) {
+        return;  // empty text, or error in pre-rendering
     }
     
     WidgetPoint corner = getBoundingRect().getCorner();
@@ -139,9 +156,21 @@ void TextWidget::render() {
     glDisable(GL_TEXTURE_2D);
 }
 
+const std::string &TextWidget::getData() {
+    return data;
+}
+
+void TextWidget::addText(const std::string &add) {
+    this->data += add;
+    textChanged();
+}
+
 void TextWidget::setText(const std::string &data) {
     this->data = data;
-    
+    textChanged();
+}
+
+void TextWidget::textChanged() {
     //LOG(WIDGET, "Text widget data set to \"" << data << "\"");
     
     if(texture != unsigned(-1)) {

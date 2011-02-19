@@ -20,6 +20,7 @@ public:
     virtual void visit(TextWidget *widget);
     virtual void visit(ButtonWidget *widget);
     virtual void visit(CompositeWidget *widget);
+    virtual void visit(EditWidget *widget);
 public:
     static void glVertex(const WidgetPoint &point);
 };

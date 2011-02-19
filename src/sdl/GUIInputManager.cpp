@@ -42,9 +42,10 @@ void GUIInputManager::handleEvent(SDL_Event *event) {
     case SDL_KEYDOWN:
     case SDL_KEYUP: {
         long key = event->key.keysym.sym;
+        long unicode = event->key.keysym.unicode;
         bool down = (event->type == SDL_KEYDOWN);
         
-        Widget::KeyEvent widgetEvent(key, down);
+        Widget::KeyEvent widgetEvent(key, unicode, down);
         gui->handleEvent(&widgetEvent);
     }
     default:
