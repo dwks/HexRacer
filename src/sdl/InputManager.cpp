@@ -23,10 +23,36 @@ InputManager::InputManager(int ms, ClientData *clientData)
     for(std::size_t x = 0; x < sizeof keyDown / sizeof *keyDown; x ++) {
         keyDown[x] = false;
     }
+
+	inputMapper = new Input::InputMapper();
+	inputMapper->addKeyToAnalogMapping(SDLK_LEFT, false, Input::INPUT_A_TURN, 0.0, -1.0);
+	inputMapper->addKeyToAnalogMapping(SDLK_RIGHT, false, Input::INPUT_A_TURN, 0.0, 1.0);
+
+	inputMapper->addKeyToAnalogMapping(SDLK_UP, false, Input::INPUT_A_ACCELERATE, 0.0, 1.0);
+	inputMapper->addKeyToAnalogMapping(SDLK_DOWN, false, Input::INPUT_A_ACCELERATE, 0.0, -1.0);
+
+	inputMapper->addKeyToAnalogMapping(SDLK_w, false, Input::INPUT_A_CAMERA_Z_SPEED, 0.0, 1.0);
+	inputMapper->addKeyToAnalogMapping(SDLK_s, false, Input::INPUT_A_CAMERA_Z_SPEED, 0.0, -1.0);
+
+	inputMapper->addKeyToAnalogMapping(SDLK_a, false, Input::INPUT_A_CAMERA_X_SPEED, 0.0, -1.0);
+	inputMapper->addKeyToAnalogMapping(SDLK_d, false, Input::INPUT_A_CAMERA_X_SPEED, 0.0, 1.0);
+
+	inputMapper->addKeyToDigitalMapping(SDLK_SPACE, false, Input::INPUT_D_JUMP);
+	inputMapper->addKeyToDigitalMapping(SDLK_h, false, Input::INPUT_D_RESET);
+	inputMapper->addKeyToDigitalMapping(SDLK_RETURN, false, Input::INPUT_D_PHYSICS_DEBUG);
+	inputMapper->addKeyToDigitalMapping(SDLK_BACKSLASH, false, Input::INPUT_D_PATH_DEBUG);
+	inputMapper->addKeyToDigitalMapping(SDLK_c, false, Input::INPUT_D_CAMERA_DEBUG);
+	inputMapper->addKeyToDigitalMapping(SDLK_F5, false, Input::INPUT_D_RELOAD_CONFIG);
+
+	inputMapper->addKeyToDigitalMapping(SDLK_p, false, Input::INPUT_D_PAINT);
+	inputMapper->addKeyToDigitalMapping(SDLK_o, false, Input::INPUT_D_ERASE);
+	inputMapper->addKeyToDigitalMapping(SDLK_z, false, Input::INPUT_D_PAINT);
+	inputMapper->addKeyToDigitalMapping(SDLK_x, false, Input::INPUT_D_ERASE);
 }
 
 InputManager::~InputManager() {
     delete joystick;
+	delete inputMapper;
 }
 
 void InputManager::init() {
@@ -35,6 +61,9 @@ void InputManager::init() {
 }
 
 void InputManager::handleEvent(SDL_Event *event) {
+
+	inputMapper->handleEvent(event);
+
     switch(event->type) {
     case SDL_KEYDOWN:
         keyDown[event->key.keysym.sym] = true;
@@ -47,12 +76,41 @@ void InputManager::handleEvent(SDL_Event *event) {
 }
 
 void InputManager::doAction(unsigned long currentTime) {
+
+	inputMapper->update(Input::INPUT_A_TURN);
+	inputMapper->update(Input::INPUT_A_ACCELERATE);
+	inputMapper->update(Input::INPUT_D_JUMP);
+	inputMapper->update(Input::INPUT_D_RESET);
+	inputMapper->update(Input::INPUT_D_PAINT);
+	inputMapper->update(Input::INPUT_D_ERASE);
+
+	if (inputMapper->getAnalogStatus(Input::INPUT_A_TURN) != 0.0) {
+		EMIT_EVENT(new Event::PlayerAction(
+			Event::PlayerAction::TURN,
+			inputMapper->getAnalogStatus(Input::INPUT_A_TURN)));
+	}
+
+	if (inputMapper->getAnalogStatus(Input::INPUT_A_ACCELERATE) != 0.0) {
+		EMIT_EVENT(new Event::PlayerAction(
+				Event::PlayerAction::ACCELERATE,
+				inputMapper->getAnalogStatus(Input::INPUT_A_ACCELERATE)));
+	}
+
+	if (inputMapper->getDigitalStatus(Input::INPUT_D_JUMP))
+		EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::JUMP, 0.0));
+
+	if (inputMapper->getDigitalStatus(Input::INPUT_D_RESET))
+		EMIT_EVENT(new Event::PlayerAction(
+            Event::PlayerAction::FIX_OFF_TRACK, 0.0));
+
+	/*
     if(keyDown[SDLK_LEFT]) {
         EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::TURN, -1.0));
     }
     if(keyDown[SDLK_RIGHT]) {
         EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::TURN, +1.0));
     }
+	
     if(keyDown[SDLK_UP]) {
         EMIT_EVENT(new Event::PlayerAction(
             Event::PlayerAction::ACCELERATE, +1.0));
@@ -64,13 +122,15 @@ void InputManager::doAction(unsigned long currentTime) {
     if(keyDown[SDLK_SPACE]) {
         EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::JUMP, 0.0));
     }
+	
     if(keyDown[SDLK_h]) {
         EMIT_EVENT(new Event::PlayerAction(
             Event::PlayerAction::FIX_OFF_TRACK, 0.0));
     }
+	*/
     
     handlePaint();
-    handleJoystick();
+    //handleJoystick();
 }
 
 void InputManager::doPausedChecks() {
@@ -83,8 +143,15 @@ void InputManager::doPausedChecks() {
         LOG2(SDL, INPUT, (pause ? "Game paused" : "Game unpaused"));
         EMIT_EVENT(new Event::PauseGame(pause));
     }*/
-    if(keyDown[SDLK_F5]) {
-        keyDown[SDLK_F5] = false;
+
+	inputMapper->update(Input::INPUT_D_RELOAD_CONFIG);
+	inputMapper->update(Input::INPUT_D_PHYSICS_DEBUG);
+	inputMapper->update(Input::INPUT_D_PATH_DEBUG);
+	inputMapper->update(Input::INPUT_D_CAMERA_DEBUG);
+	inputMapper->update(Input::INPUT_A_CAMERA_X_SPEED);
+	inputMapper->update(Input::INPUT_A_CAMERA_Z_SPEED);
+
+	if (inputMapper->getDigitalTriggered(Input::INPUT_D_RELOAD_CONFIG)) {
         
         LOG2(GLOBAL, SETTING,
             "Reloading config file \"" << CONFIG_FILE << "\"");
@@ -92,15 +159,13 @@ void InputManager::doPausedChecks() {
         Settings::SettingsManager::getInstance()->removeAll();
         Settings::SettingsManager::getInstance()->load(CONFIG_FILE);
     }
-    if(keyDown[SDLK_RETURN]) {
-        keyDown[SDLK_RETURN] = false;
+    if(inputMapper->getDigitalTriggered(Input::INPUT_D_PHYSICS_DEBUG)) {
         
         static bool debug = false;
         debug = !debug;
         EMIT_EVENT(new Event::SetDebugDrawing(debug));
     }
-    if(keyDown[SDLK_BACKSLASH]) {
-        keyDown[SDLK_BACKSLASH] = false;
+	if(inputMapper->getDigitalTriggered(Input::INPUT_D_PATH_DEBUG)) {
         
         if(!GET_SETTING("render.drawpathnodes", 0)) {
             Settings::SettingsManager::getInstance()->set(
@@ -111,8 +176,7 @@ void InputManager::doPausedChecks() {
                 "render.drawpathnodes", "0");
         }
     }
-    if(keyDown[SDLK_c]) {
-        keyDown[SDLK_c] = false;
+	if(inputMapper->getDigitalTriggered(Input::INPUT_D_CAMERA_DEBUG)) {
         
         static bool debug = false;
         debug = !debug;
@@ -120,6 +184,17 @@ void InputManager::doPausedChecks() {
     }
     
     static const double CAMERA_FACTOR = 0.8;
+
+	if (inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_X_SPEED) != 0.0 ||
+		inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_Z_SPEED) != 0.0) {
+
+		EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
+				* Math::Point(
+				inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_X_SPEED),
+				inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_Z_SPEED))));
+	}
+
+	/*
     if(keyDown[SDLK_w]) {
         EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
             * Math::Point(0.0, 1.0)));
@@ -136,6 +211,7 @@ void InputManager::doPausedChecks() {
         EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
             * Math::Point(+1.0, 0.0)));
     }
+	*/
 }
 
 void InputManager::handlePaint() {
@@ -143,8 +219,7 @@ void InputManager::handlePaint() {
     static bool painting = false;
     static bool erasing = false;
     
-    if(keyDown[SDLK_p]) {
-        keyDown[SDLK_p] = false;
+	if(inputMapper->getDigitalTriggered(Input::INPUT_D_PAINT)) {
         
         painting = !painting;
         erasing = false;
@@ -159,8 +234,7 @@ void InputManager::handlePaint() {
                 Event::TogglePainting::NOTHING));
         }
     }
-    if(keyDown[SDLK_o]) {
-        keyDown[SDLK_o] = false;
+    if(inputMapper->getDigitalTriggered(Input::INPUT_D_ERASE)) {
         
         erasing = !erasing;
         painting = false;
@@ -196,6 +270,7 @@ void InputManager::handleJoystick() {
             Event::PlayerAction::ACCELERATE, rightY));
     }
 }
+
 
 }  // namespace SDL
 }  // namespace Project
