@@ -1,5 +1,6 @@
 #include "GUISystem.h"
 #include "MainMenuProxy.h"
+#include "ConnectProxy.h"
 #include "RunningProxy.h"
 #include "PauseMenuProxy.h"
 #include "SettingsProxy.h"
@@ -40,6 +41,15 @@ void GUISystem::construct() {
     
     widgets = new Widget::CompositeWidget("gui");
     
+    /*
+        Screens:
+            main            Main menu
+            connect         Screen which prompts for host/port
+            running         Displayed while the game is running
+            paused          Paused menu
+            settings        The settings screen accessible from the main menu
+    */
+    
     {
         Widget::CompositeWidget *main
             = new Widget::CompositeWidget("main");
@@ -79,6 +89,40 @@ void GUISystem::construct() {
         getWidget("main/settings")->addEventProxy(new MainMenuProxy());
         getWidget("main/about")->addEventProxy(new MainMenuProxy());
         getWidget("main/quit")->addEventProxy(new MainMenuProxy());
+    }
+    
+    {
+        Widget::CompositeWidget *connect
+            = new Widget::CompositeWidget("connect");
+        widgets->addChild(connect);
+        
+        connect->addChild(new Widget::TextWidget("host-label", "Host:",
+            Widget::NormalTextLayout::ALIGN_RIGHT | Widget::NormalTextLayout::ALIGN_VCENTRE,
+            Widget::WidgetRect(0.1, 0.3, 0.35, 0.08)));
+        connect->addChild(new Widget::EditWidget("host",
+            GET_SETTING("network.host", "localhost"),
+            Widget::WidgetRect(0.5, 0.3, 0.35, 0.08)));
+        
+        connect->addChild(new Widget::TextWidget("port-label", "Port:",
+            Widget::NormalTextLayout::ALIGN_RIGHT | Widget::NormalTextLayout::ALIGN_VCENTRE,
+            Widget::WidgetRect(0.1, 0.4, 0.35, 0.08)));
+        connect->addChild(new Widget::EditWidget("port",
+            GET_SETTING("network.port", "1820"),
+            Widget::WidgetRect(0.5, 0.4, 0.35, 0.08)));
+        
+        connect->addChild(new Widget::ButtonWidget("cancel",
+            "Cancel", Widget::WidgetRect(0.1, 0.5, 0.35, 0.08)));
+        connect->addChild(new Widget::ButtonWidget("connect",
+            "Connect", Widget::WidgetRect(0.5, 0.5, 0.35, 0.08)));
+        
+        setShortcut(getWidget("connect/cancel"), SDLK_ESCAPE);
+        setShortcut(getWidget("connect/connect"), SDLK_RETURN);
+        
+        getWidget("connect/host")->addEventProxy(new ConnectProxy());
+        getWidget("connect/port")->addEventProxy(new ConnectProxy());
+        
+        getWidget("connect/cancel")->addEventProxy(new ConnectProxy());
+        getWidget("connect/connect")->addEventProxy(new ConnectProxy());
     }
     
     {
@@ -186,7 +230,7 @@ void GUISystem::selectScreen(const std::string &screen) {
     currentScreen = getWidget(screen);
     
     // hack to enable unicode translation for screens with edit widgets
-    if(screen == "settings") {
+    if(screen == "connect" || screen == "settings") {
         SDL_EnableUNICODE(1);
     }
     else {

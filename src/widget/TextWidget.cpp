@@ -28,6 +28,21 @@ TextWidget::TextWidget(const std::string &name, OpenGL::Color color,
     dirty = false;
 }
 
+TextWidget::TextWidget(const std::string &name, const std::string &data,
+    unsigned align, const WidgetRect &bounds)
+    : AbstractWidget(name) {
+    
+    this->color = OpenGL::Color::WHITE;
+    this->data = data;
+    this->align = align;
+    texture = -1;
+    
+    preRender();
+    dirty = false;
+    
+    updateLayout(bounds);
+}
+
 TextWidget::~TextWidget() {
     if(texture != unsigned(-1)) {
         // make sure we're finished rendering before deleting the texture

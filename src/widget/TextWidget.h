@@ -22,6 +22,8 @@ public:
         : AbstractWidget(name), texture(-1), dirty(false) {}
     TextWidget(const std::string &name, OpenGL::Color color,
         const std::string &data, unsigned align);
+    TextWidget(const std::string &name, const std::string &data,
+        unsigned align, const WidgetRect &bounds);
     ~TextWidget();
     
     void render();

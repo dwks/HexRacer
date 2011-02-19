@@ -19,9 +19,7 @@ void MainMenuProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();
     
     if(name == "join") {
-        EMIT_EVENT(new Event::JoinGame(
-            GET_SETTING("network.host", "localhost").c_str(),
-            GET_SETTING("network.port", 1820)));
+        EMIT_EVENT(new Event::SwitchToScreen("connect"));
     }
     else if(name == "single") {
         EMIT_EVENT(new Event::JoinGame());
