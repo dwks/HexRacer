@@ -11,6 +11,8 @@
 #include "render/RenderList.h"
 #include "render/BackgroundRenderable.h"
 
+#include "FPSRateMonitor.h"
+
 #include "paint/PaintManager.h"
 
 #include "map/HRMap.h"
@@ -65,6 +67,7 @@ private:
     
     boost::shared_ptr<GUI::GUISystem> gui;
     Widget::TextWidget *percentageComplete;
+    boost::shared_ptr<FPSRateMonitor> fpsRate;
 
 public:
     void construct(OpenGL::Camera *camera);

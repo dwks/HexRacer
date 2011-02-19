@@ -59,6 +59,11 @@ int TextWidget::nextPowerOf2(int x) {
 void TextWidget::preRender() {
     if(data.empty()) {
         texture = -1;
+        
+        if(getLayout() == NULL) {
+            setLayout(new NormalTextLayout(align, 1.0));
+        }
+        
         return;
     }
     
@@ -169,6 +174,11 @@ void TextWidget::render() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     glDisable(GL_TEXTURE_2D);
+}
+
+void TextWidget::setColor(OpenGL::Color color) {
+    this->color = color;
+    textChanged();
 }
 
 const std::string &TextWidget::getData() {

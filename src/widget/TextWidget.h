@@ -28,6 +28,8 @@ public:
     
     void render();
     
+    void setColor(OpenGL::Color color);
+    
     const std::string &getData();
     void setText(const std::string &data);
     void addText(const std::string &add);
