@@ -14,8 +14,15 @@ void GUIObservers::PauseGameObserver::observe(Event::PauseGame *event) {
     }
 }
 
+void GUIObservers::SwitchToScreenObserver::observe(
+    Event::SwitchToScreen *event) {
+    
+    gui->selectScreen(event->getScreen());
+}
+
 GUIObservers::GUIObservers(GUISystem *gui) : gui(gui) {
     ADD_OBSERVER(new PauseGameObserver(gui));
+    ADD_OBSERVER(new SwitchToScreenObserver(gui));
 }
 
 }  // namespace GUI

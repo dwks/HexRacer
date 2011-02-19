@@ -32,6 +32,7 @@ public:
         ENTIRE_WORLD,
         JOIN_GAME,
         PHYSICS_TICK,
+        SWITCH_TO_SCREEN,
         TYPES
     };
 };

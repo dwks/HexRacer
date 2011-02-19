@@ -134,12 +134,14 @@ void Historian::handleUpdateWorld(Event::UpdateWorld *updateWorld) {
         pingTime->setClockOffset(offset);
     }
     else {
+#if 0
         unsigned long sent = updateWorld->getMilliseconds();
         unsigned long now = Misc::Sleeper::getTimeMilliseconds();
         
         long offset = long(now - sent) + pingTime->getClockOffset();
         
-        //LOG(NETWORK, "UpdateWorld is " << offset << " milliseconds old");
+        LOG(NETWORK, "UpdateWorld is " << offset << " milliseconds old");
+#endif
     }
 }
 

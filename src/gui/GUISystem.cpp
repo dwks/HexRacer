@@ -2,6 +2,7 @@
 #include "MainMenuProxy.h"
 #include "RunningProxy.h"
 #include "PauseMenuProxy.h"
+#include "SettingsProxy.h"
 
 #include "widget/WidgetRenderer.h"
 #include "widget/ButtonWidget.h"
@@ -101,15 +102,28 @@ void GUISystem::construct() {
         
         setShortcut(getWidget("paused/resume"), SDLK_ESCAPE);
         setShortcut(getWidget("paused/resume"), SDLK_r);
+        setShortcut(getWidget("paused/settings"), SDLK_s);
         setShortcut(getWidget("paused/quit"), SDLK_q);
         
-        //getWidget("paused/help")->addEventProxy(new PauseMenuProxy());
         getWidget("paused/resume")->addEventProxy(new PauseMenuProxy());
         getWidget("paused/settings")->addEventProxy(new PauseMenuProxy());
         getWidget("paused/quit")->addEventProxy(new PauseMenuProxy());
     }
     
-    selectScreen("paused");
+    {
+        Widget::CompositeWidget *settings
+            = new Widget::CompositeWidget("settings");
+        widgets->addChild(settings);
+        
+        settings->addChild(new Widget::ButtonWidget("accept",
+            "Accept settings", Widget::WidgetRect(0.3, 0.9, 0.4, 0.08)));
+        
+        setShortcut(getWidget("settings/accept"), SDLK_ESCAPE);
+        
+        getWidget("settings/accept")->addEventProxy(new SettingsProxy());
+    }
+    
+    selectScreen("main");
     
     observers = new GUIObservers(this);
 }

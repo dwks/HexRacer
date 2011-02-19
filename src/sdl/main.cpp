@@ -16,8 +16,6 @@ int main(int argc, char *argv[]) {
     
     Project::Event::ObserverList::getInstance().destroyObject();
     
-    settings.dump();
-    
     Project::Log::LogOpener::closeLogs();
     return 0;
 }

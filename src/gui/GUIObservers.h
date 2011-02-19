@@ -5,6 +5,7 @@
 
 #include "event/TypedObserver.h"
 #include "event/PauseGame.h"
+#include "event/SwitchToScreen.h"
 
 namespace Project {
 namespace GUI {
@@ -20,6 +21,16 @@ private:
         PauseGameObserver(GUISystem *gui) : gui(gui) {}
         
         virtual void observe(Event::PauseGame *event);
+    };
+    
+    class SwitchToScreenObserver
+        : public Event::TypedObserver<Event::SwitchToScreen> {
+    private:
+        GUISystem *gui;
+    public:
+        SwitchToScreenObserver(GUISystem *gui) : gui(gui) {}
+        
+        virtual void observe(Event::SwitchToScreen *event);
     };
 public:
     GUIObservers(GUISystem *gui);

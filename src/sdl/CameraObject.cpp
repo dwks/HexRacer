@@ -70,7 +70,7 @@ namespace SDL {
         Math::Point lookAtPosition  = playerManager->getPlayer()->getPosition();
         Math::Point lookAtOffset = Math::Point(0.0,1.0,0.0);
         Math::Point cameraPosition, desiredOrientation;
-        double intendedLength, length, desiredFOV;
+        double desiredFOV;
         double zOffset = 1.0;
         
         lookAtPosition += lookAtOffset;

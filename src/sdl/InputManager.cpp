@@ -92,6 +92,7 @@ void InputManager::doPausedChecks() {
         
         Settings::SettingsManager::getInstance()->removeAll();
         Settings::SettingsManager::getInstance()->load(CONFIG_FILE);
+        Settings::SettingsManager::getInstance()->dump();
     }
     if(keyDown[SDLK_RETURN]) {
         keyDown[SDLK_RETURN] = false;
