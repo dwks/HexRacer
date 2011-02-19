@@ -9,6 +9,7 @@ class MouseButtonEvent;
 class KeyEvent;
 class WidgetActivateEvent;
 class FocusEvent;
+class WidgetModifiedEvent;
 
 class EventVisitor {
 public:
@@ -19,6 +20,7 @@ public:
     virtual void visit(KeyEvent *event) = 0;
     virtual void visit(WidgetActivateEvent *event) = 0;
     virtual void visit(FocusEvent *event) = 0;
+    virtual void visit(WidgetModifiedEvent *event) = 0;
 };
 
 }  // namespace Widget

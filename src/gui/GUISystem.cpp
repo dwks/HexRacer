@@ -120,18 +120,27 @@ void GUISystem::construct() {
             = new Widget::CompositeWidget("settings");
         widgets->addChild(settings);
         
+        settings->addChild(new Widget::TextWidget("screenmode-label",
+            OpenGL::Color::WHITE, "Screen resolution:",
+            Widget::NormalTextLayout::ALIGN_RIGHT | Widget::NormalTextLayout::ALIGN_VCENTRE));
+        settings->getChild("screenmode-label")
+            ->updateLayout(Widget::WidgetRect(0.1, 0.1, 0.35, 0.08));
         Misc::StreamAsString currentSize;
         currentSize
             << GET_SETTING("display.width", 0) << 'x'
             << GET_SETTING("display.height", 0);
         settings->addChild(new Widget::EditWidget("screenmode",
-            currentSize, Widget::WidgetRect(0.1, 0.1, 0.35, 0.08)));
+            currentSize, Widget::WidgetRect(0.5, 0.1, 0.35, 0.08)));
+        
+        settings->addChild(new Widget::EditWidget("testing",
+            "test", Widget::WidgetRect(0.5, 0.2, 0.35, 0.08)));
         
         settings->addChild(new Widget::ButtonWidget("accept",
             "Accept settings", Widget::WidgetRect(0.3, 0.9, 0.4, 0.08)));
         
         setShortcut(getWidget("settings/accept"), SDLK_ESCAPE);
         
+        getWidget("settings/screenmode")->addEventProxy(new SettingsProxy());
         getWidget("settings/accept")->addEventProxy(new SettingsProxy());
     }
     

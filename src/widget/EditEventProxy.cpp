@@ -8,8 +8,11 @@
 #include "KeyEvent.h"
 #include "WidgetActivateEvent.h"
 #include "FocusEvent.h"
+#include "WidgetModifiedEvent.h"
 
 #include "FocusManager.h"
+
+#include "log/Logger.h"
 
 namespace Project {
 namespace Widget {
@@ -36,6 +39,8 @@ void EditEventProxy::visit(MouseButtonEvent *event) {
 }
 
 void EditEventProxy::visit(KeyEvent *event) {
+    if(FocusManager::getInstance()->getKeyFocus() != widget) return;
+    
     if(event->getUnicode() && std::isprint(event->getUnicode())) {
         // unicode translation enabled, got a printable key
         
@@ -48,16 +53,27 @@ void EditEventProxy::visit(KeyEvent *event) {
             widget->setData(oldText.substr(0, oldText.length() - 1));
         }
     }
+    else if(event->getDown() && event->getKey() == SDLK_RETURN) {
+        FocusManager::getInstance()->setKeyFocus(NULL);
+        
+        WidgetModifiedEvent newEvent(widget);
+        
+        LOG(WIDGET, "Edit \"" << widget->getName()
+            << "\" has text \"" << widget->getData() << "\"");
+        
+        widget->handleEvent(&newEvent);
+    }
 }
 
 void EditEventProxy::visit(WidgetActivateEvent *event) {
-    
+    FocusManager::getInstance()->setKeyFocus(widget);
 }
 
 void EditEventProxy::visit(FocusEvent *event) {
     FocusManager *focus = FocusManager::getInstance();
     bool motionFocus = (focus->getMotionFocus() == widget);
     bool clickFocus = (focus->getClickFocus() == widget);
+    bool keyFocus = (focus->getKeyFocus() == widget);
     
     if(event->getFocus() == FocusEvent::FOCUS_MOTION && event->wasLost()) {
         motionFocus = false;
@@ -65,8 +81,11 @@ void EditEventProxy::visit(FocusEvent *event) {
     if(event->getFocus() == FocusEvent::FOCUS_CLICK && event->wasLost()) {
         clickFocus = false;
     }
+    if(event->getFocus() == FocusEvent::FOCUS_KEY && event->wasLost()) {
+        keyFocus = false;
+    }
     
-    if(clickFocus) {
+    if(clickFocus || keyFocus) {
         widget->getBox()->setArtwork("corners/in/active");
     }
     else if(motionFocus) {

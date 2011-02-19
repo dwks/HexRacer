@@ -9,6 +9,7 @@ namespace GUI {
 class SettingsProxy : public Widget::EventProxy {
 public:
     virtual void visit(Widget::WidgetActivateEvent *event);
+    virtual void visit(Widget::WidgetModifiedEvent *event);
 };
 
 }  // namespace GUI
