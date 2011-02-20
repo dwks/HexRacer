@@ -106,9 +106,6 @@ void TextWidget::preRender() {
     //glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
     
-    SDL_FreeSurface(first);
-    SDL_FreeSurface(second);
-    
     double aspectRatio = double(first->h) / first->w;
     
     if(getLayout() == NULL) {
@@ -119,6 +116,9 @@ void TextWidget::preRender() {
             ->setAspectRatio(aspectRatio);
         getLayout()->update();
     }
+    
+    SDL_FreeSurface(first);
+    SDL_FreeSurface(second);
 }
 
 void TextWidget::render() {

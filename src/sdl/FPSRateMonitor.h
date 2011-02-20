@@ -15,6 +15,7 @@ private:
     Widget::TextWidget *widget;
 public:
     FPSRateMonitor();
+    ~FPSRateMonitor();
     
     void countFrame();
     

@@ -74,13 +74,14 @@ SDLMainLoop::SDLMainLoop() {
     initSDL();
     initOpenGL();
     
-    
-    
     menuLoop = new MenuLoop();
     loop = menuLoop;
 }
 
 SDLMainLoop::~SDLMainLoop() {
+    delete menuLoop;
+    if(!currentlyUsingMenuLoop()) delete loop;
+    
     TTF_Quit();
     SDL_Quit();
 }
@@ -90,6 +91,8 @@ void SDLMainLoop::useLoopBase(LoopBase *loop) {
 }
 
 void SDLMainLoop::useMenuLoop() {
+    delete this->loop;  // delete the other menu, whatever it is
+    
     menuLoop->getGUI()->selectScreen("main");
     this->loop = menuLoop;
 }

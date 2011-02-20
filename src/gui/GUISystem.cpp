@@ -28,9 +28,13 @@ namespace Project {
 namespace GUI {
 
 GUISystem::~GUISystem() {
+    LOG(GUI, "Destructing GUI system");
+    
     delete widgets;
+    
     delete textureList;
     delete fontManager;
+    delete focusManager;
     delete observers;
 }
 

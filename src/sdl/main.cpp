@@ -11,8 +11,9 @@ int main(int argc, char *argv[]) {
     Project::Settings::ProgramSettings programSettings(true);
     Project::Settings::SettingsManager settings(CONFIG_FILE);
     
-    Project::SDL::SDLMainLoop sdlmain;
-    sdlmain.run();
+    Project::SDL::SDLMainLoop *sdlmain = new Project::SDL::SDLMainLoop();
+    sdlmain->run();
+    delete sdlmain;
     
     Project::Event::ObserverList::getInstance().destroyObject();
     

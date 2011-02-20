@@ -17,6 +17,10 @@ FPSRateMonitor::FPSRateMonitor() {
         Widget::WidgetRect(0.0, 0.95, 0.125, 0.04));
 }
 
+FPSRateMonitor::~FPSRateMonitor() {
+    delete widget;
+}
+
 void FPSRateMonitor::countFrame() {
     unsigned long now = Misc::Sleeper::getTimeMilliseconds();
     if(!startTime) {

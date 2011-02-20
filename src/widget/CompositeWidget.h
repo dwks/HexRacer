@@ -25,7 +25,12 @@ public:
     };
 public:
     CompositeWidget(const std::string &name);
+    ~CompositeWidget();
     
+    /**
+        Note: a CompositeWidget owns its children and will delete them upon
+        destruction.
+    */
     void addChild(WidgetBase *widget);
     virtual WidgetBase *getChild(const std::string &name);
     

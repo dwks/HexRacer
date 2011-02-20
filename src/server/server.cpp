@@ -11,8 +11,9 @@ int main(int argc, char *argv[]) {
     Project::Settings::ProgramSettings programSettings(false);
     Project::Settings::SettingsManager settings(CONFIG_FILE);
     
-    Project::Server::ServerMain server;
-    server.run();
+    Project::Server::ServerMain *server = new Project::Server::ServerMain();
+    server->run();
+    delete server;
     
     Project::Event::ObserverList::getInstance().destroyObject();
     
