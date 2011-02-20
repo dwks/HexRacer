@@ -124,7 +124,7 @@ namespace SDL {
     void CameraObject::slerpCamera(){
         Math::Point currentLookAt,currentPos,currentViewAxis,destViewAxis,resultPos,resultAxis;
         double resultFOV;
-        btQuaternion result;
+        btQuaternion result = btQuaternion::getIdentity();
         
         currentPos = camera->getPosition();
         

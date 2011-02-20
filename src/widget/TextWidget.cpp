@@ -24,8 +24,8 @@ TextWidget::TextWidget(const std::string &name, OpenGL::Color color,
     this->align = align;
     texture = -1;
     
+    dirty = true;
     preRender();
-    dirty = false;
 }
 
 TextWidget::TextWidget(const std::string &name, const std::string &data,
@@ -119,6 +119,8 @@ void TextWidget::preRender() {
     
     SDL_FreeSurface(first);
     SDL_FreeSurface(second);
+    
+    dirty = false;
 }
 
 void TextWidget::render() {

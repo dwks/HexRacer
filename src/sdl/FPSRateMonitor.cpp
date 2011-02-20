@@ -18,7 +18,7 @@ FPSRateMonitor::FPSRateMonitor() {
 }
 
 FPSRateMonitor::~FPSRateMonitor() {
-    delete widget;
+    //delete widget;  // auto-deleted by the CompositeWidget
 }
 
 void FPSRateMonitor::countFrame() {

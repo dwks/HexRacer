@@ -14,11 +14,11 @@ namespace Shader {
 
 	ShaderManager::~ShaderManager() {
 		for (unsigned int i = 0; i < shaderPrograms.size(); i++)
-			delete[] shaderPrograms[i];
+			delete shaderPrograms[i];
 		for (unsigned int i = 0; i < standardUniformLocations.size(); i++)
-			delete[] standardUniformLocations[i];
+			delete [] standardUniformLocations[i];
 		for (unsigned int i = 0; i < standardAttributeLocations.size(); i++)
-			delete[] standardAttributeLocations[i];
+			delete [] standardAttributeLocations[i];
 	}
 
 	void ShaderManager::loadShadersFile(string filename) {

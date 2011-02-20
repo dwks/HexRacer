@@ -32,12 +32,13 @@ PhysicsWorld::PhysicsWorld() {
 }
 
 PhysicsWorld::~PhysicsWorld() {
-    /*for(std::vector<btRigidBody*>::iterator i = collisionBodies.begin();
+    for(std::vector<btRigidBody*>::iterator i = collisionBodies.begin();
         i != collisionBodies.end(); ++ i) {
         
-        destroyRigidBody(*i);
+        //destroyRigidBody(*i);
+        dynamicsWorld->removeRigidBody(*i);
         delete (*i);
-    }*/
+    }
     
     // delete in reverse order of allocation, more or less
     delete dynamicsWorld;
