@@ -82,7 +82,7 @@ void GameRenderer::construct(OpenGL::Camera *camera)
 }
 
 void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
-    fpsRate->countFrame();
+    if(fpsRate) fpsRate->countFrame();
     
 	//Activate all lights visible to the camera
     lightManager->activateIntersectingLights(*camera->getFrustrum());
@@ -263,8 +263,10 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 void GameRenderer::setGUI(boost::shared_ptr<GUI::GUISystem> gui) {
     this->gui = gui;
     
-    fpsRate = boost::shared_ptr<FPSRateMonitor>(new FPSRateMonitor());
-    gui->getScreen("running")->addChild(fpsRate->getWidget());
+    if(GET_SETTING("render.showfps", 1)) {
+        fpsRate = boost::shared_ptr<FPSRateMonitor>(new FPSRateMonitor());
+        gui->getScreen("running")->addChild(fpsRate->getWidget());
+    }
     
 #if 0
     percentageComplete = new Widget::TextWidget(
