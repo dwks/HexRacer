@@ -320,6 +320,7 @@ void ServerMain::run() {
             Network::Packet *packet = new Network::EventPacket(update);
             clients.sendPacket(packet);
             delete packet;
+            delete update;
         }
         
         {

@@ -143,6 +143,8 @@ void TextWidget::render() {
     glEnable(GL_BLEND);
     
     glBlendFunc(GL_ONE, GL_ONE);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
     
     glBegin(GL_QUADS);
     
@@ -176,6 +178,7 @@ void TextWidget::render() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
 }
 
 void TextWidget::setColor(OpenGL::Color color) {
