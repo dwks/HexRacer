@@ -350,23 +350,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\input\InputAnalogEvent.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\input\InputAxisAction.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\input\InputButtonAction.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\input\InputDigitalEvent.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\input\InputEvents.cpp"
 				>
 			</File>
 			<File
@@ -1248,10 +1236,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\input\InputAnalogEvent.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\input\InputAxisAction.h"
 				>
 			</File>
@@ -1260,11 +1244,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\input\InputDigitalEvent.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\input\InputEvents.h"
+				RelativePath=".\src\input\InputEventTypes.h"
 				>
 			</File>
 			<File

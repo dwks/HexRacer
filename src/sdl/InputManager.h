@@ -10,6 +10,8 @@
 #include "ClientData.h"
 #include "JoystickManager.h"
 
+#include "input/InputMapper.h"
+
 namespace Project {
 namespace SDL {
 
@@ -18,6 +20,8 @@ private:
     bool keyDown[SDLK_LAST];
     ClientData *clientData;
     JoystickManager *joystick;
+	Input::InputMapper* inputMapper;
+
 public:
     InputManager(int ms, ClientData *clientData);
     ~InputManager();
@@ -29,6 +33,8 @@ public:
     virtual void doAction(unsigned long currentTime);
     
     void doPausedChecks();
+
+	//virtual void doStep(unsigned long currentTime) { doAction(currentTime); }
 private:
     void handlePaint();
     void handleJoystick();
