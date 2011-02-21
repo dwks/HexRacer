@@ -81,19 +81,19 @@ void GameRenderer::construct(OpenGL::Camera *camera)
 		initShadowMap();
 }
 
-void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
+void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldManager) {
     if(fpsRate) fpsRate->countFrame();
     
 	//Activate all lights visible to the camera
     lightManager->activateIntersectingLights(*camera->getFrustrum());
 
 	Render::RenderList scene_render_list;
-	scene_render_list.addRenderable(world->getRenderableObject());
+	scene_render_list.addRenderable(worldManager->getWorld()->getRenderableObject());
 	scene_render_list.addRenderable(mapRenderable.get());
     
     //Init Rendering----------------------------------------------------------------------
 
-	world->preRender();
+	worldManager->getWorld()->preRender();
 
 	OpenGL::Light* strongest_light = renderer->getLightManager()->getActiveLight(0);
 
@@ -135,7 +135,7 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
     if(GET_SETTING("render.drawlightspheres", false))
         lightManager->drawActiveLightSpheres(false);
     
-    renderWorld(world);
+	renderWorld(worldManager->getWorld());
 
 	//Paint Rendering----------------------------------------------------------------------
 
@@ -153,6 +153,16 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
 	//Render the paint
 	paintManager->setFadePlanes((float) (near_plane+(paint_far_plane-near_plane)*0.75), (float) paint_far_plane);
     paintManager->render(renderer.get());
+
+	//Render the erasing effects
+	Object::WorldManager::PlayerIteratorType iterator = worldManager->getPlayerIterator();
+	while (iterator.hasNext()) {
+		Object::Player* player = iterator.next();
+
+		if (player->getOnGround() && player->getPaintType() == Event::TogglePainting::ERASING) {
+			paintManager->renderEraseEffect(player->getPosition(), PAINTING_RADIUS);
+		}
+	}
 
 	//Revert Rendering Settings
 	renderer->getRenderSettings()->setApplyToShadowMatrix(false);

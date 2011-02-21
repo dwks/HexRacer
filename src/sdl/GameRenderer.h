@@ -74,7 +74,7 @@ public:
     
     void setGUI(boost::shared_ptr<GUI::GUISystem> gui);
     
-    void render(OpenGL::Camera *camera, Object::World *world);
+    void render(OpenGL::Camera *camera, Object::WorldManager *worldManager);
     void renderHUD(Object::WorldManager *worldManager, Object::Player *player);
 	void renderDebug(OpenGL::Camera *camera, Object::WorldManager *worldManager, Object::Player *player);
     
