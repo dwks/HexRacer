@@ -14,6 +14,7 @@ public:
 
 	InputAction(double off_value, double on_value)
 		: offValue(off_value), onValue(on_value) {}
+    virtual ~InputAction() {}
 
 	virtual InputType type() const = 0;
 };

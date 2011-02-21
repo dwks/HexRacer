@@ -67,6 +67,7 @@ void InputManager::handleEvent(SDL_Event *event) {
     switch(event->type) {
     case SDL_KEYDOWN:
         keyDown[event->key.keysym.sym] = true;
+        
         break;
     case SDL_KEYUP:
         keyDown[event->key.keysym.sym] = false;
@@ -195,25 +196,6 @@ void InputManager::doPausedChecks() {
 				inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_X_SPEED),
 				inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_Z_SPEED))));
 	}
-
-	/*
-    if(keyDown[SDLK_w]) {
-        EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
-            * Math::Point(0.0, 1.0)));
-    }
-    if(keyDown[SDLK_a]) {
-        EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
-            * Math::Point(-1.0, 0.0)));
-    }
-    if(keyDown[SDLK_s]) {
-        EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
-            * Math::Point(0.0, -1.0)));
-    }
-    if(keyDown[SDLK_d]) {
-        EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
-            * Math::Point(+1.0, 0.0)));
-    }
-	*/
 }
 
 void InputManager::handlePaint() {

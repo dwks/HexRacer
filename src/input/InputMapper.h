@@ -33,23 +33,27 @@ private:
 public:
 
 	InputMapper();
-
+    ~InputMapper();
+    
 	void handleEvent(SDL_Event *event);
-
+    
 	void addKeyToDigitalMapping(int key, bool invert, DigitalInputEvent event_id);
 	void addKeyToAnalogMapping(int key, bool invert, AnalogInputEvent event_id,
 		double off_value = 0.0, double on_value = 1.0);
 	//void addButtonToDigitalMapping(int button, SDL::JoystickManager* joystick, bool invert, DigitalInputEvent event_id);
-
+    
 	void clearMappings();
-
+    
 	void update();
 	void update(DigitalInputEvent event_id);
 	void update(AnalogInputEvent event_id);
-
-	bool getDigitalStatus(DigitalInputEvent type) { return digitalEventStatus[static_cast<int>(type)]; }
-	bool getDigitalTriggered(DigitalInputEvent type) { return digitalEventTriggered[static_cast<int>(type)]; }
-	double getAnalogStatus(AnalogInputEvent type) { return analogEventStatus[static_cast<int>(type)]; }
+    
+	bool getDigitalStatus(DigitalInputEvent type) const
+        { return digitalEventStatus[static_cast<int>(type)]; }
+	bool getDigitalTriggered(DigitalInputEvent type) const
+        { return digitalEventTriggered[static_cast<int>(type)]; }
+	double getAnalogStatus(AnalogInputEvent type) const
+        { return analogEventStatus[static_cast<int>(type)]; }
 
 };
 

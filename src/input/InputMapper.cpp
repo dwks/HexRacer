@@ -1,10 +1,10 @@
+#include <algorithm>
+
 #include "InputMapper.h"
 #include "InputKeyAction.h"
 #include "InputButtonAction.h"
 
-#include <math.h>
-
-#include <typeinfo>
+#include "misc/DeleteFunctor.h"
 
 namespace Project {
 namespace Input {
@@ -13,6 +13,30 @@ namespace Input {
 		for (int i = 0; i < SDLK_LAST; i++)
 			keyDown[i] = false;
 	}
+
+    InputMapper::~InputMapper() {
+        for(int x = 0; x < NUM_DIGITAL_TYPES; x ++) {
+            // we could use this instead!
+            /*std::for_each(
+                digitalMappings[x].begin(),
+                digitalMappings[x].end(),
+                Misc::DeleteFunctor<InputAction>());*/
+            
+            for(std::vector<InputAction*>::size_type y = 0;
+                y < digitalMappings[x].size(); ++y) {
+                
+                delete digitalMappings[x][y];
+            }
+        }
+        
+        for(int x = 0; x < NUM_ANALOG_TYPES; x ++) {
+            for(std::vector<InputAction*>::size_type y = 0;
+                y < analogMappings[x].size(); ++y) {
+                
+                delete analogMappings[x][y];
+            }
+        }
+    }
 
 	void InputMapper::handleEvent(SDL_Event *event) {
 		switch(event->type) {
@@ -26,12 +50,15 @@ namespace Input {
 	}
 
 	void InputMapper::addKeyToDigitalMapping(int key, bool invert, DigitalInputEvent event_id) {
-		digitalMappings[static_cast<int>(event_id)].push_back(new InputKeyAction(key, invert));
+        digitalMappings[static_cast<int>(event_id)].push_back(
+            new InputKeyAction(key, invert));
 	}
 
 	void InputMapper::addKeyToAnalogMapping(int key, bool invert, AnalogInputEvent event_id,
 		double off_value, double on_value) {
-		analogMappings[static_cast<int>(event_id)].push_back(new InputKeyAction(key, invert, off_value, on_value));
+        
+        analogMappings[static_cast<int>(event_id)].push_back(
+            new InputKeyAction(key, invert, off_value, on_value));
 	}
 
 	void InputMapper::update() {
@@ -77,7 +104,7 @@ namespace Input {
 
 			case InputAction::KEY: {
 				InputKeyAction* key_action = (InputKeyAction*) action;
-				return (keyDown[key_action->key]^key_action->invert);
+				return (keyDown[key_action->key] ^ key_action->invert);
 			}
 
 			default: return false;
@@ -92,7 +119,7 @@ namespace Input {
 			case InputAction::KEY: {
 
 				InputKeyAction* key_action = (InputKeyAction*) action;
-				if (keyDown[key_action->key]^key_action->invert)
+				if (keyDown[key_action->key] ^ key_action->invert)
 					return action->onValue;
 				else
 					return action->offValue;
