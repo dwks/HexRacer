@@ -13,7 +13,7 @@ public:
 	bool invert;
 
 	InputKeyAction(int _key, bool _invert, double off_value = 0.0, double on_value = 1.0)
-		: key(_key), invert(_invert), InputAction(off_value, on_value) {}
+		: InputAction(off_value, on_value), key(_key), invert(_invert) {}
 
 	InputType type() const { return KEY; }
 };

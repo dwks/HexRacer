@@ -12,6 +12,7 @@ aux_source_directory(gui GUI_SOURCES)
 aux_source_directory(handler HANDLER_SOURCES)
 aux_source_directory(history HISTORY_SOURCES)
 aux_source_directory(hud HUD_SOURCES)
+aux_source_directory(input INPUT_SOURCES)
 aux_source_directory(log LOG_SOURCES)
 aux_source_directory(map MAP_SOURCES)
 aux_source_directory(mapeditor MAP_EDITOR_DIR_SOURCES)
@@ -57,7 +58,8 @@ set(SDL_SOURCES
     ${WIDGET_SOURCES}
     ${GUI_SOURCES}
     ${HUD_SOURCES}
-    ${HISTORY_SOURCES})
+    ${HISTORY_SOURCES}
+    ${INPUT_SOURCES})
 
 set(SERVER_SOURCES
     ${SERVER_DIR_SOURCES})

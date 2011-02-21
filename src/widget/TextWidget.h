@@ -13,7 +13,7 @@ class TextWidget : public AbstractWidget {
 private:
     OpenGL::Color color;
     std::string data;
-    unsigned int texture;
+    unsigned texture;
     double widthFactor, heightFactor;
     unsigned align;
     bool dirty;
