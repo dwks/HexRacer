@@ -5,7 +5,7 @@
 
 #include "event/PauseGame.h"
 #include "event/QuitEvent.h"
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 #include "log/Logger.h"
 

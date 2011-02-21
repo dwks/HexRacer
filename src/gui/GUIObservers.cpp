@@ -1,6 +1,6 @@
 #include "GUIObservers.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 namespace Project {
 namespace GUI {

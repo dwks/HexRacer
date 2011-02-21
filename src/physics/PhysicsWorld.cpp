@@ -8,7 +8,7 @@
 #include "opengl/OpenGL.h"
 
 #include "event/PhysicsTick.h"
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 #include "PhysicsFactory.h"
 
 #include "settings/SettingsManager.h"

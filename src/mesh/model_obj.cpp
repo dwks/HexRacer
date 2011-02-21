@@ -34,6 +34,11 @@
 // Tutors programs (http://www.xmission.com/~nate/tutors.html).
 //
 //-----------------------------------------------------------------------------
+//
+// Parts of this code have been modified for use in this project, fixing
+// compiler warnings and using parts of the rest of the codebase.
+//
+//-----------------------------------------------------------------------------
 
 #include <algorithm>
 #include <cmath>
@@ -315,7 +320,8 @@ void ModelOBJ::addTrianglePos(int index, int material, int v0, int v1, int v2)
     {
         {0.0f, 0.0f, 0.0f},
         {0.0f, 0.0f},
-        {0.0f, 0.0f, 0.0f}
+        {0.0f, 0.0f, 0.0f},
+        {}, {}
     };
 
     m_attributeBuffer[index] = material;
@@ -344,7 +350,8 @@ void ModelOBJ::addTrianglePosNormal(int index, int material, int v0, int v1,
         {0.0f, 0.0f, 0.0f},
         {0.0f, 0.0f},
         {0.0f, 0.0f, 0.0f},
-        {0.0f, 0.0f, 0.0f}
+        {0.0f, 0.0f, 0.0f},
+        {}
     };
 
     m_attributeBuffer[index] = material;
@@ -382,7 +389,8 @@ void ModelOBJ::addTrianglePosTexCoord(int index, int material, int v0, int v1,
         {0.0f, 0.0f, 0.0f},
         {0.0f, 0.0f},
         {0.0f, 0.0f, 0.0f},
-        {0.0f, 0.0f, 0.0f}
+        {0.0f, 0.0f, 0.0f},
+        {}
     };
 
     m_attributeBuffer[index] = material;
@@ -418,7 +426,8 @@ void ModelOBJ::addTrianglePosTexCoordNormal(int index, int material, int v0,
         {0.0f, 0.0f, 0.0f},
         {0.0f, 0.0f},
         {0.0f, 0.0f, 0.0f},
-        {0.0f, 0.0f, 0.0f}
+        {0.0f, 0.0f, 0.0f},
+        {}
     };
 
     m_attributeBuffer[index] = material;
@@ -915,9 +924,11 @@ void ModelOBJ::importGeometryFirstPass(FILE *pFile)
             {0.0f, 0.0f, 0.0f, 1.0f},
             0.0f,
             1.0f,
-            std::string("default"),
-            std::string(),
-            std::string()
+            "default",
+            "",
+            "",
+            "",
+            ""
         };
 
         m_materials.push_back(defaultMaterial);

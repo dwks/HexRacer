@@ -94,9 +94,6 @@ private:
     
     void calculateSuspensionForPlayer(Object::Player *player);
     void applyDragForce(Object::Player *player);
-    
-    void debugDrawWheel(const Math::Matrix &transform,
-        const Math::Point &centre);
 };
 
 }  // namespace Physics

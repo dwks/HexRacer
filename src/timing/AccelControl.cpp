@@ -1,7 +1,7 @@
 #include "AccelControl.h"
 #include "misc/Sleeper.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 namespace Project {
 namespace Timing {

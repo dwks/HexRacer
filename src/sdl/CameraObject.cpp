@@ -1,5 +1,5 @@
 #include "CameraObject.h"
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 #include "physics/PhysicsWorld.h"
 

@@ -1,7 +1,7 @@
 #include "ServerNetworkPortal.h"
 #include "network/EventPacket.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 #include "event/TogglePainting.h"
 
 #include "log/Logger.h"

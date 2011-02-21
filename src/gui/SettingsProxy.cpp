@@ -9,7 +9,7 @@
 
 #include "event/SwitchToScreen.h"
 #include "event/ChangeScreenMode.h"
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 #include "settings/SettingsManager.h"
 #include "log/Logger.h"

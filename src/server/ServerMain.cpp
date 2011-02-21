@@ -21,7 +21,7 @@
 #include "event/UpdateWorld.h"
 #include "event/EntireWorld.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 #include "physics/PhysicsWorld.h"
 #include "physics/PhysicsFactory.h"

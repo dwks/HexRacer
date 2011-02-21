@@ -7,7 +7,7 @@
 #include "MenuLoop.h"
 #include "GameLoop.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 #include "settings/SettingsManager.h"
 

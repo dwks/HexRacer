@@ -1,7 +1,7 @@
 #include <cstddef>  // for std::size_t
 #include "InputManager.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 #include "event/PlayerAction.h"
 #include "event/CameraMovement.h"
 #include "event/SetDebugDrawing.h"

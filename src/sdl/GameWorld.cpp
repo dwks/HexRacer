@@ -5,7 +5,7 @@
 #include "settings/SettingsManager.h"
 #include "settings/ProgramSettings.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 #include "event/PlayerAction.h"
 
 #include "timing/AccelControl.h"

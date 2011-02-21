@@ -6,7 +6,7 @@
 #include "event/QuitEvent.h"
 #include "event/JoinGame.h"
 #include "event/SwitchToScreen.h"
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 #include "log/Logger.h"
 

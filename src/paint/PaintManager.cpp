@@ -2,7 +2,7 @@
 #include "opengl/MathWrapper.h"
 #include "math/BoundingSphere.h"
 #include "render/ColorConstants.h"
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 #include "settings/SettingsManager.h"
 using namespace Project;
 using namespace Math;

@@ -5,7 +5,7 @@
 #include "event/UpdateObject.h"
 #include "event/UpdateWorld.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 #include "settings/ProgramSettings.h"
 #include "misc/Sleeper.h"

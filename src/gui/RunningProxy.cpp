@@ -4,7 +4,7 @@
 #include "widget/WidgetActivateEvent.h"
 #include "event/PauseGame.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 #include "log/Logger.h"
 

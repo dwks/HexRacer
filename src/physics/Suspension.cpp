@@ -11,10 +11,8 @@
 
 #include "PhysicsWorld.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 #include "math/Values.h"
-
-#define WHEEL_DIAMETER 0.2
 
 namespace Project {
 namespace Physics {
@@ -263,34 +261,6 @@ void Suspension::applyDragForce(Object::Player *player) {
             physicalPlayer->applyForce(sidewaysDrag);
         }
     }
-}
-
-void Suspension::debugDrawWheel(const Math::Matrix &transform,
-    const Math::Point &centre) {
-    
-    static bool first = true;
-    static int diskID;
-    if(first) {
-        GLUquadric *quadric = gluNewQuadric();
-        diskID = glGenLists(1);
-        glNewList(diskID, GL_COMPILE);
-        gluDisk(quadric, WHEEL_DIAMETER * 0.1, WHEEL_DIAMETER, 18, 18);
-        glEndList();
-        gluDeleteQuadric(quadric);
-    }
-    
-    glPushMatrix();
-    
-    OpenGL::MathWrapper::glMultMatrix(transform);
-    OpenGL::MathWrapper::glMultMatrix(
-        Math::Matrix::getTranslationMatrix(centre));
-    glRotated(90.0, 0.0, 1.0, 0.0);
-    
-    //LOG(PHYSICS, "debug wheel at " << centre);
-    
-    glCallList(diskID);
-    
-    glPopMatrix();
 }
 
 }  // namespace Physics

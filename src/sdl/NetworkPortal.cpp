@@ -12,7 +12,7 @@
 #include "network/EventPacket.h"
 #include "network/HandshakePacket.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 #include "event/PacketReceived.h"
 #include "event/TogglePainting.h"
 #include "event/EntireWorld.h"

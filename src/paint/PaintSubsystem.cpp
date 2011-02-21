@@ -1,7 +1,7 @@
 #include "PaintSubsystem.h"
 
 #include "event/PaintEvent.h"
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 #include "config.h"
 

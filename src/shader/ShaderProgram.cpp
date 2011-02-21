@@ -10,7 +10,9 @@ using namespace std;
 namespace Project {
 namespace Shader {
 
-ShaderProgram::ShaderProgram(GLchar *fs, GLchar *vs) { // Built the shader program
+ShaderProgram::ShaderProgram(const GLchar *fs, const GLchar *vs) {
+    // Build the shader program
+    
 	char *vsf = NULL;
 	char *fsf = NULL;
 	vsf = textFileRead(vs);
@@ -85,7 +87,7 @@ char *ShaderProgram::textFileRead(const char *fn) {
 	return content;
 }
 
-int ShaderProgram::textFileWrite(char *fn, char *s) {
+int ShaderProgram::textFileWrite(const char *fn, const char *s) {
 
 	FILE *fp;
 	int status = 0;

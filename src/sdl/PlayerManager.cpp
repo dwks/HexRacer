@@ -3,7 +3,7 @@
 #include "opengl/OpenGL.h"
 #include "opengl/MathWrapper.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 #include "log/Logger.h"
 
