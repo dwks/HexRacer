@@ -69,6 +69,15 @@ bool GameWorld::tryConnect(const std::string &host, unsigned short port) {
 void GameWorld::constructAfterConnect(Map::HRMap *map) {
     basicWorld->constructAfterConnect(map);
     
+    // hack: add path trackers to existing players in the deserialized world
+    Object::PlayerList::IteratorType it
+        = getWorldManager()->getPlayerList()->getIterator();
+    while(it.hasNext()) {
+        Object::Player *player = it.next();
+        player->setPathTracker(
+            new Map::PathTracker(*getWorldManager()->getPathManager()));
+    }
+    
     if(!isConnectedToNetwork) {
         Map::RaceManager *raceManager = basicWorld->getRaceManager();
         

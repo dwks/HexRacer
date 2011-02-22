@@ -3,6 +3,9 @@
 
 #include "settings/SettingsManager.h"
 
+#include "event/EventSystem.h"
+#include "event/PlayerAction.h"
+
 namespace Project {
 namespace Map {
 
@@ -41,16 +44,14 @@ void PathingUpdater::update() {
 
             }
         }
-#if 0
         else {
             //Reset the player if they are below the kill plane
             //Probably not doing the right ID check?
-            if (player->getID() == 0 && origin_pos.getY() < raceManager->getKillPlaneY()) {
-                EMIT_EVENT(new Event::PlayerAction(
+            if (origin_pos.getY() < raceManager->getKillPlaneY()) {
+                EMIT_EVENT(new Event::PlayerAction(player->getID(),
                     Event::PlayerAction::FIX_OFF_TRACK, 0.0));
             }
         }
-#endif
     }
 }
 
