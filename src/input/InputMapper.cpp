@@ -3,8 +3,10 @@
 #include "InputMapper.h"
 #include "InputKeyAction.h"
 #include "InputButtonAction.h"
+#include "InputAxisAction.h"
 
 #include "misc/DeleteFunctor.h"
+#include "math/Values.h"
 
 namespace Project {
 namespace Input {
@@ -39,6 +41,10 @@ namespace Input {
         }
     }
 
+	InputMapper::~InputMapper() {
+		clearAllMappings();
+	}
+
 	void InputMapper::handleEvent(SDL_Event *event) {
 		switch(event->type) {
 		case SDL_KEYDOWN:
@@ -62,7 +68,37 @@ namespace Input {
             new InputKeyAction(key, invert, off_value, on_value));
 	}
 
-	void InputMapper::update() {
+	void InputMapper::addButtonToDigitalMapping(int button, SDL::JoystickManager* joystick,
+		bool invert, DigitalInputEvent event_id) {
+		digitalMappings[static_cast<int>(event_id)].push_back(new InputButtonAction(button, joystick, invert));
+	}
+
+	void InputMapper::addButtonToAnalogMapping(int button, SDL::JoystickManager* joystick, bool invert, AnalogInputEvent event_id,
+		double off_value, double on_value) {
+		analogMappings[static_cast<int>(event_id)].push_back(
+			new InputButtonAction(button, joystick, invert, off_value, on_value)
+			);
+	}
+
+	void InputMapper::addAxisToDigitalMapping(int axis, SDL::JoystickManager* joystick,
+		double start_value, double end_value, double deadzone, DigitalInputEvent event_id) {
+
+		digitalMappings[static_cast<int>(event_id)].push_back(
+			new InputAxisAction(axis, joystick, start_value, end_value, deadzone)
+			);
+	}
+
+	void InputMapper::addAxisToAnalogMapping(int axis, SDL::JoystickManager* joystick,
+		double start_value, double end_value, double deadzone, AnalogInputEvent event_id,
+		double off_value, double on_value) {
+
+		analogMappings[static_cast<int>(event_id)].push_back(
+			new InputAxisAction(axis, joystick, start_value, end_value, deadzone, off_value, on_value)
+			);
+
+	}
+
+	void InputMapper::updateAll() {
 
 		for (int i = 0; i < NUM_DIGITAL_TYPES; i++) {
 			update(static_cast<DigitalInputEvent>(i));
@@ -97,6 +133,36 @@ namespace Input {
 		}
 		
 		snapshot.setAnalogStatus(event_id, status);
+
+	}
+
+	void InputMapper::clearAllMappings() {
+
+		for (int i = 0; i < NUM_DIGITAL_TYPES; i++) {
+			clearMappings(static_cast<DigitalInputEvent>(i));
+		}
+
+		for (int i = 0; i < NUM_ANALOG_TYPES; i++) {
+			clearMappings(static_cast<AnalogInputEvent>(i));
+	
+		}
+
+	}
+
+	void InputMapper::clearMappings(DigitalInputEvent event_id) {
+		int index = static_cast<int>(event_id);
+		for (unsigned int i = 0; i < digitalMappings[index].size(); i++) {
+			delete digitalMappings[index][i];
+		}
+		digitalMappings[index].clear();
+	}
+
+	void InputMapper::clearMappings(AnalogInputEvent event_id) {
+		int index = static_cast<int>(event_id);
+		for (unsigned int i = 0; i < analogMappings[index].size(); i++) {
+			delete analogMappings[index][i];
+		}
+		analogMappings[index].clear();
 	}
 
 	bool InputMapper::inputActionToBool(InputAction* action) {
@@ -106,6 +172,21 @@ namespace Input {
 			case InputAction::KEY: {
 				InputKeyAction* key_action = (InputKeyAction*) action;
 				return (keyDown[key_action->key] ^ key_action->invert);
+			}
+
+			case InputAction::BUTTON: {
+				InputButtonAction* button_action = (InputButtonAction*) action;
+				return button_action->getState();
+		   }
+
+			case InputAction::AXIS: {
+				InputAxisAction* axis_action = (InputAxisAction*) action;
+
+				double value = axis_action->getStickValue();
+				return (
+					value < Math::maximum(axis_action->startValue, axis_action->endValue) &&
+					value > Math::minimum(axis_action->startValue, axis_action->endValue)
+					);
 			}
 
 			default: return false;
@@ -124,6 +205,20 @@ namespace Input {
 					return action->onValue;
 				else
 					return action->offValue;
+			}
+
+			case InputAction::BUTTON: {
+
+				InputButtonAction* button_action = (InputButtonAction*) action;
+				if (button_action->getState())
+					return action->onValue;
+				else
+					return action->offValue;
+			}
+
+			case InputAction::AXIS: {
+				InputAxisAction* axis_action = (InputAxisAction*) action;
+				return axis_action->getState();
 			}
 
 		   default: return 0.0;

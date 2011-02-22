@@ -23,30 +23,7 @@ namespace SDL {
 InputManager::InputManager(int ms, ClientData *clientData)
     : TimedSubsystem(ms), clientData(clientData) {
     
-	inputMapper = new Input::InputMapper();
-	inputMapper->addKeyToAnalogMapping(SDLK_LEFT, false, Input::INPUT_A_TURN, 0.0, -1.0);
-	inputMapper->addKeyToAnalogMapping(SDLK_RIGHT, false, Input::INPUT_A_TURN, 0.0, 1.0);
-
-	inputMapper->addKeyToAnalogMapping(SDLK_UP, false, Input::INPUT_A_ACCELERATE, 0.0, 1.0);
-	inputMapper->addKeyToAnalogMapping(SDLK_DOWN, false, Input::INPUT_A_ACCELERATE, 0.0, -1.0);
-
-	inputMapper->addKeyToAnalogMapping(SDLK_w, false, Input::INPUT_A_CAMERA_Z_SPEED, 0.0, 1.0);
-	inputMapper->addKeyToAnalogMapping(SDLK_s, false, Input::INPUT_A_CAMERA_Z_SPEED, 0.0, -1.0);
-
-	inputMapper->addKeyToAnalogMapping(SDLK_a, false, Input::INPUT_A_CAMERA_X_SPEED, 0.0, -1.0);
-	inputMapper->addKeyToAnalogMapping(SDLK_d, false, Input::INPUT_A_CAMERA_X_SPEED, 0.0, 1.0);
-
-	inputMapper->addKeyToDigitalMapping(SDLK_SPACE, false, Input::INPUT_D_JUMP);
-	inputMapper->addKeyToDigitalMapping(SDLK_h, false, Input::INPUT_D_RESET);
-	inputMapper->addKeyToDigitalMapping(SDLK_RETURN, false, Input::INPUT_D_PHYSICS_DEBUG);
-	inputMapper->addKeyToDigitalMapping(SDLK_BACKSLASH, false, Input::INPUT_D_PATH_DEBUG);
-	inputMapper->addKeyToDigitalMapping(SDLK_c, false, Input::INPUT_D_CAMERA_DEBUG);
-	inputMapper->addKeyToDigitalMapping(SDLK_F5, false, Input::INPUT_D_RELOAD_CONFIG);
-
-	inputMapper->addKeyToDigitalMapping(SDLK_p, false, Input::INPUT_D_PAINT);
-	inputMapper->addKeyToDigitalMapping(SDLK_o, false, Input::INPUT_D_ERASE);
-	inputMapper->addKeyToDigitalMapping(SDLK_z, false, Input::INPUT_D_PAINT);
-	inputMapper->addKeyToDigitalMapping(SDLK_x, false, Input::INPUT_D_ERASE);
+	debugCamera = false;
 }
 
 InputManager::~InputManager() {
@@ -57,6 +34,10 @@ InputManager::~InputManager() {
 void InputManager::init() {
     joystick = new JoystickManager();
     joystick->open();
+
+	inputMapper = new Input::InputMapper();
+
+	setInputMappings(XB360_WINDOWS);
 }
 
 void InputManager::handleEvent(SDL_Event *event) {
@@ -68,32 +49,25 @@ void InputManager::doAction(unsigned long currentTime) {
 	inputMapper->update(Input::INPUT_A_ACCELERATE);
 	inputMapper->update(Input::INPUT_D_JUMP);
 	inputMapper->update(Input::INPUT_D_RESET);
-	inputMapper->update(Input::INPUT_D_PAINT);
-	inputMapper->update(Input::INPUT_D_ERASE);
 
-	if(inputMapper->getAnalogStatus(Input::INPUT_A_TURN) != 0.0) {
+	double turn_value = Math::bound(inputMapper->getAnalogStatus(Input::INPUT_A_TURN), -1.0, 1.0);
+	if (turn_value != 0.0) {
 		EMIT_EVENT(new Event::PlayerAction(
 			Event::PlayerAction::TURN,
-			inputMapper->getAnalogStatus(Input::INPUT_A_TURN)));
+			turn_value));
 	}
 
-	if(inputMapper->getAnalogStatus(Input::INPUT_A_ACCELERATE) != 0.0) {
+	double accel_value = Math::bound(inputMapper->getAnalogStatus(Input::INPUT_A_ACCELERATE), -1.0, 1.0);
+	if (accel_value != 0.0) {
 		EMIT_EVENT(new Event::PlayerAction(
 				Event::PlayerAction::ACCELERATE,
-				inputMapper->getAnalogStatus(Input::INPUT_A_ACCELERATE)));
+				accel_value));
 	}
 
 	if(inputMapper->getDigitalStatus(Input::INPUT_D_JUMP)) {
 		EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::JUMP, 0.0));
-    }
-
-	if(inputMapper->getDigitalTriggered(Input::INPUT_D_RESET)) {
-		EMIT_EVENT(new Event::PlayerAction(
-            Event::PlayerAction::FIX_OFF_TRACK, 0.0));
-    }
     
     handlePaint();
-    //handleJoystick();
 }
 
 void InputManager::doPausedChecks() {
@@ -130,26 +104,33 @@ void InputManager::doPausedChecks() {
                 "render.drawpathnodes", "0");
         }
     }
-	if(inputMapper->getDigitalTriggered(Input::INPUT_D_CAMERA_DEBUG)) {
+	if (inputMapper->getDigitalTriggered(Input::INPUT_D_CAMERA_DEBUG)) {
         
-        static bool debug = false;
-        debug = !debug;
-        EMIT_EVENT(new Event::SetDebugCamera(debug));
+        //static bool debug = false;
+        debugCamera = !debugCamera;
+        EMIT_EVENT(new Event::SetDebugCamera(debugCamera));
     }
+
+	if (debugCamera) {
     
-    static const double CAMERA_FACTOR = 0.8;
+		static const double CAMERA_FACTOR = 0.8;
 
-	if(inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_X_SPEED) != 0.0 ||
-		inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_Z_SPEED) != 0.0) {
+		if (inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_X_SPEED) != 0.0 ||
+			inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_Z_SPEED) != 0.0) {
 
-		EMIT_EVENT(new Event::CameraMovement(
-            CAMERA_FACTOR * Math::Point(
-				inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_X_SPEED),
-				inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_Z_SPEED))));
+			EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
+					* Math::Point(
+					inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_X_SPEED),
+					inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_Z_SPEED))));
+		}
 	}
 }
 
 void InputManager::handlePaint() {
+
+	inputMapper->update(Input::INPUT_D_PAINT);
+	inputMapper->update(Input::INPUT_D_ERASE);
+
     static int paint = 0;
     static bool painting = false;
     static bool erasing = false;
@@ -160,7 +141,7 @@ void InputManager::handlePaint() {
         erasing = false;
         paint = (paint + 1) % 8;
         
-        if(painting) {
+        if (painting) {
             EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
                 Event::TogglePainting::PAINTING));
         }
@@ -174,7 +155,7 @@ void InputManager::handlePaint() {
         erasing = !erasing;
         painting = false;
         
-        if(erasing) {
+        if (erasing) {
             EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
                 Event::TogglePainting::ERASING));
         }
@@ -185,6 +166,7 @@ void InputManager::handlePaint() {
     }
 }
 
+/*
 void InputManager::handleJoystick() {
     const double DEADZONE = 0.2;
     
@@ -204,6 +186,75 @@ void InputManager::handleJoystick() {
         EMIT_EVENT(new Event::PlayerAction(
             Event::PlayerAction::ACCELERATE, rightY));
     }
+}
+*/
+
+void InputManager::setInputMappings(PresetMapping mapping) {
+
+	inputMapper->clearAllMappings();
+
+	//Standard keyboard mappings
+	inputMapper->addKeyToAnalogMapping(SDLK_LEFT, false, Input::INPUT_A_TURN, 0.0, -1.0);
+	inputMapper->addKeyToAnalogMapping(SDLK_RIGHT, false, Input::INPUT_A_TURN, 0.0, 1.0);
+
+	inputMapper->addKeyToAnalogMapping(SDLK_UP, false, Input::INPUT_A_ACCELERATE, 0.0, 1.0);
+	inputMapper->addKeyToAnalogMapping(SDLK_DOWN, false, Input::INPUT_A_ACCELERATE, 0.0, -1.0);
+
+	inputMapper->addKeyToAnalogMapping(SDLK_w, false, Input::INPUT_A_CAMERA_Z_SPEED, 0.0, 1.0);
+	inputMapper->addKeyToAnalogMapping(SDLK_s, false, Input::INPUT_A_CAMERA_Z_SPEED, 0.0, -1.0);
+
+	inputMapper->addKeyToAnalogMapping(SDLK_a, false, Input::INPUT_A_CAMERA_X_SPEED, 0.0, -1.0);
+	inputMapper->addKeyToAnalogMapping(SDLK_d, false, Input::INPUT_A_CAMERA_X_SPEED, 0.0, 1.0);
+
+	inputMapper->addKeyToDigitalMapping(SDLK_SPACE, false, Input::INPUT_D_JUMP);
+	inputMapper->addKeyToDigitalMapping(SDLK_h, false, Input::INPUT_D_RESET);
+	inputMapper->addKeyToDigitalMapping(SDLK_RETURN, false, Input::INPUT_D_PHYSICS_DEBUG);
+	inputMapper->addKeyToDigitalMapping(SDLK_BACKSLASH, false, Input::INPUT_D_PATH_DEBUG);
+	inputMapper->addKeyToDigitalMapping(SDLK_c, false, Input::INPUT_D_CAMERA_DEBUG);
+	inputMapper->addKeyToDigitalMapping(SDLK_F5, false, Input::INPUT_D_RELOAD_CONFIG);
+
+	inputMapper->addKeyToDigitalMapping(SDLK_p, false, Input::INPUT_D_PAINT);
+	inputMapper->addKeyToDigitalMapping(SDLK_o, false, Input::INPUT_D_ERASE);
+	inputMapper->addKeyToDigitalMapping(SDLK_z, false, Input::INPUT_D_PAINT);
+	inputMapper->addKeyToDigitalMapping(SDLK_x, false, Input::INPUT_D_ERASE);
+
+	//Joystick mappings
+
+	if (!joystick->hasJoystick())
+		return;
+
+	const double stick_deadzone = 0.15;
+
+	switch (mapping) {
+
+		case XB360_WINDOWS:
+
+			//Left-stick X - Turning
+			inputMapper->addAxisToAnalogMapping(0, joystick, -1.0, 1.0, stick_deadzone,
+				Input::INPUT_A_TURN, -1.0, 1.0);
+			//Right/Left Trigger Axis - Accelerate/Braking
+			inputMapper->addAxisToAnalogMapping(2, joystick, 1.0, -1.0, stick_deadzone,
+				Input::INPUT_A_ACCELERATE, -1.0, 1.0);
+			//A - Paint
+			inputMapper->addButtonToDigitalMapping(0, joystick, false, Input::INPUT_D_PAINT);
+			//B - Erase
+			inputMapper->addButtonToDigitalMapping(1, joystick, false, Input::INPUT_D_ERASE);
+			/*
+			//Left-stick X - Debug camera X
+			inputMapper->addAxisToAnalogMapping(0, joystick, -1.0, 1.0, stick_deadzone,
+				Input::INPUT_A_CAMERA_X_SPEED, -1.0, 1.0);
+			//Left-stick Y - Debug camera Z
+			inputMapper->addAxisToAnalogMapping(1, joystick, 1.0, -1.0, stick_deadzone,
+				Input::INPUT_A_CAMERA_Z_SPEED, -1.0, 1.0);
+			//Select - Debug camera
+			inputMapper->addButtonToDigitalMapping(6, joystick, false, Input::INPUT_D_CAMERA_DEBUG);
+			*/
+
+			break;
+
+		default: break;
+	}
+
 }
 
 

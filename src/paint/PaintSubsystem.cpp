@@ -76,10 +76,14 @@ void PaintSubsystem::doAction(unsigned long currentTime) {
 }
 
 void PaintSubsystem::calculateBoostSpeeds() {
+
     Object::WorldManager::PlayerIteratorType iterator
         = worldManager->getPlayerIterator();
+
     while(iterator.hasNext()) {
         Object::Player *player = iterator.next();
+
+		player->setPaintType(getPainting(player->getID()));
         
         if(getPainting(player->getID()) == Event::TogglePainting::NOTHING) {
             double factor = paintManager->weightedCellsInRadius(

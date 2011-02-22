@@ -6,6 +6,7 @@
 #include "physics/PhysicalPlayer.h"
 #include "render/RenderablePlayer.h"
 #include "map/PathTracker.h"
+#include "event/TogglePainting.h"
 
 namespace Project {
 namespace Object {
@@ -33,6 +34,7 @@ private:
     Render::RenderablePlayer *renderable;
     Math::Point suspension[4];
 	Map::PathTracker* tracker;
+	Event::TogglePainting::PaintType paintType;
 public:
     Player();
 	Player(int id, const Math::Point &origin, const Math::Point &direction = Math::Point(0.0, 0.0, 1.0));
@@ -74,6 +76,9 @@ public:
     Math::Point getPosition() const;
     Math::Matrix getTransformation() const;
     void applyForce(const Math::Point &movement, const Math::Point &at);
+
+	Event::TogglePainting::PaintType getPaintType() const { return paintType; }
+	void setPaintType(Event::TogglePainting::PaintType paint_type) { paintType = paint_type; }
     
     void initialize();
     

@@ -15,12 +15,20 @@ namespace Project {
 namespace SDL {
 
 class InputManager : public Timing::TimedSubsystem {
+
+public:
+	enum PresetMapping { NO_JOYSTICK, XB360_WINDOWS };
+
 private:
+
     ClientData *clientData;
     JoystickManager *joystick;
 	Input::InputMapper *inputMapper;
 
+	double debugCamera;
+
 public:
+
     InputManager(int ms, ClientData *clientData);
     ~InputManager();
     
@@ -32,10 +40,11 @@ public:
     
     void doPausedChecks();
 
-	//virtual void doStep(unsigned long currentTime) { doAction(currentTime); }
+	void setInputMappings(PresetMapping mapping = NO_JOYSTICK);
+
 private:
     void handlePaint();
-    void handleJoystick();
+    //void handleJoystick();
 };
 
 }  // namespace SDL

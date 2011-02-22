@@ -14,15 +14,19 @@
 #include "event/PaintCellsChanged.h"
 #include "event/Enabler.h"
 
+#include "settings/SettingsManager.h"
+
 namespace Project {
 namespace Paint {
 
 class PaintManager :
     public Render::BaseRenderable, public Math::SpatialObjectOperator,
     public Event::Enabler {
+
 protected:
     void paintEventHandler(Event::PaintEvent *paintEvent);
     void paintCellsChangedHandler(Event::PaintCellsChanged *paintCellsChanged);
+
 private:
 
 	std::vector<PaintCell*> paintList;
@@ -79,6 +83,8 @@ public:
 		Returns a vector of the indices of all paint cells that were colored
 	*/
 	std::vector<int> colorCellsInRadius(Math::Point centroid, double radius, int new_color, bool force_color = false);
+
+	void renderEraseEffect(Math::Point centroid, double radius);
 
 	/** Returns a number representing the concentration of paint cells of color @a color
 		inside the given radius. Increasing from zero depending on proximity and quantity.

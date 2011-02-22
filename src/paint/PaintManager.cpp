@@ -3,7 +3,7 @@
 #include "math/BoundingSphere.h"
 #include "render/ColorConstants.h"
 #include "event/EventSystem.h"
-#include "settings/SettingsManager.h"
+
 using namespace Project;
 using namespace Math;
 using namespace Render;
@@ -98,6 +98,7 @@ namespace Paint {
 				coloredPaintTree->operateQuery(*this, *bounding_object, SpatialContainer::NEARBY);
 			else
 				coloredPaintTree->operateAll(*this);
+
 		}
 		else {
 			for (unsigned int i = 0; i < redrawBuffer.size(); i++) {
@@ -251,7 +252,16 @@ namespace Paint {
 	}
 
 	void PaintManager::renderCell(PaintCell* cell) {
-		OpenGL::Color cell_color = ColorConstants::playerColor(cell->playerColor);
+
+		OpenGL::Color cell_color;
+
+		if (cell->playerColor >= 0)
+			cell_color = ColorConstants::playerColor(cell->playerColor);
+		else {
+			cell_color = OpenGL::Color::WHITE;
+			cell_color.setAlphaf(0.4f);
+		}
+
 		OpenGL::Color::glColor(cell_color);
 		OpenGL::MathWrapper::glVertex(cell->center);
 		cell_color *= 0.85f;
@@ -269,6 +279,23 @@ namespace Paint {
 	void PaintManager::renderCellMinimap(PaintCell* cell) {
 		OpenGL::Color::glColor(ColorConstants::playerColor(cell->playerColor), renderAlpha);
 		OpenGL::MathWrapper::glVertex(cell->center);
+	}
+
+	void PaintManager::renderEraseEffect(Math::Point centroid, double radius) {
+
+		BoundingSphere query_sphere(centroid, radius);
+		vector<int> colored_indices;
+		vector<ObjectSpatial*> candidate_cells;
+
+		neutralPaintTree->appendQuery(candidate_cells, query_sphere, SpatialContainer::NEARBY);
+
+		for (unsigned int i = 0; i < candidate_cells.size(); i++) {
+			PaintCell* cell = (PaintCell*) candidate_cells[i];
+			if (cell->center.distanceSquared(centroid) <= query_sphere.getRadiusSquared()) {
+				renderCell(cell);
+			}
+		}
+
 	}
 
 }  // namespace Paint
