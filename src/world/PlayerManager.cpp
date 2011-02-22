@@ -14,7 +14,7 @@ namespace World {
 void PlayerManager::PlayerActionHandler::observe(
     Event::PlayerAction *action) {
     
-    Object::Player *player = manager->getPlayer();
+    Object::Player *player = manager->getPlayer(action->getPlayer());
     
     switch(action->getMovementType()) {
     case Event::PlayerAction::ACCELERATE:

@@ -15,6 +15,7 @@ private:
     template <typename Archive>
     void serialize(Archive &ar, const unsigned version) {
         ar & boost::serialization::base_object<EventBase>(*this);
+        ar & player;
         ar & movementType;
         ar & value;
     }
@@ -26,13 +27,15 @@ public:
         FIX_OFF_TRACK
     };
 private:
+    int player;
     MovementType movementType;
     double value;
 public:
-    PlayerAction() {}
-    PlayerAction(MovementType movementType, double value)
-        : movementType(movementType), value(value) {}
+    PlayerAction() : player(0), movementType(ACCELERATE), value(0.0) {}
+    PlayerAction(int player, MovementType movementType, double value)
+        : player(player), movementType(movementType), value(value) {}
     
+    int getPlayer() const { return player; }
     MovementType getMovementType() const { return movementType; }
     double getValue() const { return value; }
     

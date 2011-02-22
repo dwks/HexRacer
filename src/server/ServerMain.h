@@ -20,6 +20,7 @@
 #include "map/RaceManager.h"
 
 #include "world/BasicWorld.h"
+#include "ai/AIManager.h"
 
 namespace Project {
 namespace Server {
@@ -64,6 +65,8 @@ private:
     boost::shared_ptr<Connection::ServerManager> server;
     boost::shared_ptr<ClientManager> clients;
     boost::shared_ptr<ServerNetworkPortal> networkPortal;
+    
+    boost::shared_ptr<AI::AIManager> aiManager;
 public:
     ServerMain();
     
@@ -76,6 +79,7 @@ public:
         { return basicWorld->getWorldManager(); }
 private:
     void init();
+    void initAI();
 };
 
 }  // namespace Server

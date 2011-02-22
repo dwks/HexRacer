@@ -55,6 +55,7 @@ void InputManager::doAction(unsigned long currentTime) {
 	double turn_value = Math::bound(inputMapper->getAnalogStatus(Input::INPUT_A_TURN), -1.0, 1.0);
 	if (turn_value != 0.0) {
 		EMIT_EVENT(new Event::PlayerAction(
+            clientData->getPlayerID(),
 			Event::PlayerAction::TURN,
 			turn_value));
 	}
@@ -62,16 +63,21 @@ void InputManager::doAction(unsigned long currentTime) {
 	double accel_value = Math::bound(inputMapper->getAnalogStatus(Input::INPUT_A_ACCELERATE), -1.0, 1.0);
 	if (accel_value != 0.0) {
 		EMIT_EVENT(new Event::PlayerAction(
-				Event::PlayerAction::ACCELERATE,
-				accel_value));
+            clientData->getPlayerID(),
+            Event::PlayerAction::ACCELERATE,
+            accel_value));
 	}
 
 	if(inputMapper->getDigitalStatus(Input::INPUT_D_JUMP)) {
-		EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::JUMP, 0.0));
+		EMIT_EVENT(new Event::PlayerAction(
+            clientData->getPlayerID(),
+            Event::PlayerAction::JUMP,
+            0.0));
     }
     
     if(inputMapper->getDigitalTriggered(Input::INPUT_D_RESET)) {
-       EMIT_EVENT(new Event::PlayerAction(
+        EMIT_EVENT(new Event::PlayerAction(
+            clientData->getPlayerID(),
             Event::PlayerAction::FIX_OFF_TRACK, 0.0));
     }
     

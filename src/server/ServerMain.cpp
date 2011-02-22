@@ -189,8 +189,20 @@ void ServerMain::init() {
             basicWorld->getWorldManager(), paintManager.get(), 20));
 }
 
+void ServerMain::initAI() {
+    aiManager = boost::shared_ptr<AI::AIManager>(
+        new AI::AIManager(
+            basicWorld->getRaceManager(),
+            basicWorld->getPathManager()));
+    
+    int aiCount = GET_SETTING("server.aicount", 0);
+    aiManager->createAIs(aiCount);
+    clientCount += aiCount;
+}
+
 void ServerMain::run() {
     init();
+    initAI();
     
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
     quit = false;
@@ -210,9 +222,12 @@ void ServerMain::run() {
             
             Math::Point location = basicWorld->getRaceManager()
                 ->startingPointForPlayer(clientCount);
+            Math::Point direction = basicWorld->getRaceManager()
+                ->startingPlayerDirection();
             
             clients->addClient(socket);
-            Object::Player *player = new Object::Player(clientCount, location);
+            Object::Player *player = new Object::Player(
+                clientCount, location, direction);
 			player->setPathTracker(new Map::PathTracker(
                 *basicWorld->getPathManager()));
             //worldManager->addPlayer(player);

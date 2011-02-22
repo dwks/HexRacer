@@ -144,6 +144,10 @@ network.host = localhost
 network.serverport = 1820
 
 ########
+### AI and server settings
+server.aicount     = 2
+
+########
 include guiconfig.txt
 
 ########
