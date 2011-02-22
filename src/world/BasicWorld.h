@@ -41,6 +41,8 @@ public:
     Object::WorldManager *getWorldManager() { return worldManager.get(); }
     Map::RaceManager *getRaceManager() { return raceManager.get(); }
     PlayerManager *getPlayerManager() { return playerManager.get(); }
+    
+    Map::PathManager *getPathManager() { return pathManager.get(); }
 };
 
 }  // namespace World

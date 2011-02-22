@@ -1,11 +1,14 @@
 #ifndef PROJECT_SERVER__SERVER_MAIN_H
 #define PROJECT_SERVER__SERVER_MAIN_H
 
+#include "boost/smart_ptr.hpp"
+
 #include "paint/PaintManager.h"
 #include "paint/PaintSubsystem.h"
 
 #include "object/WorldManager.h"
 
+#include "connection/ServerManager.h"
 #include "network/PacketVisitor.h"
 #include "event/MultiObserver.h"
 #include "event/Enabler.h"
@@ -15,6 +18,8 @@
 
 #include "map/HRMap.h"
 #include "map/RaceManager.h"
+
+#include "world/BasicWorld.h"
 
 namespace Project {
 namespace Server {
@@ -45,26 +50,32 @@ private:
     bool quit;
     int clientCount;
     int whichSocket;
-    Object::WorldManager *worldManager;
-    Paint::PaintManager paintManager;
-    Paint::PaintSubsystem *paintSubsystem;
+    
+    boost::shared_ptr<Timing::AccelControl> accelControl;
+    boost::shared_ptr<World::BasicWorld> basicWorld;
+    boost::shared_ptr<Mesh::MeshLoader> meshLoader;
+    boost::shared_ptr<Map::HRMap> map;
+    
+    boost::shared_ptr<Paint::PaintManager> paintManager;
+    boost::shared_ptr<Paint::PaintSubsystem> paintSubsystem;
+    
     ServerVisitor visitor;
-    ServerNetworkPortal *networkPortal;
-    Timing::AccelControl *accelControl;
-    Map::HRMap *map;
-    Map::RaceManager *raceManager;
+    
+    boost::shared_ptr<Connection::ServerManager> server;
+    boost::shared_ptr<ClientManager> clients;
+    boost::shared_ptr<ServerNetworkPortal> networkPortal;
 public:
     ServerMain();
-    ~ServerMain();
     
     void run();
     
     void setQuit() { quit = true; }
     
     int getWhichSocket() const { return whichSocket; }
-    Object::World *getWorld() { return worldManager->getWorld(); }
-    Object::WorldManager *getWorldManager() { return worldManager; }
-    Paint::PaintManager &getPaintManager() { return paintManager; }
+    Object::WorldManager *getWorldManager()
+        { return basicWorld->getWorldManager(); }
+private:
+    void init();
 };
 
 }  // namespace Server

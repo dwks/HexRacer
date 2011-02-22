@@ -6,3 +6,5 @@
 - AI
 - sound
 
+- make PathTracker take a pointer, not a reference, in the constructor
+
