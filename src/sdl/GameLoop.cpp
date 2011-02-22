@@ -59,7 +59,7 @@ void GameLoop::miscellaneous() {
     inputManager->doStep(SDL_GetTicks());
     
     gameWorld->doPhysics();
-	gameWorld->updatePlayerPathing();
+	gameWorld->doAI();
     
     viewport->doCamera(SDL_GetTicks());
 }

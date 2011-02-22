@@ -34,7 +34,6 @@ private:
 public:
     GameLoop(const std::string &host, unsigned short port);
     
-    void doConnect(const std::string &host, unsigned short port);
     virtual void construct();
     
     void setGuiPointers(boost::shared_ptr<GUI::GUISystem> gui,

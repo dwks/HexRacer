@@ -63,10 +63,11 @@ void GameWorld::construct(const std::string &host, unsigned short port) {
 void GameWorld::construct2(Map::HRMap *map) {
     raceManager = boost::shared_ptr<Map::RaceManager>(
         new Map::RaceManager(map));
-
 	pathManager = boost::shared_ptr<Map::PathManager>(
 		new Map::PathManager(map->getPathNodes()));
-
+    pathingUpdater = boost::shared_ptr<Map::PathingUpdater>(
+        new Map::PathingUpdater(worldManager.get(), raceManager.get()));
+    
 	worldManager->setPathManager(pathManager.get());
     
     playerManager->setRaceManager(raceManager.get());
@@ -100,46 +101,8 @@ void GameWorld::doPhysics() {
     }
 }
 
-void GameWorld::updatePlayerPathing() {
-
-	if (!GET_SETTING("game.enablepathing", true))
-		return;
-
-	Object::WorldManager::PlayerIteratorType iterator = worldManager->getPlayerIterator();
-	while (iterator.hasNext()) {
-		Object::Player* player = iterator.next();
-
-		//Raycast downward to find the update point
-		Math::Point origin_pos = player->getPosition();
-		Math::Point dir_pos = origin_pos;
-		dir_pos.setY(dir_pos.getY() - VEHICLE_PATH_RAY_MAX_HEIGHT);
-
-		Math::Point update_pos;
-        
-		//Update if the player is above the track
-		if (physicsWorld->raycastPoint(origin_pos, dir_pos, &update_pos)) {
-            if(!player->getPathTracker()) continue;  // no path tracker
-            
-			player->getPathTracker()->update(update_pos);
-            
-			//Start a new lap for the player if they have crossed the finish plane
-			if (player->getPathTracker()->readyforNewLap() &&
-				raceManager->getBoundingPlane().pointInside(origin_pos)) {
-					player->getPathTracker()->startNewLap();
-					LOG(WORLD, "Player: " << player->getID() << " has finished lap " << player->getPathTracker()->getNumLaps());
-
-			}
-		}
-		else {
-			//Reset the player if they are below the kill plane
-			//Probably not doing the right ID check?
-			if (player->getID() == 0 && origin_pos.getY() < raceManager->getKillPlaneY()) {
-				EMIT_EVENT(new Event::PlayerAction(
-					Event::PlayerAction::FIX_OFF_TRACK, 0.0));
-			}
-		}
-	}
-
+void GameWorld::doAI() {
+    pathingUpdater->update();
 }
 
 void GameWorld::render() {

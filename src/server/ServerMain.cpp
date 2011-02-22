@@ -31,6 +31,7 @@
 #include "mesh/MeshLoader.h"
 #include "map/MapLoader.h"
 #include "map/PathTracker.h"
+#include "map/PathingUpdater.h"
 
 #include "log/Logger.h"
 #include "misc/Sleeper.h"
@@ -181,6 +182,7 @@ bool ServerMain::ServerObserver::interestedIn(Event::EventType::type_t type) {
 }
 
 ServerMain::ServerMain() : clientCount(0), visitor(this) {
+    // install CTRL-C handler
 #ifdef WIN32
     signal(SIGINT, terminationHandler);
     signal(SIGTERM, terminationHandler);
@@ -211,12 +213,6 @@ void ServerMain::run() {
     networkPortal = new ServerNetworkPortal(&clients);
     
     Mesh::MeshLoader *meshLoader = new Mesh::MeshLoader();
-    /*meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
-    Render::MeshGroup *test_terrain = meshLoader->getModelByName("testTerrain");
-    
-    Physics::PhysicsWorld::getInstance()->registerRigidBody(
-        Physics::PhysicsFactory::createRigidTriMesh(
-            test_terrain->getTriangles()));*/
     
     //Instantiate the map
     map = new Map::HRMap();
@@ -238,6 +234,9 @@ void ServerMain::run() {
     raceManager = new Map::RaceManager(map);
 	boost::shared_ptr<Map::PathManager> pathManager = boost::shared_ptr<Map::PathManager>(
 		new Map::PathManager(map->getPathNodes()));
+    boost::shared_ptr<Map::PathingUpdater> pathingUpdater
+        = boost::shared_ptr<Map::PathingUpdater>(
+            new Map::PathingUpdater(worldManager, raceManager));
 
 	worldManager->setPathManager(pathManager.get());
     
@@ -308,6 +307,8 @@ void ServerMain::run() {
             physicsWorld->stepWorld((thisTime - lastPhysicsTime));
             lastPhysicsTime = thisTime;
         }
+        
+        pathingUpdater->update();
         
         static int loops = 0;
         if(++loops == 5) {

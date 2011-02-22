@@ -6,6 +6,7 @@ include_directories(.)
 
 include_directories(../build)  # for the moc
 
+aux_source_directory(ai AI_SOURCES)
 aux_source_directory(connection CONNECTION_SOURCES)
 aux_source_directory(event EVENT_SOURCES)
 aux_source_directory(gui GUI_SOURCES)
@@ -62,7 +63,8 @@ set(SDL_SOURCES
     ${INPUT_SOURCES})
 
 set(SERVER_SOURCES
-    ${SERVER_DIR_SOURCES})
+    ${SERVER_DIR_SOURCES}
+    ${AI_SOURCES})
 
 set(MAP_EDITOR_SOURCES
     ${MAP_EDITOR_DIR_SOURCES})
