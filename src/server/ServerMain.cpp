@@ -204,7 +204,8 @@ void ServerMain::initAI() {
     aiManager = boost::shared_ptr<AI::AIManager>(
         new AI::AIManager(
             basicWorld->getRaceManager(),
-            basicWorld->getPathManager()));
+            basicWorld->getPathManager(),
+            basicWorld->getPlayerManager()));
     
     int aiCount = GET_SETTING("server.aicount", 0);
     aiManager->createAIs(aiCount);
