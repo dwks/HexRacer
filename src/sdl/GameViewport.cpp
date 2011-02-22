@@ -34,7 +34,7 @@ GameViewport::~GameViewport() {
     delete cameraObject;
 }
 
-void GameViewport::setPlayerManager(PlayerManager *playerManager) {
+void GameViewport::setPlayerManager(World::PlayerManager *playerManager) {
     cameraObject->setPlayerManager(playerManager);
 }
 

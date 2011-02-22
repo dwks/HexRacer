@@ -33,6 +33,7 @@ aux_source_directory(shader SHADER_SOURCES)
 aux_source_directory(sound SOUND_SOURCES)
 aux_source_directory(timing TIMING_SOURCES)
 aux_source_directory(widget WIDGET_SOURCES)
+aux_source_directory(world WORLD_SOURCES)
 
 set(SOURCES
     ${LOG_SOURCES}
@@ -51,7 +52,8 @@ set(SOURCES
     ${TIMING_SOURCES}
     ${HANDLER_SOURCES}
     ${MAP_SOURCES}
-    ${MESH_SOURCES})
+    ${MESH_SOURCES}
+    ${WORLD_SOURCES})
 
 set(SDL_SOURCES
     ${SDL_DIR_SOURCES}

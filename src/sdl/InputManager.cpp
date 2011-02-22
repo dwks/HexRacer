@@ -14,6 +14,9 @@
 #include "settings/SettingsManager.h"
 #include "timing/AccelControl.h"
 
+#include "log/Logger.h"
+#include "config.h"
+
 namespace Project {
 namespace SDL {
 

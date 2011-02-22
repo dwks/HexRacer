@@ -6,7 +6,6 @@
 
 #include "timing/TimedSubsystem.h"
 
-#include "PlayerManager.h"
 #include "ClientData.h"
 #include "JoystickManager.h"
 

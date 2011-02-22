@@ -26,7 +26,7 @@ namespace SDL {
         METHOD_OBSERVER(&CameraObject::setDebugCameraHandler);
     }
     
-    CameraObject::CameraObject(SDL::PlayerManager *_playerManager){
+    CameraObject::CameraObject(World::PlayerManager *_playerManager){
         LOG2(CAMERA, INIT, "Camera Object has been initialized\n");
         
         playerManager = _playerManager;
@@ -101,7 +101,7 @@ namespace SDL {
         destinationFOV = destFOV;
     }
     
-    void CameraObject::setPlayerManager(SDL::PlayerManager *_playerManager) {
+    void CameraObject::setPlayerManager(World::PlayerManager *_playerManager) {
         playerManager = _playerManager;
     }
     

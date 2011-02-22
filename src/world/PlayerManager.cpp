@@ -1,39 +1,18 @@
 #include "PlayerManager.h"
 
-#include "opengl/OpenGL.h"
-#include "opengl/MathWrapper.h"
-
 #include "event/EventSystem.h"
 
-#include "log/Logger.h"
-
-#include "render/RenderManager.h"
-#include "mesh/MeshGroup.h"
-#include "mesh/MeshLoader.h"
-#include "shader/ShaderParamVector4.h"
-#include "render/RenderList.h"
-#include "render/ColorConstants.h"
-
-#include "physics/PhysicsWorld.h"
 #include "physics/PhysicsFactory.h"
-
 #include "map/PathTracker.h"
 
-#include "settings/SettingsManager.h"
-#include "settings/ProgramSettings.h"
 #include "config.h"
+#include "log/Logger.h"
 
 namespace Project {
-namespace SDL {
+namespace World {
 
 void PlayerManager::PlayerActionHandler::observe(
     Event::PlayerAction *action) {
-    
-    /*if(Settings::ProgramSettings::getInstance()->isConnectedClient()
-        && action->getMovementType() != Event::PlayerAction::FIX_OFF_TRACK) {
-        
-        return;
-    }*/
     
     Object::Player *player = manager->getPlayer();
     
@@ -59,7 +38,8 @@ void PlayerManager::PlayerActionHandler::observe(
             player->setPhysicalObject(
                 Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
             
-            LOG(WORLD, "Fixing player off track to " << origin);
+            LOG(WORLD, "Player " << player->getID()
+                << " is off track, warping to " << origin);
         }
         else {
             Math::Point origin = manager->raceManager->startingPointForPlayer(player->getID());
@@ -69,7 +49,9 @@ void PlayerManager::PlayerActionHandler::observe(
             player->setPhysicalObject(
                 Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
             
-            LOG(WORLD, "Fixing player off track to starting position");
+            LOG(WORLD, "Player " << player->getID()
+                << " is off track, warping to starting position"
+                << " [no path nodes]");
         }
         
         break;
@@ -90,5 +72,5 @@ Object::Player *PlayerManager::getPlayer(int id) {
     return worldManager->getPlayer(id);
 }
 
-}  // namespace SDL
+}  // namespace World
 }  // namespace Project

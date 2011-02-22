@@ -9,7 +9,7 @@ namespace SDL {
 bool GameLoop::tryConnect(const std::string &host, unsigned short port) {
     gameWorld = boost::shared_ptr<GameWorld>(new GameWorld());
     
-    return gameWorld->construct(host, port);
+    return gameWorld->tryConnect(host, port);
 }
 
 void GameLoop::construct() {
@@ -19,7 +19,7 @@ void GameLoop::construct() {
     gameRenderer = boost::shared_ptr<GameRenderer>(new GameRenderer());
     gameRenderer->construct(viewport->getCamera());
     
-    gameWorld->construct2(gameRenderer->getMap());
+    gameWorld->constructAfterConnect(gameRenderer->getMap());
     
     paintSubsystem = boost::shared_ptr<Paint::PaintSubsystem>(
         new Paint::PaintSubsystem(

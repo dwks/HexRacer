@@ -1,22 +1,17 @@
-#ifndef PROJECT_SDL__PLAYER_MANAGER_H
-#define PROJECT_SDL__PLAYER_MANAGER_H
+#ifndef PROJECT_WORLD__PLAYER_MANAGER_H
+#define PROJECT_WORLD__PLAYER_MANAGER_H
 
 #include "object/Player.h"
 #include "object/WorldManager.h"
 
-#include "physics/Suspension.h"
-
 #include "event/TypedObserver.h"
 #include "event/Enabler.h"
 #include "event/PlayerAction.h"
-#include "event/PaintEvent.h"
 
 #include "map/RaceManager.h"
 
-#include "opengl/Color.h"
-
 namespace Project {
-namespace SDL {
+namespace World {
 
 class PlayerManager : public Event::Enabler {
 private:
@@ -43,7 +38,7 @@ public:
     Object::Player *getPlayer(int id);
 };
 
-}  // namespace SDL
+}  // namespace World
 }  // namespace Project
 
 #endif

@@ -23,51 +23,39 @@ bool GameWorld::doConnect(const std::string &host, unsigned short port) {
     historian = boost::shared_ptr<History::Historian>(
         new History::Historian());
     
-    if(network->connectTo(host.c_str(), port)) {
-        Object::World *world;
-        Object::PlayerList *playerList;
-        
-        network->waitForWorld(world, playerList);
-        
-        worldManager = boost::shared_ptr<Object::WorldManager>(
-            new Object::WorldManager(world, playerList));
-        clientData = boost::shared_ptr<ClientData>(
-            new ClientData(network->getID()));
-        playerManager = boost::shared_ptr<PlayerManager>(
-            new PlayerManager(network->getID(), worldManager.get()));
-        Settings::ProgramSettings::getInstance()->setConnected(true);
-        isConnectedToNetwork = true;
-    }
-    else {
+    if(!network->connectTo(host.c_str(), port)) {
         LOG2(NETWORK, ERROR, "Could not connect to server "
             << host << ":" << port << "!");
         return false;
     }
     
-    historian->setWorldManager(worldManager.get());
-    historian->setPhysicsWorld(physicsWorld.get());
+    Object::World *world;
+    Object::PlayerList *playerList;
+    network->waitForWorld(world, playerList);
+    
+    basicWorld->constructDuringConnect(world, playerList, network->getID());
+    clientData = boost::shared_ptr<ClientData>(new ClientData(network->getID()));
+    Settings::ProgramSettings::getInstance()->setConnected(true);
+    isConnectedToNetwork = true;
+    
+    historian->setWorldManager(basicWorld->getWorldManager());
+    historian->setPhysicsWorld(basicWorld->getPhysicsWorld());
     
     return true;
 }
 
 void GameWorld::doNotConnect() {
+    basicWorld->constructSkippingConnect();
+    
     // do not initialize network, historian
     
-    worldManager = boost::shared_ptr<Object::WorldManager>(
-        new Object::WorldManager());
-    clientData = boost::shared_ptr<ClientData>(
-        new ClientData());
-    playerManager = boost::shared_ptr<PlayerManager>(
-        new PlayerManager(0, worldManager.get()));
-    
+    clientData = boost::shared_ptr<ClientData>(new ClientData());
     isConnectedToNetwork = false;
 }
 
-bool GameWorld::construct(const std::string &host, unsigned short port) {
-    physicsWorld = boost::shared_ptr<Physics::PhysicsWorld>(
-        new Physics::PhysicsWorld());
-    suspension = boost::shared_ptr<Physics::Suspension>(
-        new Physics::Suspension());
+bool GameWorld::tryConnect(const std::string &host, unsigned short port) {
+    basicWorld = boost::shared_ptr<World::BasicWorld>(new World::BasicWorld());
+    basicWorld->constructBeforeConnect();
     
     if(host == "" && port == 0) {
         doNotConnect();
@@ -78,20 +66,13 @@ bool GameWorld::construct(const std::string &host, unsigned short port) {
     }
 }
 
-void GameWorld::construct2(Map::HRMap *map) {
-    raceManager = boost::shared_ptr<Map::RaceManager>(
-        new Map::RaceManager(map));
-	pathManager = boost::shared_ptr<Map::PathManager>(
-		new Map::PathManager(map->getPathNodes()));
-    pathingUpdater = boost::shared_ptr<Map::PathingUpdater>(
-        new Map::PathingUpdater(worldManager.get(), raceManager.get()));
-    
-	worldManager->setPathManager(pathManager.get());
-    
-    playerManager->setRaceManager(raceManager.get());
+void GameWorld::constructAfterConnect(Map::HRMap *map) {
+    basicWorld->constructAfterConnect(map);
     
     if(!isConnectedToNetwork) {
-        worldManager->initForClient(clientData->getPlayerID(),
+        Map::RaceManager *raceManager = basicWorld->getRaceManager();
+        
+        getWorldManager()->initForClient(clientData->getPlayerID(),
             raceManager->startingPointForPlayer(clientData->getPlayerID()),
             raceManager->startingPlayerDirection());
     }
@@ -104,29 +85,15 @@ void GameWorld::checkNetwork() {
 }
 
 void GameWorld::doPhysics() {
-    suspension->setData(worldManager.get(), NULL);
-    suspension->checkForWheelsOnGround();
-    
-    if(!Timing::AccelControl::getInstance()->getPaused()) {
-        static Uint32 lastPhysicsTime = SDL_GetTicks();
-        lastPhysicsTime += Timing::AccelControl::getInstance()
-            ->getPauseSkip();
-        Uint32 thisTime = SDL_GetTicks();
-        
-        /*LOG(PHYSICS,
-            "step physics by " << (thisTime - lastPhysicsTime) * 1000);*/
-        
-        physicsWorld->stepWorld((thisTime - lastPhysicsTime));
-        lastPhysicsTime = thisTime;
-    }
+    basicWorld->doPhysics();
 }
 
 void GameWorld::doAI() {
-    pathingUpdater->update();
+    basicWorld->doAI();
 }
 
 void GameWorld::render() {
-    physicsWorld->render();
+    basicWorld->getPhysicsWorld()->render();
 }
 
 }  // namespace SDL

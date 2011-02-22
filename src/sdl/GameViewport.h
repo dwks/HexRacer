@@ -36,7 +36,7 @@ public:
     GameViewport();
     ~GameViewport();
     
-    void setPlayerManager(PlayerManager *playerManager);
+    void setPlayerManager(World::PlayerManager *playerManager);
     
     OpenGL::Camera *getCamera() { return cameraObject->camera; }
     

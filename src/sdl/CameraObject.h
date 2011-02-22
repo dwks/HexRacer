@@ -7,8 +7,8 @@
 #include "math/Point.h"
 #include "math/Matrix.h"
 #include "physics/Converter.h"
-#include "sdl/PlayerManager.h"
 #include "object/Player.h"
+#include "world/PlayerManager.h"
 
 #include "event/PhysicsTick.h"
 #include "event/Enabler.h"
@@ -28,10 +28,10 @@ protected:
     void setDebugCameraHandler(Event::SetDebugCamera *event);
 public:
     CameraObject();
-    CameraObject(SDL::PlayerManager *_playerManager);
+    CameraObject(World::PlayerManager *_playerManager);
     ~CameraObject();
     
-    void setPlayerManager(SDL::PlayerManager *_playerManager);
+    void setPlayerManager(World::PlayerManager *_playerManager);
     void doAction(unsigned long currentTime);
     
     bool debugCamera;
@@ -57,7 +57,7 @@ private:
     double boostFOV;
     double defaultFOV;
     double slowFOV;
-    SDL::PlayerManager *playerManager;
+    World::PlayerManager *playerManager;
     Math::Point defaultOrientation;
     Math::Point boostOrientation;
     Math::Point slowOrientation;
