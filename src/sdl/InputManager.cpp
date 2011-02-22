@@ -14,6 +14,8 @@
 #include "settings/SettingsManager.h"
 #include "timing/AccelControl.h"
 
+#include "math/Values.h"
+
 #include "log/Logger.h"
 #include "config.h"
 
@@ -66,6 +68,12 @@ void InputManager::doAction(unsigned long currentTime) {
 
 	if(inputMapper->getDigitalStatus(Input::INPUT_D_JUMP)) {
 		EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::JUMP, 0.0));
+    }
+    
+    if(inputMapper->getDigitalTriggered(Input::INPUT_D_RESET)) {
+       EMIT_EVENT(new Event::PlayerAction(
+            Event::PlayerAction::FIX_OFF_TRACK, 0.0));
+    }
     
     handlePaint();
 }

@@ -17,30 +17,6 @@ namespace Input {
         }
 	}
 
-    InputMapper::~InputMapper() {
-        for(int x = 0; x < NUM_DIGITAL_TYPES; x ++) {
-            // we could use this instead!
-            /*std::for_each(
-                digitalMappings[x].begin(),
-                digitalMappings[x].end(),
-                Misc::DeleteFunctor<InputAction>());*/
-            
-            for(std::vector<InputAction*>::size_type y = 0;
-                y < digitalMappings[x].size(); ++y) {
-                
-                delete digitalMappings[x][y];
-            }
-        }
-        
-        for(int x = 0; x < NUM_ANALOG_TYPES; x ++) {
-            for(std::vector<InputAction*>::size_type y = 0;
-                y < analogMappings[x].size(); ++y) {
-                
-                delete analogMappings[x][y];
-            }
-        }
-    }
-
 	InputMapper::~InputMapper() {
 		clearAllMappings();
 	}

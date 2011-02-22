@@ -87,7 +87,7 @@ render.camera.nearplane = 0.1
 render.camera.farplane = 200.0
 render.camera.paintthreshhold = 0.35
 render.camera.fieldofview = 60.0
-render.camera.fovboost = 60.0
+render.camera.fovboost = 65.0
 render.camera.fovslow = 60.0
 
 # for AI debugging
@@ -127,11 +127,11 @@ camera.followdefault.z = -6.0
 
 camera.followboost.x = 0.0
 camera.followboost.y = 1.75
-camera.followboost.z = -5.5
+camera.followboost.z = -6.5
 
 camera.followslow.x = 0.0
 camera.followslow.y = 2.25
-camera.followslow.z = -6.25
+camera.followslow.z = -5.5
 
 ########
 ### Network settings

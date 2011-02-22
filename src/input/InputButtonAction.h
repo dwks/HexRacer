@@ -16,7 +16,7 @@ public:
 
 	InputButtonAction(int _button, SDL::JoystickManager* _joystick, bool _invert,
 		double off_value = 0.0, double on_value = 1.0)
-		: InputAction(off_value, on_value), button(_button), joystick(_joystick), invert(_invert) {}
+		: InputAction(off_value, on_value), button(_button), invert(_invert), joystick(_joystick) {}
 
 	bool getState() { return (joystick->getButtonDown(button)^invert); }
 
