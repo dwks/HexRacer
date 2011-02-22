@@ -244,6 +244,16 @@ void GUISystem::handleEvent(Widget::WidgetEvent *event) {
             
             focusManager->setClickFocus(NULL);
         }
+        
+        if(button->getButton() == Widget::MouseButtonEvent::BUTTON_LEFT
+            && button->getDown()) {
+            
+            Widget::WidgetBase *keyFocus = focusManager->getKeyFocus();
+            Widget::WidgetPoint where = button->getWhere();
+            if(keyFocus && !keyFocus->getBoundingRect().pointInside(where)) {
+                focusManager->setKeyFocus(NULL);
+            }
+        }
     }
 }
 

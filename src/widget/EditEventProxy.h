@@ -18,6 +18,8 @@ public:
     virtual void visit(KeyEvent *event);
     virtual void visit(WidgetActivateEvent *event);
     virtual void visit(FocusEvent *event);
+private:
+    void saveText();
 };
 
 }  // namespace Widget

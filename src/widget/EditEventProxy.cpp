@@ -58,18 +58,7 @@ void EditEventProxy::visit(KeyEvent *event) {
         FocusManager::getInstance()->setKeyFocus(NULL);
     }
     else if(event->getDown() && event->getKey() == SDLK_RETURN) {
-        bool changed = widget->oldTextChanged();
-        widget->saveOldText();
         FocusManager::getInstance()->setKeyFocus(NULL);
-        
-        if(changed) {
-            WidgetModifiedEvent newEvent(widget);
-            
-            LOG(WIDGET, "Edit \"" << widget->getName()
-                << "\" has text \"" << widget->getData() << "\"");
-            
-            widget->handleEvent(&newEvent);
-        }
     }
 }
 
@@ -90,6 +79,7 @@ void EditEventProxy::visit(FocusEvent *event) {
         clickFocus = false;
     }
     if(event->getFocus() == FocusEvent::FOCUS_KEY && event->wasLost()) {
+        saveText();
         keyFocus = false;
     }
     
@@ -101,6 +91,19 @@ void EditEventProxy::visit(FocusEvent *event) {
     }
     else {
         widget->getBox()->setArtwork("corners/in/normal");
+    }
+}
+
+void EditEventProxy::saveText() {
+    if(widget->oldTextChanged()) {
+        widget->saveOldText();
+        
+        WidgetModifiedEvent newEvent(widget);
+        
+        LOG(WIDGET, "Edit \"" << widget->getName()
+            << "\" has text \"" << widget->getData() << "\"");
+        
+        widget->handleEvent(&newEvent);
     }
 }
 
