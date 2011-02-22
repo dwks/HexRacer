@@ -21,6 +21,8 @@ const World::PlayerIntention &StraightDriver::getAction() {
     Object::Player *player = getPlayer();
     const Map::PathNode *current = player->getPathTracker()->getCurrentNode();
     
+    // get the angle to the next node (if the angle is really high, try the
+    // next node and the next etc.)
     double angle;
     int x = 0;
     do {
@@ -38,9 +40,12 @@ const World::PlayerIntention &StraightDriver::getAction() {
         current = next;
     } while((angle < -PI / 8 || angle > PI / 8) && ++x < 5);
     
+    // if the first few nodes have a high angle there's probably a corner,
+    // so slow down
     if(x > 3) intention.setAccel(0.3);
     else intention.setAccel(1.0);
     
+    // turn towards the next node
     intention.setTurn(0.0);
     if(angle < -PI / 6) intention.setTurn(1.0);
     else if(angle < -PI / 16) intention.setTurn(0.5);
@@ -51,6 +56,7 @@ const World::PlayerIntention &StraightDriver::getAction() {
     else if(angle > +PI / 24) intention.setTurn(-0.2);
     else if(angle > +PI / 32) intention.setTurn(-0.1);
     
+    // if sitting still for too long, request a warp
     intention.setReset(false);
     if(player->getPhysicalObject()->getLinearVelocity().length() < 0.05) {
         unsigned long now = Misc::Sleeper::getTimeMilliseconds();
