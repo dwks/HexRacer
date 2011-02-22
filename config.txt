@@ -26,7 +26,7 @@ physics.constant.gravity          = 11
 
 # Acceleration and responsiveness of input
 physics.constant.turn             = 0.16
-physics.constant.accel            = 3.5
+physics.constant.accel            = 3.6
 physics.constant.centripetal      = 1.0
 
 # Vehicle suspension
@@ -145,7 +145,7 @@ network.serverport = 1820
 
 ########
 ### AI and server settings
-server.aicount     = 2
+server.aicount     = 3
 
 ########
 include guiconfig.txt
