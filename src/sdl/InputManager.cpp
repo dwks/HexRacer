@@ -20,10 +20,6 @@ namespace SDL {
 InputManager::InputManager(int ms, ClientData *clientData)
     : TimedSubsystem(ms), clientData(clientData) {
     
-    for(std::size_t x = 0; x < sizeof keyDown / sizeof *keyDown; x ++) {
-        keyDown[x] = false;
-    }
-
 	inputMapper = new Input::InputMapper();
 	inputMapper->addKeyToAnalogMapping(SDLK_LEFT, false, Input::INPUT_A_TURN, 0.0, -1.0);
 	inputMapper->addKeyToAnalogMapping(SDLK_RIGHT, false, Input::INPUT_A_TURN, 0.0, 1.0);
@@ -61,23 +57,10 @@ void InputManager::init() {
 }
 
 void InputManager::handleEvent(SDL_Event *event) {
-
 	inputMapper->handleEvent(event);
-
-    switch(event->type) {
-    case SDL_KEYDOWN:
-        keyDown[event->key.keysym.sym] = true;
-        
-        break;
-    case SDL_KEYUP:
-        keyDown[event->key.keysym.sym] = false;
-        
-        break;
-    }
 }
 
 void InputManager::doAction(unsigned long currentTime) {
-
 	inputMapper->update(Input::INPUT_A_TURN);
 	inputMapper->update(Input::INPUT_A_ACCELERATE);
 	inputMapper->update(Input::INPUT_D_JUMP);
@@ -85,67 +68,32 @@ void InputManager::doAction(unsigned long currentTime) {
 	inputMapper->update(Input::INPUT_D_PAINT);
 	inputMapper->update(Input::INPUT_D_ERASE);
 
-	if (inputMapper->getAnalogStatus(Input::INPUT_A_TURN) != 0.0) {
+	if(inputMapper->getAnalogStatus(Input::INPUT_A_TURN) != 0.0) {
 		EMIT_EVENT(new Event::PlayerAction(
 			Event::PlayerAction::TURN,
 			inputMapper->getAnalogStatus(Input::INPUT_A_TURN)));
 	}
 
-	if (inputMapper->getAnalogStatus(Input::INPUT_A_ACCELERATE) != 0.0) {
+	if(inputMapper->getAnalogStatus(Input::INPUT_A_ACCELERATE) != 0.0) {
 		EMIT_EVENT(new Event::PlayerAction(
 				Event::PlayerAction::ACCELERATE,
 				inputMapper->getAnalogStatus(Input::INPUT_A_ACCELERATE)));
 	}
 
-	if (inputMapper->getDigitalStatus(Input::INPUT_D_JUMP))
+	if(inputMapper->getDigitalStatus(Input::INPUT_D_JUMP)) {
 		EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::JUMP, 0.0));
+    }
 
-	if (inputMapper->getDigitalStatus(Input::INPUT_D_RESET))
+	if(inputMapper->getDigitalTriggered(Input::INPUT_D_RESET)) {
 		EMIT_EVENT(new Event::PlayerAction(
             Event::PlayerAction::FIX_OFF_TRACK, 0.0));
-
-	/*
-    if(keyDown[SDLK_LEFT]) {
-        EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::TURN, -1.0));
     }
-    if(keyDown[SDLK_RIGHT]) {
-        EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::TURN, +1.0));
-    }
-	
-    if(keyDown[SDLK_UP]) {
-        EMIT_EVENT(new Event::PlayerAction(
-            Event::PlayerAction::ACCELERATE, +1.0));
-    }
-    if(keyDown[SDLK_DOWN]) {
-        EMIT_EVENT(new Event::PlayerAction(
-            Event::PlayerAction::ACCELERATE, -1.0));
-    }
-    if(keyDown[SDLK_SPACE]) {
-        EMIT_EVENT(new Event::PlayerAction(Event::PlayerAction::JUMP, 0.0));
-    }
-	
-    if(keyDown[SDLK_h]) {
-        keyDown[SDLK_h] = false;
-        EMIT_EVENT(new Event::PlayerAction(
-            Event::PlayerAction::FIX_OFF_TRACK, 0.0));
-    }
-	*/
     
     handlePaint();
     //handleJoystick();
 }
 
 void InputManager::doPausedChecks() {
-    /*if(keyDown[SDLK_ESCAPE]) {
-        keyDown[SDLK_ESCAPE] = false;
-        
-        bool pause = Timing::AccelControl::getInstance()->getPaused();
-        pause = !pause;
-        
-        LOG2(SDL, INPUT, (pause ? "Game paused" : "Game unpaused"));
-        EMIT_EVENT(new Event::PauseGame(pause));
-    }*/
-
 	inputMapper->update(Input::INPUT_D_RELOAD_CONFIG);
 	inputMapper->update(Input::INPUT_D_PHYSICS_DEBUG);
 	inputMapper->update(Input::INPUT_D_PATH_DEBUG);
@@ -153,7 +101,7 @@ void InputManager::doPausedChecks() {
 	inputMapper->update(Input::INPUT_A_CAMERA_X_SPEED);
 	inputMapper->update(Input::INPUT_A_CAMERA_Z_SPEED);
 
-	if (inputMapper->getDigitalTriggered(Input::INPUT_D_RELOAD_CONFIG)) {
+	if(inputMapper->getDigitalTriggered(Input::INPUT_D_RELOAD_CONFIG)) {
         
         LOG2(GLOBAL, SETTING,
             "Reloading config file \"" << CONFIG_FILE << "\"");
@@ -188,11 +136,11 @@ void InputManager::doPausedChecks() {
     
     static const double CAMERA_FACTOR = 0.8;
 
-	if (inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_X_SPEED) != 0.0 ||
+	if(inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_X_SPEED) != 0.0 ||
 		inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_Z_SPEED) != 0.0) {
 
-		EMIT_EVENT(new Event::CameraMovement(CAMERA_FACTOR
-				* Math::Point(
+		EMIT_EVENT(new Event::CameraMovement(
+            CAMERA_FACTOR * Math::Point(
 				inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_X_SPEED),
 				inputMapper->getAnalogStatus(Input::INPUT_A_CAMERA_Z_SPEED))));
 	}

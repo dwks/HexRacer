@@ -17,10 +17,9 @@ namespace SDL {
 
 class InputManager : public Timing::TimedSubsystem {
 private:
-    bool keyDown[SDLK_LAST];
     ClientData *clientData;
     JoystickManager *joystick;
-	Input::InputMapper* inputMapper;
+	Input::InputMapper *inputMapper;
 
 public:
     InputManager(int ms, ClientData *clientData);

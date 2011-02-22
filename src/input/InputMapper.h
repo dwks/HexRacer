@@ -2,7 +2,7 @@
 #define PROJECT_INPUT__INPUT_MAPPER_H
 
 #include "InputAction.h"
-#include "InputEventTypes.h"
+#include "InputSnapshot.h"
 
 #include "SDL_events.h"
 #include "SDL_keysym.h"
@@ -17,12 +17,8 @@ namespace Input {
 class InputMapper {
 private:
 
-	enum InputType {DIGITAL, ANALOG};
-
 	bool keyDown[SDLK_LAST];
-	bool digitalEventStatus[NUM_DIGITAL_TYPES];
-	bool digitalEventTriggered[NUM_DIGITAL_TYPES];
-	double analogEventStatus[NUM_ANALOG_TYPES];
+    InputSnapshot snapshot;
 
 	std::vector<InputAction*> digitalMappings [NUM_DIGITAL_TYPES];
 	std::vector<InputAction*> analogMappings [NUM_ANALOG_TYPES];
@@ -49,12 +45,13 @@ public:
 	void update(AnalogInputEvent event_id);
     
 	bool getDigitalStatus(DigitalInputEvent type) const
-        { return digitalEventStatus[static_cast<int>(type)]; }
+        { return snapshot.getDigitalStatus(type); }
 	bool getDigitalTriggered(DigitalInputEvent type) const
-        { return digitalEventTriggered[static_cast<int>(type)]; }
+        { return snapshot.getDigitalTriggered(type); }
 	double getAnalogStatus(AnalogInputEvent type) const
-        { return analogEventStatus[static_cast<int>(type)]; }
-
+        { return snapshot.getAnalogStatus(type); }
+    
+    const InputSnapshot &getSnapshot() const { return snapshot; }
 };
 
 }  // namespace Input

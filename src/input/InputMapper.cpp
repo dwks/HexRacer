@@ -10,8 +10,9 @@ namespace Project {
 namespace Input {
 
 	InputMapper::InputMapper() {
-		for (int i = 0; i < SDLK_LAST; i++)
+		for(int i = 0; i < SDLK_LAST; i++) {
 			keyDown[i] = false;
+        }
 	}
 
     InputMapper::~InputMapper() {
@@ -69,33 +70,33 @@ namespace Input {
 
 		for (int i = 0; i < NUM_ANALOG_TYPES; i++) {
 			update(static_cast<AnalogInputEvent>(i));
-	
 		}
 	}
 
 	void InputMapper::update(DigitalInputEvent event_id) {
-
-		int i = static_cast<int>(event_id);
-
-		bool last_status = digitalEventStatus[i];
-
-		digitalEventStatus[i] = false;
+        int i = static_cast<int>(event_id);
+        
+		bool status = false;
 		for (unsigned int j = 0; j < digitalMappings[i].size(); j++) {
-			digitalEventStatus[i] = (digitalEventStatus[i] || inputActionToBool(digitalMappings[i][j]));
+			status = (status || inputActionToBool(digitalMappings[i][j]));
 		}
-
-		digitalEventTriggered[i] = ((!last_status) && digitalEventStatus[i]);
-
+        
+        bool old_status = snapshot.getDigitalStatus(event_id);
+        bool triggered = (!old_status && status);
+        
+        snapshot.setDigitalTriggered(event_id, triggered);
+        snapshot.setDigitalStatus(event_id, status);
 	}
 
 	void InputMapper::update(AnalogInputEvent event_id) {
-
 		int i = static_cast<int>(event_id);
 
-		analogEventStatus[i] = 0.0;
+		double status = 0.0;
 		for (unsigned int j = 0; j < analogMappings[i].size(); j++) {
-			analogEventStatus[i] += inputActionToDouble(analogMappings[i][j]);
+			status += inputActionToDouble(analogMappings[i][j]);
 		}
+		
+		snapshot.setAnalogStatus(event_id, status);
 	}
 
 	bool InputMapper::inputActionToBool(InputAction* action) {

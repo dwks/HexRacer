@@ -41,9 +41,13 @@ Makefile
 # Windows clutter
 *.db
 
+# Linux executables
+/netlag
+
 # Linux profiling
-mem.*
-profile.*
+profile*
+mem*
+/gmon.out
 
 # Objects and meshes and other game data
 /data
