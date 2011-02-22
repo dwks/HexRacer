@@ -115,6 +115,7 @@ Historian::~Historian() {
 
 void Historian::setWorldManager(Object::WorldManager *worldManager) {
     this->worldManager = worldManager;
+    
     ADD_OBSERVER(new WorldHandler(worldManager, this));
 }
 

@@ -7,7 +7,7 @@
 #include "object/WorldManager.h"
 
 #include "event/PhysicsTick.h"
-#include "event/TypedObserver.h"
+#include "event/Enabler.h"
 
 namespace Project {
 namespace Physics {
@@ -16,17 +16,9 @@ namespace Physics {
     A bit of a misnomer: this class is currently reponsible for
     suspension, drag force, and turning force (basically all car mechanics).
 */
-class Suspension {
-private:
-    class PhysicsTickObserver
-        : public Event::TypedObserver<Event::PhysicsTick> {
-    private:
-        Suspension *suspension;
-    public:
-        PhysicsTickObserver(Suspension *suspension) : suspension(suspension) {}
-        
-        virtual void observe(Event::PhysicsTick *event);
-    };
+class Suspension : public Event::Enabler {
+protected:
+    void physicsTickHandler(Event::PhysicsTick *event);
 private:
     class Displacement {
     private:

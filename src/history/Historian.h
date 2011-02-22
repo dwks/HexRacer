@@ -7,12 +7,13 @@
 #include "event/UpdateWorld.h"
 #include "physics/PhysicsWorld.h"
 
+#include "event/Enabler.h"
 #include "event/MultiObserver.h"
 
 namespace Project {
 namespace History {
 
-class Historian {
+class Historian : public Event::Enabler {
 private:
     class WorldHandler : public Event::MultiObserver {
     private:

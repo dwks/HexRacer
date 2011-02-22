@@ -7,6 +7,7 @@
 #include "physics/Suspension.h"
 
 #include "event/TypedObserver.h"
+#include "event/Enabler.h"
 #include "event/PlayerAction.h"
 #include "event/PaintEvent.h"
 
@@ -17,7 +18,7 @@
 namespace Project {
 namespace SDL {
 
-class PlayerManager {
+class PlayerManager : public Event::Enabler {
 private:
     int id;
     Object::WorldManager *worldManager;

@@ -16,7 +16,7 @@
 
 #include "widget/KeyboardShortcutProxy.h"
 
-#include "GUIObservers.h"
+#include "event/EventSystem.h"
 
 #include "SDL.h"
 #include "SDL_events.h"
@@ -27,6 +27,19 @@
 namespace Project {
 namespace GUI {
 
+void GUISystem::pauseGameHandler(Event::PauseGame *event) {
+    if(event->getPaused()) {
+        selectScreen("paused");
+    }
+    else {
+        selectScreen("running");
+    }
+}
+
+void GUISystem::switchToScreenHandler(Event::SwitchToScreen *event) {
+    selectScreen(event->getScreen());
+}
+
 GUISystem::~GUISystem() {
     LOG(GUI, "Destructing GUI system");
     
@@ -35,7 +48,6 @@ GUISystem::~GUISystem() {
     delete textureList;
     delete fontManager;
     delete focusManager;
-    delete observers;
 }
 
 void GUISystem::construct() {
@@ -198,7 +210,8 @@ void GUISystem::construct() {
     
     selectScreen("main");
     
-    observers = new GUIObservers(this);
+    METHOD_OBSERVER(&GUISystem::pauseGameHandler);
+    METHOD_OBSERVER(&GUISystem::switchToScreenHandler);
 }
 
 void GUISystem::render() {

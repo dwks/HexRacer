@@ -7,6 +7,7 @@
 #include "event/SendPacket.h"
 #include "event/TypedObserver.h"
 #include "event/MultiObserver.h"
+#include "event/Enabler.h"
 
 #include "object/World.h"
 #include "object/PlayerList.h"
@@ -14,7 +15,7 @@
 namespace Project {
 namespace SDL {
 
-class NetworkPortal {
+class NetworkPortal : public Event::Enabler {
 private:
     Network::SinglePortal *portal;
     int id;

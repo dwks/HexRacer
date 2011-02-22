@@ -20,8 +20,8 @@ namespace Physics {
 
 PhysicsWorld *PhysicsWorld::instance;
 
-void PhysicsWorld::DebugDrawingObserver::observe(Event::SetDebugDrawing *event) {
-    PhysicsWorld::getInstance()->setDebug(event->getOn());
+void PhysicsWorld::setDebugDrawingHandler(Event::SetDebugDrawing *event) {
+    setDebug(event->getOn());
 }
 
 PhysicsWorld::PhysicsWorld() {
@@ -29,6 +29,8 @@ PhysicsWorld::PhysicsWorld() {
     debugging = false;
     setupPhysicsWorld();
     registerTickCallback();
+    
+    METHOD_OBSERVER(&PhysicsWorld::setDebugDrawingHandler);
 }
 
 PhysicsWorld::~PhysicsWorld() {
@@ -93,8 +95,6 @@ void PhysicsWorld::setupPhysicsWorld() {
     dynamicsWorld->setGravity ( btVector3 ( 0.0,-gravity,0.0 ) );
     
     LOG2 ( PHYSICS, INIT, "Physics Setup Completed!" );
-    
-    ADD_OBSERVER(new DebugDrawingObserver());
 }
 
 void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {

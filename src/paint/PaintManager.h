@@ -12,34 +12,17 @@
 
 #include "event/PaintEvent.h"
 #include "event/PaintCellsChanged.h"
-#include "event/TypedObserver.h"
+#include "event/Enabler.h"
 
 namespace Project {
 namespace Paint {
 
-class PaintManager
-	: public Render::BaseRenderable, public Math::SpatialObjectOperator {
-private:
-    class PaintEventHandler : public Event::TypedObserver<Event::PaintEvent> {
-    private:
-        PaintManager *paintManager;
-    public:
-        PaintEventHandler(PaintManager *paintManager)
-            : paintManager(paintManager) {}
-        
-        virtual void observe(Event::PaintEvent *paintEvent);
-    };
-    
-    class PaintCellsChangedHandler
-        : public Event::TypedObserver<Event::PaintCellsChanged> {
-    private:
-        PaintManager *paintManager;
-    public:
-        PaintCellsChangedHandler(PaintManager *paintManager)
-            : paintManager(paintManager) {}
-        
-        virtual void observe(Event::PaintCellsChanged *paintCellsChanged);
-    };
+class PaintManager :
+    public Render::BaseRenderable, public Math::SpatialObjectOperator,
+    public Event::Enabler {
+protected:
+    void paintEventHandler(Event::PaintEvent *paintEvent);
+    void paintCellsChangedHandler(Event::PaintCellsChanged *paintCellsChanged);
 private:
 
 	std::vector<PaintCell*> paintList;

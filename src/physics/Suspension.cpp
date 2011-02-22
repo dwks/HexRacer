@@ -17,9 +17,8 @@
 namespace Project {
 namespace Physics {
 
-void Suspension::PhysicsTickObserver::observe(Event::PhysicsTick *event) {
-    //LOG(PHYSICS, "    internal physics step");
-    suspension->doAction(event->getElapsed() * 1000.0);
+void Suspension::physicsTickHandler(Event::PhysicsTick *event) {
+    doAction(event->getElapsed() * 1000.0);
 }
 
 Suspension::Displacement Suspension::Spring::doRaycast() {
@@ -92,7 +91,7 @@ double Suspension::Spring::calculateForceFactor(
 }
 
 Suspension::Suspension() : worldManager(NULL), renderManager(NULL) {
-    ADD_OBSERVER(new PhysicsTickObserver(this));
+    METHOD_OBSERVER(&Suspension::physicsTickHandler);
 }
 
 void Suspension::checkForWheelsOnGround() {

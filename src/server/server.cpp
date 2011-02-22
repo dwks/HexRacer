@@ -1,5 +1,4 @@
 #include "ServerMain.h"
-#include "event/ObserverList.h"
 #include "log/LogOpener.h"
 #include "settings/ProgramSettings.h"
 #include "settings/SettingsManager.h"
@@ -14,8 +13,6 @@ int main(int argc, char *argv[]) {
     Project::Server::ServerMain *server = new Project::Server::ServerMain();
     server->run();
     delete server;
-    
-    Project::Event::ObserverList::getInstance().destroyObject();
     
     Project::Log::LogOpener::closeLogs();
     return 0;

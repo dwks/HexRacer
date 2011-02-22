@@ -7,6 +7,7 @@
 
 #include "event/CameraMovement.h"
 #include "event/TypedObserver.h"
+#include "event/Enabler.h"
 
 #include "opengl/SimpleTrackball.h"
 #include "opengl/Camera.h"
@@ -16,7 +17,7 @@
 namespace Project {
 namespace SDL {
 
-class GameViewport {
+class GameViewport : public Event::Enabler {
 private:
     class CameraObserver : public Event::TypedObserver<Event::CameraMovement> {
     private:

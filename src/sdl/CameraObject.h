@@ -11,7 +11,7 @@
 #include "object/Player.h"
 
 #include "event/PhysicsTick.h"
-#include "event/TypedObserver.h"
+#include "event/Enabler.h"
 
 #include "event/SetDebugCamera.h"
 
@@ -22,28 +22,10 @@
 namespace Project {
 namespace SDL {
 
-class CameraObject {
-private:
-    class PhysicsTickObserver
-        : public Event::TypedObserver<Event::PhysicsTick> {
-    private:
-        CameraObject *cameraObject;
-    public:
-        PhysicsTickObserver(CameraObject *cameraObject) : cameraObject(cameraObject) {}
-        
-        virtual void observe(Event::PhysicsTick *event);
-    };
-    
-    class SetDebugCameraHandler
-        : public Event::TypedObserver<Event::SetDebugCamera> {
-    private:
-        CameraObject *cameraObject;
-    public:
-        SetDebugCameraHandler(CameraObject *cameraObject)
-            : cameraObject(cameraObject) {}
-        
-        virtual void observe(Event::SetDebugCamera *event);
-    };
+class CameraObject : public Event::Enabler {
+protected:
+    void physicsTickHandler(Event::PhysicsTick *event);
+    void setDebugCameraHandler(Event::SetDebugCamera *event);
 public:
     CameraObject();
     CameraObject(SDL::PlayerManager *_playerManager);

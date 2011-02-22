@@ -16,18 +16,16 @@
 namespace Project {
 namespace SDL {
 
-void SDLMainLoop::QuitObserver::observe(Event::QuitEvent *event) {
-    if(!mainLoop->currentlyUsingMenuLoop()) {
-        mainLoop->useMenuLoop();
+void SDLMainLoop::quitHandler(Event::QuitEvent *event) {
+    if(!currentlyUsingMenuLoop()) {
+        useMenuLoop();
     }
     else {
-        mainLoop->setQuit();
+        setQuit();
     }
 }
 
-void SDLMainLoop::ChangeScreenModeObserver::observe(
-    Event::ChangeScreenMode *event) {
-    
+void SDLMainLoop::changeScreenModeHandler(Event::ChangeScreenMode *event) {
     int width = event->getWidth();
     int height = event->getHeight();
     int bpp = event->getBPP();
@@ -39,18 +37,18 @@ void SDLMainLoop::ChangeScreenModeObserver::observe(
     Settings::SettingsManager::getInstance()->set(
         "display.bpp", Misc::StreamAsString() << bpp);
     
-    SDL_SetVideoMode(width, height, bpp, mainLoop->sdl_init_flags);
-    mainLoop->resizeGL(width, height);
+    SDL_SetVideoMode(width, height, bpp, this->sdl_init_flags);
+    resizeGL(width, height);
 }
 
-void SDLMainLoop::JoinGameObserver::observe(Event::JoinGame *event) {
+void SDLMainLoop::joinGameHandler(Event::JoinGame *event) {
     GameLoop *loop = new GameLoop(event->getHost(), event->getPort());
     loop->construct();
     
     loop->setGuiPointers(
-        mainLoop->menuLoop->getGUI(),
-        mainLoop->menuLoop->getGUIInput());
-    mainLoop->menuLoop->getGUI()->selectScreen("running");
+        menuLoop->getGUI(),
+        menuLoop->getGUIInput());
+    menuLoop->getGUI()->selectScreen("running");
     
 	// set up camera if necessary
     loop->setProjection(Point2D(
@@ -58,7 +56,7 @@ void SDLMainLoop::JoinGameObserver::observe(Event::JoinGame *event) {
         SDL_GetVideoSurface()->h));
     
     //Timing::AccelControl::getInstance()->setPauseSkipDirectly(SDL_GetTicks());
-    mainLoop->useLoopBase(loop);
+    useLoopBase(loop);
 }
 
 SDLMainLoop::SDLMainLoop() {
@@ -67,9 +65,9 @@ SDLMainLoop::SDLMainLoop() {
     // it's dangerous to add observers inside a constructor, but in this case
     // we know that SDLMainLoop was not constructed from within an event, so
     // it's okay.
-    ADD_OBSERVER(new QuitObserver(this));
-    ADD_OBSERVER(new ChangeScreenModeObserver(this));
-    ADD_OBSERVER(new JoinGameObserver(this));
+    METHOD_OBSERVER(&SDLMainLoop::quitHandler);
+    METHOD_OBSERVER(&SDLMainLoop::changeScreenModeHandler);
+    METHOD_OBSERVER(&SDLMainLoop::joinGameHandler);
     
     initSDL();
     initOpenGL();

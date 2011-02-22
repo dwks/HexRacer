@@ -8,10 +8,14 @@
 namespace Project {
 namespace Paint {
 
-void PaintSubsystem::TogglePaintingHandler::observe(
+/*void PaintSubsystem::TogglePaintingHandler::observe(
     Event::TogglePainting *toggle) {
     
     subsystem->setPainting(toggle->getID(), toggle->getPaintType());
+}*/
+
+void PaintSubsystem::togglePaintingObserver(Event::TogglePainting *toggle) {
+    setPainting(toggle->getID(), toggle->getPaintType());
 }
 
 PaintSubsystem::PaintSubsystem(Object::WorldManager *worldManager,
@@ -19,7 +23,7 @@ PaintSubsystem::PaintSubsystem(Object::WorldManager *worldManager,
     : TimedSubsystem(tickTime), worldManager(worldManager),
     paintManager(paintManager) {
     
-    ADD_OBSERVER(new TogglePaintingHandler(this));
+    METHOD_OBSERVER(&PaintSubsystem::togglePaintingObserver);
 }
 
 void PaintSubsystem::setPainting(int id,

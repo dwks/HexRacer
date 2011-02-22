@@ -1,5 +1,6 @@
 #include "SDL.h"  // for SDL_GetTicks()
 
+#include "event/EventSystem.h"
 #include "GameLoop.h"
 
 namespace Project {
@@ -27,6 +28,8 @@ void GameLoop::construct() {
     inputManager = boost::shared_ptr<InputManager>(
         new InputManager(10, gameWorld->getClientData()));
     inputManager->init();
+    
+    EMIT_EVENT(new Event::PauseGame(false));
 }
 
 void GameLoop::setGuiPointers(boost::shared_ptr<GUI::GUISystem> gui,

@@ -11,18 +11,18 @@ using namespace Render;
 namespace Project {
 namespace Paint {
 
-    void PaintManager::PaintEventHandler::observe(Event::PaintEvent *paintEvent) {
+    void PaintManager::paintEventHandler(Event::PaintEvent *paintEvent) {
         Math::Point position = paintEvent->getPoint();
         double radius = paintEvent->getRadius();
         int colour = paintEvent->getColour();
         
-        paintManager->colorCellsInRadius(position, radius, colour);
+        colorCellsInRadius(position, radius, colour);
     }
     
-    void PaintManager::PaintCellsChangedHandler::observe(
+    void PaintManager::paintCellsChangedHandler(
         Event::PaintCellsChanged *paintCellsChanged) {
         
-        paintManager->colorCellsByIndex(
+        colorCellsByIndex(
             paintCellsChanged->getCells(),
             paintCellsChanged->getColour());
     }
@@ -39,8 +39,8 @@ namespace Paint {
 		fadePlaneFar = 0.0f;
 		targetList = 0;
         
-        ADD_OBSERVER(new PaintEventHandler(this));
-        ADD_OBSERVER(new PaintCellsChangedHandler(this));
+        METHOD_OBSERVER(&PaintManager::paintEventHandler);
+        METHOD_OBSERVER(&PaintManager::paintCellsChangedHandler);
 	}
 
 	PaintManager::~PaintManager() {

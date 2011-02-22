@@ -6,14 +6,12 @@
 namespace Project {
 namespace SDL {
     
-    void CameraObject::PhysicsTickObserver::observe(Event::PhysicsTick *event) {
-        cameraObject->doAction(event->getElapsed() * 1000.0);
+    void CameraObject::physicsTickHandler(Event::PhysicsTick *event) {
+        doAction(event->getElapsed() * 1000.0);
     }
     
-    void CameraObject::SetDebugCameraHandler::observe(
-        Event::SetDebugCamera *event) {
-        
-        cameraObject->setDebugCamera(event->getOn());
+    void CameraObject::setDebugCameraHandler(Event::SetDebugCamera *event) {
+        setDebugCamera(event->getOn());
     }
     
     CameraObject::CameraObject(){
@@ -24,8 +22,8 @@ namespace SDL {
         
         loadSettings();
         
-        ADD_OBSERVER(new PhysicsTickObserver(this));
-        ADD_OBSERVER(new SetDebugCameraHandler(this));
+        METHOD_OBSERVER(&CameraObject::physicsTickHandler);
+        METHOD_OBSERVER(&CameraObject::setDebugCameraHandler);
     }
     
     CameraObject::CameraObject(SDL::PlayerManager *_playerManager){
@@ -36,8 +34,8 @@ namespace SDL {
         
         loadSettings();
         
-        ADD_OBSERVER(new PhysicsTickObserver(this));
-        ADD_OBSERVER(new SetDebugCameraHandler(this));
+        METHOD_OBSERVER(&CameraObject::physicsTickHandler);
+        METHOD_OBSERVER(&CameraObject::setDebugCameraHandler);
     }
     
     CameraObject::~CameraObject(){

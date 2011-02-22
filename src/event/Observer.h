@@ -15,6 +15,11 @@ public:
     /** Subclasses should implement this method.
     */
     virtual void observe(EventBase *event) = 0;
+    
+    /** Subclasses should implement this method. Returns true if this observer
+        is interested in being notified of events of type @a type.
+    */
+    virtual bool interestedIn(EventType::type_t type) = 0;
 };
 
 }  // namespace Event

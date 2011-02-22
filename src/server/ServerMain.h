@@ -8,6 +8,7 @@
 
 #include "network/PacketVisitor.h"
 #include "event/MultiObserver.h"
+#include "event/Enabler.h"
 
 #include "ServerNetworkPortal.h"
 #include "timing/AccelControl.h"
@@ -18,7 +19,7 @@
 namespace Project {
 namespace Server {
 
-class ServerMain {
+class ServerMain : public Event::Enabler {
 private:
     class ServerVisitor : public Network::PacketVisitor {
     private:

@@ -1,5 +1,4 @@
 #include "SDLMainLoop.h"
-#include "event/ObserverList.h"
 #include "log/LogOpener.h"
 #include "settings/ProgramSettings.h"
 #include "settings/SettingsManager.h"
@@ -14,8 +13,6 @@ int main(int argc, char *argv[]) {
     Project::SDL::SDLMainLoop *sdlmain = new Project::SDL::SDLMainLoop();
     sdlmain->run();
     delete sdlmain;
-    
-    Project::Event::ObserverList::getInstance().destroyObject();
     
     Project::Log::LogOpener::closeLogs();
     return 0;
