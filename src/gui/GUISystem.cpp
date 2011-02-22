@@ -131,14 +131,18 @@ void GUISystem::construct() {
         connect->addChild(new Widget::ButtonWidget("connect",
             "Connect", Widget::WidgetRect(0.5, 0.5, 0.35, 0.08)));
         
+        connect->addChild(new Widget::TextWidget("error", "",
+            Widget::NormalTextLayout::ALIGN_HCENTRE | Widget::NormalTextLayout::ALIGN_VCENTRE,
+            Widget::WidgetRect(0.1, 0.6, 0.8, 0.08)));
+        
         setShortcut(getWidget("connect/cancel"), SDLK_ESCAPE);
         setShortcut(getWidget("connect/connect"), SDLK_RETURN);
         
-        getWidget("connect/host")->addEventProxy(new ConnectProxy());
-        getWidget("connect/port")->addEventProxy(new ConnectProxy());
+        getWidget("connect/host")->addEventProxy(new ConnectProxy(connect));
+        getWidget("connect/port")->addEventProxy(new ConnectProxy(connect));
         
-        getWidget("connect/cancel")->addEventProxy(new ConnectProxy());
-        getWidget("connect/connect")->addEventProxy(new ConnectProxy());
+        getWidget("connect/cancel")->addEventProxy(new ConnectProxy(connect));
+        getWidget("connect/connect")->addEventProxy(new ConnectProxy(connect));
     }
     
     {

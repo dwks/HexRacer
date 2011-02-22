@@ -21,9 +21,11 @@ void ConnectProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();
     
     if(name == "cancel") {
+        clearError();
         EMIT_EVENT(new Event::SwitchToScreen("main"));
     }
     else if(name == "connect") {
+        clearError();
         EMIT_EVENT(new Event::JoinGame(
             GET_SETTING("network.host", "localhost").c_str(),
             GET_SETTING("network.port", 1820)));
@@ -55,6 +57,14 @@ void ConnectProxy::visit(Widget::WidgetModifiedEvent *event) {
     }
     else {
         LOG2(GUI, WARNING, "No action for modifying \"" << name << "\"");
+    }
+}
+
+void ConnectProxy::clearError() {
+    Widget::TextWidget *error
+        = dynamic_cast<Widget::TextWidget *>(connect->getChild("error"));
+    if(error) {
+        error->setText("");
     }
 }
 

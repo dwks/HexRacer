@@ -16,13 +16,14 @@
 namespace Project {
 namespace SDL {
 
-void GameWorld::doConnect(const std::string &host, unsigned short port) {
+bool GameWorld::doConnect(const std::string &host, unsigned short port) {
     network = boost::shared_ptr<NetworkPortal>(new NetworkPortal());
     
+    // must happen before we try to connect, so that PingTimeMeasurer exists
     historian = boost::shared_ptr<History::Historian>(
         new History::Historian());
     
-    if(host != "" && network->connectTo(host.c_str(), port)) {
+    if(network->connectTo(host.c_str(), port)) {
         Object::World *world;
         Object::PlayerList *playerList;
         
@@ -38,26 +39,43 @@ void GameWorld::doConnect(const std::string &host, unsigned short port) {
         isConnectedToNetwork = true;
     }
     else {
-        worldManager = boost::shared_ptr<Object::WorldManager>(
-            new Object::WorldManager());
-        clientData = boost::shared_ptr<ClientData>(
-            new ClientData());
-        playerManager = boost::shared_ptr<PlayerManager>(
-            new PlayerManager(0, worldManager.get()));
-        isConnectedToNetwork = false;
+        LOG2(NETWORK, ERROR, "Could not connect to server "
+            << host << ":" << port << "!");
+        return false;
     }
     
     historian->setWorldManager(worldManager.get());
     historian->setPhysicsWorld(physicsWorld.get());
+    
+    return true;
 }
 
-void GameWorld::construct(const std::string &host, unsigned short port) {
+void GameWorld::doNotConnect() {
+    // do not initialize network, historian
+    
+    worldManager = boost::shared_ptr<Object::WorldManager>(
+        new Object::WorldManager());
+    clientData = boost::shared_ptr<ClientData>(
+        new ClientData());
+    playerManager = boost::shared_ptr<PlayerManager>(
+        new PlayerManager(0, worldManager.get()));
+    
+    isConnectedToNetwork = false;
+}
+
+bool GameWorld::construct(const std::string &host, unsigned short port) {
     physicsWorld = boost::shared_ptr<Physics::PhysicsWorld>(
         new Physics::PhysicsWorld());
     suspension = boost::shared_ptr<Physics::Suspension>(
         new Physics::Suspension());
     
-    doConnect(host, port);
+    if(host == "" && port == 0) {
+        doNotConnect();
+        return true;
+    }
+    else {
+        return doConnect(host, port);
+    }
 }
 
 void GameWorld::construct2(Map::HRMap *map) {
@@ -80,7 +98,9 @@ void GameWorld::construct2(Map::HRMap *map) {
 }
 
 void GameWorld::checkNetwork() {
-    network->checkNetwork();
+    if(isConnectedToNetwork) {
+        network->checkNetwork();
+    }
 }
 
 void GameWorld::doPhysics() {

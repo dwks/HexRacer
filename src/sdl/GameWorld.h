@@ -41,9 +41,10 @@ private:
     
     bool isConnectedToNetwork;
 public:
-    void doConnect(const std::string &host, unsigned short port);
+    bool doConnect(const std::string &host, unsigned short port);
+    void doNotConnect();
     
-    void construct(const std::string &host, unsigned short port);
+    bool construct(const std::string &host, unsigned short port);
     void construct2(Map::HRMap *map);
     
     PlayerManager *getPlayerManager() { return playerManager.get(); }

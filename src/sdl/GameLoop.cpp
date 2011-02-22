@@ -6,9 +6,10 @@
 namespace Project {
 namespace SDL {
 
-GameLoop::GameLoop(const std::string &host, unsigned short port) {
+bool GameLoop::tryConnect(const std::string &host, unsigned short port) {
     gameWorld = boost::shared_ptr<GameWorld>(new GameWorld());
-    gameWorld->construct(host, port);
+    
+    return gameWorld->construct(host, port);
 }
 
 void GameLoop::construct() {

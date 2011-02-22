@@ -42,7 +42,20 @@ void SDLMainLoop::changeScreenModeHandler(Event::ChangeScreenMode *event) {
 }
 
 void SDLMainLoop::joinGameHandler(Event::JoinGame *event) {
-    GameLoop *loop = new GameLoop(event->getHost(), event->getPort());
+    GameLoop *loop = new GameLoop();
+    if(!loop->tryConnect(event->getHost(), event->getPort())) {
+        delete loop;
+        
+        Widget::TextWidget *error = dynamic_cast<Widget::TextWidget *>(
+            menuLoop->getGUI()->getWidget("connect/error"));
+        if(error) {
+            error->setText(Misc::StreamAsString()
+                << "Could not connect to " << event->getHost()
+                << ":" << event->getPort());
+        }
+        
+        return;
+    }
     loop->construct();
     
     loop->setGuiPointers(
