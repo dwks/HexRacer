@@ -24,6 +24,7 @@ private:
 	Math::BSPTree3D* triangleFanTree;
 	OpenGL::Material* material;
 	const Shader::ShaderParamSetter* paramSetter;
+	GLuint displayList;
 
 	void generateTriangleFanTree();
 

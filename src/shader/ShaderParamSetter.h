@@ -18,6 +18,7 @@ private:
 	ShaderProgram* shaderProgram;
 	int* standardUniformLocations;
 	int* standardAttributeLocations;
+	bool hasNormalMap;
 
 public:
 
@@ -41,6 +42,8 @@ public:
 	void setStandardParamVector4(ShaderParameter::ShaderParamType type, int standard_type, const OpenGL::Color& color) const;
 	void setStandardParamMatrix4(ShaderParameter::ShaderParamType type, int standard_type, GLboolean transpose, const GLfloat* matrix) const;
 
+	void setHasNormalMap(bool has) { hasNormalMap = has; }
+	bool getHasTangentSpace() const;
 	/*
 	void setUniformInt(const char *name, GLint value);
 	void setUniformIntArray(const char *name, GLint values[], int num_values);

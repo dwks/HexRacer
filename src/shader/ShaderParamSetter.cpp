@@ -1,4 +1,5 @@
 #include "ShaderParamSetter.h"
+#include "ShaderManager.h"
 using namespace Project;
 using namespace Math;
 using namespace OpenGL;
@@ -8,6 +9,7 @@ namespace Shader {
 
 	ShaderParamSetter::ShaderParamSetter() {
 		shaderProgram = NULL;
+		hasNormalMap = false;
 	}
 
 	void ShaderParamSetter::setShaderProgram(ShaderProgram* program, int* standard_uni_locs, int* standard_attr_locs) {
@@ -159,5 +161,11 @@ namespace Shader {
 		}
 	}
 
+	bool ShaderParamSetter::getHasTangentSpace() const {
+		return (
+			hasNormalMap && shaderProgram &&
+			standardAttributeLocations[static_cast<int>(ShaderManager::AV3_TANGENT)] >= 0 &&
+			standardAttributeLocations[static_cast<int>(ShaderManager::AV3_BITANGENT)] >= 0 );
+	}
 }  // namespace Render
 }  // namespace Project

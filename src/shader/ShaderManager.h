@@ -67,6 +67,7 @@ public:
 	int shaderIndexFromName(std::string name);
 
 	const ShaderParamSetter& getShaderParamSetter() const { return setter; }
+	void setHasNormalMap(bool has) { setter.setHasNormalMap(has); }
 
 };
 

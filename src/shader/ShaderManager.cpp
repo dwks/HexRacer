@@ -76,7 +76,7 @@ namespace Shader {
 
 		if (name.length() > 0) {
 
-			ShaderProgram* new_shader = new ShaderProgram((GLchar*) fragment_file.c_str(),(GLchar*) vertex_file.c_str());
+			ShaderProgram* new_shader = new ShaderProgram((const GLchar*)fragment_file.c_str(), (const GLchar*)vertex_file.c_str());
 			new_shader->turnShaderOff();
 			shaderPrograms.push_back(new_shader);
 			shaderNames.push_back(name);

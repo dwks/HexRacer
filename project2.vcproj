@@ -190,11 +190,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\AIManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\BackgroundRenderable.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\render\BaseRenderable.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\BasicWorld.cpp"
 				>
 			</File>
 			<File
@@ -239,6 +247,10 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\CameraObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\ChangeOfIntention.cpp"
 				>
 			</File>
 			<File
@@ -290,6 +302,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\Driver.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\EditEventProxy.cpp"
 				>
 			</File>
@@ -298,11 +314,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\Enabler.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\EntireWorld.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\widget\EventProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\EventSystem.cpp"
 				>
 			</File>
 			<File
@@ -346,10 +370,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\gui\GUIObservers.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\gui\GUISystem.cpp"
 				>
 			</File>
@@ -387,6 +407,10 @@
 			</File>
 			<File
 				RelativePath=".\src\input\InputMapper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\InputSnapshot.cpp"
 				>
 			</File>
 			<File
@@ -482,6 +506,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\MethodObserver.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\hud\Minimap.cpp"
 				>
 			</File>
@@ -510,6 +538,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\ObserverRegistry.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\paint\PaintCell.cpp"
 				>
 			</File>
@@ -535,6 +567,10 @@
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintVertex.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\PathingUpdater.cpp"
 				>
 			</File>
 			<File
@@ -586,7 +622,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\event\PlayerAction.cpp"
+				RelativePath=".\src\world\PlayerIntention.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\PlayerManager.cpp"
 				>
 			</File>
 			<File
@@ -706,6 +746,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\StraightDriver.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mesh\SubMesh.cpp"
 				>
 			</File>
@@ -763,6 +807,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\Vertex3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\WarpOntoTrack.cpp"
 				>
 			</File>
 			<File
@@ -846,10 +894,6 @@
 				</File>
 				<File
 					RelativePath=".\src\event\Observer.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\event\ObserverList.cpp"
 					>
 				</File>
 				<File
@@ -1077,10 +1121,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\sdl\PlayerManager.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\src\sdl\Point2D.cpp"
 					>
 				</File>
@@ -1112,11 +1152,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\AIManager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\BackgroundRenderable.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\render\BaseRenderable.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\BasicWorld.h"
 				>
 			</File>
 			<File
@@ -1161,6 +1209,10 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\CameraObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\ChangeOfIntention.h"
 				>
 			</File>
 			<File
@@ -1216,6 +1268,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\Driver.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\EditEventProxy.h"
 				>
 			</File>
@@ -1224,11 +1280,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\Enabler.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\EntireWorld.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\widget\EventProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\EventSystem.h"
 				>
 			</File>
 			<File
@@ -1269,10 +1333,6 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\GUIInputManager.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\gui\GUIObservers.h"
 				>
 			</File>
 			<File
@@ -1317,6 +1377,10 @@
 			</File>
 			<File
 				RelativePath=".\src\input\InputMapper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\InputSnapshot.h"
 				>
 			</File>
 			<File
@@ -1400,6 +1464,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\MethodObserver.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\hud\Minimap.h"
 				>
 			</File>
@@ -1432,6 +1500,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\ObserverRegistry.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\paint\PaintCell.h"
 				>
 			</File>
@@ -1457,6 +1529,10 @@
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintVertex.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\PathingUpdater.h"
 				>
 			</File>
 			<File
@@ -1508,7 +1584,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\event\PlayerAction.h"
+				RelativePath=".\src\world\PlayerIntention.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\PlayerManager.h"
 				>
 			</File>
 			<File
@@ -1644,6 +1724,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\StraightDriver.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mesh\SubMesh.h"
 				>
 			</File>
@@ -1701,6 +1785,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\Vertex3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\WarpOntoTrack.h"
 				>
 			</File>
 			<File
@@ -1847,10 +1935,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\sdl\PlayerManager.h"
-					>
-				</File>
-				<File
 					RelativePath=".\src\sdl\Point2D.h"
 					>
 				</File>
@@ -1944,10 +2028,6 @@
 				</File>
 				<File
 					RelativePath=".\src\event\Observer.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\event\ObserverList.h"
 					>
 				</File>
 				<File

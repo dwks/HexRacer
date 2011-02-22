@@ -294,6 +294,8 @@ namespace Render {
 
 	void RenderManager::setShaderParameters() {
 
+		shaderManager->setHasNormalMap(hasTexture[NORMAL_MAP_TEXTURE_INDEX] == 1);
+
 		if (!shaderManager->getIsShaderActive())
 			return;
 

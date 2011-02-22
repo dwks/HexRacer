@@ -138,9 +138,39 @@ void PhysicalPlayer::applyTurning(double amount) {
     
     /*double centripetalSpeed = getLinearVelocity().dotProduct(forwardAxis)
         / getLinearVelocity().length();*/
+
+	double threshhold1 = GET_SETTING("physics.turning.speedthresh1", 10.0);
+	double threshhold2 = GET_SETTING("physics.turning.speedthresh2", 20.0);
+	double threshhold2factor = GET_SETTING("physics.turning.speedthresh2factor", 0.5);
+
+	double threshhold1to2 = threshhold2-threshhold1;
+
+	double threshhold3 = GET_SETTING("physics.turning.speedthresh2", 25.0);
+	double threshhold3factor = GET_SETTING("physics.turning.speedthresh3factor", 1.0);
+
+	double threshhold2to3 = threshhold3-threshhold2;
+	
+
+	double turning_factor;
+
+	if (speed < threshhold1)
+		turning_factor = sqrt(std::fabs(speed)/threshhold1)*threshhold1;
+	else
+		turning_factor = speed;
+
+	if (speed > threshhold1)
+		turning_factor -= ((speed-threshhold1)/threshhold1to2)*threshhold2factor;
+
+	if (speed > threshhold2)
+		turning_factor -= ((speed-threshhold2)/threshhold2to3)*threshhold3factor;
+
+	if (turning_factor > 0)
+		turning_factor = Math::maximum(turning_factor, GET_SETTING("physics.turning.minfactor", 0.1));
+	else if (turning_factor < 0)
+		turning_factor = Math::minimum(turning_factor, -GET_SETTING("physics.turning.minfactor", 0.1));
     
-    applyForce(centripetalAxis * centripetalConstant * speed * amount);
-    applyTorque(Math::Point(0.0, -1.0, 0.0) * constant * speed * amount);
+    applyForce(centripetalAxis * centripetalConstant * turning_factor * amount);
+    applyTorque(Math::Point(0.0, -1.0, 0.0) * constant * turning_factor * amount);
 }
 
 void PhysicalPlayer::doJump() {

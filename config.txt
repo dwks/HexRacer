@@ -25,7 +25,7 @@ physics.maxtimesteps              = 5
 physics.constant.gravity          = 11
 
 # Acceleration and responsiveness of input
-physics.constant.turn             = 0.16
+physics.constant.turn             = 0.18
 physics.constant.accel            = 3.6
 physics.constant.centripetal      = 1.0
 
@@ -37,6 +37,14 @@ physics.driving.stretchlength     = 0.5
 physics.driving.constant.k        = 8
 physics.driving.constant.c        = 45.0
 physics.driving.mindownfactor = 0.25
+
+#Turning
+physics.turning.speedthresh1 = 15.0
+physics.turning.speedthresh2 = 25.0
+physics.turning.speedthresh3 = 30.0
+physics.turning.speedthresh2factor = 0.15
+physics.turning.speedthresh3factor = 0.35
+physics.turning.minfactor = 2.0
 
 # Display options for the vehicle wheels
 physics.wheel.diameter = 0.155
