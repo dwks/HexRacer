@@ -25,8 +25,8 @@ physics.maxtimesteps              = 5
 physics.constant.gravity          = 11
 
 # Acceleration and responsiveness of input
-physics.constant.turn             = 0.12
-physics.constant.accel            = 3.1
+physics.constant.turn             = 0.16
+physics.constant.accel            = 3.5
 physics.constant.centripetal      = 1.0
 
 # Vehicle suspension

@@ -12,7 +12,7 @@
 #include "network/EventPacket.h"
 
 #include "event/QuitEvent.h"
-#include "event/PlayerAction.h"
+#include "event/ChangeOfIntention.h"
 #include "event/PaintEvent.h"
 #include "event/PaintCellsChanged.h"
 #include "event/CreateObject.h"
@@ -106,6 +106,17 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         
         break;
     }
+    case Event::EventType::CHANGE_OF_INTENTION: {
+        Event::ChangeOfIntention *changeOfIntention
+            = dynamic_cast<Event::ChangeOfIntention *>(event);
+        
+        int id = changeOfIntention->getPlayer();
+        Object::Player *player = main->getWorldManager()->getPlayer(id);
+        
+        player->setIntention(changeOfIntention->getIntention());
+        
+        break;
+    }
     default:
         LOG2(NETWORK, WARNING,
             "Don't know how to handle events of type " << event->getType());
@@ -121,7 +132,7 @@ bool ServerMain::ServerObserver::interestedIn(Event::EventType::type_t type) {
         return false;
     case Event::EventType::PHYSICS_TICK:  // don't care for the moment
         return false;
-    case Event::EventType::PLAYER_ACTION:  // handled by PlayerManager
+    case Event::EventType::WARP_ONTO_TRACK:  // handled by PlayerManager
         return false;
     default:
         break;

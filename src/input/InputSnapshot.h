@@ -2,6 +2,7 @@
 #define PROJECT_INPUT__INPUT_SNAPSHOT_H
 
 #include "InputEventTypes.h"
+#include "world/PlayerIntention.h"
 
 namespace Project {
 namespace Input {
@@ -23,6 +24,8 @@ public:
     bool getDigitalStatus(DigitalInputEvent type) const;
     bool getDigitalTriggered(DigitalInputEvent type) const;
     double getAnalogStatus(AnalogInputEvent type) const;
+    
+    void asPlayerIntention(World::PlayerIntention &intention) const;
 };
 
 }  // namespace Input

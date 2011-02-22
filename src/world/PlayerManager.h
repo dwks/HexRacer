@@ -6,7 +6,9 @@
 
 #include "event/TypedObserver.h"
 #include "event/Enabler.h"
-#include "event/PlayerAction.h"
+#include "event/PhysicsTick.h"
+#include "event/WarpOntoTrack.h"
+#include "event/ChangeOfIntention.h"
 
 #include "map/RaceManager.h"
 
@@ -14,20 +16,14 @@ namespace Project {
 namespace World {
 
 class PlayerManager : public Event::Enabler {
+protected:
+    void physicsTickHandler(Event::PhysicsTick *event);
+    void warpOntoTrackHandler(Event::WarpOntoTrack *event);
+    void changeOfIntentionHandler(Event::ChangeOfIntention *event);
 private:
     int id;
     Object::WorldManager *worldManager;
     Map::RaceManager *raceManager;
-private:
-    class PlayerActionHandler
-        : public Event::TypedObserver<Event::PlayerAction> {
-    private:
-        PlayerManager *manager;
-    public:
-        PlayerActionHandler(PlayerManager *manager) : manager(manager) {}
-        
-        virtual void observe(Event::PlayerAction *action);
-    };
 public:
     PlayerManager(int id, Object::WorldManager *worldManager);
     
@@ -36,6 +32,9 @@ public:
 public:
     Object::Player *getPlayer();
     Object::Player *getPlayer(int id);
+private:
+    void applyIntentions(Object::Player *player);
+    void warpPlayerOntoTrack(Object::Player *player);
 };
 
 }  // namespace World

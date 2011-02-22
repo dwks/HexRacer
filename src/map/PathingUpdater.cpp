@@ -4,7 +4,7 @@
 #include "settings/SettingsManager.h"
 
 #include "event/EventSystem.h"
-#include "event/PlayerAction.h"
+#include "event/WarpOntoTrack.h"
 
 namespace Project {
 namespace Map {
@@ -45,11 +45,9 @@ void PathingUpdater::update() {
             }
         }
         else {
-            //Reset the player if they are below the kill plane
-            //Probably not doing the right ID check?
-            if (origin_pos.getY() < raceManager->getKillPlaneY()) {
-                EMIT_EVENT(new Event::PlayerAction(player->getID(),
-                    Event::PlayerAction::FIX_OFF_TRACK, 0.0));
+            // Reset (warp) the player if they are below the kill plane
+            if(origin_pos.getY() < raceManager->getKillPlaneY()) {
+                EMIT_EVENT(new Event::WarpOntoTrack(player->getID()));
             }
         }
     }

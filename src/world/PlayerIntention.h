@@ -1,12 +1,22 @@
 #ifndef PROJECT_WORLD__PLAYER_INTENTION_H
 #define PROJECT_WORLD__PLAYER_INTENTION_H
 
+#include "boost/serialization/access.hpp"
+
 namespace Project {
 namespace World {
 
 /** Encompasses all the inputs of a player (human or computer) for one frame.
 */
 class PlayerIntention {
+private:
+    friend class boost::serialization::access;
+    
+    template <typename Archive>
+    void serialize(Archive &ar, const unsigned version) {
+        ar & accel & turn & jump;
+        ar & reset & paint & erase;
+    }
 private:
     double accel;
     double turn;
@@ -31,6 +41,9 @@ public:
     void setReset(bool reset) { this->reset = reset; }
     void setPaint(bool paint) { this->paint = paint; }
     void setErase(bool erase) { this->erase = erase; }
+    
+    bool operator == (const PlayerIntention &other) const;
+    bool operator != (const PlayerIntention &other) const;
 };
 
 }  // namespace World

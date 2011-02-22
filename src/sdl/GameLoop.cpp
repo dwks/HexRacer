@@ -27,7 +27,10 @@ void GameLoop::construct() {
             gameRenderer->getPaintManager(), 20));
     
     inputManager = boost::shared_ptr<InputManager>(
-        new InputManager(10, gameWorld->getClientData()));
+        new InputManager(
+            10,
+            gameWorld->getClientData(),
+            gameWorld->getPlayerManager()));
     inputManager->init();
     
     EMIT_EVENT(new Event::PauseGame(false));

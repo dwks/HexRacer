@@ -11,57 +11,78 @@
 namespace Project {
 namespace World {
 
-void PlayerManager::PlayerActionHandler::observe(
-    Event::PlayerAction *action) {
-    
-    Object::Player *player = manager->getPlayer(action->getPlayer());
-    
-    switch(action->getMovementType()) {
-    case Event::PlayerAction::ACCELERATE:
-        player->applyAcceleration(action->getValue());
-        break;
-    case Event::PlayerAction::TURN:
-        player->applyTurning(action->getValue());
-        break;
-    case Event::PlayerAction::JUMP:
-        player->doJump();
-        break;
-    case Event::PlayerAction::FIX_OFF_TRACK:
-        delete player->getPhysicalObject();
-
-        const Map::PathNode* node = player->getPathTracker()->getCurrentNode();
-        if(node != NULL) {
-            Math::Point origin = node->getPosition();
-            Math::Point direction = (node->getNextNodes()[0]->getPosition() - node->getPosition()).normalized();
-            
-            origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
-            player->setPhysicalObject(
-                Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
-            
-            LOG(WORLD, "Player " << player->getID()
-                << " is off track, warping to " << origin);
-        }
-        else {
-            Math::Point origin = manager->raceManager->startingPointForPlayer(player->getID());
-            Math::Point direction = Math::Point(0.0, 0.0, -1.0);
-            
-            origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
-            player->setPhysicalObject(
-                Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
-            
-            LOG(WORLD, "Player " << player->getID()
-                << " is off track, warping to starting position"
-                << " [no path nodes]");
-        }
+void PlayerManager::physicsTickHandler(Event::PhysicsTick *event) {
+    Object::PlayerList::IteratorType it
+        = worldManager->getPlayerList()->getIterator();
+    while(it.hasNext()) {
+        Object::Player *player = it.next();
         
-        break;
+        applyIntentions(player);
+    }
+}
+
+void PlayerManager::warpOntoTrackHandler(Event::WarpOntoTrack *event) {
+    warpPlayerOntoTrack(getPlayer(event->getPlayer()));
+}
+
+void PlayerManager::changeOfIntentionHandler(Event::ChangeOfIntention *event) {
+    if(event->getIntention().getReset()) {
+        warpPlayerOntoTrack(getPlayer(event->getPlayer()));
+    }
+}
+
+void PlayerManager::applyIntentions(Object::Player *player) {
+    const PlayerIntention &intention = player->getIntention();
+    
+    if(intention.getAccel()) {
+        player->applyAcceleration(intention.getAccel());
+    }
+    if(intention.getTurn()) {
+        player->applyTurning(intention.getTurn());
+    }
+    if(intention.getJump()) {
+        player->doJump();
+    }
+    /*if(intention.getReset()) {
+        warpPlayerOntoTrack(player);
+    }*/
+}
+
+void PlayerManager::warpPlayerOntoTrack(Object::Player *player) {
+    delete player->getPhysicalObject();
+    
+    const Map::PathNode* node = player->getPathTracker()->getCurrentNode();
+    if(node != NULL) {
+        Math::Point origin = node->getPosition();
+        Math::Point direction = (node->getNextNodes()[0]->getPosition() - node->getPosition()).normalized();
+        
+        origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
+        player->setPhysicalObject(
+            Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
+        
+        LOG(WORLD, "Player " << player->getID()
+            << " is off track, warping to " << origin);
+    }
+    else {
+        Math::Point origin = raceManager->startingPointForPlayer(player->getID());
+        Math::Point direction = Math::Point(0.0, 0.0, -1.0);
+        
+        origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
+        player->setPhysicalObject(
+            Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
+        
+        LOG(WORLD, "Player " << player->getID()
+            << " is off track, warping to starting position"
+            << " [no path nodes]");
     }
 }
 
 PlayerManager::PlayerManager(int id, Object::WorldManager *worldManager)
     : id(id), worldManager(worldManager) {
     
-    ADD_OBSERVER(new PlayerActionHandler(this));
+    METHOD_OBSERVER(&PlayerManager::physicsTickHandler);
+    METHOD_OBSERVER(&PlayerManager::warpOntoTrackHandler);
+    METHOD_OBSERVER(&PlayerManager::changeOfIntentionHandler);
 }
 
 Object::Player *PlayerManager::getPlayer() {

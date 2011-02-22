@@ -2,7 +2,7 @@
 #include "InputManager.h"
 
 #include "event/EventSystem.h"
-#include "event/PlayerAction.h"
+#include "event/ChangeOfIntention.h"
 #include "event/CameraMovement.h"
 #include "event/SetDebugDrawing.h"
 #include "event/QuitEvent.h"
@@ -22,8 +22,10 @@
 namespace Project {
 namespace SDL {
 
-InputManager::InputManager(int ms, ClientData *clientData)
-    : TimedSubsystem(ms), clientData(clientData) {
+InputManager::InputManager(int ms, ClientData *clientData,
+    World::PlayerManager *playerManager)
+    : TimedSubsystem(ms), clientData(clientData),
+    playerManager(playerManager) {
     
 	debugCamera = false;
 }
@@ -51,34 +53,17 @@ void InputManager::doAction(unsigned long currentTime) {
 	inputMapper->update(Input::INPUT_A_ACCELERATE);
 	inputMapper->update(Input::INPUT_D_JUMP);
 	inputMapper->update(Input::INPUT_D_RESET);
-
-	double turn_value = Math::bound(inputMapper->getAnalogStatus(Input::INPUT_A_TURN), -1.0, 1.0);
-	if (turn_value != 0.0) {
-		EMIT_EVENT(new Event::PlayerAction(
-            clientData->getPlayerID(),
-			Event::PlayerAction::TURN,
-			turn_value));
-	}
-
-	double accel_value = Math::bound(inputMapper->getAnalogStatus(Input::INPUT_A_ACCELERATE), -1.0, 1.0);
-	if (accel_value != 0.0) {
-		EMIT_EVENT(new Event::PlayerAction(
-            clientData->getPlayerID(),
-            Event::PlayerAction::ACCELERATE,
-            accel_value));
-	}
-
-	if(inputMapper->getDigitalStatus(Input::INPUT_D_JUMP)) {
-		EMIT_EVENT(new Event::PlayerAction(
-            clientData->getPlayerID(),
-            Event::PlayerAction::JUMP,
-            0.0));
-    }
     
-    if(inputMapper->getDigitalTriggered(Input::INPUT_D_RESET)) {
-        EMIT_EVENT(new Event::PlayerAction(
+    World::PlayerIntention intention;
+    inputMapper->getSnapshot().asPlayerIntention(intention);
+    
+    bool identical = (intention == playerManager->getPlayer()->getIntention());
+    if(!identical) {
+        playerManager->getPlayer()->setIntention(intention);
+        
+        EMIT_EVENT(new Event::ChangeOfIntention(
             clientData->getPlayerID(),
-            Event::PlayerAction::FIX_OFF_TRACK, 0.0));
+            intention));
     }
     
     handlePaint();

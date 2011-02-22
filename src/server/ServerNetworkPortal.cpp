@@ -3,6 +3,7 @@
 
 #include "event/EventSystem.h"
 #include "event/TogglePainting.h"
+#include "event/ChangeOfIntention.h"
 
 #include "log/Logger.h"
 
@@ -27,6 +28,24 @@ void ServerNetworkPortal::EventPropagator::observe(Event::EventBase *event) {
         //if(!toggle->getPropagate()) break;
         // always propagate
         toggle->setPropagate(false);
+        
+        if(event->getType() < 0) {
+            portal->getClientManager()->sendPacket(packet);
+        }
+        else {
+            portal->getClientManager()
+                ->sendPacketExcept(packet, event->getType());
+        }
+        delete packet;
+        
+        break;
+    }
+    case Event::EventType::CHANGE_OF_INTENTION: {
+        Event::ChangeOfIntention *changeOfIntention
+            = dynamic_cast<Event::ChangeOfIntention *>(event);
+        changeOfIntention->setPropagate(false);
+        
+        Network::Packet *packet = new Network::EventPacket(event);
         
         if(event->getType() < 0) {
             portal->getClientManager()->sendPacket(packet);

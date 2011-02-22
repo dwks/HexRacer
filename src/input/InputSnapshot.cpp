@@ -1,5 +1,7 @@
 #include "InputSnapshot.h"
 
+#include "math/Values.h"
+
 namespace Project {
 namespace Input {
 
@@ -38,6 +40,16 @@ bool InputSnapshot::getDigitalTriggered(DigitalInputEvent type) const {
 
 double InputSnapshot::getAnalogStatus(AnalogInputEvent type) const {
     return analogStatus[static_cast<int>(type)];
+}
+
+void InputSnapshot::asPlayerIntention(World::PlayerIntention &intention) const {
+    intention.setAccel(Math::bound(getAnalogStatus(INPUT_A_ACCELERATE), -1.0, 1.0));
+    intention.setTurn(Math::bound(getAnalogStatus(INPUT_A_TURN), -1.0, 1.0));
+    intention.setJump(getDigitalStatus(INPUT_D_JUMP));
+    
+    intention.setReset(getDigitalTriggered(INPUT_D_RESET));
+    intention.setPaint(getDigitalStatus(INPUT_D_PAINT));
+    intention.setErase(getDigitalStatus(INPUT_D_ERASE));
 }
 
 }  // namespace Input

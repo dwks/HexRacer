@@ -10,7 +10,8 @@
 #include "HandshakePacket.h"
 #include "EventPacket.h"
 
-#include "event/PlayerAction.h"
+#include "event/ChangeOfIntention.h"
+#include "event/WarpOntoTrack.h"
 #include "event/PaintEvent.h"
 #include "event/PaintCellsChanged.h"
 #include "event/TogglePainting.h"
@@ -22,6 +23,7 @@
 #include "event/EntireWorld.h"
 
 #include "object/Player.h"
+#include "world/PlayerIntention.h"
 
 #include "PacketSerializer.h"
 #include "PointSerializer.h"
@@ -37,7 +39,8 @@ std::string PacketSerializer::packetToString(Packet *packet) {
     out.register_type<HandshakePacket>();
     out.register_type<EventPacket>();
     
-    out.register_type<Event::PlayerAction>();
+    out.register_type<Event::ChangeOfIntention>();
+    out.register_type<Event::WarpOntoTrack>();
     out.register_type<Event::PaintEvent>();
     out.register_type<Event::PaintCellsChanged>();
     out.register_type<Event::TogglePainting>();
@@ -49,6 +52,7 @@ std::string PacketSerializer::packetToString(Packet *packet) {
     out.register_type<Event::EntireWorld>();
     
     out.register_type<Object::Player>();
+    out.register_type<World::PlayerIntention>();
     
     try {
         out << packet;
@@ -70,7 +74,8 @@ Packet *PacketSerializer::stringToPacket(const std::string &string) {
     in.register_type<HandshakePacket>();
     in.register_type<EventPacket>();
     
-    in.register_type<Event::PlayerAction>();
+    in.register_type<Event::ChangeOfIntention>();
+    in.register_type<Event::WarpOntoTrack>();
     in.register_type<Event::PaintEvent>();
     in.register_type<Event::PaintCellsChanged>();
     in.register_type<Event::TogglePainting>();
@@ -82,6 +87,7 @@ Packet *PacketSerializer::stringToPacket(const std::string &string) {
     in.register_type<Event::EntireWorld>();
     
     in.register_type<Object::Player>();
+    in.register_type<World::PlayerIntention>();
     
     Packet *packet;
     try {

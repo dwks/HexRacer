@@ -8,6 +8,7 @@
 
 #include "ClientData.h"
 #include "JoystickManager.h"
+#include "world/PlayerManager.h"
 
 #include "input/InputMapper.h"
 
@@ -22,6 +23,7 @@ public:
 private:
 
     ClientData *clientData;
+    World::PlayerManager *playerManager;
     JoystickManager *joystick;
 	Input::InputMapper *inputMapper;
 
@@ -29,7 +31,8 @@ private:
 
 public:
 
-    InputManager(int ms, ClientData *clientData);
+    InputManager(int ms, ClientData *clientData,
+        World::PlayerManager *playerManager);
     ~InputManager();
     
     void init();

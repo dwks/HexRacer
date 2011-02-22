@@ -7,6 +7,7 @@
 #include "render/RenderablePlayer.h"
 #include "map/PathTracker.h"
 #include "event/TogglePainting.h"
+#include "world/PlayerIntention.h"
 
 namespace Project {
 namespace Object {
@@ -35,6 +36,7 @@ private:
     Math::Point suspension[4];
 	Map::PathTracker* tracker;
 	Event::TogglePainting::PaintType paintType;
+    ::Project::World::PlayerIntention intention;
 public:
     Player();
 	Player(int id, const Math::Point &origin,
@@ -50,6 +52,11 @@ public:
     double getSpeedBoost(){
         return physical->getSpeedBoost();    
     }
+    
+    void setIntention(const ::Project::World::PlayerIntention &intention)
+        { this->intention = intention; }
+    const ::Project::World::PlayerIntention &getIntention() const
+        { return intention; }
     
     void setPhysicalObject(Physics::PhysicalPlayer *physical)
         { this->physical = physical; }

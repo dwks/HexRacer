@@ -37,6 +37,8 @@ private:
         
         virtual void observe(Event::EventBase *event);
         virtual bool interestedIn(Event::EventType::type_t type);
+    private:
+        void send(Event::EventBase *event);
     };
 public:
     NetworkPortal();

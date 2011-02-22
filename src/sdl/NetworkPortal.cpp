@@ -14,6 +14,7 @@
 
 #include "event/EventSystem.h"
 #include "event/PacketReceived.h"
+#include "event/ChangeOfIntention.h"
 #include "event/TogglePainting.h"
 #include "event/EntireWorld.h"
 
@@ -36,17 +37,23 @@ void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
             = dynamic_cast<Event::TogglePainting *>(event);
         if(!toggle->getPropagate()) break;
         toggle->setPropagate(false);
-        // fall-through
+        
+        send(event);
+        break;
     }
-    case Event::EventType::PLAYER_ACTION:
+    case Event::EventType::CHANGE_OF_INTENTION: {
+        Event::ChangeOfIntention *changeOfIntention
+            = dynamic_cast<Event::ChangeOfIntention *>(event);
+        if(!changeOfIntention->getPropagate()) break;
+        changeOfIntention->setPropagate(false);
+        
+        send(event);
+        break;
+    }
+    case Event::EventType::WARP_ONTO_TRACK:
     case Event::EventType::PAUSE_GAME:
     {
-        if(portal->getPortal() == NULL) break;
-        
-        Network::Packet *packet = new Network::EventPacket(event);
-        portal->getPortal()->sendPacket(packet);
-        delete packet;
-        
+        send(event);
         break;
     }
     case Event::EventType::PACKET_RECEIVED:
@@ -62,6 +69,14 @@ bool NetworkPortal::EventPropagator::interestedIn(
     Event::EventType::type_t type) {
     
     return true;  // !!! doesn't hurt to be over-notified right now
+}
+
+void NetworkPortal::EventPropagator::send(Event::EventBase *event) {
+    if(portal->getPortal() == NULL) return;
+    
+    Network::Packet *packet = new Network::EventPacket(event);
+    portal->getPortal()->sendPacket(packet);
+    delete packet;
 }
 
 NetworkPortal::NetworkPortal() {
