@@ -174,7 +174,17 @@ void Camera::updatePosition() {
 void Camera::updateDirections() {
 
 	cameraLookDirection = (cameraLookPosition-cameraPosition).normalized();
-	cameraRightDirection = cameraLookDirection.crossProduct(givenCameraUpDirection).normalized();
+	if (cameraLookDirection.zero())
+		cameraLookDirection = Math::Point(0.0, 0.0, 1.0);
+	else
+		cameraLookDirection.normalize();
+
+	cameraRightDirection = cameraLookDirection.crossProduct(givenCameraUpDirection);
+	if (cameraRightDirection.zero())
+		cameraRightDirection = Math::Point(1.0, 0.0, 0.0);
+	else
+		cameraRightDirection.normalize();
+
 	cameraUpDirection = cameraRightDirection.crossProduct(cameraLookDirection);
 
 	frustrumChanged = true;

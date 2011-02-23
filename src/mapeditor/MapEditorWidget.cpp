@@ -44,6 +44,10 @@ MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget,
 	map = new HRMap();
 	mapObjects[static_cast<int>(MapObject::FINISH_PLANE)].push_back(new FinishPlaneObject(map));
 
+	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
+		drawObjects[i] = true;
+	}
+
 	editObjectType = MapObject::LIGHT;
 	selectedObject = NULL;
 	editMode = EDIT_TRANSLATE;
@@ -163,7 +167,8 @@ void MapEditorWidget::paintGL() {
 		renderer->revertRenderProperties(normalRenderProperties);
 
 	//Render Mesh Instances
-	renderObjects(MapObject::MESH_INSTANCE, false);
+	if (editObjectType == MapObject::MESH_INSTANCE || drawObjects[static_cast<int>(MapObject::MESH_INSTANCE)])
+		renderObjects(MapObject::MESH_INSTANCE, false);
 
 	if (map->getCubeMap())
 		background->render(renderer);
@@ -188,9 +193,13 @@ void MapEditorWidget::paintGL() {
 	}
 
 	//Draw Map Objects
-	if (editObjectType != MapObject::MESH_INSTANCE) {
-		renderObjects(editObjectType, false);
+
+	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
+		MapObject::ObjectType type = static_cast<MapObject::ObjectType>(i);
+		if (type != MapObject::MESH_INSTANCE && (drawObjects[i] || editObjectType == type))
+			renderObjects(type, false);
 	}
+
 	//Draw box around selected object
 	if (selectedObject) {
 		Color::glColor(SELECTED_OBJECT_BOX_COLOR);
@@ -816,6 +825,12 @@ void MapEditorWidget::setMapObjectType(MapObject::ObjectType type) {
 		updateGL();
 	}
 }
+void MapEditorWidget::setDrawMapObject(bool* draw_array) {
+	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
+		drawObjects[i] = draw_array[i];
+	}
+	updateGL();
+}
 void MapEditorWidget::setEditMode(EditMode mode) {
 	editMode = mode;
 }
@@ -935,6 +950,7 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 					);
 
 				if (!object_buffer) {
+					glDisable(GL_DEPTH_TEST);
 					glLineWidth(MAP_EDITOR_PATHNODE_LINK_WIDTH);
 					glBegin(GL_LINES);
 					const vector<PathNode*>& linked_nodes = node->getNextNodes();
@@ -946,6 +962,7 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 					}
 					glEnd();
 					glLineWidth(1.0f);
+					glEnable(GL_DEPTH_TEST);
 				}
 			}
 			break;

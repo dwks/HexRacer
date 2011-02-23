@@ -46,6 +46,7 @@ private:
 	QMenuBar* menuBar;
 	QMenu* fileMenu;
 	QMenu* editMenu;
+	QMenu* viewMenu;
 	QMenu* meshMenu;
 	QMenu* mapMenu;
 
@@ -101,6 +102,7 @@ private:
 
 	QActionGroup* mapObjectGroup;
 	QAction* mapObjectAction[MapObject::NUM_OBJECT_TYPES];
+	QAction* drawMapObjectAction[MapObject::NUM_OBJECT_TYPES];
 
 	QActionGroup* editModeGroup;
 	QAction* editModeAction[MapEditorWidget::NUM_EDIT_MODES];
@@ -123,6 +125,7 @@ private slots:
 	void clearMesh(int mesh_index);
 	void loadPropMesh();
 	void selectMapObject(QAction* action);
+	void updateDrawMapObjects();
 	void selectEditMode(QAction* action);
 	void save2DMapImage();
 	void scaleAll();

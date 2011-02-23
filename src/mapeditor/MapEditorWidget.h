@@ -59,6 +59,7 @@ private:
 
 	MapObject::ObjectType editObjectType;
 	QList<MapObject*> mapObjects[MapObject::NUM_OBJECT_TYPES];
+	bool drawObjects[MapObject::NUM_OBJECT_TYPES];
 	MapObject* selectedObject;
 	EditMode editMode;
 
@@ -132,6 +133,7 @@ public slots:
 	void generatePathProgress();
 	void generate2DMap(string filename);
 	void setMapObjectType(MapObject::ObjectType type);
+	void setDrawMapObject(bool* draw_array);
 	void setEditMode(EditMode mode);
 	void loadCubeMap();
 
