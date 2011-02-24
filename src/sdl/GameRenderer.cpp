@@ -754,6 +754,7 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 		shadow_far_plane = Math::maximum(shadow_far_plane, z);
 	}
 
+	/*
 	bool near_plane_set = false;
 	double shadow_near_plane = 0.1;
 	Math::BoundingBox3D map_bound = map->getMapBoundingBox();
@@ -771,6 +772,24 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 			else {
 				shadow_near_plane = 0.1;
 				break;
+			}
+		}
+	}
+	*/
+
+	bool near_plane_set = false;
+	double shadow_near_plane = 0.1;
+	Math::BoundingBox3D map_bound = map->getMapBoundingBox();
+	if (!map_bound.pointInside(shadowCamera->getPosition())) {
+		for (unsigned int i = 0; i < 8; i++) {
+			double vertex_plane = (map_bound.getCorner(i)-shadowCamera->getPosition()).dotProduct(shadowCamera->getLookDirection());
+			if (vertex_plane > 0.0) {
+				if (!near_plane_set) {
+					shadow_near_plane = vertex_plane;
+					near_plane_set = true;
+				}
+				else
+					shadow_near_plane = Math::minimum(shadow_near_plane, vertex_plane);
 			}
 		}
 	}

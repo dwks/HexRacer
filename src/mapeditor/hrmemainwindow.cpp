@@ -77,7 +77,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 		drawMapObjectAction[i] = new QAction(QString("Show ")+QString(MapObject::typeTitle(type).c_str()), this);
 		drawMapObjectAction[i]->setCheckable(true);
-		drawMapObjectAction[i]->setChecked(true);
+		drawMapObjectAction[i]->setChecked(mapEditor->getDrawMapObject()[i]);
 		connect(drawMapObjectAction[i], SIGNAL(toggled(bool)), this, SLOT(updateDrawMapObjects()));
 
 		switch (type) {

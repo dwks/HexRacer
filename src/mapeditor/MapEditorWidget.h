@@ -77,6 +77,7 @@ public:
 	Color getSelectedColor(int color_index);
 	static bool editModeCompatible(MapObject::ObjectType type, EditMode mode);
 	EditMode getEditMode() const { return editMode; }
+	const bool* getDrawMapObject() { return drawObjects; }
 
 	//QSize sizeHint() const;
 	//QSize minimumSize () const;
@@ -111,7 +112,7 @@ private:
 	MapObject* getClickedObject(double u, double v, bool rerender = true);
 	bool getRaycastPosition(double u, double v, Point& p);
 	void renderObjects(MapObject::ObjectType type, bool object_buffer = false);
-	static void glBufferIndexColor(int buffer_index);
+	static Color glBufferIndexColor(int buffer_index);
 
 	void translateSelectedObject(Point translation);
 	void setSelectedObject(MapObject* object);

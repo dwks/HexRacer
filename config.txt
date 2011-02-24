@@ -2,7 +2,7 @@
 # Settings for the project
 
 #map = data/testtrack2.hrm
-map = data/testtrack3.hrm
+map = data/testtrack2.hrm
 #map = data/testtrack2big.hrm
 
 ########
@@ -115,7 +115,7 @@ render.tire.scale = 2.5
 
 hud.minimap.enable = 1
 hud.minimap.drawheight = 0.35
-hud.minimap.height = 100.0
+hud.minimap.height = 120.0
 
 hud.speedometer.enable = 1
 hud.speedometer.drawheight = 0.35

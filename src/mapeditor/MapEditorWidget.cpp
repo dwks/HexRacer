@@ -45,7 +45,14 @@ MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget,
 	mapObjects[static_cast<int>(MapObject::FINISH_PLANE)].push_back(new FinishPlaneObject(map));
 
 	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
-		drawObjects[i] = true;
+		switch (static_cast<MapObject::ObjectType>(i)) {
+			case MapObject::PATH_NODE:
+				drawObjects[i] = false;
+				break;
+			default:
+				drawObjects[i] = true;
+				break;
+		}
 	}
 
 	editObjectType = MapObject::LIGHT;
@@ -622,7 +629,16 @@ void MapEditorWidget::mapObjectsChanged(MapObject::ObjectType type) {
 void MapEditorWidget::addLight(Point position) {
 
 	Light* new_light = new Light(position);
-	new_light->setStrength(20.0f);
+	if (selectedObject && editObjectType == MapObject::LIGHT) {
+		Light* copy_light = ((LightObject*)selectedObject)->getLight();
+		new_light->setDiffuse(copy_light->getDiffuse());
+		new_light->setSpecular(copy_light->getSpecular());
+		new_light->setAmbient(copy_light->getAmbient());
+		new_light->setStrength(copy_light->getStrength());
+		new_light->setHasAttenuation(copy_light->getHasAttenuation());
+	}
+	else
+		new_light->setStrength(20.0f);
 
 	lightManager->addLight(new_light);
 	map->addLight(new_light);
@@ -645,6 +661,18 @@ void MapEditorWidget::addMeshInstance(Point position) {
 	if (propMeshIndex >= 0) {
 
 		MeshInstance* instance = new MeshInstance(map->getPropMeshName(propMeshIndex), SimpleTransform(position));
+
+		if (selectedObject && editObjectType == MapObject::MESH_INSTANCE) {
+			MeshInstance* copy_instance = ((MeshInstanceObject*)selectedObject)->getMeshInstance();
+			SimpleTransform copy_transform = copy_instance->getTransformation();
+			copy_transform.setTranslation(position);
+			instance->setTransformation(copy_transform);
+			instance->setType(copy_instance->getType());
+			instance->setDiffuseTint(copy_instance->getDiffuseTint());
+			instance->setSpecularTint(copy_instance->getSpecularTint());
+			instance->setAmbientTint(copy_instance->getAmbientTint());
+		}
+
 		if (instance->getMeshGroup() && map->addMeshInstance(instance)) {
 			TransformedMesh* transformed_mesh = new TransformedMesh(instance->getMeshGroup(), instance->getTransformation());
 			mapObjects[static_cast<int>(MapObject::MESH_INSTANCE)].append(new MeshInstanceObject(instance, transformed_mesh));
@@ -996,23 +1024,26 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 
 		case MapObject::MESH_INSTANCE:
 
-			if (object_buffer)
-				renderer->setRenderProperties(objectBufferProperties);
-			else if (!advancedRendering)
+			if (!object_buffer && !advancedRendering)
 				renderer->setRenderProperties(normalRenderProperties);
 			
 			for (int i = 0; i < mapObjects[type_index].size(); i++) {
-			
-				if (object_buffer)
-					glBufferIndexColor(i);
+
+				if (object_buffer) {
+					objectBufferProperties->setColor(glBufferIndexColor(i));
+					renderer->setRenderProperties(objectBufferProperties);
+				}
 
 				TransformedMesh* mesh_instance = ((MeshInstanceObject*)mapObjects[type_index][i])->getTransformedMesh();
 				mesh_instance->render(renderer);
+
+				if (object_buffer) {
+					renderer->revertRenderProperties(objectBufferProperties);
+				}
+				
 			}
 
-			if (object_buffer)
-				renderer->revertRenderProperties(objectBufferProperties);
-			else if (!advancedRendering)
+			if (!object_buffer && !advancedRendering)
 				renderer->revertRenderProperties(normalRenderProperties);
 
 			break;
@@ -1022,11 +1053,12 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 	}
 }
 
-void MapEditorWidget::glBufferIndexColor(int buffer_index) {
+Color MapEditorWidget::glBufferIndexColor(int buffer_index) {
 	GLubyte r = buffer_index/65536;
 	GLubyte g = (buffer_index % 65536)/256;
 	GLubyte b = ((buffer_index % 65536) % 256);
 	glColor3ub(r, g, b);
+	return Color::colori(r, g, b);
 }
 string MapEditorWidget::editModeTitle(EditMode mode) {
 	switch (mode) {

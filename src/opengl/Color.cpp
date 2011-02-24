@@ -261,6 +261,9 @@ Color Color::operator / (float factor) const {
 	);
 }
 
+bool Color::operator == (const Color &other) {
+	return (r == other.redf() && g == other.greenf() && b == other.bluef());
+}
 void Color::operator += (const Color &other) {
 	setRedf(redf()+(other.redf()));
 	setGreenf(greenf()+other.greenf());
