@@ -24,6 +24,7 @@ namespace Render {
 		numMaterialOverrides = 0;
 		numShaderOverrides = 0;
 		numTextureOverrides = 0;
+		numColorOverrides = 0;
 
 		numTransformations = 0;
 
