@@ -20,6 +20,9 @@ public:
     BoxWidget *getBox() { return box; }
     TextWidget *getText() { return text; }
     
+    using AbstractWidget::updateLayout;
+    virtual void updateLayout(const WidgetRect &newBounds);
+    
     virtual void accept(WidgetVisitor &visitor) { visitor.visit(this); }
 };
 

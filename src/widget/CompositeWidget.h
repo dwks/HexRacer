@@ -31,7 +31,7 @@ public:
         Note: a CompositeWidget owns its children and will delete them upon
         destruction.
     */
-    void addChild(WidgetBase *widget);
+    virtual void addChild(WidgetBase *widget);
     virtual WidgetBase *getChild(const std::string &name);
     
     IteratorType getIterator() { return IteratorType(childList); }

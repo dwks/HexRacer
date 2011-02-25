@@ -1,5 +1,6 @@
 #include "GUISystem.h"
 #include "MainMenuProxy.h"
+#include "HostProxy.h"
 #include "ConnectProxy.h"
 #include "RunningProxy.h"
 #include "PauseMenuProxy.h"
@@ -8,6 +9,7 @@
 #include "widget/WidgetRenderer.h"
 #include "widget/ButtonWidget.h"
 #include "widget/EditWidget.h"
+#include "widget/ScrollbarWidget.h"
 
 #include "widget/NormalTextLayout.h"
 
@@ -60,6 +62,7 @@ void GUISystem::construct() {
     /*
         Screens:
             main            Main menu
+            host            Hosting screen with map selection
             connect         Screen which prompts for host/port
             running         Displayed while the game is running
             paused          Paused menu
@@ -92,6 +95,7 @@ void GUISystem::construct() {
         main->addChild(new Widget::ButtonWidget("quit", "Quit",
             Widget::WidgetRect(0.55, 0.8, 0.42, 0.08)));
         
+        setShortcut(getWidget("main/host"), SDLK_h);
         setShortcut(getWidget("main/join"), SDLK_j);
         setShortcut(getWidget("main/single"), SDLK_s);
         
@@ -105,6 +109,28 @@ void GUISystem::construct() {
         getWidget("main/settings")->addEventProxy(new MainMenuProxy());
         getWidget("main/about")->addEventProxy(new MainMenuProxy());
         getWidget("main/quit")->addEventProxy(new MainMenuProxy());
+    }
+    
+    {
+        Widget::CompositeWidget *host
+            = new Widget::CompositeWidget("host");
+        widgets->addChild(host);
+        
+        host->addChild(new Widget::ScrollbarWidget("scrollbar-horizontal", false,
+            Widget::WidgetRect(0.1, 0.4, 0.8, 0.08)));
+        host->addChild(new Widget::ScrollbarWidget("scrollbar-vertical", true,
+            Widget::WidgetRect(0.7, 0.1, 0.05, 0.3)));
+        
+        host->addChild(new Widget::ButtonWidget("cancel",
+            "Cancel", Widget::WidgetRect(0.1, 0.5, 0.35, 0.08)));
+        host->addChild(new Widget::ButtonWidget("host",
+            "Host game", Widget::WidgetRect(0.5, 0.5, 0.35, 0.08)));
+        
+        setShortcut(getWidget("host/cancel"), SDLK_ESCAPE);
+        setShortcut(getWidget("host/host"), SDLK_RETURN);
+        
+        getWidget("host/cancel")->addEventProxy(new HostProxy(host));
+        getWidget("host/host")->addEventProxy(new HostProxy(host));
     }
     
     {

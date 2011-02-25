@@ -77,7 +77,22 @@ void Historian::WorldHandler::observe(Event::EventBase *event) {
             // we don't know about this object
             if(!object) continue;
             
+#if 0
+            Math::Point current = object->getPhysicalObject()->getTransformation()
+                * Math::Point(0.0, 0.0, 0.0, 1.0);
+            Math::Point required = updateObject->getTransformation()
+                * Math::Point(0.0, 0.0, 0.0, 1.0);
+            
+            Math::Matrix transform = updateObject->getTransformation();
+            LOG(PHYSICS, "drift from server: " << (current - required).length());
+            if((current - required).length() < 0.2) {
+                transform = transform
+                    * Math::Matrix::getTranslationMatrix(required - current);
+            }
+#endif
+            
             object->getPhysicalObject()->setData(
+                //transform,
                 updateObject->getTransformation(),
                 updateObject->getLinearVelocity(),
                 updateObject->getAngularVelocity());

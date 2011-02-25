@@ -38,9 +38,18 @@ void BoxWidget::render() {
     // first draw the corners
     
     double ratio = dimensions.getY() / dimensions.getX();
-    WidgetPoint cornerSize(
-        dimensions.getX() * 0.3 * ratio,
-        dimensions.getY() * 0.3);
+    
+    WidgetPoint cornerSize;
+    if(ratio > 1.0) {
+        cornerSize = WidgetPoint(
+            dimensions.getX() * 0.3,
+            dimensions.getY() * 0.3 / ratio);
+    }
+    else {
+        cornerSize = WidgetPoint(
+            dimensions.getX() * 0.3 * ratio,
+            dimensions.getY() * 0.3);
+    }
     
     WidgetPoint ur = corner.plusX(dimensions.getX() - cornerSize.getX());
     WidgetPoint ll = corner.plusY(dimensions.getY() - cornerSize.getY());

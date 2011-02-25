@@ -18,7 +18,10 @@ namespace GUI {
 void MainMenuProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();
     
-    if(name == "join") {
+    if(name == "host") {
+        EMIT_EVENT(new Event::SwitchToScreen("host"));
+    }
+    else if(name == "join") {
         EMIT_EVENT(new Event::SwitchToScreen("connect"));
     }
     else if(name == "single") {
