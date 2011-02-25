@@ -31,6 +31,7 @@ void PathingUpdater::update() {
         // Update if the player is above the track
         if(physicsWorld->raycastPoint(origin_pos, dir_pos, &update_pos)) {
             if(!player->getPathTracker()) continue;  // no path tracker
+            if(!player->getPathTracker()->atLeastOneNode()) continue;
             
             player->getPathTracker()->update(update_pos);
             

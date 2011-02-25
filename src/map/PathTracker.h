@@ -39,6 +39,8 @@ public:
 
 	void startNewLap();
 	Math::Point getProgressPosition() const { return progressPosition; }
+	
+	bool atLeastOneNode() const { return manager.getStartNode() != NULL; }
 
 };
 
