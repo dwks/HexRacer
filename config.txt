@@ -5,6 +5,8 @@
 map = data/testtrack3.hrm
 #map = data/testtrack2big.hrm
 
+include maps.txt
+
 ########
 ### Display settings
 

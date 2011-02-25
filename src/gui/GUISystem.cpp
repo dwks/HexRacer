@@ -6,6 +6,8 @@
 #include "PauseMenuProxy.h"
 #include "SettingsProxy.h"
 
+#include "MapList.h"
+
 #include "widget/WidgetRenderer.h"
 #include "widget/ButtonWidget.h"
 #include "widget/EditWidget.h"
@@ -122,28 +124,10 @@ void GUISystem::construct() {
         host->addChild(new Widget::ScrollbarWidget("scrollbar-vertical", true,
             Widget::WidgetRect(0.7, 0.1, 0.05, 0.3)));*/
         
-        Widget::ListWidget *maplist = new Widget::ListWidget(
+        Widget::ListWidget *mapList = new MapList(
             "maplist", true, false,
             Widget::WidgetRect(0.1, 0.1, 0.8, 0.3));
-        host->addChild(maplist);
-        maplist->addChild(new Widget::TextWidget("line1", "First line",
-            Widget::NormalTextLayout::ALIGN_LEFT,
-            Widget::WidgetRect(0.0, 0.0, 0.8, 0.05)));
-        maplist->addChild(new Widget::TextWidget("line2", "Second line",
-            Widget::NormalTextLayout::ALIGN_LEFT,
-            Widget::WidgetRect(0.0, 0.0, 0.8, 0.05)));
-        maplist->addChild(new Widget::TextWidget("line3", "Third line",
-            Widget::NormalTextLayout::ALIGN_LEFT,
-            Widget::WidgetRect(0.0, 0.0, 0.8, 0.05)));
-        maplist->addChild(new Widget::TextWidget("line4", "Fourth line",
-            Widget::NormalTextLayout::ALIGN_LEFT,
-            Widget::WidgetRect(0.0, 0.0, 0.8, 0.05)));
-        maplist->addChild(new Widget::TextWidget("line5", "Fifth line",
-            Widget::NormalTextLayout::ALIGN_LEFT,
-            Widget::WidgetRect(0.0, 0.0, 0.8, 0.05)));
-        maplist->addChild(new Widget::TextWidget("line6", "Sixth line",
-            Widget::NormalTextLayout::ALIGN_LEFT,
-            Widget::WidgetRect(0.0, 0.0, 0.8, 0.05)));
+        host->addChild(mapList);
         
         host->addChild(new Widget::ButtonWidget("cancel",
             "Cancel", Widget::WidgetRect(0.1, 0.85, 0.35, 0.08)));
