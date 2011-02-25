@@ -16,7 +16,6 @@ public:
     
     virtual void visit(MouseMoveEvent *event);
     virtual void visit(MouseButtonEvent *event);
-    virtual void visit(FocusEvent *event);
 };
 
 }  // namespace Widget

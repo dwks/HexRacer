@@ -35,8 +35,8 @@ void ScrollbarLayout::update() {
     widget->getLess()->updateLayout();
     widget->getMore()->updateLayout();
     
-    LOG(WIDGET, "scrollbar less is " << lessRect
-        << ", more is " << moreRect);
+    /*LOG(WIDGET, "scrollbar less is " << lessRect
+        << ", more is " << moreRect);*/
     
     // now figure out where to position bar and slider
     
@@ -60,8 +60,8 @@ void ScrollbarLayout::update() {
         dimensions.addX(-((upperLeft.getX() + dimensions.getX()) - maxX));
     }
     
-    LOG(WIDGET, "scrollbar bar is " << WidgetRect(upperLeft, dimensions)
-        << " out of " << bounds);
+    /*LOG(WIDGET, "scrollbar bar is " << WidgetRect(upperLeft, dimensions)
+        << " out of " << bounds);*/
     
     widget->getBar()->updateLayout(WidgetRect(upperLeft, dimensions));
     
@@ -79,8 +79,9 @@ void ScrollbarLayout::update() {
     
     widget->getSlider()->updateLayout(
         WidgetRect(sliderCorner, sliderDimensions));
-    LOG(WIDGET, "scrollbar slider is "
-        << WidgetRect(sliderCorner, sliderDimensions));
+    
+    /*LOG(WIDGET, "scrollbar slider is "
+        << WidgetRect(sliderCorner, sliderDimensions));*/
 }
 
 void ScrollbarLayout::update(const WidgetRect &newBounds) {

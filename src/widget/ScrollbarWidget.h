@@ -9,10 +9,14 @@ namespace Project {
 namespace Widget {
 
 class ScrollbarLayout;
+class ScrollbarEventProxy;
+class ScrollbarSliderEventProxy;
 
 class ScrollbarWidget : public AbstractWidget {
 private:
     friend class ScrollbarLayout;
+    friend class ScrollbarEventProxy;
+    friend class ScrollbarSliderEventProxy;
 private:
     bool vertical;
     ButtonWidget *less, *more;
@@ -29,6 +33,9 @@ public:
     void setSize(double size);
     void setMax(double max, bool scaleExisting = false);
     void setEverything(double value, double size, double max);
+    
+    void addValue(double add);
+    double getValue() const { return value; }
     
     void render(WidgetVisitor &renderer);
     

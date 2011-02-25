@@ -14,6 +14,7 @@
 #include "widget/NormalTextLayout.h"
 
 #include "widget/KeyEvent.h"
+#include "widget/MouseMoveEvent.h"
 #include "widget/MouseButtonEvent.h"
 
 #include "widget/KeyboardShortcutProxy.h"
@@ -257,6 +258,11 @@ void GUISystem::handleEvent(Widget::WidgetEvent *event) {
         && focusManager->getKeyFocus()) {
         
         focusManager->getKeyFocus()->handleEvent(event);
+    }
+    else if(dynamic_cast<Widget::MouseMoveEvent *>(event)
+        && focusManager->getClickFocus()) {
+        
+        focusManager->getClickFocus()->handleEvent(event);
     }
     else {
         currentScreen->handleEvent(event);

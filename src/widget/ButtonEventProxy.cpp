@@ -24,7 +24,9 @@ void ButtonEventProxy::visit(MouseButtonEvent *event) {
             FocusManager::getInstance()->setClickFocus(widget);
             //widget->getBox()->setArtwork("corners/in/active");
         }
-        else if(FocusManager::getInstance()->getClickFocus() == widget) {
+        else if(FocusManager::getInstance()->getClickFocus() == widget
+            && widget->getBoundingRect().pointInside(event->getWhere())) {
+            
             //widget->getBox()->setArtwork("corners/out/normal");
             
             WidgetActivateEvent newEvent(widget, true);

@@ -35,6 +35,8 @@ void ButtonWidget::updateLayout(const WidgetRect &newBounds) {
     textBounds.getCorner() += textBounds.getDimensions() * 0.15;
     textBounds.getDimensions() *= 0.7;
     text->updateLayout(textBounds);
+    
+    getLayout()->update(newBounds);
 }
 
 }  // namespace Widget

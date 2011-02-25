@@ -4,6 +4,9 @@
 #include "NormalTextLayout.h"
 #include "ScrollbarLayout.h"
 
+#include "ScrollbarEventProxy.h"
+#include "ScrollbarSliderEventProxy.h"
+
 #include "log/Logger.h"
 
 namespace Project {
@@ -23,7 +26,10 @@ ScrollbarWidget::ScrollbarWidget(const std::string &name, bool vertical,
     bar->setLayout(new AbsoluteLayout(bounds));
     slider->setLayout(new AbsoluteLayout(bounds));
     
+    slider->addEventProxy(new ScrollbarSliderEventProxy(this));
+    
     setLayout(new ScrollbarLayout(this, bounds));
+    addEventProxy(new ScrollbarEventProxy(this));
     
     // !!! testing
     setEverything(0.4, 0.3, 1.0);
@@ -59,6 +65,12 @@ void ScrollbarWidget::setEverything(double value, double size, double max) {
     this->value = value;
     this->size = size;
     this->max = max;
+    ensureValid();
+    updateScrolling();
+}
+
+void ScrollbarWidget::addValue(double add) {
+    this->value += add;
     ensureValid();
     updateScrolling();
 }
@@ -109,6 +121,7 @@ void ScrollbarWidget::updateScrolling() {
     double to = (value + size) / max;
     
     dynamic_cast<ScrollbarLayout *>(getLayout())->setViewport(from, to);
+    updateLayout();
 }
 
 }  // namespace Widget
