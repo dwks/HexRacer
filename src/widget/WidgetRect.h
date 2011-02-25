@@ -24,6 +24,9 @@ public:
     const WidgetPoint &getDimensions() const { return dimensions; }
     WidgetPoint &getDimensions() { return dimensions; }
     
+    void setCorner(const WidgetPoint &c) { corner = c; }
+    void setDimensions(const WidgetPoint &d) { dimensions = d; }
+    
     double getWidth() const { return dimensions.getX(); }
     double getHeight() const { return dimensions.getY(); }
     

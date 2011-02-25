@@ -36,6 +36,7 @@ public:
     
     void addValue(double add);
     double getValue() const { return value; }
+    double getSize() const { return size; }
     
     void render(WidgetVisitor &renderer);
     
@@ -44,6 +45,7 @@ protected:
     ButtonWidget *getLess() const { return less; }
     ButtonWidget *getMore() const { return more; }
     BoxWidget *getBar() const { return bar; }
+public:
     BoxWidget *getSlider() const { return slider; }
 private:
     void ensureValid();

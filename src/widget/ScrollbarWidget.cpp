@@ -32,7 +32,7 @@ ScrollbarWidget::ScrollbarWidget(const std::string &name, bool vertical,
     addEventProxy(new ScrollbarEventProxy(this));
     
     // !!! testing
-    setEverything(0.4, 0.3, 1.0);
+    //setEverything(0.4, 0.3, 1.0);
     
     // force the bar and slider to be updated
     updateLayout();

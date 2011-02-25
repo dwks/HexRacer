@@ -9,7 +9,7 @@
 #include "widget/WidgetRenderer.h"
 #include "widget/ButtonWidget.h"
 #include "widget/EditWidget.h"
-#include "widget/ScrollbarWidget.h"
+#include "widget/ListWidget.h"
 
 #include "widget/NormalTextLayout.h"
 
@@ -117,15 +117,38 @@ void GUISystem::construct() {
             = new Widget::CompositeWidget("host");
         widgets->addChild(host);
         
-        host->addChild(new Widget::ScrollbarWidget("scrollbar-horizontal", false,
+        /*host->addChild(new Widget::ScrollbarWidget("scrollbar-horizontal", false,
             Widget::WidgetRect(0.1, 0.4, 0.8, 0.08)));
         host->addChild(new Widget::ScrollbarWidget("scrollbar-vertical", true,
-            Widget::WidgetRect(0.7, 0.1, 0.05, 0.3)));
+            Widget::WidgetRect(0.7, 0.1, 0.05, 0.3)));*/
+        
+        Widget::ListWidget *maplist = new Widget::ListWidget(
+            "maplist", true, false,
+            Widget::WidgetRect(0.1, 0.1, 0.8, 0.3));
+        host->addChild(maplist);
+        maplist->addChild(new Widget::TextWidget("line1", "First line",
+            Widget::NormalTextLayout::ALIGN_LEFT,
+            Widget::WidgetRect(0.0, 0.0, 0.8, 0.05)));
+        maplist->addChild(new Widget::TextWidget("line2", "Second line",
+            Widget::NormalTextLayout::ALIGN_LEFT,
+            Widget::WidgetRect(0.0, 0.0, 0.8, 0.05)));
+        maplist->addChild(new Widget::TextWidget("line3", "Third line",
+            Widget::NormalTextLayout::ALIGN_LEFT,
+            Widget::WidgetRect(0.0, 0.0, 0.8, 0.05)));
+        maplist->addChild(new Widget::TextWidget("line4", "Fourth line",
+            Widget::NormalTextLayout::ALIGN_LEFT,
+            Widget::WidgetRect(0.0, 0.0, 0.8, 0.05)));
+        maplist->addChild(new Widget::TextWidget("line5", "Fifth line",
+            Widget::NormalTextLayout::ALIGN_LEFT,
+            Widget::WidgetRect(0.0, 0.0, 0.8, 0.05)));
+        maplist->addChild(new Widget::TextWidget("line6", "Sixth line",
+            Widget::NormalTextLayout::ALIGN_LEFT,
+            Widget::WidgetRect(0.0, 0.0, 0.8, 0.05)));
         
         host->addChild(new Widget::ButtonWidget("cancel",
-            "Cancel", Widget::WidgetRect(0.1, 0.5, 0.35, 0.08)));
+            "Cancel", Widget::WidgetRect(0.1, 0.85, 0.35, 0.08)));
         host->addChild(new Widget::ButtonWidget("host",
-            "Host game", Widget::WidgetRect(0.5, 0.5, 0.35, 0.08)));
+            "Host game", Widget::WidgetRect(0.5, 0.85, 0.35, 0.08)));
         
         setShortcut(getWidget("host/cancel"), SDLK_ESCAPE);
         setShortcut(getWidget("host/host"), SDLK_RETURN);

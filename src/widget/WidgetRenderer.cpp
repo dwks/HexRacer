@@ -6,6 +6,7 @@
 #include "CompositeWidget.h"
 #include "EditWidget.h"
 #include "ScrollbarWidget.h"
+#include "ListWidget.h"
 
 #include "opengl/OpenGL.h"
 #include "opengl/MathWrapper.h"
@@ -71,6 +72,10 @@ void WidgetRenderer::visit(EditWidget *widget) {
 }
 
 void WidgetRenderer::visit(ScrollbarWidget *widget) {
+    widget->render(*this);
+}
+
+void WidgetRenderer::visit(ListWidget *widget) {
     widget->render(*this);
 }
 
