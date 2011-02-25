@@ -172,8 +172,10 @@ void NetworkPortal::waitForWorld(Object::World *&world,
 void NetworkPortal::checkNetwork() {
     if(!portal) return;
     
-    Network::Packet *packet = portal->nextPacket();
-    if(packet) {
+    for(;;) {
+        Network::Packet *packet = portal->nextPacket();
+        if(!packet) break;
+        
         //LOG2(NETWORK, PACKET, "Received packet " << typeid(*packet).name());
         
         if(dynamic_cast<Network::EventPacket *>(packet)) {

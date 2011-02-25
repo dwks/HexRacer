@@ -42,10 +42,11 @@ void BasicWorld::constructAfterConnect(Map::HRMap *map) {
     worldManager->setPathManager(pathManager.get());
     
     playerManager->setRaceManager(raceManager.get());
+    
+    suspension->setData(worldManager.get());
 }
 
 void BasicWorld::doPhysics() {
-    suspension->setData(worldManager.get(), NULL);
     suspension->checkForWheelsOnGround();
     
     if(!Timing::AccelControl::getInstance()->getPaused()) {

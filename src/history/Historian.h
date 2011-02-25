@@ -38,6 +38,7 @@ public:
     void setPhysicsWorld(Physics::PhysicsWorld *physicsWorld);
     
     void handleUpdateWorld(Event::UpdateWorld *updateWorld);
+    bool updateWorldTooOld(Event::UpdateWorld *updateWorld);
     void advanceWorld(Event::UpdateWorld *updateWorld);
 };
 

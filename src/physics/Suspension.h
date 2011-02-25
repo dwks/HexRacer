@@ -64,7 +64,6 @@ private:
     playerSuspensionType playerSuspension;
     
     Object::WorldManager *worldManager;
-    Render::RenderManager *renderManager;
 public:
     Suspension();
     
@@ -76,11 +75,8 @@ public:
     void doAction(unsigned long currentTime);
     
     /** This function should be called before doStep().
-        
-        If @a renderManager is NULL, no debug drawing will be done.
     */
-    void setData(Object::WorldManager *worldManager,
-        Render::RenderManager *renderManager);
+    void setData(Object::WorldManager *worldManager);
 private:
     void applySuspension();
     

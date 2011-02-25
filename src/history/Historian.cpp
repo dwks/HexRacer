@@ -63,6 +63,7 @@ void Historian::WorldHandler::observe(Event::EventBase *event) {
             = dynamic_cast<Event::UpdateWorld *>(event);
         
         historian->handleUpdateWorld(updateWorld);
+        if(historian->updateWorldTooOld(updateWorld)) break;
         
         std::vector<Event::UpdateObject *> &vector = updateWorld->getVector();
         for(int x = 0; x < int(vector.size()); x ++) {
@@ -144,6 +145,15 @@ void Historian::handleUpdateWorld(Event::UpdateWorld *updateWorld) {
         LOG(NETWORK, "UpdateWorld is " << offset << " milliseconds old");
 #endif
     }
+}
+
+bool Historian::updateWorldTooOld(Event::UpdateWorld *updateWorld) {
+    unsigned long sent = updateWorld->getMilliseconds();
+    unsigned long now = Misc::Sleeper::getTimeMilliseconds();
+    
+    long offset = long(now - sent) + pingTime->getClockOffset();
+    
+    return offset > 10000;
 }
 
 void Historian::advanceWorld(Event::UpdateWorld *updateWorld) {

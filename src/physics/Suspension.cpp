@@ -90,7 +90,7 @@ double Suspension::Spring::calculateForceFactor(
     return factor*downwardsFactor;
 }
 
-Suspension::Suspension() : worldManager(NULL), renderManager(NULL) {
+Suspension::Suspension() : worldManager(NULL) {
     METHOD_OBSERVER(&Suspension::physicsTickHandler);
 }
 
@@ -129,11 +129,8 @@ void Suspension::doAction(unsigned long currentTime) {
     applySuspension();
 }
 
-void Suspension::setData(Object::WorldManager *worldManager,
-    Render::RenderManager *renderManager) {
-    
+void Suspension::setData(Object::WorldManager *worldManager) {
     this->worldManager = worldManager;
-    this->renderManager = renderManager;
 }
 
 void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
