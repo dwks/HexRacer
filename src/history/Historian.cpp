@@ -136,7 +136,7 @@ void Historian::handleUpdateWorld(Event::UpdateWorld *updateWorld) {
         pingTime->setClockOffset(offset);
     }
     else {
-#if 0
+#if 1
         unsigned long sent = updateWorld->getMilliseconds();
         unsigned long now = Misc::Sleeper::getTimeMilliseconds();
         
@@ -161,6 +161,10 @@ void Historian::advanceWorld(Event::UpdateWorld *updateWorld) {
     unsigned long now = Misc::Sleeper::getTimeMilliseconds();
     
     long offset = long(now - sent) + pingTime->getClockOffset();
+    
+    /*if(offset < 0) {
+        pingTime->addClockOffset(-offset);
+    }*/
     
     if(offset > 0) {
         physicsWorld->stepWorld(offset);

@@ -69,7 +69,6 @@ void GameLoop::miscellaneous() {
 }
 
 void GameLoop::render() {
-
     gameRenderer->render(
         viewport->getCamera(),
         gameWorld->getWorldManager());

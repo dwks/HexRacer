@@ -38,7 +38,7 @@ Player::~Player() {
     delete renderable;
 }
 
-Physics::PhysicalObject *Player::getPhysicalObject() {
+Physics::PhysicalPlayer *Player::getPhysicalObject() {
     return physical;
 }
 

@@ -46,9 +46,9 @@ public:
     void setOnGround(bool onGround)
         { physical->setOnGround(onGround); }
     bool getOnGround() const { return physical->getOnGround(); }
+    
     void setSpeedBoost(double speedBoost)
         { physical->setSpeedBoost(speedBoost); }
-    
     double getSpeedBoost(){
         return physical->getSpeedBoost();    
     }
@@ -60,7 +60,7 @@ public:
     
     void setPhysicalObject(Physics::PhysicalPlayer *physical)
         { this->physical = physical; }
-    virtual Physics::PhysicalObject *getPhysicalObject();
+    virtual Physics::PhysicalPlayer *getPhysicalObject();
     
     void setRenderableObject(Render::RenderablePlayer *renderable)
         { this->renderable = renderable; }

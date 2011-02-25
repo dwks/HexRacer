@@ -19,7 +19,7 @@ display.bpp        = 0
 ### Physics settings
 
 # Physics simulation settings
-physics.maxtimesteps              = 5
+physics.maxtimesteps              = 2
 
 # World settings
 physics.constant.gravity          = 11

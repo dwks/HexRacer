@@ -112,12 +112,11 @@ void Suspension::checkForWheelsOnGround() {
 int Suspension::wheelsOnGround(int playerID) {
     int onGround = 0;
     
+    Object::Player *player = worldManager->getPlayer(playerID);
+    if(!player) return 0;
+    
     for(int wheel = 0; wheel < 4; wheel ++) {
-        if(playerSuspension.find(playerID) == playerSuspension.end()) {
-            continue;
-        }
-        
-        if(playerSuspension[playerID][wheel].isOnGround()) {
+        if(player->getPhysicalObject()->getSpring(wheel).isOnGround()) {
             onGround ++;
         }
     }
@@ -182,8 +181,8 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
             GET_SETTING("physics.driving.stretchlength", 1.0));
         
         // restore last frame's displacement in the Spring object
-        playerSuspension[player->getID()].resize(4);
-        spring.setLastDisplacement(playerSuspension[player->getID()][wheel]);
+        spring.setLastDisplacement(
+            player->getPhysicalObject()->getSpring(wheel));
         
         // calculate and apply actual force
         Displacement displacement = spring.doRaycast();
@@ -191,12 +190,10 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
         player->applyForce(axis * forceFactor, forcePoint);
         
         // record displacement for next time
-        playerSuspension[player->getID()][wheel] = displacement;
+        player->getPhysicalObject()->setSpring(wheel, displacement);
         
-        // draw a wheel
-        
+        // find the position of the wheel
         double down = displacement.getDisplacement();
-        
         player->setSuspension(wheel,
             suspensionPoint[wheel]
                 + Math::Point(0.0, -down - GET_SETTING("physics.wheel.diameter", 0.2), 0.0));
@@ -219,8 +216,7 @@ void Suspension::applySuspension() {
 }
 
 void Suspension::applyDragForce(Object::Player *player) {
-    Physics::PhysicalPlayer *physicalPlayer
-        = dynamic_cast<Physics::PhysicalPlayer *>(player->getPhysicalObject());
+    Physics::PhysicalPlayer *physicalPlayer = player->getPhysicalObject();
     Math::Point linearVelocity = physicalPlayer->getLinearVelocity();
     Math::Point angularVelocity = physicalPlayer->getAngularVelocity();
     
