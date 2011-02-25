@@ -1,25 +1,29 @@
 ### List of supported maps
 
-maps.1         = maps/testtrack3.hrm
+maps.1         = data/testtrack3.hrm
 maps.1.title   = Crazy Curves
-maps.1.image   = maps/thumbnail/testtrack3.png
+maps.1.image   = data/thumbnail/testtrack3.png
 
-maps.2         = maps/canyon2d.hrm
+maps.2         = data/canyon2d.hrm
 maps.2.title   = The Purple Canyon
-maps.2.image   = maps/thumbnail/canyon2.png
+maps.2.image   = data/thumbnail/canyon2.png
 
-maps.3         = maps/canyon2d.hrm
+maps.3         = data/canyon2d.hrm
 maps.3.title   = The Purple Canyon
-maps.3.image   = maps/thumbnail/canyon2.png
+maps.3.image   = data/thumbnail/canyon2.png
 
-maps.4         = maps/canyon2d.hrm
+maps.4         = data/canyon2d.hrm
 maps.4.title   = The Purple Canyon
-maps.4.image   = maps/thumbnail/canyon2.png
+maps.4.image   = data/thumbnail/canyon2.png
 
-maps.5         = maps/canyon2d.hrm
+maps.5         = data/canyon2d.hrm
 maps.5.title   = The Purple Canyon
-maps.5.image   = maps/thumbnail/canyon2.png
+maps.5.image   = data/thumbnail/canyon2.png
 
-maps.6         = maps/canyon2d.hrm
+maps.6         = data/canyon2d.hrm
 maps.6.title   = The Purple Canyon
-maps.6.image   = maps/thumbnail/canyon2.png
+maps.6.image   = data/thumbnail/canyon2.png
+
+maps.7         = data/testtrack3.hrm
+maps.7.title   = Crazy Curves
+maps.7.image   = data/thumbnail/testtrack3.png

@@ -23,6 +23,7 @@ public:
     virtual void visit(EditWidget *widget);
     virtual void visit(ScrollbarWidget *widget);
     virtual void visit(ListWidget *widget);
+    virtual void visit(ImageWidget *widget);
 public:
     static void glVertex(const WidgetPoint &point);
 };

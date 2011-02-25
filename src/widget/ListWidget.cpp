@@ -92,7 +92,7 @@ void ListWidget::addChild(WidgetBase *widget) {
     rect.getCorner().setY(y);
     widget->updateLayout(rect);
     
-    LOG(GUI, "child " << widget->getName() << " set at " << rect);
+    //LOG(GUI, "child " << widget->getName() << " set at " << rect);
     
     totalHeight += widget->getBoundingRect().getHeight();
     

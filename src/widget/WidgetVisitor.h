@@ -11,6 +11,7 @@ class CompositeWidget;
 class EditWidget;
 class ScrollbarWidget;
 class ListWidget;
+class ImageWidget;
 
 class WidgetVisitor {
 public:
@@ -23,6 +24,7 @@ public:
     virtual void visit(EditWidget *widget) = 0;
     virtual void visit(ScrollbarWidget *widget) = 0;
     virtual void visit(ListWidget *widget) = 0;
+    virtual void visit(ImageWidget *widget) = 0;
 };
 
 }  // namespace Widget

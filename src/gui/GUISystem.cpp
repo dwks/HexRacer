@@ -12,6 +12,7 @@
 #include "widget/ButtonWidget.h"
 #include "widget/EditWidget.h"
 #include "widget/ListWidget.h"
+#include "widget/ImageWidget.h"
 
 #include "widget/NormalTextLayout.h"
 
@@ -129,6 +130,13 @@ void GUISystem::construct() {
             Widget::WidgetRect(0.1, 0.1, 0.8, 0.3));
         host->addChild(mapList);
         
+        host->addChild(new Widget::TextWidget("title", "",
+            Widget::NormalTextLayout::ALIGN_HCENTRE,
+            Widget::WidgetRect(0.1, 0.42, 0.8, 0.07)));
+        
+        host->addChild(new Widget::ImageWidget("thumbnail", "",
+            Widget::WidgetRect(0.2, 0.5, 0.6, 0.3)));
+        
         host->addChild(new Widget::ButtonWidget("cancel",
             "Cancel", Widget::WidgetRect(0.1, 0.85, 0.35, 0.08)));
         host->addChild(new Widget::ButtonWidget("host",
@@ -137,6 +145,7 @@ void GUISystem::construct() {
         setShortcut(getWidget("host/cancel"), SDLK_ESCAPE);
         setShortcut(getWidget("host/host"), SDLK_RETURN);
         
+        getWidget("host/maplist")->addEventProxy(new HostProxy(host));
         getWidget("host/cancel")->addEventProxy(new HostProxy(host));
         getWidget("host/host")->addEventProxy(new HostProxy(host));
     }

@@ -148,10 +148,6 @@ void TextWidget::render() {
     
     glBegin(GL_QUADS);
     
-    WidgetPoint bothScaled(
-        dimensions.getX() * widthFactor,
-        dimensions.getY() * heightFactor);
-    
     double width = dimensions.getX() * widthFactor;
     double height = dimensions.getY() * heightFactor;
     

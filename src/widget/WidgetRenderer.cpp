@@ -7,6 +7,7 @@
 #include "EditWidget.h"
 #include "ScrollbarWidget.h"
 #include "ListWidget.h"
+#include "ImageWidget.h"
 
 #include "opengl/OpenGL.h"
 #include "opengl/MathWrapper.h"
@@ -77,6 +78,10 @@ void WidgetRenderer::visit(ScrollbarWidget *widget) {
 
 void WidgetRenderer::visit(ListWidget *widget) {
     widget->render(*this);
+}
+
+void WidgetRenderer::visit(ImageWidget *widget) {
+    widget->render();
 }
 
 void WidgetRenderer::glVertex(const WidgetPoint &point) {
