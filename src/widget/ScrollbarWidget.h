@@ -37,6 +37,7 @@ public:
     void addValue(double add);
     double getValue() const { return value; }
     double getSize() const { return size; }
+    double getMax() const { return max; }
     
     void render(WidgetVisitor &renderer);
     

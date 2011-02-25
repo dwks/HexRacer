@@ -32,7 +32,7 @@ ScrollbarWidget::ScrollbarWidget(const std::string &name, bool vertical,
     addEventProxy(new ScrollbarEventProxy(this));
     
     // !!! testing
-    //setEverything(0.4, 0.3, 1.0);
+    //setEverything(0.4, 0.1, 1.0);
     
     // force the bar and slider to be updated
     updateLayout();
@@ -105,13 +105,13 @@ void ScrollbarWidget::ensureValid() {
     
     // validate value
     if(value < 0.0) {
-        LOG2(WIDGET, WARNING, "Scrollbar value " << value
-            << " is negative, setting to zero");
+        /*LOG2(WIDGET, WARNING, "Scrollbar value " << value
+            << " is negative, setting to zero");*/
         value = 0.0;
     }
     if(value + size > max) {
-        LOG2(WIDGET, WARNING, "Scrollbar value " << value
-            << " is too large, clipping");
+        /*LOG2(WIDGET, WARNING, "Scrollbar value " << value
+            << " is too large, clipping");*/
         value = max - size;
     }
 }

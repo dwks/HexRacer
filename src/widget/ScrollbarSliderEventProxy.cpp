@@ -20,15 +20,18 @@ void ScrollbarSliderEventProxy::visit(MouseMoveEvent *event) {
     
     if(sliding) {
         WidgetPoint difference = event->getWhere() - lastSlidePosition;
+        
         if(scrollbar->isVertical()) {
             double mouse = difference.getY();
-            double change = mouse / bar->getBoundingRect().getHeight();
+            double travelDistance = bar->getBoundingRect().getHeight();
+            double change = mouse / travelDistance * scrollbar->getMax();
             
             scrollbar->addValue(change);
         }
         else {
             double mouse = difference.getX();
-            double change = mouse / bar->getBoundingRect().getWidth();
+            double travelDistance = bar->getBoundingRect().getWidth();
+            double change = mouse / travelDistance * scrollbar->getMax();
             
             scrollbar->addValue(change);
         }
