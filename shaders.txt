@@ -1,6 +1,7 @@
 #Shader File
 
 all backgroundShader shaders/backgroundShader.frag shaders/backgroundShader.vert
+all backgroundBloomShader shaders/backgroundBloomShader.frag shaders/backgroundShader.vert
 all paintShader shaders/paintShader.frag shaders/paintShader.vert
 all gouraudShader shaders/gouraudShader.frag shaders/gouraudShader.vert
 

@@ -130,11 +130,9 @@ void PhysicalPlayer::applyTurning(double amount) {
     centripetalAxis.normalize();
     
     double speed = getLinearVelocity().length();
-    
-    // turn in the opposite direction when travelling backwards
-    if(getLinearVelocity().dotProduct(forwardAxis) < 0) {
-        speed = -speed;
-    }
+
+	double turning_factor = speed;
+  
     
     /*double centripetalSpeed = getLinearVelocity().dotProduct(forwardAxis)
         / getLinearVelocity().length();*/
@@ -170,9 +168,16 @@ void PhysicalPlayer::applyTurning(double amount) {
 	else if (turning_factor < 0)
 		turning_factor = Math::minimum(turning_factor, -GET_SETTING("physics.turning.minfactor", 0.1));
 	*/
+
+	turning_factor = Math::maximum(turning_factor, GET_SETTING("physics.turning.minfactor", 0.1));
+	
+	 // turn in the opposite direction when travelling backwards
+    if (getLinearVelocity().dotProduct(forwardAxis) < 0) {
+        turning_factor = -turning_factor;
+    }
     
-    applyForce(centripetalAxis * centripetalConstant * speed * amount);
-    applyTorque(Math::Point(0.0, -1.0, 0.0) * constant * speed * amount);
+    applyForce(centripetalAxis * centripetalConstant * turning_factor * amount);
+    applyTorque(Math::Point(0.0, -1.0, 0.0) * constant * turning_factor * amount);
 }
 
 void PhysicalPlayer::doJump() {

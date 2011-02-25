@@ -70,7 +70,6 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     
     Map::MapLoader().load(map.get(), mapRenderable.get());
 
-	bloomProperties = NULL;
 	shadowProperties = NULL;
 	shadowCamera = NULL;
 
@@ -175,12 +174,15 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldMan
 
 		//Render to the bloom buffer
 		camera->setFarPlane(GET_SETTING("render.bloom.farplane", 50.0));
-		renderToBloomBuffer(scene_render_list);
+		bloomScene->setChild(&scene_render_list);
+		renderToBloomBuffer(*bloomRenderable);
 		textureProjection();
 		int blur_passes = GET_SETTING("render.bloom.blurpasses", 5);
 		for (int i = 0; i < blur_passes; i++)
 			bloomBlurPass();
 		applyBloomBuffer();
+
+		bloomScene->setChild(NULL);
 
 	}
 
@@ -522,13 +524,23 @@ void GameRenderer::initBloom() {
 
 	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
 
-	bloomProperties = new Render::RenderProperties();
-	bloomProperties->setWantsShaderName("bloomShader");
-	bloomProperties->setShaderOverride(true);
+	bloomRenderable = new Render::RenderList();
+	bloomBackground = new Render::RenderParent(background.get());
+	bloomScene = new Render::RenderParent();
+
+	bloomRenderable->addRenderable(bloomBackground);
+	bloomRenderable->addRenderable(bloomScene);
+
+	bloomBackground->getRenderProperties()->setWantsShaderName("backgroundBloomShader");
+	bloomBackground->getRenderProperties()->setShaderOverride(true);
+
 	OpenGL::Material* default_material = new OpenGL::Material("bloomDefault");
 	default_material->setAmbient(OpenGL::Color::BLACK);
-	bloomProperties->setMaterial(default_material);
 
+	bloomScene->getRenderProperties()->setWantsShaderName("bloomShader");
+	bloomScene->getRenderProperties()->setShaderOverride(true);
+	bloomScene->getRenderProperties()->setMaterial(default_material);
+	
 	hBlurShaderIndex = renderer->getShaderManager()->shaderIndexFromName("hBlurShader");
 	vBlurShaderIndex = renderer->getShaderManager()->shaderIndexFromName("vBlurShader");
 }
@@ -544,9 +556,7 @@ void GameRenderer::renderToBloomBuffer(Render::RenderableObject& renderable) {
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
 
 	renderer->getRenderSettings()->setRedrawMode(true);
-	renderer->setRenderProperties(bloomProperties);
 	renderable.render(renderer.get());
-	renderer->revertRenderProperties(bloomProperties);
 	renderer->getRenderSettings()->setRedrawMode(false);
 	
 }
