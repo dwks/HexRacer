@@ -31,6 +31,23 @@ void ListEventProxy::visit(MouseMoveEvent *event) {
             return;
         }
     }
+    
+    ListWidget::IteratorType it = widget->getIterator();
+    while(it.hasNext()) {
+        WidgetBase *child = it.next();
+        
+        if(FocusManager::getInstance()->getMotionFocus() == child
+            || FocusManager::getInstance()->getClickFocus() == child) {
+            
+            child->handleEvent(event);
+            return;
+        }
+        
+        if(child->getBoundingRect().pointInside(event->getWhere())) {
+            child->handleEvent(event);
+            return;
+        }
+    }
 }
 
 void ListEventProxy::visit(MouseButtonEvent *event) {
@@ -51,6 +68,23 @@ void ListEventProxy::visit(MouseButtonEvent *event) {
             && event->getDown()) {
             
             child[x]->handleEvent(event);
+            return;
+        }
+    }
+    
+    ListWidget::IteratorType it = widget->getIterator();
+    while(it.hasNext()) {
+        WidgetBase *child = it.next();
+        
+        if(FocusManager::getInstance()->getClickFocus() == child) {
+            child->handleEvent(event);
+            return;
+        }
+        
+        if(child->getBoundingRect().pointInside(event->getWhere())
+            && event->getDown()) {
+            
+            child->handleEvent(event);
             return;
         }
     }

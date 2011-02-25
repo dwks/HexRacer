@@ -17,6 +17,7 @@ public:
     virtual void visit(WidgetActivateEvent *event) {}
     virtual void visit(FocusEvent *event) {}
     virtual void visit(WidgetModifiedEvent *event) {}
+    virtual void visit(WidgetSelectedEvent *event) {}
 };
 
 }  // namespace Widget

@@ -3,6 +3,7 @@
 #include "AbsoluteLayout.h"
 #include "ListEventProxy.h"
 #include "ListScrollbarEventProxy.h"
+#include "ListItemEventProxy.h"
 
 #include "math/Values.h"
 
@@ -104,6 +105,9 @@ void ListWidget::addChild(WidgetBase *widget) {
                 " but has no vertical scrollbar");
         }
     }
+    
+    widget->addEventProxy(new ListItemEventProxy(this,
+        dynamic_cast<TextWidget *>(widget)));
     
     CompositeWidget::addChild(widget);
 }

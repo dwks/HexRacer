@@ -12,7 +12,7 @@ namespace Project {
 namespace Widget {
 
 void ScrollbarEventProxy::visit(MouseMoveEvent *event) {
-    Widget::WidgetBase *child[4];
+    WidgetBase *child[4];
     child[0] = widget->getLess();
     child[1] = widget->getMore();
     child[2] = widget->getSlider();  // slider before bar
@@ -34,7 +34,7 @@ void ScrollbarEventProxy::visit(MouseMoveEvent *event) {
 }
 
 void ScrollbarEventProxy::visit(MouseButtonEvent *event) {
-    Widget::WidgetBase *child[4];
+    WidgetBase *child[4];
     child[0] = widget->getLess();
     child[1] = widget->getMore();
     child[2] = widget->getSlider();  // slider before bar
