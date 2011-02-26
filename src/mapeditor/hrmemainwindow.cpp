@@ -37,7 +37,6 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	//
 	settingsManager = new SettingsManager("mapeditorconfig.txt");
 
-	fileMenu->addAction("&Quit", qApp, SLOT(quit()), QKeySequence("CTRL+Q"));
 	/*Actions*************************************************************/
 
 	advancedRenderingAction = new QAction("&Advanced Rendering", this);
@@ -150,7 +149,8 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	saveAction = fileMenu->addAction("&Save", mapEditor, SLOT(saveMap()), QKeySequence("CTRL+S"));
 	saveAction->setDisabled(true);
 	fileMenu->addAction("&Save As", this, SLOT(saveMapFileAs()), QKeySequence("CTRL+ALT+S"));
-
+    fileMenu->addAction("&Quit", qApp, SLOT(quit()), QKeySequence("CTRL+Q"));
+    
 	//Edit Menu
 	editMenu = new QMenu("&Edit", this);
 	editMenu->addAction("&Delete", mapEditor, SLOT(deleteSelected()), QKeySequence(Qt::Key_Delete));
