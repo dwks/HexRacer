@@ -37,62 +37,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	//
 	settingsManager = new SettingsManager("mapeditorconfig.txt");
 
-	/*Menu Bar*************************************************************/
-
-	menuBar = new QMenuBar(this);
-
-	//File Menu
-	fileMenu = new QMenu("&File", this);
-	QAction* newAction = fileMenu->addAction("&New", mapEditor, SLOT(newMap()), QKeySequence("CTRL+N"));
-	connect(newAction, SIGNAL(triggered()), this, SLOT(newMap()));
-	fileMenu->addAction("&Open", this, SLOT(openMapFile()), QKeySequence("CTRL+O"));
-	saveAction = fileMenu->addAction("&Save", mapEditor, SLOT(saveMap()), QKeySequence("CTRL+S"));
-	saveAction->setDisabled(true);
-	fileMenu->addAction("&Save As", this, SLOT(saveMapFileAs()), QKeySequence("CTRL+ALT+S"));
 	fileMenu->addAction("&Quit", qApp, SLOT(quit()), QKeySequence("CTRL+Q"));
-
-	//Edit Menu
-	editMenu = new QMenu("&Edit", this);
-	editMenu->addAction("&Delete", mapEditor, SLOT(deleteSelected()), QKeySequence(Qt::Key_Delete));
-	editMenu->addAction("&Delete All", mapEditor, SLOT(deleteAll()),
-        QKeySequence(Qt::Key_Control + Qt::Key_Delete));
-
-	//Meshes Menu
-	meshMenu = new QMenu("&Mesh", this);
-
-	meshLoadMapper = new QSignalMapper(this);
-	connect(meshLoadMapper, SIGNAL(mapped(int)), this, SLOT(loadMesh(int)));
-	meshClearMapper = new QSignalMapper(this);
-	connect(meshClearMapper, SIGNAL(mapped(int)), this, SLOT(clearMesh(int)));
-
-	for (int i = 0; i < HRMap::NUM_MESHES; i++) {
-		HRMap::MeshType type = static_cast<HRMap::MeshType>(i);
-		QAction* load_mesh_action = new QAction(QString(("Load "+HRMap::meshTitle(type)).c_str()), this);
-		QAction* clear_mesh_action = new QAction(QString(("Clear "+HRMap::meshTitle(type)).c_str()), this);
-		meshLoadMapper->setMapping(load_mesh_action, i);
-		meshClearMapper->setMapping(clear_mesh_action, i);
-		connect(load_mesh_action, SIGNAL(triggered()), meshLoadMapper, SLOT(map()));
-		connect(clear_mesh_action, SIGNAL(triggered()), meshClearMapper, SLOT(map()));
-		meshMenu->addAction(load_mesh_action);
-		meshMenu->addAction(clear_mesh_action);
-	}
-
-	//Map Menu
-	mapMenu = new QMenu("&Map", this);
-	mapMenu->addAction("&Generate Paint Cells",	mapEditor, SLOT(generatePaint()));
-	mapMenu->addAction("&Generate Path Progression", mapEditor, SLOT(generatePathProgress()));
-	mapMenu->addAction("&Generate 2D Map",	this, SLOT(save2DMapImage()));
-	mapMenu->addAction("&Load Cube Map", mapEditor, SLOT(loadCubeMap()));
-	mapMenu->addAction("&Load Prop Mesh", this, SLOT(loadPropMesh()));
-	mapMenu->addAction("&Remove Prop Mesh", mapEditor, SLOT(removePropMesh()));
-	mapMenu->addAction("&Scale All Map Objects", this, SLOT(scaleAll()));
-
-	menuBar->addMenu(fileMenu);
-	menuBar->addMenu(editMenu);
-	menuBar->addMenu(meshMenu);
-	menuBar->addMenu(mapMenu);
-	setMenuBar(menuBar);
-
 	/*Actions*************************************************************/
 
 	advancedRenderingAction = new QAction("&Advanced Rendering", this);
@@ -130,6 +75,11 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		mapObjectAction[i]->setCheckable(true);
 		mapObjectGroup->addAction(mapObjectAction[i]);
 		mapObjectAction[i]->setShortcut(QKeySequence(Qt::Key_1+i));
+
+		drawMapObjectAction[i] = new QAction(QString("Show ")+QString(MapObject::typeTitle(type).c_str()), this);
+		drawMapObjectAction[i]->setCheckable(true);
+		drawMapObjectAction[i]->setChecked(mapEditor->getDrawMapObject()[i]);
+		connect(drawMapObjectAction[i], SIGNAL(toggled(bool)), this, SLOT(updateDrawMapObjects()));
 
 		switch (type) {
 			case MapObject::LIGHT:
@@ -188,6 +138,75 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 		editModeGroup->addAction(editModeAction[i]);
 	}
 
+	/*Menu Bar*************************************************************/
+
+	menuBar = new QMenuBar(this);
+
+	//File Menu
+	fileMenu = new QMenu("&File", this);
+	QAction* newAction = fileMenu->addAction("&New", mapEditor, SLOT(newMap()), QKeySequence("CTRL+N"));
+	connect(newAction, SIGNAL(triggered()), this, SLOT(newMap()));
+	fileMenu->addAction("&Open", this, SLOT(openMapFile()), QKeySequence("CTRL+O"));
+	saveAction = fileMenu->addAction("&Save", mapEditor, SLOT(saveMap()), QKeySequence("CTRL+S"));
+	saveAction->setDisabled(true);
+	fileMenu->addAction("&Save As", this, SLOT(saveMapFileAs()), QKeySequence("CTRL+ALT+S"));
+
+	//Edit Menu
+	editMenu = new QMenu("&Edit", this);
+	editMenu->addAction("&Delete", mapEditor, SLOT(deleteSelected()), QKeySequence(Qt::Key_Delete));
+	editMenu->addAction("&Delete All", mapEditor, SLOT(deleteAll()),
+        QKeySequence(Qt::Key_Control + Qt::Key_Delete));
+
+	//View Menu
+	viewMenu = new QMenu("&View", this);
+	viewMenu->addAction(advancedRenderingAction);
+	viewMenu->addAction(orthoCameraAction);
+	viewMenu->addAction(showPaintAction);
+	viewMenu->addAction(showInvisibleAction);
+	viewMenu->addSeparator();
+	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++)
+		viewMenu->addAction(drawMapObjectAction[i]);
+
+	//Meshes Menu
+	meshMenu = new QMenu("&Mesh", this);
+
+	meshLoadMapper = new QSignalMapper(this);
+	connect(meshLoadMapper, SIGNAL(mapped(int)), this, SLOT(loadMesh(int)));
+	meshClearMapper = new QSignalMapper(this);
+	connect(meshClearMapper, SIGNAL(mapped(int)), this, SLOT(clearMesh(int)));
+
+	for (int i = 0; i < HRMap::NUM_MESHES; i++) {
+		HRMap::MeshType type = static_cast<HRMap::MeshType>(i);
+		QAction* load_mesh_action = new QAction(QString(("Load "+HRMap::meshTitle(type)).c_str()), this);
+		QAction* clear_mesh_action = new QAction(QString(("Clear "+HRMap::meshTitle(type)).c_str()), this);
+		meshLoadMapper->setMapping(load_mesh_action, i);
+		meshClearMapper->setMapping(clear_mesh_action, i);
+		connect(load_mesh_action, SIGNAL(triggered()), meshLoadMapper, SLOT(map()));
+		connect(clear_mesh_action, SIGNAL(triggered()), meshClearMapper, SLOT(map()));
+		meshMenu->addAction(load_mesh_action);
+		meshMenu->addAction(clear_mesh_action);
+	}
+
+	//Map Menu
+	mapMenu = new QMenu("&Map", this);
+	mapMenu->addAction("&Generate Paint Cells",	mapEditor, SLOT(generatePaint()));
+	mapMenu->addAction("&Generate Path Progression", mapEditor, SLOT(generatePathProgress()));
+	mapMenu->addAction("&Generate 2D Map",	this, SLOT(save2DMapImage()));
+	mapMenu->addSeparator();
+	mapMenu->addAction("&Load Cube Map", mapEditor, SLOT(loadCubeMap()));
+	mapMenu->addSeparator();
+	mapMenu->addAction("&Load Prop Mesh", this, SLOT(loadPropMesh()));
+	mapMenu->addAction("&Remove Prop Mesh", mapEditor, SLOT(removePropMesh()));
+	mapMenu->addSeparator();
+	mapMenu->addAction("&Scale All Map Objects", this, SLOT(scaleAll()));
+
+	menuBar->addMenu(fileMenu);
+	menuBar->addMenu(editMenu);
+	menuBar->addMenu(viewMenu);
+	menuBar->addMenu(meshMenu);
+	menuBar->addMenu(mapMenu);
+	setMenuBar(menuBar);
+
 	/*Options Toolbar*************************************************************/
 
 	optionsFrame = new QFrame(this);
@@ -225,10 +244,12 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	//Object buttons
 	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
+
 		QToolButton* object_button = new QToolButton(this);
 		object_button->setDefaultAction(mapObjectAction[i]);
-		objects_layout->addWidget(object_button);
 		object_button->setIconSize(QSize(32, 32));
+
+		objects_layout->addWidget(object_button);
 	}
 
 	//Edit Mode Buttons
@@ -576,6 +597,17 @@ void HRMEMainWindow::selectMapObject(QAction* action) {
 	}
 }
 
+void HRMEMainWindow::updateDrawMapObjects() {
+
+	bool draw_array [MapObject::NUM_OBJECT_TYPES];
+
+	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
+		draw_array[i] = drawMapObjectAction[i]->isChecked();
+	}
+
+	mapEditor->setDrawMapObject(draw_array);
+
+}
 void HRMEMainWindow::selectEditMode(QAction* action) {
 
 	for (int i = 0; i < MapEditorWidget::NUM_EDIT_MODES; i++) {

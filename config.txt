@@ -2,7 +2,7 @@
 # Settings for the project
 
 #map = data/testtrack2.hrm
-map = data/testtrack3.hrm
+map = data/testtrack2.hrm
 #map = data/testtrack2big.hrm
 
 include maps.txt
@@ -46,7 +46,7 @@ physics.turning.speedthresh2 = 25.0
 physics.turning.speedthresh3 = 30.0
 physics.turning.speedthresh2factor = 0.15
 physics.turning.speedthresh3factor = 0.35
-physics.turning.minfactor = 2.0
+physics.turning.minfactor = 5.0
 
 # Display options for the vehicle wheels
 physics.wheel.diameter = 0.155
@@ -79,13 +79,13 @@ render.showfps = 1
 render.bloom.enable = 0
 render.bloom.width = 640
 render.bloom.height = 480
-render.bloom.farplane = 40.0
-render.bloom.blurpasses = 5
+render.bloom.farplane = 200.0
+render.bloom.blurpasses = 6
 
 render.shadow.enable = 0
 render.shadow.width = 4096
 render.shadow.height = 4096
-render.shadow.farplane = 35.0
+render.shadow.farplane = 50.0
 
 render.playerglow.min = 0.6
 render.playerglow.factor = 1.5
@@ -117,7 +117,7 @@ render.tire.scale = 2.5
 
 hud.minimap.enable = 1
 hud.minimap.drawheight = 0.35
-hud.minimap.height = 100.0
+hud.minimap.height = 120.0
 
 hud.speedometer.enable = 1
 hud.speedometer.drawheight = 0.35

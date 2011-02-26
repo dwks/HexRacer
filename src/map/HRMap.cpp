@@ -620,5 +620,6 @@ namespace Map {
 		finishPlane.moveCentroid(finishPlane.centroid()*scale);
 		finishPlane.translate(origin);
 	}
+
 }  // namespace Map
 }  // namespace Project

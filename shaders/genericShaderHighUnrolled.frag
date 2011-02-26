@@ -52,12 +52,14 @@ void main() {
 		if (attenuation >= 0.004) {
 		
 			vec3 light = normalize((position-gl_LightSource[0].position).xyz);
-			float kdiff = max( -dot(light, normal), 0.0) ;
-			
-			float kspec =-dot(reflection,light);
-			kspec = max( pow(kspec, gl_FrontMaterial.shininess) , 0.0);
 			
 			if (distanceFromLight > shadowCoordinateWdivide.z) {
+				
+				float kdiff = max( -dot(light, normal), 0.0) ;
+			
+				float kspec =-dot(reflection,light);
+				kspec = max( pow(kspec, gl_FrontMaterial.shininess) , 0.0);
+			
 				diffuse_color += gl_LightSource[0].diffuse*kdiff*attenuation;
 				specular_color += gl_LightSource[0].specular*kspec*attenuation;
 			}

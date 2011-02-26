@@ -129,6 +129,9 @@ double Point::distanceSquared(const Point &other) const {
         + z_diff * z_diff);
 }
 
+bool Point::zero() const {
+	return (getX() == 0.0 && getY() == 0.0 && getZ() == 0.0);
+}
 Point Point::normalized() const {
     double the_length = length();
     

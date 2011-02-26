@@ -36,7 +36,9 @@ private:
 	GLuint bloomFBO;
 	GLuint bloomColorTexture;
 	GLuint bloomDepthTexture;
-	Render::RenderProperties* bloomProperties;
+	Render::RenderList* bloomRenderable;
+	Render::RenderParent* bloomBackground;
+	Render::RenderParent* bloomScene;
 
 	GLuint bloomBlurFBO;
 	GLuint bloomBlurTexture;

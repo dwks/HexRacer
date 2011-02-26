@@ -42,6 +42,8 @@ public:
     double length() const;
 
 	double lengthSquared() const;
+
+	bool zero() const;
     
     /** Returns the euclidean distance between this Point and @a other.
     */

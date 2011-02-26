@@ -174,12 +174,14 @@ namespace Mesh {
 		for (unsigned int j = 0; j < vertices.size(); j++) {
 			MeshVertex* vert = vertices[j];
 			MathWrapper::glNormal(vert->getNormal());
-			setter.setStandardParamVector3(Shader::ShaderParameter::ATTRIBUTE,
-				static_cast<int>(Shader::ShaderManager::AV3_TANGENT),
-				vert->getTangent());
-			setter.setStandardParamVector3(Shader::ShaderParameter::ATTRIBUTE,
-				static_cast<int>(Shader::ShaderManager::AV3_BITANGENT),
-				vert->getBitangent());
+			if (setter.getHasTangentSpace()) {
+				setter.setStandardParamVector3(Shader::ShaderParameter::ATTRIBUTE,
+					static_cast<int>(Shader::ShaderManager::AV3_TANGENT),
+					vert->getTangent());
+				setter.setStandardParamVector3(Shader::ShaderParameter::ATTRIBUTE,
+					static_cast<int>(Shader::ShaderManager::AV3_BITANGENT),
+					vert->getBitangent());
+			}
 			glTexCoord2d(vert->getTexCoordU(), vert->getTexCoordV());
 			MathWrapper::glVertex(vert->getPosition());
 		}

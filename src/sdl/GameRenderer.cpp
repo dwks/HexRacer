@@ -70,7 +70,6 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     
     Map::MapLoader().load(map.get(), mapRenderable.get());
 
-	bloomProperties = NULL;
 	shadowProperties = NULL;
 	shadowCamera = NULL;
 
@@ -175,12 +174,15 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldMan
 
 		//Render to the bloom buffer
 		camera->setFarPlane(GET_SETTING("render.bloom.farplane", 50.0));
-		renderToBloomBuffer(scene_render_list);
+		bloomScene->setChild(&scene_render_list);
+		renderToBloomBuffer(*bloomRenderable);
 		textureProjection();
 		int blur_passes = GET_SETTING("render.bloom.blurpasses", 5);
 		for (int i = 0; i < blur_passes; i++)
 			bloomBlurPass();
 		applyBloomBuffer();
+
+		bloomScene->setChild(NULL);
 
 	}
 
@@ -522,13 +524,23 @@ void GameRenderer::initBloom() {
 
 	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
 
-	bloomProperties = new Render::RenderProperties();
-	bloomProperties->setWantsShaderName("bloomShader");
-	bloomProperties->setShaderOverride(true);
+	bloomRenderable = new Render::RenderList();
+	bloomBackground = new Render::RenderParent(background.get());
+	bloomScene = new Render::RenderParent();
+
+	bloomRenderable->addRenderable(bloomBackground);
+	bloomRenderable->addRenderable(bloomScene);
+
+	bloomBackground->getRenderProperties()->setWantsShaderName("backgroundBloomShader");
+	bloomBackground->getRenderProperties()->setShaderOverride(true);
+
 	OpenGL::Material* default_material = new OpenGL::Material("bloomDefault");
 	default_material->setAmbient(OpenGL::Color::BLACK);
-	bloomProperties->setMaterial(default_material);
 
+	bloomScene->getRenderProperties()->setWantsShaderName("bloomShader");
+	bloomScene->getRenderProperties()->setShaderOverride(true);
+	bloomScene->getRenderProperties()->setMaterial(default_material);
+	
 	hBlurShaderIndex = renderer->getShaderManager()->shaderIndexFromName("hBlurShader");
 	vBlurShaderIndex = renderer->getShaderManager()->shaderIndexFromName("vBlurShader");
 }
@@ -544,9 +556,7 @@ void GameRenderer::renderToBloomBuffer(Render::RenderableObject& renderable) {
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
 
 	renderer->getRenderSettings()->setRedrawMode(true);
-	renderer->setRenderProperties(bloomProperties);
 	renderable.render(renderer.get());
-	renderer->revertRenderProperties(bloomProperties);
 	renderer->getRenderSettings()->setRedrawMode(false);
 	
 }
@@ -754,6 +764,7 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 		shadow_far_plane = Math::maximum(shadow_far_plane, z);
 	}
 
+	/*
 	bool near_plane_set = false;
 	double shadow_near_plane = 0.1;
 	Math::BoundingBox3D map_bound = map->getMapBoundingBox();
@@ -771,6 +782,24 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 			else {
 				shadow_near_plane = 0.1;
 				break;
+			}
+		}
+	}
+	*/
+
+	bool near_plane_set = false;
+	double shadow_near_plane = 0.1;
+	Math::BoundingBox3D map_bound = map->getMapBoundingBox();
+	if (!map_bound.pointInside(shadowCamera->getPosition())) {
+		for (unsigned int i = 0; i < 8; i++) {
+			double vertex_plane = (map_bound.getCorner(i)-shadowCamera->getPosition()).dotProduct(shadowCamera->getLookDirection());
+			if (vertex_plane > 0.0) {
+				if (!near_plane_set) {
+					shadow_near_plane = vertex_plane;
+					near_plane_set = true;
+				}
+				else
+					shadow_near_plane = Math::minimum(shadow_near_plane, vertex_plane);
 			}
 		}
 	}

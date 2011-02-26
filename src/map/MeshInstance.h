@@ -3,6 +3,7 @@
 
 #include "math/SimpleTransform.h"
 #include "mesh/MeshGroup.h"
+#include "opengl/Color.h"
 #include <string>
 
 namespace Project {
@@ -17,6 +18,10 @@ private:
 	Mesh::MeshGroup* meshGroup;
 	InstanceType type;
 	Math::SimpleTransform transformation;
+	OpenGL::Color diffuseTint;
+	OpenGL::Color specularTint;
+	OpenGL::Color ambientTint;
+
 public:
 	MeshInstance(std::string mesh_name, Math::SimpleTransform _transformation);
 	std::string getMeshName() const { return meshName; }
@@ -26,6 +31,16 @@ public:
 
 	void setType(InstanceType _type) { type = _type; }
 	void setTransformation(Math::SimpleTransform _transformation) { transformation = _transformation; }
+
+	OpenGL::Color getDiffuseTint() const { return diffuseTint; }
+	OpenGL::Color getSpecularTint() const { return specularTint; }
+	OpenGL::Color getAmbientTint() const { return ambientTint; }
+
+	void setDiffuseTint(OpenGL::Color tint) { diffuseTint = tint; }
+	void setSpecularTint(OpenGL::Color tint) { specularTint = tint; }
+	void setAmbientTint(OpenGL::Color tint) { ambientTint = tint; }
+
+	bool hasTint() const { return (!diffuseTint.isWhite() || !specularTint.isWhite() || !ambientTint.isWhite()); }
 
 	static std::string getTypeTitle(InstanceType _type);
 };

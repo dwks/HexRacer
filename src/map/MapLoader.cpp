@@ -51,7 +51,21 @@ void MapLoader::load(HRMap *map, Render::RenderList *mapRenderable) {
             instances[i]->getMeshGroup(), instances[i]->getTransformation());
         
         //Add the mesh to the map renderable
-        if(mapRenderable) {
+        if (mapRenderable) {
+
+			//Load material tint
+			if (instances[i]->hasTint()) {
+				OpenGL::Material* tint = new OpenGL::Material("tint");
+
+				tint->setDiffuse(instances[i]->getDiffuseTint());
+				tint->setSpecular(instances[i]->getSpecularTint());
+				tint->setAmbient(instances[i]->getAmbientTint());
+
+				meshTints.push_back(tint);
+
+				transformed_mesh->getRenderProperties()->setMaterialTint(tint);
+			}
+
             mapRenderable->addRenderable(transformed_mesh);
         }
         
@@ -62,6 +76,13 @@ void MapLoader::load(HRMap *map, Render::RenderList *mapRenderable) {
                     transformed_mesh->getTransformedTriangles()));
         }
     }
+}
+
+void MapLoader::unload() {
+	for (unsigned int i = 0; i < meshTints.size(); i++) {
+		delete meshTints[i];
+	}
+	meshTints.clear();
 }
 
 }  // namespace Map
