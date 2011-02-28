@@ -169,24 +169,30 @@ namespace Paint {
 		BoundingSphere query_sphere(centroid, radius);
 		vector<ObjectSpatial*> candidate_cells;
 		coloredPaintTree->appendQuery(candidate_cells, query_sphere, SpatialContainer::NEARBY);
+
+		double color_benefit = GET_SETTING("game.paint.colorbenefit", 1.0);
+		double color_penalty = GET_SETTING("game.paint.colorpenalty", 0.0);
         
 		for (unsigned int i = 0; i < candidate_cells.size(); i++) {
 			PaintCell *cell = static_cast<PaintCell *>(candidate_cells[i]);
-			double dist = cell->center.distance(centroid);
+			double dist_squared = cell->center.distanceSquared(centroid);
             
-			if(dist <= query_sphere.getRadius()) {
+			if (dist_squared <= query_sphere.getRadiusSquared()) {
+
+				double dist = sqrt(dist_squared);
+
                 cell_count ++;
                 double colour_factor;
                 
                 if(cell->playerColor == color) {
-                    colour_factor = 1.0;
+                    colour_factor = color_benefit;
                 }
                 else if(cell->playerColor < 0) {
                     colour_factor = 0.0;
                     continue;
                 }
                 else {
-                    colour_factor = -0.5;
+                    colour_factor = color_penalty;
                 }
                 
                 double distance_weight = (query_sphere.getRadius() - dist)

@@ -27,8 +27,9 @@ physics.maxtimesteps              = 2
 physics.constant.gravity          = 11
 
 # Acceleration and responsiveness of input
-physics.constant.turn             = 0.18
+physics.constant.turn             = 0.2
 physics.constant.accel            = 3.6
+physics.constant.brake            = 6.0
 physics.constant.centripetal      = 1.0
 
 # Vehicle suspension
@@ -41,12 +42,10 @@ physics.driving.constant.c        = 45.0
 physics.driving.mindownfactor = 0.25
 
 #Turning
-physics.turning.speedthresh1 = 15.0
-physics.turning.speedthresh2 = 25.0
-physics.turning.speedthresh3 = 30.0
-physics.turning.speedthresh2factor = 0.15
-physics.turning.speedthresh3factor = 0.35
-physics.turning.minfactor = 5.0
+physics.turning.constant = 3.0
+physics.turning.speedfactor = 0.55
+physics.turning.speedthreshhold = 20.0
+physics.turning.fallofffactor = 0.1
 
 # Display options for the vehicle wheels
 physics.wheel.diameter = 0.155
@@ -61,6 +60,10 @@ physics.driving.airlineardrag     = 0.2
 physics.driving.angulardrag       = 0.5
 physics.driving.airangulardrag    = 0.2
 physics.driving.sidewaysdrag      = 20.0
+
+game.paint.colorbenefit = 1.0
+game.paint.colorpenalty = -0.25
+game.paint.boostinfluence = 0.8
 
 game.enablepathing = 1
 
