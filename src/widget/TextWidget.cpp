@@ -24,8 +24,23 @@ TextWidget::TextWidget(const std::string &name, OpenGL::Color color,
     this->align = align;
     texture = -1;
     
+    dirty = true;
+    preRender();
+}
+
+TextWidget::TextWidget(const std::string &name, const std::string &data,
+    unsigned align, const WidgetRect &bounds)
+    : AbstractWidget(name) {
+    
+    this->color = OpenGL::Color::WHITE;
+    this->data = data;
+    this->align = align;
+    texture = -1;
+    
     preRender();
     dirty = false;
+    
+    updateLayout(bounds);
 }
 
 TextWidget::~TextWidget() {
@@ -42,6 +57,16 @@ int TextWidget::nextPowerOf2(int x) {
 }
 
 void TextWidget::preRender() {
+    if(data.empty()) {
+        texture = -1;
+        
+        if(getLayout() == NULL) {
+            setLayout(new NormalTextLayout(align, 1.0));
+        }
+        
+        return;
+    }
+    
     SDL_Color c;
     c.r = color.getRedi();
     c.g = color.getGreeni();
@@ -66,10 +91,10 @@ void TextWidget::preRender() {
     // copy data from first to second, translating to new format
     SDL_BlitSurface(first, NULL, second, NULL);
     
-    if(texture == unsigned(-1)) {
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
-    }
+    glEnable(GL_TEXTURE_2D);
+    
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
     
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -78,19 +103,33 @@ void TextWidget::preRender() {
     glTexImage2D(GL_TEXTURE_2D, 0, 4, w, h, 0, GL_BGRA, 
         GL_UNSIGNED_BYTE, second->pixels);
     
-    SDL_FreeSurface(first);
-    SDL_FreeSurface(second);
+    //glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
     
     double aspectRatio = double(first->h) / first->w;
     
     if(getLayout() == NULL) {
         setLayout(new NormalTextLayout(align, aspectRatio));
     }
+    else {
+        static_cast<NormalTextLayout *>(getLayout())
+            ->setAspectRatio(aspectRatio);
+        getLayout()->update();
+    }
+    
+    SDL_FreeSurface(first);
+    SDL_FreeSurface(second);
+    
+    dirty = false;
 }
 
 void TextWidget::render() {
     if(dirty) {
         preRender();
+    }
+    
+    if(texture == unsigned(-1)) {
+        return;  // empty text, or error in pre-rendering
     }
     
     WidgetPoint corner = getBoundingRect().getCorner();
@@ -104,12 +143,10 @@ void TextWidget::render() {
     glEnable(GL_BLEND);
     
     glBlendFunc(GL_ONE, GL_ONE);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
     
     glBegin(GL_QUADS);
-    
-    WidgetPoint bothScaled(
-        dimensions.getX() * widthFactor,
-        dimensions.getY() * heightFactor);
     
     double width = dimensions.getX() * widthFactor;
     double height = dimensions.getY() * heightFactor;
@@ -137,11 +174,29 @@ void TextWidget::render() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
+}
+
+void TextWidget::setColor(OpenGL::Color color) {
+    this->color = color;
+    textChanged();
+}
+
+const std::string &TextWidget::getData() {
+    return data;
+}
+
+void TextWidget::addText(const std::string &add) {
+    this->data += add;
+    textChanged();
 }
 
 void TextWidget::setText(const std::string &data) {
     this->data = data;
-    
+    textChanged();
+}
+
+void TextWidget::textChanged() {
     //LOG(WIDGET, "Text widget data set to \"" << data << "\"");
     
     if(texture != unsigned(-1)) {

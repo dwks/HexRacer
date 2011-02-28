@@ -11,10 +11,12 @@ FontManager *FontManager::instance = 0;
 FontManager::FontManager() {
     instance = this;
     
+    LOG(SDL, "Loading fonts");
     loadFonts();
 }
 
 FontManager::~FontManager() {
+    LOG(SDL, "Deleting fonts");
     for(FontListType::iterator i = fontList.begin(); i != fontList.end();
         ++ i) {
         

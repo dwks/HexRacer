@@ -8,7 +8,19 @@ namespace Render {
 
 class RenderSettings {
 private:
+	
 	short graphicsQuality;
+	bool bloomLighting;
+	int bloomWidth;
+	int bloomHeight;
+	
+	bool shadowMapping;
+	int shadowMapWidth;
+	int shadowMapHeight;
+
+	bool redrawMode;
+	bool applyToShadowMatrix;
+
 public:
 
 	static const short GRAPHICS_HIGH = 3;
@@ -16,8 +28,24 @@ public:
 	static const short GRAPHICS_LOW = 1;
 	static const short GRAPHICS_VERY_LOW = 0;
 
-	short getGraphicsQuality() { return GET_SETTING("render.quality", 2); }
+	RenderSettings();
+
+	//Config file set constants
+	short getGraphicsQuality() { return graphicsQuality; }
 	short getMaxLights();
+	bool getBloomEnabled() { return bloomLighting; }
+	int getBloomWidth() { return bloomWidth; }
+	int getBloomHeight() { return bloomHeight; }
+	bool getShadowMappingEnabled() { return shadowMapping; }
+	int getShadowMapWidth() { return shadowMapWidth; }
+	int getShadowMapHeight() { return shadowMapHeight; }
+
+	//Rendering modes changeable before rendering
+	void setRedrawMode(bool redraw) { redrawMode = redraw; }
+	bool getRedrawMode() const { return redrawMode; }
+	void setApplyToShadowMatrix(bool apply) { applyToShadowMatrix = apply; }
+	bool getApplyToShadowMatrix() const { return applyToShadowMatrix; }
+	
 };
 
 }  // namespace Render

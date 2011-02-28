@@ -8,7 +8,9 @@
 
 #include "event/QuitEvent.h"
 #include "event/JoinGame.h"
+#include "event/ChangeScreenMode.h"
 #include "event/TypedObserver.h"
+#include "event/Enabler.h"
 
 #include "timing/AccelControl.h"
 
@@ -17,7 +19,7 @@ namespace SDL {
 
 class MenuLoop;
 
-class SDLMainLoop {
+class SDLMainLoop : public Event::Enabler {
 private:
     int sdl_init_flags;
     bool quit;
@@ -27,24 +29,10 @@ private:
     Projector projector;
     
     boost::shared_ptr<Timing::AccelControl> accelControl;
-private:
-    class QuitObserver : public Event::TypedObserver<Event::QuitEvent> {
-    private:
-        SDLMainLoop *mainLoop;
-    public:
-        QuitObserver(SDLMainLoop *mainLoop) : mainLoop(mainLoop) {}
-        
-        virtual void observe(Event::QuitEvent *event);
-    };
-    
-    class JoinGameObserver : public Event::TypedObserver<Event::JoinGame> {
-    private:
-        SDLMainLoop *mainLoop;
-    public:
-        JoinGameObserver(SDLMainLoop *mainLoop) : mainLoop(mainLoop) {}
-        
-        virtual void observe(Event::JoinGame *event);
-    };
+protected:
+    void quitHandler(Event::QuitEvent *event);
+    void changeScreenModeHandler(Event::ChangeScreenMode *event);
+    void joinGameHandler(Event::JoinGame *event);
 public:
     SDLMainLoop();
     ~SDLMainLoop();

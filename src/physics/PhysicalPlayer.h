@@ -44,8 +44,22 @@ private:
     }
     
     BOOST_SERIALIZATION_SPLIT_MEMBER()
+public:
+    class SpringDisplacement {
+    private:
+        double displacement;
+        bool onGround;
+    public:
+        SpringDisplacement() : displacement(0.0), onGround(false) {}
+        SpringDisplacement(double displacement, bool onGround)
+            : displacement(displacement), onGround(onGround) {}
+        
+        double getDisplacement() const { return displacement; }
+        bool isOnGround() const { return onGround; }
+    };
 private:
     btRigidBody *rigidBody;
+    SpringDisplacement spring[4];
     bool onGround;  // not serialized
     double speedBoost;  // not serialized
 public:
@@ -60,6 +74,9 @@ public:
         { this->speedBoost = speedBoost; }
     double getSpeedBoost()
         { return this->speedBoost; }
+    
+    const SpringDisplacement &getSpring(int i) { return spring[i]; }
+    void setSpring(int i, SpringDisplacement d) { spring[i] = d; }
     
     void destroyRigidBody();
     void constructRigidBody(const Math::Point &position);

@@ -172,9 +172,10 @@ void GeometryDrawing::drawBoundingCircle(const Math::BoundingCircle& object, boo
 
 	for (unsigned int i = 0; i < 36; i++) {
 		double u = (double) i / 18.0 * PI;
-		MathWrapper::glVertex(
-			Point::point2D(p.getU(axis)+cos(u), p.getV(axis)+sin(u), axis)
-			);
+		MathWrapper::glVertex(Point::point2D(
+            (p.getU(axis) + cos(u)) * r,
+            (p.getV(axis) + sin(u)) * r,
+            axis));
 	}
 
 	glEnd();

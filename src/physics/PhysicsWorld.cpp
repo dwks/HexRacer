@@ -7,33 +7,40 @@
 #include "opengl/GeometryDrawing.h"
 #include "opengl/OpenGL.h"
 
-#include "event/ObserverList.h"
+#include "event/PhysicsTick.h"
+#include "event/EventSystem.h"
 #include "PhysicsFactory.h"
 
 #include "settings/SettingsManager.h"
+
+#include "log/Logger.h"
 
 namespace Project {
 namespace Physics {
 
 PhysicsWorld *PhysicsWorld::instance;
 
-void PhysicsWorld::DebugDrawingObserver::observe(Event::SetDebugDrawing *event) {
-    PhysicsWorld::getInstance()->setDebug(event->getOn());
+void PhysicsWorld::setDebugDrawingHandler(Event::SetDebugDrawing *event) {
+    setDebug(event->getOn());
 }
 
 PhysicsWorld::PhysicsWorld() {
     instance = this;
     debugging = false;
     setupPhysicsWorld();
+    registerTickCallback();
+    
+    METHOD_OBSERVER(&PhysicsWorld::setDebugDrawingHandler);
 }
 
 PhysicsWorld::~PhysicsWorld() {
-    /*for(std::vector<btRigidBody*>::iterator i = collisionBodies.begin();
+    for(std::vector<btRigidBody*>::iterator i = collisionBodies.begin();
         i != collisionBodies.end(); ++ i) {
         
-        destroyRigidBody(*i);
+        //destroyRigidBody(*i);
+        dynamicsWorld->removeRigidBody(*i);
         delete (*i);
-    }*/
+    }
     
     // delete in reverse order of allocation, more or less
     delete dynamicsWorld;
@@ -43,11 +50,13 @@ PhysicsWorld::~PhysicsWorld() {
     delete broadPhaseInterface;
 }
 
-void PhysicsWorld::stepWorld(float microseconds) {
-    //LOG2( PHYSICS, TIMESTEP, "Stepping simulation by: " << microseconds << " microseconds");
+void PhysicsWorld::stepWorld(unsigned long milliseconds) {
+    //LOG2( PHYSICS, TIMESTEP, "Stepping simulation by: " << milliseconds << " milliseconds");
     
     if ( dynamicsWorld ) {
-        dynamicsWorld->stepSimulation ( microseconds / 1000000.f );
+        // allow at most some number of physics timesteps (at 60 FPS)
+        dynamicsWorld->stepSimulation ( milliseconds / 1000.0,
+            GET_SETTING( "physics.maxtimesteps", 5 ) );
     }
 }
 
@@ -86,8 +95,6 @@ void PhysicsWorld::setupPhysicsWorld() {
     dynamicsWorld->setGravity ( btVector3 ( 0.0,-gravity,0.0 ) );
     
     LOG2 ( PHYSICS, INIT, "Physics Setup Completed!" );
-    
-    ADD_OBSERVER(new DebugDrawingObserver());
 }
 
 void PhysicsWorld::setGravity ( float xAccel, float yAccel, float zAccel ) {
@@ -107,7 +114,7 @@ void PhysicsWorld::setDebug(bool on) {
 }
 
 void PhysicsWorld::render() {
-    if(debugging) {
+    if (debugging) {
         dynamicsWorld->debugDrawWorld();
     }
 }
@@ -142,12 +149,25 @@ bool PhysicsWorld::raycastPoint(const Math::Point &from, const Math::Point &to, 
 		if (point) {
 			*point = Converter::toPoint(ray.m_hitPointWorld);
 		}
-
 		return true;
     }
 
+	if (point) {
+		*point = Math::Point(to);
+	}
+
 	return false;
 
+}
+
+void tickCallback(btDynamicsWorld *world, btScalar timeStep) {
+    EMIT_EVENT(new Event::PhysicsTick(timeStep));
+    
+    //LOG(PHYSICS, "Physics ticked by " << timeStep);
+}
+
+void PhysicsWorld::registerTickCallback() {
+    dynamicsWorld->setInternalTickCallback(tickCallback, NULL, true);
 }
 
 }  // namespace Physics

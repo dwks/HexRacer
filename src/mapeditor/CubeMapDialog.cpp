@@ -8,7 +8,7 @@ CubeMapDialog::CubeMapDialog(const CubeMapFile& file, QWidget *parent)
 	: QDialog(parent)
 {
 
-	QGridLayout *main_layout = new QGridLayout;
+	QGridLayout *main_layout = new QGridLayout(this);
 
 	QSignalMapper* browseButtonMapper = new QSignalMapper(this);
 	connect(browseButtonMapper, SIGNAL(mapped(int)), this, SLOT(setFilename(int)));

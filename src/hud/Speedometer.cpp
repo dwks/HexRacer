@@ -33,7 +33,7 @@ namespace HUD {
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		renderer->enableAlphaMask(alphaMaskTexture, 2.0f, 2.0f);
+		renderer->enableAlphaMask(alphaMaskTexture);
 
 		//Draw the background
 		OpenGL::Color::glColor(OpenGL::Color::WHITE, 0.35);
@@ -51,7 +51,7 @@ namespace HUD {
 		glBegin(GL_POLYGON);
 
 		glVertex2f(0.0f, 0.0f);
-		for (double angle = startAngle; angle > speed_angle; angle -= 0.1)
+		for (double angle = startAngle; angle > speed_angle; angle -= 0.2)
 			glVertex2f(cos(angle)*2.0, sin(angle)*2.0);
 		glVertex2f(cos(speed_angle)*2.0, sin(speed_angle)*2.0);
 		glVertex2f(0.0f, 0.0f);

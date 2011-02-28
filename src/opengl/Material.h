@@ -25,14 +25,14 @@ public:
 
 	std::string getName() const;
 
-	Project::OpenGL::Color getDiffuse() const {return diffuse;}
-	Project::OpenGL::Color getSpecular() const {return specular;}
-	Project::OpenGL::Color getAmbient() const {return ambient;}
+	const Project::OpenGL::Color& getDiffuse() const {return diffuse;}
+	const Project::OpenGL::Color& getSpecular() const {return specular;}
+	const Project::OpenGL::Color& getAmbient() const {return ambient;}
 	float getShininess() const {return shininess;}
 
-	void setDiffuse(Project::OpenGL::Color color) { diffuse = color; }
-	void setSpecular(Project::OpenGL::Color color) { specular = color; }
-	void setAmbient(Project::OpenGL::Color color) { ambient = color; }
+	void setDiffuse(const Project::OpenGL::Color& color) { diffuse = color; }
+	void setSpecular(const Project::OpenGL::Color& color) { specular = color; }
+	void setAmbient(const Project::OpenGL::Color& color) { ambient = color; }
 	void setShininess(float amount) { shininess = amount; }
 
 	/** Apply this material to the specified polygon face @a face

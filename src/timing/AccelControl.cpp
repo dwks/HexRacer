@@ -1,15 +1,15 @@
 #include "AccelControl.h"
 #include "misc/Sleeper.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 namespace Project {
 namespace Timing {
 
 AccelControl *AccelControl::instance = NULL;
 
-void AccelControl::PauseGameHandler::observe(Event::PauseGame *pause) {
-    AccelControl::getInstance()->setPaused(pause->getPaused());
+void AccelControl::pauseGameHandler(Event::PauseGame *pause) {
+    setPaused(pause->getPaused());
 }
 
 AccelControl::AccelControl() {
@@ -18,7 +18,7 @@ AccelControl::AccelControl() {
     paused = false;
     instance = this;
     
-    ADD_OBSERVER(new PauseGameHandler());
+    METHOD_OBSERVER(&AccelControl::pauseGameHandler);
 }
 
 void AccelControl::setPaused(bool paused) {

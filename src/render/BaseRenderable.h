@@ -2,6 +2,7 @@
 #define PROJECT_RENDER__BASE_RENDERABLE_H
 
 #include "RenderableObject.h"
+#include "RenderSettings.h"
 #include "shader/ShaderParamSetter.h"
 
 namespace Project {
@@ -15,7 +16,7 @@ public:
     virtual void preRenderUpdate(const Math::Matrix &transformation);
     
 	void subRender(RenderManager* manager);
-	virtual void renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object = NULL) = 0;
+	virtual void renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object, const RenderSettings& settings) = 0;
 
 };
 

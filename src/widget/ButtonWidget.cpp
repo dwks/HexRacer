@@ -28,5 +28,16 @@ ButtonWidget::~ButtonWidget() {
     delete text;
 }
 
+void ButtonWidget::updateLayout(const WidgetRect &newBounds) {
+    box->updateLayout(newBounds);
+    
+    WidgetRect textBounds = newBounds;
+    textBounds.getCorner() += textBounds.getDimensions() * 0.15;
+    textBounds.getDimensions() *= 0.7;
+    text->updateLayout(textBounds);
+    
+    getLayout()->update(newBounds);
+}
+
 }  // namespace Widget
 }  // namespace Project

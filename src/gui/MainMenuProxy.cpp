@@ -5,7 +5,8 @@
 
 #include "event/QuitEvent.h"
 #include "event/JoinGame.h"
-#include "event/ObserverList.h"
+#include "event/SwitchToScreen.h"
+#include "event/EventSystem.h"
 
 #include "log/Logger.h"
 
@@ -17,16 +18,20 @@ namespace GUI {
 void MainMenuProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();
     
-    if(name == "quit") {
-        EMIT_EVENT(new Event::QuitEvent());
+    if(name == "host") {
+        EMIT_EVENT(new Event::SwitchToScreen("host"));
     }
     else if(name == "join") {
-        EMIT_EVENT(new Event::JoinGame(
-            GET_SETTING("network.host", "localhost").c_str(),
-            GET_SETTING("network.port", 1820)));
+        EMIT_EVENT(new Event::SwitchToScreen("connect"));
     }
     else if(name == "single") {
         EMIT_EVENT(new Event::JoinGame());
+    }
+    else if(name == "settings") {
+        EMIT_EVENT(new Event::SwitchToScreen("settings"));
+    }
+    else if(name == "quit") {
+        EMIT_EVENT(new Event::QuitEvent());
     }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");

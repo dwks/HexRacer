@@ -13,6 +13,7 @@ private:
 public:
 	RenderParent(RenderableObject* _child = NULL);
 	void subRender(RenderManager* manager);
+	void setChild(RenderableObject* _child) { child = _child; }
 };
 
 }  // namespace Render

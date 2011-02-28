@@ -6,19 +6,13 @@ namespace Project {
 namespace Widget {
 
 void NormalTextLayout::update() {
-    // nothing to do
-}
-
-void NormalTextLayout::update(const WidgetRect &newBounds) {
-    this->hardBounds = newBounds;
-    this->bounds = newBounds;
-    
-    double newRatio = bounds.getHeight() / bounds.getWidth();
+    double newRatio = givenBounds.getHeight() / givenBounds.getWidth();
+    bounds = givenBounds;
     
     if(newRatio > aspectRatio) {
         // the X size is already precisely right, shrink Y to meet ratio
-        double oldY = bounds.getHeight();
-        double newY = aspectRatio * bounds.getWidth();
+        double oldY = givenBounds.getHeight();
+        double newY = aspectRatio * givenBounds.getWidth();
         
         if(align & ALIGN_TOP) {
             bounds.getDimensions().setY(newY);
@@ -34,8 +28,8 @@ void NormalTextLayout::update(const WidgetRect &newBounds) {
     }
     else {
         // the Y size is already precisely right, shrink X to meet ratio
-        double oldX = bounds.getWidth();
-        double newX = bounds.getHeight() / aspectRatio;
+        double oldX = givenBounds.getWidth();
+        double newX = givenBounds.getHeight() / aspectRatio;
         
         if(align & ALIGN_LEFT) {
             bounds.getDimensions().setX(newX);
@@ -50,7 +44,14 @@ void NormalTextLayout::update(const WidgetRect &newBounds) {
         }
     }
     
-    LOG(WIDGET, "Text layout gives " << bounds << " in " << hardBounds);
+    //LOG(WIDGET, "Text layout gives " << bounds << " in " << hardBounds);
+}
+
+void NormalTextLayout::update(const WidgetRect &newBounds) {
+    this->givenBounds = newBounds;
+    this->bounds = newBounds;
+    
+    update();
 }
 
 }  // namespace Widget

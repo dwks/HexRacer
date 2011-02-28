@@ -15,6 +15,14 @@ CompositeWidget::CompositeWidget(const std::string &name)
     addEventProxy(new CompositeEventProxy(this));
 }
 
+CompositeWidget::~CompositeWidget() {
+    for(ChildListType::iterator i = childList.begin(); i != childList.end();
+        ++ i) {
+        
+        delete *i;
+    }
+}
+
 void CompositeWidget::addChild(WidgetBase *widget) {
     childList.push_back(widget);
 }

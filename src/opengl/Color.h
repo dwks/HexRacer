@@ -55,6 +55,9 @@ public:
     
 	void invert();
 
+	bool isWhite() const { return (r == 1.0 && g == 1.0 && b == 1.0); }
+	bool isBlack() const { return (r == 0.0 && g == 0.0 && b == 0.0); }
+
 	/** Set this color as the drawing color in openGL
 	*/
 	void glApply() const;
@@ -70,12 +73,15 @@ public:
 	Color operator / (const Color &other) const;
 	Color operator * (float factor) const;
 	Color operator / (float factor) const;
+	bool operator == (const Color &other);
 	void operator += (const Color &other);
 	void operator -= (const Color &other);
 	void operator *= (const Color &other);
 	void operator /= (const Color &other);
 	void operator *= (float factor);
 	void operator /= (float factor);
+
+	float operator [] (int index) const;
 
 };
 

@@ -11,6 +11,7 @@ FocusManager::FocusManager() {
     
     motionFocus = NULL;
     clickFocus = NULL;
+    keyFocus = NULL;
 }
 
 void FocusManager::setMotionFocus(WidgetBase *focus) {
@@ -38,6 +39,20 @@ void FocusManager::setClickFocus(WidgetBase *focus) {
     clickFocus = focus;
     
     FocusEvent focusGained(FocusEvent::FOCUS_CLICK, true);
+    if(focus) focus->handleEvent(&focusGained);
+}
+
+void FocusManager::setKeyFocus(WidgetBase *focus) {
+    if(keyFocus == focus) return;
+    
+    WidgetBase *oldFocus = keyFocus;
+    
+    FocusEvent focusLost(FocusEvent::FOCUS_KEY, false);
+    if(oldFocus) oldFocus->handleEvent(&focusLost);
+    
+    keyFocus = focus;
+    
+    FocusEvent focusGained(FocusEvent::FOCUS_KEY, true);
     if(focus) focus->handleEvent(&focusGained);
 }
 

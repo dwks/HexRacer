@@ -127,6 +127,9 @@ namespace Map {
 			else if (keyword == HRMAP_VERSION_LABEL) {
 				in_file >> version;
 			}
+			else if (mapOptions.parseStream(keyword, in_file)) {
+
+			}
 			else  {
 
 				bool cube_map = false;
@@ -210,6 +213,8 @@ namespace Map {
 			out_file << HRMAP_MAP2DWIDTH_LABEL << ' ' << map2DWidth << '\n';
 			out_file << HRMAP_MAP2DHEIGHT_LABEL << ' ' << map2DHeight << '\n';
 		}
+		
+		mapOptions.saveToStream(out_file);
 
 		out_file << "#Prop Meshes\n";
 		for (unsigned int i = 0; i < propMeshNames.size(); i++) {
@@ -284,6 +289,8 @@ namespace Map {
 		filename = "";
 		cubeMapFile->clear();
 
+		mapOptions.clear();
+
 		clearCubeMap();
 		clearCollisionTree();
 		finishPlane = BoundingPlane3D();
@@ -325,6 +332,7 @@ namespace Map {
 		mapMeshFile[static_cast<int>(type)] = filename;
 		if (meshIsSolid(type))
 			clearCollisionTree();
+		updateMapBoundingBox();
 	}
 
 	void HRMap::clearMapMesh(HRMap::MeshType type) {
@@ -335,6 +343,7 @@ namespace Map {
 			if (meshIsSolid(type)) {
 				clearCollisionTree();
 			}
+			updateMapBoundingBox();
 		}
 		mapMeshFile[i] = "";
 	}
@@ -570,5 +579,54 @@ namespace Map {
 			return propMeshNames[index];
 		return "";
 	}
+
+	void HRMap::updateMapBoundingBox() {
+
+		bool set = false;
+
+		for (int i = 0; i < NUM_MESHES; i++) {
+			MeshType type = static_cast<MeshType>(i);
+			if (getMapMesh(type)) {
+				if (!set) {
+					mapBoundingBox.setToObject(getMapMesh(type)->getBoundingBox());
+					set = true;
+				}
+				else {
+					mapBoundingBox.expandToInclude(getMapMesh(type)->getBoundingBox());
+				}
+			}
+		}
+
+	}
+
+	void HRMap::scaleAll(double scale, Point origin) {
+		for (unsigned int i = 0; i < lights.size(); i++) {
+			lights[i]->translate(-origin);
+			lights[i]->moveCentroid(lights[i]->getPosition()*scale);
+			lights[i]->translate(origin);
+		}
+		for (unsigned int i = 0; i < pathNodes.size(); i++) {
+			pathNodes[i]->translate(-origin);
+			pathNodes[i]->moveCentroid(pathNodes[i]->getPosition()*scale);
+			pathNodes[i]->translate(origin);
+		}
+		for (unsigned int i = 0; i < startPoints.size(); i++) {
+			startPoints[i]->translate(-origin);
+			startPoints[i]->moveCentroid(startPoints[i]->getPosition()*scale);
+			startPoints[i]->translate(origin);
+		}
+		for (unsigned int i = 0; i < meshInstances.size(); i++) {
+			SimpleTransform transform = meshInstances[i]->getTransformation();
+			transform.setScale(transform.getScale()*scale);
+			transform.translate(-origin);
+			transform.setTranslation(transform.getTranslation()*scale);
+			transform.translate(origin);
+			meshInstances[i]->setTransformation(transform);
+		}
+		finishPlane.translate(-origin);
+		finishPlane.moveCentroid(finishPlane.centroid()*scale);
+		finishPlane.translate(origin);
+	}
+
 }  // namespace Map
 }  // namespace Project

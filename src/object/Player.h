@@ -6,6 +6,8 @@
 #include "physics/PhysicalPlayer.h"
 #include "render/RenderablePlayer.h"
 #include "map/PathTracker.h"
+#include "event/TogglePainting.h"
+#include "world/PlayerIntention.h"
 
 namespace Project {
 namespace Object {
@@ -33,24 +35,32 @@ private:
     Render::RenderablePlayer *renderable;
     Math::Point suspension[4];
 	Map::PathTracker* tracker;
+	Event::TogglePainting::PaintType paintType;
+    ::Project::World::PlayerIntention intention;
 public:
     Player();
-	Player(int id, const Math::Point &origin, const Math::Point &direction = Math::Point(0.0, 0.0, 1.0));
+	Player(int id, const Math::Point &origin,
+        const Math::Point &direction = Math::Point(0.0, 0.0, 1.0));
     virtual ~Player();
     
     void setOnGround(bool onGround)
         { physical->setOnGround(onGround); }
     bool getOnGround() const { return physical->getOnGround(); }
+    
     void setSpeedBoost(double speedBoost)
         { physical->setSpeedBoost(speedBoost); }
-    
     double getSpeedBoost(){
         return physical->getSpeedBoost();    
     }
     
+    void setIntention(const ::Project::World::PlayerIntention &intention)
+        { this->intention = intention; }
+    const ::Project::World::PlayerIntention &getIntention() const
+        { return intention; }
+    
     void setPhysicalObject(Physics::PhysicalPlayer *physical)
         { this->physical = physical; }
-    virtual Physics::PhysicalObject *getPhysicalObject();
+    virtual Physics::PhysicalPlayer *getPhysicalObject();
     
     void setRenderableObject(Render::RenderablePlayer *renderable)
         { this->renderable = renderable; }
@@ -74,6 +84,9 @@ public:
     Math::Point getPosition() const;
     Math::Matrix getTransformation() const;
     void applyForce(const Math::Point &movement, const Math::Point &at);
+
+	Event::TogglePainting::PaintType getPaintType() const { return paintType; }
+	void setPaintType(Event::TogglePainting::PaintType paint_type) { paintType = paint_type; }
     
     void initialize();
     

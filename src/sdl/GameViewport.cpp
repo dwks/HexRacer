@@ -2,6 +2,8 @@
 
 #include "Projector.h"
 
+#include "event/EventSystem.h"
+
 namespace Project {
 namespace SDL {
 
@@ -24,13 +26,15 @@ GameViewport::GameViewport() {
     cameraObject->camera->setPosition(
         Point(0.0f, 2.0f, -4.0f));
     updateCamera();
+    
+    ADD_OBSERVER(new CameraObserver(trackball, cameraObject->camera));
 }
 
 GameViewport::~GameViewport() {
     delete cameraObject;
 }
 
-void GameViewport::setPlayerManager(PlayerManager *playerManager) {
+void GameViewport::setPlayerManager(World::PlayerManager *playerManager) {
     cameraObject->setPlayerManager(playerManager);
 }
 
@@ -52,6 +56,8 @@ void GameViewport::checkForDebugCameraEvents(SDL_Event *event) {
     switch(event->type) {
     case SDL_MOUSEBUTTONDOWN:
         if(event->button.button == 3) {  // right
+            LOG(SDL, "Begin debug camera movement");
+            
             trackball->setMouseStartAt(projector->screenToGL(
                 Point2D(event->button.x, event->button.y)));
             
@@ -70,7 +76,7 @@ void GameViewport::checkForDebugCameraEvents(SDL_Event *event) {
 }
 
 void GameViewport::doCamera(unsigned long milliseconds) {
-    cameraObject->doStep(milliseconds);
+    //cameraObject->doAction(milliseconds);
 }
 
 }  // namespace SDL

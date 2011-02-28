@@ -15,7 +15,24 @@ namespace Mesh {
 		paramSetter = NULL;
 		triangleFanTree = NULL;
 		material = NULL;
+		displayList = 0;
 	}
+
+	SubMesh::~SubMesh() {
+
+		for (unsigned int i = 0; i < triangleFans.size(); i++)
+			delete(triangleFans[i]);
+
+		if (material != NULL)
+			delete(material);
+
+		if (triangleFanTree)
+			delete(triangleFanTree);
+
+		if (displayList > 0)
+			glDeleteLists(displayList, 1);
+	}
+
 
 	SubMesh::SubMesh(vector< MeshTriangle* > _triangles, OpenGL::Material* _material, bool cullable) {
 
@@ -25,6 +42,8 @@ namespace Mesh {
 		triangleFanTree = NULL;
 		for (unsigned int i = 0; i < _triangles.size(); i++)
 			triangles.push_back(Triangle3D(*_triangles[i]));
+
+		displayList = 0;
 
 		//Generate Triangle Fans
 		while (!_triangles.empty()) {
@@ -81,19 +100,6 @@ namespace Mesh {
 			generateTriangleFanTree();
 	}
 
-	SubMesh::~SubMesh() {
-
-		for (unsigned int i = 0; i < triangleFans.size(); i++)
-			delete(triangleFans[i]);
-
-		if (material != NULL)
-			delete(material);
-
-		if (triangleFanTree)
-			delete(triangleFanTree);
-	}
-
-
 	void SubMesh::generateTriangleFanTree() {
 
 		BoundingBox3D bounding_box;
@@ -118,16 +124,44 @@ namespace Mesh {
 
 	}
 
-	void SubMesh::renderGeometry(const Shader::ShaderParamSetter& setter, const BoundingObject* bounding_object) {
+	void SubMesh::renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object, const Render::RenderSettings& settings) {
 
 		if (bounding_object == NULL || triangleFanTree == NULL) {
+
+			if (!setter.getHasTangentSpace()) {
+
+				if (displayList > 0) {
+					glCallList(displayList);
+					return;
+				}
+				else {
+					displayList = glGenLists(1);
+					glNewList(displayList, GL_COMPILE_AND_EXECUTE);
+					for (unsigned int i = 0; i < triangleFans.size(); i++) {
+						drawTriangleFan(triangleFans[i], setter);
+					}
+					glEndList();
+					return;
+				}
+
+			}
+
 			for (unsigned int i = 0; i < triangleFans.size(); i++) {
 				drawTriangleFan(triangleFans[i], setter);
 			}
+
 		}
 		else {
-			paramSetter = &setter;
-			triangleFanTree->operateQuery(*this, *bounding_object, CULLING_QUERY_TYPE);
+			if (settings.getRedrawMode()) {
+				for (unsigned int i = 0; i < redrawBuffer.size(); i++) {
+					drawTriangleFan(redrawBuffer[i], setter);
+				}
+			}
+			else {
+				redrawBuffer.clear();
+				paramSetter = &setter;
+				triangleFanTree->operateQuery(*this, *bounding_object, CULLING_QUERY_TYPE);
+			}
 		}
 
 	}
@@ -140,12 +174,14 @@ namespace Mesh {
 		for (unsigned int j = 0; j < vertices.size(); j++) {
 			MeshVertex* vert = vertices[j];
 			MathWrapper::glNormal(vert->getNormal());
-			setter.setStandardParamVector3(Shader::ShaderParameter::ATTRIBUTE,
-				static_cast<int>(Shader::ShaderManager::AV3_TANGENT),
-				vert->getTangent());
-			setter.setStandardParamVector3(Shader::ShaderParameter::ATTRIBUTE,
-				static_cast<int>(Shader::ShaderManager::AV3_BITANGENT),
-				vert->getBitangent());
+			if (setter.getHasTangentSpace()) {
+				setter.setStandardParamVector3(Shader::ShaderParameter::ATTRIBUTE,
+					static_cast<int>(Shader::ShaderManager::AV3_TANGENT),
+					vert->getTangent());
+				setter.setStandardParamVector3(Shader::ShaderParameter::ATTRIBUTE,
+					static_cast<int>(Shader::ShaderManager::AV3_BITANGENT),
+					vert->getBitangent());
+			}
 			glTexCoord2d(vert->getTexCoordU(), vert->getTexCoordV());
 			MathWrapper::glVertex(vert->getPosition());
 		}
@@ -155,7 +191,9 @@ namespace Mesh {
 	}
 
 	void SubMesh::operateOnObject(Math::ObjectSpatial* object) {
-		drawTriangleFan((MeshTriangleFan*)object, *paramSetter);
+		MeshTriangleFan* fan = (MeshTriangleFan*)object;
+		drawTriangleFan(fan, *paramSetter);
+		redrawBuffer.push_back(fan);
 	}
 
 }  // namespace Mesh

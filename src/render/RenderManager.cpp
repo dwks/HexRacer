@@ -24,11 +24,13 @@ namespace Render {
 		numMaterialOverrides = 0;
 		numShaderOverrides = 0;
 		numTextureOverrides = 0;
+		numColorOverrides = 0;
 
 		numTransformations = 0;
 
 		camera = NULL;
 		cubeMap = NULL;
+		shadowMap = 0;
 
 		activeShaderChanged = true;
 
@@ -39,18 +41,14 @@ namespace Render {
 
 		LOG(OPENGL, "Renderer Initialized.");
 
-		/*
 		LOG(OPENGL, "System Video Capabilities:");
 		GLint value;
 		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &value);
 		LOG(OPENGL, "	Max texture image units: " << value);
-		glGetIntegerv(GL_MAX_LIGHTS, &value);
-		LOG(OPENGL, "	Max lights: " << value);
 		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
 		LOG(OPENGL, "	Max texture size: " << value);
 		glGetIntegerv(GL_MAX_VARYING_FLOATS, &value);
 		LOG(OPENGL, "	Max varying floats: " << value);
-		*/
 
 	}
 
@@ -69,6 +67,16 @@ namespace Render {
 			glPushMatrix(); //Save previous transformation
 			MathWrapper::glMultMatrix(properties->getTransformation());//Apply new transformation
 			numTransformations++;
+
+			if (settings->getApplyToShadowMatrix()) {
+				//Apply the transformation to the shadow matrix
+				glMatrixMode(GL_TEXTURE);
+				glActiveTexture(SHADOW_MAP_TEXTURE_UNIT);
+				glPushMatrix();
+				MathWrapper::glMultMatrix(properties->getTransformation());
+				glMatrixMode(GL_MODELVIEW);
+				glActiveTexture(COLOR_MAP_TEXTURE_UNIT);
+			}
 		}
 
 		setRenderColor(properties);
@@ -144,6 +152,7 @@ namespace Render {
 		hasTexture[COLOR_MAP_TEXTURE_INDEX] = 0;
 		hasTexture[NORMAL_MAP_TEXTURE_INDEX] = 0;
 		hasTexture[GLOW_MAP_TEXTURE_INDEX] = 0;
+		hasTexture[SHADOW_MAP_TEXTURE_INDEX] = (int)(shadowMap > 0);
 
 		if (properties->hasTexturePack()) {
 
@@ -153,18 +162,18 @@ namespace Render {
 				TexturePack* texture = properties->getTexturePack();
 
 				if (texture->hasGlowMap()) {
-					glActiveTexture(GLOW_MAP_TEXTURE_UNIT);
+					glActiveTextureARB(GLOW_MAP_TEXTURE_UNIT);
 					glBindTexture(GL_TEXTURE_2D, texture->getGlowMap());
 					hasTexture[GLOW_MAP_TEXTURE_INDEX] = 1;
 				}
 
 				if (texture->hasNormalMap()) {
-					glActiveTexture(NORMAL_MAP_TEXTURE_UNIT);
+					glActiveTextureARB(NORMAL_MAP_TEXTURE_UNIT);
 					glBindTexture(GL_TEXTURE_2D, texture->getNormalMap());
 					hasTexture[NORMAL_MAP_TEXTURE_INDEX] = 1;
 				}
 
-				glActiveTexture(COLOR_MAP_TEXTURE_UNIT);
+				glActiveTextureARB(COLOR_MAP_TEXTURE_UNIT);
 				if (texture->hasColorMap()) {
 					glEnable(GL_TEXTURE_2D);
 					glBindTexture(GL_TEXTURE_2D, texture->getColorMap());
@@ -189,6 +198,16 @@ namespace Render {
 			return;
 		
 		if (properties->hasTransformation()) {
+
+			if (settings->getApplyToShadowMatrix()) {
+				//Revert the shadow matrix
+				glMatrixMode(GL_TEXTURE);
+				glActiveTexture(SHADOW_MAP_TEXTURE_UNIT);
+				glPopMatrix();
+				glMatrixMode(GL_MODELVIEW);
+				glActiveTexture(COLOR_MAP_TEXTURE_UNIT);
+			}
+
 			glPopMatrix(); //Restore old transformation
 			numTransformations--;
 		}
@@ -201,6 +220,10 @@ namespace Render {
 	}
 
 	void RenderManager::revertRenderColor(RenderProperties* properties) {
+
+		if (properties->getColorOverride())
+			numColorOverrides--;
+
 		if (properties->hasColor()) {
 
 			if (!colorsOverridden()) {
@@ -214,11 +237,11 @@ namespace Render {
 				}
 			}
 		}
-
-		if (properties->getColorOverride())
-			numColorOverrides--;
 	}
 	void RenderManager::revertRenderMaterial(RenderProperties* properties) {
+
+		if (properties->getMaterialOverride())
+			numMaterialOverrides--;
 
 		if (properties->hasMaterialTint()) {
 			materialTintStack.pop();
@@ -238,11 +261,11 @@ namespace Render {
 				}
 			}
 		}
-
-		if (properties->getMaterialOverride())
-			numMaterialOverrides--;
 	}
 	void RenderManager::revertRenderShader(RenderProperties* properties) {
+
+		if (properties->getShaderOverride())
+			numShaderOverrides--;
 
 		if (properties->hasShaderParams()) {
 			shaderParams.pop_back();
@@ -261,18 +284,18 @@ namespace Render {
 			}
 		}
 
-		if (properties->getShaderOverride())
-			numShaderOverrides--;
 	}
 
 	void RenderManager::revertRenderTexture(RenderProperties* properties) {
-		glActiveTexture(COLOR_MAP_TEXTURE_UNIT);
+		glActiveTextureARB(COLOR_MAP_TEXTURE_UNIT);
 		glDisable(GL_TEXTURE_2D);
 		if (properties->getTexturePackOverride())
 			numTextureOverrides--;
 	}
 
 	void RenderManager::setShaderParameters() {
+
+		shaderManager->setHasNormalMap(hasTexture[NORMAL_MAP_TEXTURE_INDEX] == 1);
 
 		if (!shaderManager->getIsShaderActive())
 			return;
@@ -283,6 +306,10 @@ namespace Render {
 		setter.setStandardParamInt(Shader::ShaderParameter::UNIFORM,
 			static_cast<int>(Shader::ShaderManager::UINT_NUM_LIGHTS),
 			lightManager->getNumActiveLights());
+		//Has textures array
+		setter.setStandardParamIntArray(Shader::ShaderParameter::UNIFORM,
+			static_cast<int>(Shader::ShaderManager::UINTV_HAS_TEXTURE),
+			hasTexture, NUM_STANDARD_TEXTURES);
 
 		if (activeShaderChanged) {
 
@@ -298,20 +325,25 @@ namespace Render {
 			setter.setStandardParamInt(Shader::ShaderParameter::UNIFORM,
 				static_cast<int>(Shader::ShaderManager::UINT_GLOW_MAP),
 				GLOW_MAP_TEXTURE_INDEX);
-			//Has textures array
-			setter.setStandardParamIntArray(Shader::ShaderParameter::UNIFORM,
-				static_cast<int>(Shader::ShaderManager::UINTV_HAS_TEXTURE),
-				hasTexture, NUM_STANDARD_TEXTURES);
 
+			if (shadowMap > 0) {
+				glActiveTextureARB(SHADOW_MAP_TEXTURE_UNIT);
+				glBindTexture(GL_TEXTURE_2D, shadowMap);
+				//Shadow map
+				setter.setStandardParamInt(Shader::ShaderParameter::UNIFORM,
+					static_cast<int>(Shader::ShaderManager::UINT_SHADOW_MAP),
+					SHADOW_MAP_TEXTURE_INDEX);
+			}
 			if (cubeMap) {
-				glActiveTexture(CUBE_MAP_TEXTURE_UNIT);
+				glActiveTextureARB(CUBE_MAP_TEXTURE_UNIT);
 				glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->getCubeMap());
-				glActiveTexture(COLOR_MAP_TEXTURE_UNIT);
 				//Cube map
 				setter.setStandardParamInt(Shader::ShaderParameter::UNIFORM,
 					static_cast<int>(Shader::ShaderManager::UINT_CUBE_MAP),
 					CUBE_MAP_TEXTURE_INDEX);
 			}
+
+			glActiveTextureARB(COLOR_MAP_TEXTURE_UNIT);
 
 			if (camera) {
 				//Camera matrix

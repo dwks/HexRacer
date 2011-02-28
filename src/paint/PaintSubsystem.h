@@ -6,7 +6,7 @@
 #include "timing/TimedSubsystem.h"
 
 #include "event/TogglePainting.h"
-#include "event/TypedObserver.h"
+#include "event/Enabler.h"
 
 #include "paint/PaintManager.h"
 
@@ -15,9 +15,9 @@
 namespace Project {
 namespace Paint {
 
-class PaintSubsystem : public Timing::TimedSubsystem {
+class PaintSubsystem : public Timing::TimedSubsystem, public Event::Enabler {
 private:
-    class TogglePaintingHandler
+    /*class TogglePaintingHandler
         : public Event::TypedObserver<Event::TogglePainting> {
     private:
         PaintSubsystem *subsystem;
@@ -26,12 +26,14 @@ private:
             : subsystem(subsystem) {}
         
         virtual void observe(Event::TogglePainting *toggle);
-    };
+    };*/
 private:
     typedef std::map<int, Event::TogglePainting::PaintType> PaintingType;
     PaintingType painting;
     Object::WorldManager *worldManager;
     Paint::PaintManager *paintManager;
+protected:
+    void togglePaintingObserver(Event::TogglePainting *toggle);
 public:
     PaintSubsystem(Object::WorldManager *worldManager,
         Paint::PaintManager *paintManager, unsigned long tickTime);

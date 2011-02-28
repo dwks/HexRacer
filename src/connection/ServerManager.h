@@ -32,7 +32,7 @@ public:
 private:
     void registerHandler(boost::asio::ip::tcp::acceptor *acceptor);
     
-    void handleAccept(Connection::Socket *socket,
+    void handleAccept(Socket *socket,
         boost::asio::ip::tcp::acceptor *acceptor,
         const boost::system::error_code &error);
 };

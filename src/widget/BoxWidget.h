@@ -10,8 +10,9 @@ class BoxWidget : public AbstractWidget {
 private:
     std::string artwork;
 public:
-    BoxWidget(const std::string &name)
-        : AbstractWidget(name), artwork("corners/out/normal") {}
+    BoxWidget(const std::string &name,
+        const std::string &initialArtwork = "corners/out/normal")
+        : AbstractWidget(name), artwork(initialArtwork) {}
     
     void setArtwork(const std::string &artwork);
     

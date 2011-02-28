@@ -38,6 +38,9 @@ public:
 	void activateIntersectingLights(const Math::BoundingObject& bounding_obj);
 	void resetLights();
 	void clear();
+	OpenGL::Light* getActiveLight(int index) const;
+
+	void reapplyActiveLights();
 
 	int getNumActiveLights() const { return activeLights.size(); }
 };

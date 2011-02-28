@@ -12,46 +12,40 @@
 
 #include "event/PaintEvent.h"
 #include "event/PaintCellsChanged.h"
-#include "event/TypedObserver.h"
+#include "event/Enabler.h"
+
+#include "settings/SettingsManager.h"
 
 namespace Project {
 namespace Paint {
 
-class PaintManager
-	: public Render::BaseRenderable, public Math::SpatialObjectOperator {
-private:
-    class PaintEventHandler : public Event::TypedObserver<Event::PaintEvent> {
-    private:
-        PaintManager *paintManager;
-    public:
-        PaintEventHandler(PaintManager *paintManager)
-            : paintManager(paintManager) {}
-        
-        virtual void observe(Event::PaintEvent *paintEvent);
-    };
-    
-    class PaintCellsChangedHandler
-        : public Event::TypedObserver<Event::PaintCellsChanged> {
-    private:
-        PaintManager *paintManager;
-    public:
-        PaintCellsChangedHandler(PaintManager *paintManager)
-            : paintManager(paintManager) {}
-        
-        virtual void observe(Event::PaintCellsChanged *paintCellsChanged);
-    };
+class PaintManager :
+    public Render::BaseRenderable, public Math::SpatialObjectOperator,
+    public Event::Enabler {
+
+protected:
+    void paintEventHandler(Event::PaintEvent *paintEvent);
+    void paintCellsChangedHandler(Event::PaintCellsChanged *paintCellsChanged);
+
 private:
 
 	std::vector<PaintCell*> paintList;
 	Math::BSPTree3D* neutralPaintTree;
 	Math::BSPTree3D* coloredPaintTree;
-	bool renderPoints;
+	bool renderMinimap;
 	float renderAlpha;
+	float fadePlaneNear;
+	float fadePlaneFar;
+	GLuint targetList;
+
+	std::vector<PaintCell*> redrawBuffer;
 
 	static const int TREE_SPLIT_SIZE = 30;
 	static const Math::BSPTree3D::SplitMethod TREE_SPLIT_METHOD = Math::BSPTree3D::LARGEST_AXIS;
 
 	bool colorCell(PaintCell* cell, int new_color, bool force_color = false);
+	void renderCell(PaintCell* cell);
+	void renderCellMinimap(PaintCell* cell);
 
 public:
 
@@ -67,9 +61,14 @@ public:
 	*/
 	void setPaintCells(const std::vector<PaintCell*>& paint_cells);
 
-	void renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object = NULL);
+	void renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object, const Render::RenderSettings& settings);
 
 	void minimapRender(const Math::BoundingObject& bounding_object, float view_height, float alpha = 1.0f);
+
+	void setFadePlanes(float near_plane, float far_plane) {
+		fadePlaneNear = near_plane;
+		fadePlaneFar = far_plane;
+	}
 
 	/** Color paint cells by their numerical index
 		@param cell_indices A vector with the indices of all paint cells to color
@@ -84,6 +83,8 @@ public:
 		Returns a vector of the indices of all paint cells that were colored
 	*/
 	std::vector<int> colorCellsInRadius(Math::Point centroid, double radius, int new_color, bool force_color = false);
+
+	void renderEraseEffect(Math::Point centroid, double radius);
 
 	/** Returns a number representing the concentration of paint cells of color @a color
 		inside the given radius. Increasing from zero depending on proximity and quantity.

@@ -261,6 +261,9 @@ Color Color::operator / (float factor) const {
 	);
 }
 
+bool Color::operator == (const Color &other) {
+	return (r == other.redf() && g == other.greenf() && b == other.bluef());
+}
 void Color::operator += (const Color &other) {
 	setRedf(redf()+(other.redf()));
 	setGreenf(greenf()+other.greenf());
@@ -303,6 +306,15 @@ void Color::operator /= (float factor) {
 	setAlphaf(alphaf()/factor);
 }
 
+float Color::operator [] (int index) const {
+	switch (index) {
+		case 0: return redf();
+		case 1: return greenf();
+		case 2: return bluef();
+		case 3: return alphaf();
+		default: return 0;
+	}
+}
 void Color::glApply() const {
 	glColor(*this);
 }

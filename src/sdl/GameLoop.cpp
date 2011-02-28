@@ -1,13 +1,15 @@
 #include "SDL.h"  // for SDL_GetTicks()
 
+#include "event/EventSystem.h"
 #include "GameLoop.h"
 
 namespace Project {
 namespace SDL {
 
-GameLoop::GameLoop(const std::string &host, unsigned short port) {
+bool GameLoop::tryConnect(const std::string &host, unsigned short port) {
     gameWorld = boost::shared_ptr<GameWorld>(new GameWorld());
-    gameWorld->construct(host, port);
+    
+    return gameWorld->tryConnect(host, port);
 }
 
 void GameLoop::construct() {
@@ -17,7 +19,7 @@ void GameLoop::construct() {
     gameRenderer = boost::shared_ptr<GameRenderer>(new GameRenderer());
     gameRenderer->construct(viewport->getCamera());
     
-    gameWorld->construct2(gameRenderer->getMap());
+    gameWorld->constructAfterConnect(gameRenderer->getMap());
     
     paintSubsystem = boost::shared_ptr<Paint::PaintSubsystem>(
         new Paint::PaintSubsystem(
@@ -25,8 +27,13 @@ void GameLoop::construct() {
             gameRenderer->getPaintManager(), 20));
     
     inputManager = boost::shared_ptr<InputManager>(
-        new InputManager(10, gameWorld->getClientData()));
+        new InputManager(
+            10,
+            gameWorld->getClientData(),
+            gameWorld->getPlayerManager()));
     inputManager->init();
+    
+    EMIT_EVENT(new Event::PauseGame(false));
 }
 
 void GameLoop::setGuiPointers(boost::shared_ptr<GUI::GUISystem> gui,
@@ -56,7 +63,7 @@ void GameLoop::miscellaneous() {
     inputManager->doStep(SDL_GetTicks());
     
     gameWorld->doPhysics();
-	gameWorld->updatePlayerPathing();
+	gameWorld->doAI();
     
     viewport->doCamera(SDL_GetTicks());
 }
@@ -64,20 +71,21 @@ void GameLoop::miscellaneous() {
 void GameLoop::render() {
     gameRenderer->render(
         viewport->getCamera(),
-        gameWorld->getWorldManager()->getWorld());
-
-	gameWorld->render();
+        gameWorld->getWorldManager());
 
 	gameRenderer->renderDebug(
+		viewport->getCamera(),
         gameWorld->getWorldManager(),
         gameWorld->getWorldManager()->getPlayer(
             gameWorld->getClientData()->getPlayerID()));
+
+	gameWorld->render();
     
     gameRenderer->renderHUD(
         gameWorld->getWorldManager(),
         gameWorld->getWorldManager()->getPlayer(
             gameWorld->getClientData()->getPlayerID()));
-    
+
     gui->render();
 }
 

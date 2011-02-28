@@ -19,8 +19,10 @@ namespace Paint {
 		playerColor = -1;
 		center = _center;
 		displayList = 0;
+		normal = NULL;
+		vertex = new Math::Point* [CELL_VERTICES];
 		for (int i = 0; i < CELL_VERTICES; i++) {
-			vertexSet[i] = false;
+			vertex[i] = NULL;
 		}
 	}
 
@@ -29,10 +31,9 @@ namespace Paint {
 		center = _center;
 		displayList = 0;
 		for (int i = 0; i < CELL_VERTICES; i++) {
-			vertex[i] = vertices[i];
-			vertexSet[i] = true;
+			vertex[i] = new Math::Point(vertices[i]);
 		}
-		normal = _normal;
+		normal = new Math::Point(_normal);
 		index = _index;
 		setBoundingDimensions();
 	}
@@ -43,12 +44,12 @@ namespace Paint {
 		glNewList(displayList, GL_COMPILE);
 
 		glBegin(GL_TRIANGLE_FAN);
-		OpenGL::MathWrapper::glNormal(normal);
+		OpenGL::MathWrapper::glNormal(*normal);
 		OpenGL::MathWrapper::glVertex(center);
 		for (int j = Paint::PaintCell::CELL_VERTICES-1; j >= 0; j--) {
-			OpenGL::MathWrapper::glVertex(vertex[j]);
+			OpenGL::MathWrapper::glVertex(*vertex[j]);
 		}
-		OpenGL::MathWrapper::glVertex(vertex[Paint::PaintCell::CELL_VERTICES-1]);
+		OpenGL::MathWrapper::glVertex(*vertex[Paint::PaintCell::CELL_VERTICES-1]);
 		glEnd();
 
 		glEndList();
@@ -56,50 +57,33 @@ namespace Paint {
 	}
 
 	PaintCell::~PaintCell() {
+		optimize();
 		glDeleteLists(displayList, 1);
 	}
 
 	void PaintCell::setBoundingDimensions() {
-		setCorners(vertex[0], vertex[1]);
+		setCorners(*vertex[0], *vertex[1]);
 		for (int i = 2; i < CELL_VERTICES; i++) {
-			expandToInclude(vertex[i]);
+			expandToInclude(*vertex[i]);
 		}
 	}
 
 	void PaintCell::calculateNormal() {
-		normal = Point();
+		normal = new Point();
 		for (int i = 0; i < CELL_VERTICES; i++) {
-			normal += Geometry::triangleNormal(center, vertex[(i+1)%CELL_VERTICES], vertex[i]);
+			*normal += Geometry::triangleNormal(center, *(vertex[(i+1)%CELL_VERTICES]), *(vertex[i]));
 		}
-		normal.normalize();
-	}
-
-	int PaintCell::getOppositeVertex(int vert_index) {
-		return (vert_index+(CELL_VERTICES/2)) % CELL_VERTICES;
-	}
-
-	void PaintCell::fillEmptyVertices() {
-		for (int i = 0; i < CELL_VERTICES; i++) {
-			if (!vertexSet[i]) {
-				int opposite = getOppositeVertex(i);
-				if (!vertexSet[opposite]) {
-					setVertex(i, calcVertexLocation(i));
-					setVertex(opposite, calcVertexLocation(opposite));
-				}
-				else {
-					Point p = calcVertexLocation(i);
-					double height_delta =
-						center.getCoord(PAINT_AXIS)-vertex[opposite].getCoord(PAINT_AXIS);
-					p.setCoord(center.getCoord(PAINT_AXIS) + height_delta, PAINT_AXIS);
-					setVertex(i, p);
-				}
-			}
-		}
+		(*normal).normalize();
 	}
 
 	void PaintCell::setVertex(int vert_index, Point _vertex) {
-		vertex[vert_index] = _vertex;
-		vertexSet[vert_index] = true;
+		delete vertex[vert_index];
+		vertex[vert_index] = new Point(_vertex);
+	}
+
+	void PaintCell::setNormal(Math::Point _normal) {
+		delete normal;
+		normal = new Point(_normal);
 	}
 
 	Point PaintCell::calcVertexLocation(int vert_index, double cell_radius) {
@@ -128,7 +112,27 @@ namespace Paint {
 
 	void PaintCell::contractVertices(double amount) {
 		for (int i = 0; i < CELL_VERTICES; i++) {
-			vertex[i] = (center*amount + vertex[i]*(1.0-amount));
+			*vertex[i] = (center*amount + *vertex[i]*(1.0-amount));
+		}
+	}
+
+	void PaintCell::optimize() {
+
+		if (vertex != NULL) {
+			for (int i = 0; i < CELL_VERTICES; i++)
+				delete vertex[i];
+			delete[] vertex;
+		}
+		vertex = NULL;
+		delete normal;
+		normal = NULL;
+	}
+
+	void PaintCell::translateVertices(const Math::Point& translation) {
+		center += translation;
+		if (vertex) {
+			for (int i = 0; i < CELL_VERTICES; i++)
+				*vertex[i] += translation;
 		}
 	}
 
@@ -136,9 +140,9 @@ namespace Paint {
 
 		stream << cell.center << ' ';
 		for (int i = 0; i < Project::Paint::PaintCell::CELL_VERTICES; i++) {
-			stream << cell.vertex[i] << ' ';
+			stream << *cell.vertex[i] << ' ';
 		}
-		stream << cell.normal;
+		stream << *cell.normal;
 		return stream;
 
 	}
@@ -147,10 +151,13 @@ namespace Paint {
 		stream >> cell.center;
 		//stream >> c;
 		for (int i = 0; i < Project::Paint::PaintCell::CELL_VERTICES; i++) {
-			stream >> cell.vertex[i];
-			//stream >> c;
+			Math::Point p;
+			stream >> p;
+			cell.setVertex(i, p);
 		}
-		stream >> cell.normal;
+		Math::Point p;
+		stream >> p;
+		cell.setNormal(p);
 		cell.setBoundingDimensions();
 		return stream;
 	}

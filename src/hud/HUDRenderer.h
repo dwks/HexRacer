@@ -13,7 +13,6 @@ private:
 	int alphaMaskLoc;
 	int renderTextureLoc;
 	int usingTextureLoc;
-	int viewSizeLoc;
 	
 	int viewWidth;
 	int viewHeight;
@@ -29,7 +28,7 @@ public:
 	void setupViewport( HUDAlign h_align, HUDAlign v_align, int width, int height, int h_padding, int v_padding);
 	void resetViewport();
 
-	void enableAlphaMask(GLuint alpha_mask_texture, float projection_width, float projection_height);
+	void enableAlphaMask(GLuint alpha_mask_texture);
 	void disableAlphaMask();
 	void bindTexture(GLuint texture_2D);
 	void clearTexture();

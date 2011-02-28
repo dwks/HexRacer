@@ -11,10 +11,15 @@
 
 #include "PhysicsWorld.h"
 
-#define WHEEL_DIAMETER 0.2
+#include "event/EventSystem.h"
+#include "math/Values.h"
 
 namespace Project {
 namespace Physics {
+
+void Suspension::physicsTickHandler(Event::PhysicsTick *event) {
+    doAction(event->getElapsed() * 1000.0);
+}
 
 Suspension::Displacement Suspension::Spring::doRaycast() {
     double length = Physics::PhysicsWorld::getInstance()
@@ -43,6 +48,12 @@ double Suspension::Spring::calculateForceFactor(
     if(!thisDisplacement.isOnGround()) {
         return 0.0;
     }
+
+	//Set the force scaling factor depending on the orientation of the wheel
+	double downwardsFactor = Math::maximum(
+		axis.unitDotProduct(Math::Point(0.0, -1.0, 0.0)),
+		GET_SETTING("physics.driving.mindownfactor", 0.25)
+		);
     
     double displacement = thisDisplacement.getDisplacement();
     double displacementSpeed
@@ -76,7 +87,11 @@ double Suspension::Spring::calculateForceFactor(
     
     //LOG(PHYSICS, "     " << -K*displacement << ", " << C*displacementSpeed);
     
-    return factor;
+    return factor*downwardsFactor;
+}
+
+Suspension::Suspension() : worldManager(NULL) {
+    METHOD_OBSERVER(&Suspension::physicsTickHandler);
 }
 
 void Suspension::checkForWheelsOnGround() {
@@ -97,12 +112,11 @@ void Suspension::checkForWheelsOnGround() {
 int Suspension::wheelsOnGround(int playerID) {
     int onGround = 0;
     
+    Object::Player *player = worldManager->getPlayer(playerID);
+    if(!player) return 0;
+    
     for(int wheel = 0; wheel < 4; wheel ++) {
-        if(playerSuspension.find(playerID) == playerSuspension.end()) {
-            continue;
-        }
-        
-        if(playerSuspension[playerID][wheel].isOnGround()) {
+        if(player->getPhysicalObject()->getSpring(wheel).isOnGround()) {
             onGround ++;
         }
     }
@@ -114,21 +128,24 @@ void Suspension::doAction(unsigned long currentTime) {
     applySuspension();
 }
 
-void Suspension::setData(Object::WorldManager *worldManager,
-    Render::RenderManager *renderManager) {
-    
+void Suspension::setData(Object::WorldManager *worldManager) {
     this->worldManager = worldManager;
-    this->renderManager = renderManager;
 }
 
 void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
     // add +0.01 to Y so that suspension points are not usually underground
     // multiply Z by 0.9 to shift suspension points inwards slightly
+
+	double front_sep = GET_SETTING("physics.wheel.frontsep", 0.4);
+	double front_z = GET_SETTING("physics.wheel.frontz", 0.68);
+	double back_sep = GET_SETTING("physics.wheel.backsep", 0.4);
+	double back_z = GET_SETTING("physics.wheel.backz", -0.68);
+
     static const Math::Point suspensionPoint[] = {
-        Math::Point(0.4, -0.2 + 0.05, 0.8 * 0.85),
-        Math::Point(-0.4, -0.2 + 0.05, 0.8 * 0.85),
-        Math::Point(-0.4, -0.2 + 0.05, -0.8 * 0.85),
-        Math::Point(0.4, -0.2 + 0.05, -0.8 * 0.85),
+        Math::Point(front_sep, -0.2 + 0.05,front_z),
+        Math::Point(-front_sep, -0.2 + 0.05, front_z),
+        Math::Point(-back_sep, -0.2 + 0.05, back_z),
+        Math::Point(back_sep, -0.2 + 0.05, back_z),
     };
     
     // bullet rays appear to have radius 0.01.
@@ -164,8 +181,8 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
             GET_SETTING("physics.driving.stretchlength", 1.0));
         
         // restore last frame's displacement in the Spring object
-        playerSuspension[player->getID()].resize(4);
-        spring.setLastDisplacement(playerSuspension[player->getID()][wheel]);
+        spring.setLastDisplacement(
+            player->getPhysicalObject()->getSpring(wheel));
         
         // calculate and apply actual force
         Displacement displacement = spring.doRaycast();
@@ -173,18 +190,13 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
         player->applyForce(axis * forceFactor, forcePoint);
         
         // record displacement for next time
-        playerSuspension[player->getID()][wheel] = displacement;
+        player->getPhysicalObject()->setSpring(wheel, displacement);
         
-        // draw a wheel
-        
+        // find the position of the wheel
         double down = displacement.getDisplacement();
-        
         player->setSuspension(wheel,
             suspensionPoint[wheel]
-                + Math::Point(0.0, -down - WHEEL_DIAMETER - 0.05, 0.0));
-        
-        /*debugDrawWheel(matrix, suspensionPoint[wheel]
-            + Math::Point(0.0, -down - WHEEL_DIAMETER - 0.05, 0.0));*/
+                + Math::Point(0.0, -down - GET_SETTING("physics.wheel.diameter", 0.2), 0.0));
     }
 }
 
@@ -204,13 +216,22 @@ void Suspension::applySuspension() {
 }
 
 void Suspension::applyDragForce(Object::Player *player) {
-    Physics::PhysicalPlayer *physicalPlayer
-        = dynamic_cast<Physics::PhysicalPlayer *>(player->getPhysicalObject());
+    Physics::PhysicalPlayer *physicalPlayer = player->getPhysicalObject();
     Math::Point linearVelocity = physicalPlayer->getLinearVelocity();
     Math::Point angularVelocity = physicalPlayer->getAngularVelocity();
     
-    double linear = GET_SETTING("physics.driving.lineardrag", 0.1);
-    double angular = GET_SETTING("physics.driving.angulardrag", 0.1);
+    double linear;
+	double angular;
+
+	if (player->getOnGround()) {
+		linear = GET_SETTING("physics.driving.lineardrag", 0.1);
+		angular = GET_SETTING("physics.driving.angulardrag", 0.1);
+	}
+	else {
+		linear = GET_SETTING("physics.driving.airlineardrag", 0.1);
+		angular = GET_SETTING("physics.driving.airangulardrag", 0.1);
+	}
+
     Math::Point linearDrag = -linear * linearVelocity;
     Math::Point angularDrag = -angular * angularVelocity;
     
@@ -232,34 +253,6 @@ void Suspension::applyDragForce(Object::Player *player) {
             physicalPlayer->applyForce(sidewaysDrag);
         }
     }
-}
-
-void Suspension::debugDrawWheel(const Math::Matrix &transform,
-    const Math::Point &centre) {
-    
-    static bool first = true;
-    static int diskID;
-    if(first) {
-        GLUquadric *quadric = gluNewQuadric();
-        diskID = glGenLists(1);
-        glNewList(diskID, GL_COMPILE);
-        gluDisk(quadric, WHEEL_DIAMETER * 0.1, WHEEL_DIAMETER, 18, 18);
-        glEndList();
-        gluDeleteQuadric(quadric);
-    }
-    
-    glPushMatrix();
-    
-    OpenGL::MathWrapper::glMultMatrix(transform);
-    OpenGL::MathWrapper::glMultMatrix(
-        Math::Matrix::getTranslationMatrix(centre));
-    glRotated(90.0, 0.0, 1.0, 0.0);
-    
-    //LOG(PHYSICS, "debug wheel at " << centre);
-    
-    glCallList(diskID);
-    
-    glPopMatrix();
 }
 
 }  // namespace Physics

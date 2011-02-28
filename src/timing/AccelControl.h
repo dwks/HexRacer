@@ -2,21 +2,18 @@
 #define PROJECT_TIMING__ACCEL_CONTROL_H
 
 #include "event/PauseGame.h"
-#include "event/TypedObserver.h"
+#include "event/Enabler.h"
 
 namespace Project {
 namespace Timing {
 
-class AccelControl {
+class AccelControl : public Event::Enabler {
 private:
     static AccelControl *instance;
 public:
     static AccelControl *getInstance() { return instance; }
-private:
-    class PauseGameHandler : public Event::TypedObserver<Event::PauseGame> {
-    public:
-        virtual void observe(Event::PauseGame *pause);
-    };
+protected:
+    void pauseGameHandler(Event::PauseGame *pause);
 private:
     bool paused;
     unsigned long pauseStart;

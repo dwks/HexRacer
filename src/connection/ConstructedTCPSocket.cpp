@@ -12,15 +12,23 @@ ConstructedTCPSocket::ConstructedTCPSocket(
 }
 
 bool ConstructedTCPSocket::open() {
+    boost::system::error_code error;
+    
     tcp::resolver resolver(io_service);
     tcp::resolver::query query(hostname, Misc::StreamAsString() << port);
     
-    tcp::resolver::iterator endpoint_it = resolver.resolve(query);
+    tcp::resolver::iterator endpoint_it = resolver.resolve(query, error);
     tcp::resolver::iterator end;
+    
+    if(error) {
+        LOG2(NETWORK, ERROR, "Error opening socket to "
+            << hostname << ":" << port << ": "
+            << boost::system::system_error(error).what());
+        return false;
+    }
     
     if(endpoint_it == end) return false;
     
-    boost::system::error_code error;
     do {
         if(socket.is_open()) {
             socket.close();

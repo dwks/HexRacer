@@ -16,6 +16,7 @@
 #include "MapEditorConstants.h"
 #include "CubeMapDialog.h"
 #include "map/PathManager.h"
+#include "MapOptionsDialog.h"
 using namespace Paint;
 
 MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget, Qt::WindowFlags f)
@@ -43,6 +44,17 @@ MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget,
 
 	map = new HRMap();
 	mapObjects[static_cast<int>(MapObject::FINISH_PLANE)].push_back(new FinishPlaneObject(map));
+
+	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
+		switch (static_cast<MapObject::ObjectType>(i)) {
+			case MapObject::PATH_NODE:
+				drawObjects[i] = false;
+				break;
+			default:
+				drawObjects[i] = true;
+				break;
+		}
+	}
 
 	editObjectType = MapObject::LIGHT;
 	selectedObject = NULL;
@@ -99,6 +111,15 @@ void MapEditorWidget::initializeGL() {
 	background = new BackgroundRenderable(camera);
 	background->getRenderProperties()->setWantsShaderName("backgroundShader");
 
+	normalRenderProperties = new RenderProperties();
+	normalRenderProperties->setShaderOverride(true);
+
+	objectBufferProperties = new RenderProperties();
+	objectBufferProperties->setShaderOverride(true);
+	objectBufferProperties->setMaterialOverride(true);
+	objectBufferProperties->setColorOverride(true);
+	objectBufferProperties->setTexturePackOverride(true);
+
 }
 
 void MapEditorWidget::resizeGL(int w, int h) {
@@ -138,22 +159,24 @@ void MapEditorWidget::paintGL() {
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_COLOR_MATERIAL);
 
-	RenderList rootRenderable;
 	if (!advancedRendering) {
-		rootRenderable.getRenderProperties()->setShaderOverride(true);
+		renderer->setRenderProperties(normalRenderProperties);
+		//rootRenderable.getRenderProperties()->setShaderOverride(true);
 	}
 
 	for (int i = 0; i < HRMap::NUM_MESHES; i++) {
 		HRMap::MeshType type = static_cast<HRMap::MeshType>(i);
 		if (map->getMapMesh(type) && (showInvisible || !HRMap::meshIsInvisible(type))) {
-			rootRenderable.addRenderable(map->getMapMesh(type));
+			map->getMapMesh(type)->render(renderer);
 		}
 	}
 
-	rootRenderable.render(renderer);
+	if (!advancedRendering)
+		renderer->revertRenderProperties(normalRenderProperties);
 
 	//Render Mesh Instances
-	renderObjects(MapObject::MESH_INSTANCE, false);
+	if (editObjectType == MapObject::MESH_INSTANCE || drawObjects[static_cast<int>(MapObject::MESH_INSTANCE)])
+		renderObjects(MapObject::MESH_INSTANCE, false);
 
 	if (map->getCubeMap())
 		background->render(renderer);
@@ -170,30 +193,27 @@ void MapEditorWidget::paintGL() {
 			glBegin(GL_TRIANGLE_FAN);
 			OpenGL::MathWrapper::glVertex(cell->center);
 			for (int j = 0; j < Paint::PaintCell::CELL_VERTICES; j++) {
-				OpenGL::MathWrapper::glVertex(cell->vertex[j]);
+				OpenGL::MathWrapper::glVertex(*cell->vertex[j]);
 			}
-			OpenGL::MathWrapper::glVertex(cell->vertex[0]);
+			OpenGL::MathWrapper::glVertex(*cell->vertex[0]);
 			glEnd();
 		}
 	}
 
 	//Draw Map Objects
-	if (editObjectType != MapObject::MESH_INSTANCE) {
-		renderObjects(editObjectType, false);
+
+	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
+		MapObject::ObjectType type = static_cast<MapObject::ObjectType>(i);
+		if (type != MapObject::MESH_INSTANCE && (drawObjects[i] || editObjectType == type))
+			renderObjects(type, false);
 	}
+
 	//Draw box around selected object
 	if (selectedObject) {
 		Color::glColor(SELECTED_OBJECT_BOX_COLOR);
 		MathWrapper::glMultMatrix(selectedObject->getTransformMatrix());
 		GeometryDrawing::drawBoundingBox3D(selectedObject->getBoundingBox(), true);
 	}
-
-	/*
-	if (map->getMapMesh(HRMap::TRACK)) {
-		Color::glColor(Color::WHITE);
-		GeometryDrawing::drawBoundingBox3D(map->getMapMesh(HRMap::TRACK)->getBoundingBox(), true);
-	}
-	*/
 
 	lightManager->resetLights();
 
@@ -534,8 +554,9 @@ void MapEditorWidget::translateCamera(Point translation) {
 
 void MapEditorWidget::newMap() {
 	map->clear();
-	mapObjectsChanged(MapObject::LIGHT);
-	mapObjectsChanged(MapObject::PATH_NODE);
+	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
+		mapObjectsChanged(static_cast<MapObject::ObjectType>(i));
+	}
 	mapCollisionChanged();
 	updateGL();
 }
@@ -610,7 +631,16 @@ void MapEditorWidget::mapObjectsChanged(MapObject::ObjectType type) {
 void MapEditorWidget::addLight(Point position) {
 
 	Light* new_light = new Light(position);
-	new_light->setStrength(20.0f);
+	if (selectedObject && editObjectType == MapObject::LIGHT) {
+		Light* copy_light = ((LightObject*)selectedObject)->getLight();
+		new_light->setDiffuse(copy_light->getDiffuse());
+		new_light->setSpecular(copy_light->getSpecular());
+		new_light->setAmbient(copy_light->getAmbient());
+		new_light->setStrength(copy_light->getStrength());
+		new_light->setHasAttenuation(copy_light->getHasAttenuation());
+	}
+	else
+		new_light->setStrength(20.0f);
 
 	lightManager->addLight(new_light);
 	map->addLight(new_light);
@@ -633,6 +663,18 @@ void MapEditorWidget::addMeshInstance(Point position) {
 	if (propMeshIndex >= 0) {
 
 		MeshInstance* instance = new MeshInstance(map->getPropMeshName(propMeshIndex), SimpleTransform(position));
+
+		if (selectedObject && editObjectType == MapObject::MESH_INSTANCE) {
+			MeshInstance* copy_instance = ((MeshInstanceObject*)selectedObject)->getMeshInstance();
+			SimpleTransform copy_transform = copy_instance->getTransformation();
+			copy_transform.setTranslation(position);
+			instance->setTransformation(copy_transform);
+			instance->setType(copy_instance->getType());
+			instance->setDiffuseTint(copy_instance->getDiffuseTint());
+			instance->setSpecularTint(copy_instance->getSpecularTint());
+			instance->setAmbientTint(copy_instance->getAmbientTint());
+		}
+
 		if (instance->getMeshGroup() && map->addMeshInstance(instance)) {
 			TransformedMesh* transformed_mesh = new TransformedMesh(instance->getMeshGroup(), instance->getTransformation());
 			mapObjects[static_cast<int>(MapObject::MESH_INSTANCE)].append(new MeshInstanceObject(instance, transformed_mesh));
@@ -813,6 +855,12 @@ void MapEditorWidget::setMapObjectType(MapObject::ObjectType type) {
 		updateGL();
 	}
 }
+void MapEditorWidget::setDrawMapObject(bool* draw_array) {
+	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
+		drawObjects[i] = draw_array[i];
+	}
+	updateGL();
+}
 void MapEditorWidget::setEditMode(EditMode mode) {
 	editMode = mode;
 }
@@ -932,6 +980,7 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 					);
 
 				if (!object_buffer) {
+					glDisable(GL_DEPTH_TEST);
 					glLineWidth(MAP_EDITOR_PATHNODE_LINK_WIDTH);
 					glBegin(GL_LINES);
 					const vector<PathNode*>& linked_nodes = node->getNextNodes();
@@ -943,6 +992,7 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 					}
 					glEnd();
 					glLineWidth(1.0f);
+					glEnable(GL_DEPTH_TEST);
 				}
 			}
 			break;
@@ -975,24 +1025,34 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 			break;
 
 		case MapObject::MESH_INSTANCE:
+
+			if (!object_buffer && !advancedRendering)
+				renderer->setRenderProperties(normalRenderProperties);
 			
 			for (int i = 0; i < mapObjects[type_index].size(); i++) {
-				RenderList render_list;
-				TransformedMesh* mesh_instance = ((MeshInstanceObject*)mapObjects[type_index][i])->getTransformedMesh();
-				render_list.addRenderable(mesh_instance);
 
-				if (object_buffer || !advancedRendering) {
-					render_list.getRenderProperties()->setShaderOverride(true);
-					render_list.getRenderProperties()->setMaterialOverride(true);
-					if (object_buffer) {
-						glBufferIndexColor(i);
-						render_list.getRenderProperties()->setColorOverride(true);
-						render_list.getRenderProperties()->setTexturePackOverride(true);
-					}
+				QList<MapObject*> v = mapObjects[type_index];
+				if (v.size() > 3) {
+					int b = 5;
 				}
 
-				render_list.render(renderer);
+				if (object_buffer) {
+					objectBufferProperties->setColor(glBufferIndexColor(i));
+					renderer->setRenderProperties(objectBufferProperties);
+				}
+
+				TransformedMesh* mesh_instance = ((MeshInstanceObject*)mapObjects[type_index][i])->getTransformedMesh();
+				mesh_instance->render(renderer);
+
+				if (object_buffer) {
+					renderer->revertRenderProperties(objectBufferProperties);
+				}
+				
 			}
+
+			if (!object_buffer && !advancedRendering)
+				renderer->revertRenderProperties(normalRenderProperties);
+
 			break;
 
 		default:
@@ -1000,11 +1060,12 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 	}
 }
 
-void MapEditorWidget::glBufferIndexColor(int buffer_index) {
+Color MapEditorWidget::glBufferIndexColor(int buffer_index) {
 	GLubyte r = buffer_index/65536;
 	GLubyte g = (buffer_index % 65536)/256;
 	GLubyte b = ((buffer_index % 65536) % 256);
 	glColor3ub(r, g, b);
+	return Color::colori(r, g, b);
 }
 string MapEditorWidget::editModeTitle(EditMode mode) {
 	switch (mode) {
@@ -1243,4 +1304,13 @@ void MapEditorWidget::removePropMesh() {
 		propMeshesChanged(map->getPropMeshNames());
 		updateGL();
 	}
+}
+
+void MapEditorWidget::scaleAll(double scale, Point origin) {
+	map->scaleAll(scale, origin);
+	mapObjectsChanged(MapObject::MESH_INSTANCE);
+	updateGL();
+}
+void MapEditorWidget::showOptionsDialog() {
+	MapOptionsDialog::showOptionsDialog(map->getMapOptions(), this);
 }

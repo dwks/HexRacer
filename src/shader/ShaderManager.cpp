@@ -14,11 +14,11 @@ namespace Shader {
 
 	ShaderManager::~ShaderManager() {
 		for (unsigned int i = 0; i < shaderPrograms.size(); i++)
-			delete[] shaderPrograms[i];
+			delete shaderPrograms[i];
 		for (unsigned int i = 0; i < standardUniformLocations.size(); i++)
-			delete[] standardUniformLocations[i];
+			delete [] standardUniformLocations[i];
 		for (unsigned int i = 0; i < standardAttributeLocations.size(); i++)
-			delete[] standardAttributeLocations[i];
+			delete [] standardAttributeLocations[i];
 	}
 
 	void ShaderManager::loadShadersFile(string filename) {
@@ -76,7 +76,7 @@ namespace Shader {
 
 		if (name.length() > 0) {
 
-			ShaderProgram* new_shader = new ShaderProgram((GLchar*) fragment_file.c_str(),(GLchar*) vertex_file.c_str());
+			ShaderProgram* new_shader = new ShaderProgram((const GLchar*)fragment_file.c_str(), (const GLchar*)vertex_file.c_str());
 			new_shader->turnShaderOff();
 			shaderPrograms.push_back(new_shader);
 			shaderNames.push_back(name);
@@ -147,6 +147,7 @@ namespace Shader {
 			case UINT_COLOR_MAP: return "colorMap";
 			case UINT_NORMAL_MAP: return "normalMap";
 			case UINT_GLOW_MAP: return "glowMap";
+			case UINT_SHADOW_MAP: return "shadowMap";
 			case UINT_CUBE_MAP: return "cubeMap";
 			case UM4_CAMERA_MATRIX: return "cameraMatrix";
 			default: return "";

@@ -1,18 +1,20 @@
 #include "CameraObject.h"
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 #include "physics/PhysicsWorld.h"
 
 namespace Project {
 namespace SDL {
     
-    void CameraObject::SetDebugCameraHandler::observe(
-        Event::SetDebugCamera *event) {
-        
-        cameraObject->setDebugCamera(event->getOn());
+    void CameraObject::physicsTickHandler(Event::PhysicsTick *event) {
+        doAction(event->getElapsed() * 1000.0);
     }
     
-    CameraObject::CameraObject() : Timing::TimedSubsystem(5){
+    void CameraObject::setDebugCameraHandler(Event::SetDebugCamera *event) {
+        setDebugCamera(event->getOn());
+    }
+    
+    CameraObject::CameraObject(){
         LOG2(CAMERA, INIT, "Camera Object has been initialized\n");
         
         camera = new OpenGL::Camera();
@@ -20,10 +22,11 @@ namespace SDL {
         
         loadSettings();
         
-        ADD_OBSERVER(new SetDebugCameraHandler(this));
+        METHOD_OBSERVER(&CameraObject::physicsTickHandler);
+        METHOD_OBSERVER(&CameraObject::setDebugCameraHandler);
     }
     
-    CameraObject::CameraObject(SDL::PlayerManager *_playerManager) : Timing::TimedSubsystem(10) {
+    CameraObject::CameraObject(World::PlayerManager *_playerManager){
         LOG2(CAMERA, INIT, "Camera Object has been initialized\n");
         
         playerManager = _playerManager;
@@ -31,7 +34,8 @@ namespace SDL {
         
         loadSettings();
         
-        ADD_OBSERVER(new SetDebugCameraHandler(this));
+        METHOD_OBSERVER(&CameraObject::physicsTickHandler);
+        METHOD_OBSERVER(&CameraObject::setDebugCameraHandler);
     }
     
     CameraObject::~CameraObject(){
@@ -39,10 +43,22 @@ namespace SDL {
     }
 
     void CameraObject::loadSettings(){
-        destinationFOV = GET_SETTING("render.camera.fieldofview", 0.0);
-        defaultOrientation.setX(GET_SETTING("camera.follow.x", 0.0));
-        defaultOrientation.setY(GET_SETTING("camera.follow.y", 0.0));
-        defaultOrientation.setZ(GET_SETTING("camera.follow.z", 0.0));
+        defaultFOV = GET_SETTING("render.camera.fieldofview", 0.0);
+        slowFOV = GET_SETTING("render.camera.fovslow", 0.0);
+        boostFOV = GET_SETTING("render.camera.fovboost", 0.0);
+        
+        defaultOrientation.setX(GET_SETTING("camera.followdefault.x", 0.0));
+        defaultOrientation.setY(GET_SETTING("camera.followdefault.y", 0.0));
+        defaultOrientation.setZ(GET_SETTING("camera.followdefault.z", 0.0));
+        
+        boostOrientation.setX(GET_SETTING("camera.followboost.x", 0.0));
+        boostOrientation.setY(GET_SETTING("camera.followboost.y", 0.0));
+        boostOrientation.setZ(GET_SETTING("camera.followboost.z", 0.0));
+        
+        slowOrientation.setX(GET_SETTING("camera.followslow.x", 0.0));
+        slowOrientation.setY(GET_SETTING("camera.followslow.y", 0.0));
+        slowOrientation.setZ(GET_SETTING("camera.followslow.z", 0.0));
+        
         interpolationInc = GET_SETTING("camera.step", 0.0);
         rotationInc = GET_SETTING("camera.rotationstep", 0.0);
         fovInc = GET_SETTING("camera.fovstep", 0.0);
@@ -51,35 +67,32 @@ namespace SDL {
     void CameraObject::setDestinationToPlayer(){
         Math::Point lookAtPosition  = playerManager->getPlayer()->getPosition();
         Math::Point lookAtOffset = Math::Point(0.0,1.0,0.0);
-        Math::Point cameraPosition;
-        double intendedLength, length, destFOV;
+        Math::Point cameraPosition, desiredOrientation;
+        double desiredFOV;
         double zOffset = 1.0;
         
         lookAtPosition += lookAtOffset;
         
-        
-        do {
-            cameraPosition = playerManager->getPlayer()->getTransformation()
-            * Math::Point(defaultOrientation.getX(), 
-                defaultOrientation.getY(),
-                defaultOrientation.getZ()*zOffset
-                         );
-        
-            length = Physics::PhysicsWorld::getInstance()
-                ->raycastLength(cameraPosition, lookAtPosition);
-
-                zOffset -= interpolationInc;
-                intendedLength = cameraPosition.distance(lookAtPosition);
-                
-        } while(length < intendedLength && zOffset >= 0.0);
-        
-        if(playerManager->getPlayer()->getSpeedBoost()>1.0){
-            destFOV = GET_SETTING("render.camera.speedboostfov", 0.0);
+         if(playerManager->getPlayer()->getSpeedBoost()>1.1){
+            desiredFOV = boostFOV;
+            desiredOrientation = boostOrientation;
+        } else if(playerManager->getPlayer()->getSpeedBoost()<0.9){
+            desiredFOV = slowFOV;
+            desiredOrientation = slowOrientation;
         } else {
-            destFOV = GET_SETTING("render.camera.fieldofview", 0.0);
+            desiredFOV = defaultFOV;
+            desiredOrientation = defaultOrientation;
         }
+
+		cameraPosition = playerManager->getPlayer()->getTransformation()
+            * Math::Point(desiredOrientation.getX(), 
+                desiredOrientation.getY(),
+                desiredOrientation.getZ()*zOffset
+                         );
+
+		Physics::PhysicsWorld::getInstance()->raycastPoint(lookAtPosition,  cameraPosition, &cameraPosition);
         
-        CameraObject::setCameraDestination(lookAtPosition, cameraPosition, destFOV);
+        CameraObject::setCameraDestination(lookAtPosition, cameraPosition, desiredFOV);
     }
     
     void CameraObject::setCameraDestination(Math::Point _look, Math::Point _pos, double destFOV){
@@ -88,7 +101,7 @@ namespace SDL {
         destinationFOV = destFOV;
     }
     
-    void CameraObject::setPlayerManager(SDL::PlayerManager *_playerManager) {
+    void CameraObject::setPlayerManager(World::PlayerManager *_playerManager) {
         playerManager = _playerManager;
     }
     
@@ -109,16 +122,9 @@ namespace SDL {
     void CameraObject::slerpCamera(){
         Math::Point currentLookAt,currentPos,currentViewAxis,destViewAxis,resultPos,resultAxis;
         double resultFOV;
-        btQuaternion result;
+        btQuaternion result = btQuaternion::getIdentity();
         
-        //currentLookAt = camera->getLookPosition();
         currentPos = camera->getPosition();
-        
-        //currentViewAxis = currentLookAt - currentPos;
-        //destViewAxis = destinationLookAt - destinationPosition;
-        
-        //result = btQuaternion(Physics::Converter::toVector(destViewAxis),1).slerp(
-        //    btQuaternion(Physics::Converter::toVector(currentViewAxis),1),rotationInc);
         
         resultPos = currentPos + interpolationInc*(destinationPosition - currentPos);
         

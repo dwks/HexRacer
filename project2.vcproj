@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glew32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib opengl.lib glu32.lib glu.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
+				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -119,7 +119,7 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -134,6 +134,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -189,11 +190,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\AIManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\BackgroundRenderable.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\render\BaseRenderable.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\BasicWorld.cpp"
 				>
 			</File>
 			<File
@@ -241,6 +250,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\ChangeOfIntention.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\ChangeScreenMode.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\ClientData.cpp"
 				>
 			</File>
@@ -254,6 +271,10 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\CompositeWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\ConnectProxy.cpp"
 				>
 			</File>
 			<File
@@ -281,11 +302,31 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\Driver.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\EditEventProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\EditWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\Enabler.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\EntireWorld.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\widget\EventProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\EventSystem.cpp"
 				>
 			</File>
 			<File
@@ -302,6 +343,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\FontManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\FPSRateMonitor.cpp"
 				>
 			</File>
 			<File
@@ -325,11 +370,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\gui\GUIObservers.cpp"
+				RelativePath=".\src\gui\GUISystem.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\gui\GUISystem.cpp"
+				RelativePath=".\src\history\Historian.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\HostProxy.cpp"
 				>
 			</File>
 			<File
@@ -341,7 +390,39 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ImageWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\InputAction.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\InputAxisAction.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\InputButtonAction.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\InputKeyAction.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\InputManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\InputMapper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\InputSnapshot.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\JoinGame.cpp"
 				>
 			</File>
 			<File
@@ -373,6 +454,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ListEventProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ListItemEventProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ListScrollbarEventProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ListWidget.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\LoopBase.cpp"
 				>
 			</File>
@@ -393,7 +490,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\MapList.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\MapLoader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\MapOptions.cpp"
 				>
 			</File>
 			<File
@@ -433,6 +538,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\MethodObserver.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\hud\Minimap.cpp"
 				>
 			</File>
@@ -458,6 +567,10 @@
 			</File>
 			<File
 				RelativePath=".\src\object\ObjectBase.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\ObserverRegistry.cpp"
 				>
 			</File>
 			<File
@@ -489,6 +602,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\PathingUpdater.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\PathManager.cpp"
 				>
 			</File>
@@ -498,6 +615,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\PathTracker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\PauseGame.cpp"
 				>
 			</File>
 			<File
@@ -521,11 +642,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PhysicsTick.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\PhysicsWorld.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\event\PlayerAction.cpp"
+				RelativePath=".\src\history\PingTimeMeasurer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\PlayerIntention.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\PlayerManager.cpp"
 				>
 			</File>
 			<File
@@ -581,6 +714,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ScrollbarEventProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ScrollbarLayout.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ScrollbarSliderEventProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ScrollbarWidget.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\SDLGame.cpp"
 				>
 			</File>
@@ -598,6 +747,10 @@
 			</File>
 			<File
 				RelativePath=".\src\settings\SettingsManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\SettingsProxy.cpp"
 				>
 			</File>
 			<File
@@ -641,11 +794,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\StraightDriver.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mesh\SubMesh.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\physics\Suspension.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SwitchToScreen.cpp"
 				>
 			</File>
 			<File
@@ -697,6 +858,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\WarpOntoTrack.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\WidgetActivateEvent.cpp"
 				>
 			</File>
@@ -709,6 +874,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\WidgetModifiedEvent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\WidgetPoint.cpp"
 				>
 			</File>
@@ -718,6 +887,10 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\WidgetRenderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetSelectedEvent.cpp"
 				>
 			</File>
 			<File
@@ -777,10 +950,6 @@
 				</File>
 				<File
 					RelativePath=".\src\event\Observer.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\event\ObserverList.cpp"
 					>
 				</File>
 				<File
@@ -1008,10 +1177,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\sdl\PlayerManager.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\src\sdl\Point2D.cpp"
 					>
 				</File>
@@ -1043,11 +1208,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\AIManager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\BackgroundRenderable.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\render\BaseRenderable.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\BasicWorld.h"
 				>
 			</File>
 			<File
@@ -1095,6 +1268,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\ChangeOfIntention.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\ChangeScreenMode.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\ClientData.h"
 				>
 			</File>
@@ -1112,6 +1293,10 @@
 			</File>
 			<File
 				RelativePath=".\src\config.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\ConnectProxy.h"
 				>
 			</File>
 			<File
@@ -1139,11 +1324,31 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\Driver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\EditEventProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\EditWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\Enabler.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\EntireWorld.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\widget\EventProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\EventSystem.h"
 				>
 			</File>
 			<File
@@ -1160,6 +1365,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\FontManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\FPSRateMonitor.h"
 				>
 			</File>
 			<File
@@ -1183,11 +1392,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\gui\GUIObservers.h"
+				RelativePath=".\src\gui\GUISystem.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\gui\GUISystem.h"
+				RelativePath=".\src\history\Historian.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\HostProxy.h"
 				>
 			</File>
 			<File
@@ -1199,7 +1412,43 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ImageWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\InputAction.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\InputAxisAction.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\InputButtonAction.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\InputEventTypes.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\InputKeyAction.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\InputManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\InputMapper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\InputSnapshot.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\JoinGame.h"
 				>
 			</File>
 			<File
@@ -1231,6 +1480,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ListEventProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ListItemEventProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ListScrollbarEventProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ListWidget.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\LoopBase.h"
 				>
 			</File>
@@ -1239,7 +1504,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\MapList.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\MapLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\MapOptions.h"
 				>
 			</File>
 			<File
@@ -1279,6 +1552,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\MethodObserver.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\hud\Minimap.h"
 				>
 			</File>
@@ -1311,6 +1588,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\ObserverRegistry.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\paint\PaintCell.h"
 				>
 			</File>
@@ -1339,6 +1620,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\PathingUpdater.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\PathManager.h"
 				>
 			</File>
@@ -1348,6 +1633,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\PathTracker.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\PauseGame.h"
 				>
 			</File>
 			<File
@@ -1371,11 +1660,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PhysicsTick.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\PhysicsWorld.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\event\PlayerAction.h"
+				RelativePath=".\src\history\PingTimeMeasurer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\PlayerIntention.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\PlayerManager.h"
 				>
 			</File>
 			<File
@@ -1435,6 +1736,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ScrollbarEventProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ScrollbarLayout.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ScrollbarSliderEventProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ScrollbarWidget.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\SDLGame.h"
 				>
 			</File>
@@ -1452,6 +1769,10 @@
 			</File>
 			<File
 				RelativePath=".\src\settings\SettingsManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\SettingsProxy.h"
 				>
 			</File>
 			<File
@@ -1507,11 +1828,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\StraightDriver.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mesh\SubMesh.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\physics\Suspension.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SwitchToScreen.h"
 				>
 			</File>
 			<File
@@ -1563,6 +1892,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\WarpOntoTrack.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\WidgetActivateEvent.h"
 				>
 			</File>
@@ -1575,6 +1908,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\WidgetModifiedEvent.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\WidgetPoint.h"
 				>
 			</File>
@@ -1584,6 +1921,10 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\WidgetRenderer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetSelectedEvent.h"
 				>
 			</File>
 			<File
@@ -1706,10 +2047,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\sdl\PlayerManager.h"
-					>
-				</File>
-				<File
 					RelativePath=".\src\sdl\Point2D.h"
 					>
 				</File>
@@ -1803,10 +2140,6 @@
 				</File>
 				<File
 					RelativePath=".\src\event\Observer.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\event\ObserverList.h"
 					>
 				</File>
 				<File

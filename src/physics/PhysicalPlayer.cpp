@@ -102,6 +102,7 @@ void PhysicalPlayer::applyAcceleration(double acceleration) {
     rigidBody->activate();
     
     double constant = GET_SETTING("physics.constant.accel", 1.0);
+	double brakeConstant = GET_SETTING("physics.constant.brake", 5.0);
     
     btTransform transform = rigidBody->getWorldTransform();
     btMatrix3x3 matrix(transform.getRotation());
@@ -109,8 +110,13 @@ void PhysicalPlayer::applyAcceleration(double acceleration) {
         * Converter::toVector(Math::Point(0.0, 0.0, 1.0) * constant));
     
     //LOG(PHYSICS, "accel at " << Misc::Sleeper::getTimeMilliseconds());
-    
-    applyForce(orientation * constant * acceleration * speedBoost);
+
+	if (acceleration >= 0.0 || getLinearVelocity().dotProduct(orientation) < 0.0) {
+		applyForce(orientation * constant * acceleration * ((speedBoost-1.0)*GET_SETTING("game.paint.boostinfluence", 1.0)+1.0) );
+	}
+	else {
+		applyForce(orientation * brakeConstant * acceleration);
+	}
 }
 
 void PhysicalPlayer::applyTurning(double amount) {
@@ -130,17 +136,34 @@ void PhysicalPlayer::applyTurning(double amount) {
     centripetalAxis.normalize();
     
     double speed = getLinearVelocity().length();
-    
+
+	#if 0
     // turn in the opposite direction when travelling backwards
-    if(getLinearVelocity().dotProduct(forwardAxis) < 0) {
+    if (getLinearVelocity().dotProduct(forwardAxis) < 0) {
         speed = -speed;
     }
+	#endif
+
+	double speedFactor = GET_SETTING("physics.turning.speedfactor", 0.5);
+	double speedThreshhold = GET_SETTING("physics.turning.speedthreshhold", 15.0);
+	double falloffFactor = GET_SETTING("physics.turning.fallofffactor", 0.25);
+
+	double turning_factor = GET_SETTING("physics.turning.constant", 1.0);
+
+	if (speed <= speedThreshhold) {
+		turning_factor += sqrt(speed/speedThreshhold)*(speed*speedFactor);
+	}
+	else {
+		turning_factor += (speedThreshhold*speedFactor)*(1.0/(1.0+(speed-speedThreshhold)*falloffFactor));
+	}
+	
+	 // turn in the opposite direction when travelling backwards
+    if (getLinearVelocity().dotProduct(forwardAxis) < 0) {
+        turning_factor = -turning_factor;
+    }
     
-    /*double centripetalSpeed = getLinearVelocity().dotProduct(forwardAxis)
-        / getLinearVelocity().length();*/
-    
-    applyForce(centripetalAxis * centripetalConstant * speed * amount);
-    applyTorque(Math::Point(0.0, -1.0, 0.0) * constant * speed * amount);
+    applyForce(centripetalAxis * centripetalConstant * turning_factor * amount);
+    applyTorque(Math::Point(0.0, -1.0, 0.0) * constant * turning_factor * amount);
 }
 
 void PhysicalPlayer::doJump() {

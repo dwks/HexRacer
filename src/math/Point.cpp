@@ -129,6 +129,9 @@ double Point::distanceSquared(const Point &other) const {
         + z_diff * z_diff);
 }
 
+bool Point::zero() const {
+	return (getX() == 0.0 && getY() == 0.0 && getZ() == 0.0);
+}
 Point Point::normalized() const {
     double the_length = length();
     
@@ -224,7 +227,7 @@ double Point::dotProduct(const Point &other) const {
 }
 
 double Point::unitDotProduct(const Point &other) const {
-	return dotProduct(other)/(length()+other.length());
+	return dotProduct(other)/(length()*other.length());
 }
 
 Point Point::crossProduct(const Point &other) const {

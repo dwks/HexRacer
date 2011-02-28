@@ -16,7 +16,8 @@ public:
         QUIT,
         PACKET_RECEIVED,
         SEND_PACKET,
-        PLAYER_ACTION,
+        CHANGE_OF_INTENTION,
+        WARP_ONTO_TRACK,
         UPDATE_PLAYER_LIST,
         CAMERA_MOVEMENT,
         SET_DEBUG_DRAWING,
@@ -31,6 +32,9 @@ public:
         UPDATE_WORLD,
         ENTIRE_WORLD,
         JOIN_GAME,
+        PHYSICS_TICK,
+        SWITCH_TO_SCREEN,
+        CHANGE_SCREEN_MODE,
         TYPES
     };
 };

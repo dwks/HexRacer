@@ -11,7 +11,7 @@ namespace Shader {
 */
 class ShaderProgram {
 public:
-	ShaderProgram(GLchar *fs, GLchar *vs);
+	ShaderProgram(const GLchar *fs, const GLchar *vs);
 
 	void turnShaderOn() const;
 	void turnShaderOff() const;
@@ -23,7 +23,7 @@ public:
 private:
 
 	char *textFileRead(const char *fn);	//Methods that read and write shader files.
-	int textFileWrite(char *fn, char *s);
+	int textFileWrite(const char *fn, const char *s);
 };
 
 }  // namespace Render

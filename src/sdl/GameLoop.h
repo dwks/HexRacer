@@ -32,9 +32,8 @@ private:
     boost::shared_ptr<GUI::GUISystem> gui;
     boost::shared_ptr<GUIInputManager> guiInputManager;
 public:
-    GameLoop(const std::string &host, unsigned short port);
+    virtual bool tryConnect(const std::string &host, unsigned short port);
     
-    void doConnect(const std::string &host, unsigned short port);
     virtual void construct();
     
     void setGuiPointers(boost::shared_ptr<GUI::GUISystem> gui,

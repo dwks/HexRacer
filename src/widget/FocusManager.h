@@ -14,14 +14,17 @@ public:
 private:
     WidgetBase *motionFocus;
     WidgetBase *clickFocus;
+    WidgetBase *keyFocus;
 public:
     FocusManager();
     
     WidgetBase *getMotionFocus() { return motionFocus; }
     WidgetBase *getClickFocus() { return clickFocus; }
+    WidgetBase *getKeyFocus() { return keyFocus; }
     
     void setMotionFocus(WidgetBase *focus);
     void setClickFocus(WidgetBase *focus);
+    void setKeyFocus(WidgetBase *focus);
 };
 
 }  // namespace Widget

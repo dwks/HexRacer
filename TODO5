@@ -1,0 +1,10 @@
+- turning moves the front car wheels
+- use rollback in networking code
+- non-linear turning scaling!
+- use less foolable lap tracking
+
+- AI
+- sound
+
+- make PathTracker take a pointer, not a reference, in the constructor
+

@@ -12,24 +12,24 @@
 #include "network/EventPacket.h"
 
 #include "event/QuitEvent.h"
-#include "event/PlayerAction.h"
+#include "event/ChangeOfIntention.h"
 #include "event/PaintEvent.h"
 #include "event/PaintCellsChanged.h"
 #include "event/CreateObject.h"
+#include "event/DestroyObject.h"
 #include "event/UpdateObject.h"
 #include "event/UpdateWorld.h"
 #include "event/EntireWorld.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
-#include "physics/PhysicsWorld.h"
 #include "physics/PhysicsFactory.h"
-#include "physics/Suspension.h"
 
 #include "mesh/MeshGroup.h"
 #include "mesh/MeshLoader.h"
 #include "map/MapLoader.h"
 #include "map/PathTracker.h"
+#include "map/PathingUpdater.h"
 
 #include "log/Logger.h"
 #include "misc/Sleeper.h"
@@ -63,48 +63,57 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
     case Event::EventType::QUIT:
         main->setQuit();
         break;
-    case Event::EventType::PLAYER_ACTION: {
-        Event::PlayerAction *action
-            = dynamic_cast<Event::PlayerAction *>(event);
-        Object::Player *player = main->getWorldManager()
-            ->getPlayer(main->getWhichSocket());
+    case Event::EventType::CREATE_OBJECT: {
+        Event::CreateObject *createObject
+            = dynamic_cast<Event::CreateObject *>(event);
         
-        switch(action->getMovementType()) {
-        case Event::PlayerAction::ACCELERATE:
-            player->applyAcceleration(action->getValue());
-            break;
-        case Event::PlayerAction::TURN:
-            player->applyTurning(action->getValue());
-            break;
-        case Event::PlayerAction::JUMP:
-            player->doJump();
-            break;
-        case Event::PlayerAction::FIX_OFF_TRACK: {
-            delete player->getPhysicalObject();
+        if(dynamic_cast<Object::Player *>(createObject->getObject())) {
+            Object::Player *player
+                = dynamic_cast<Object::Player *>(createObject->getObject());
             
-            if(player->getPathTracker()
-                && player->getPathTracker()->getCurrentNode()) {
+            if(true /*Settings::ProgramSettings::getInstance()->isServer()*/) {
+                player->setPathTracker(
+                    new Map::PathTracker(*main->getWorldManager()->getPathManager()));
+            }
             
-                const Map::PathNode* node = player->getPathTracker()->getCurrentNode();
-                
-                Math::Point origin = node->getPosition();
-                Math::Point direction = (node->getNextNodes()[0]->getPosition() - node->getPosition()).normalized();
-                
-                origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
-                player->setPhysicalObject(
-                    Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
-            }
-            else {
-                Math::Point origin = main->raceManager->startingPointForPlayer(player->getID());
-                Math::Point direction = Math::Point(0.0, 0.0, -1.0);
-                
-                origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
-                player->setPhysicalObject(
-                    Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
-            }
-            break;
+            main->getWorldManager()->addPlayer(player);
         }
+        else {
+            main->getWorldManager()->getWorld()->addObject(createObject->getObject());
         }
+        break;
+    }
+    case Event::EventType::DESTROY_OBJECT: {
+        Event::DestroyObject *destroyObject
+            = dynamic_cast<Event::DestroyObject *>(event);
+        
+        main->getWorldManager()->getWorld()->removeObject(
+            main->getWorldManager()->getWorld()->getObject(destroyObject->getID()));
+        
+        break;
+    }
+    case Event::EventType::UPDATE_OBJECT: {
+        Event::UpdateObject *updateObject
+            = dynamic_cast<Event::UpdateObject *>(event);
+        
+        Object::ObjectBase *object
+            = main->getWorldManager()->getWorld()->getObject(updateObject->getID());
+        
+        object->getPhysicalObject()->setData(
+            updateObject->getTransformation(),
+            updateObject->getLinearVelocity(),
+            updateObject->getAngularVelocity());
+        
+        break;
+    }
+    case Event::EventType::CHANGE_OF_INTENTION: {
+        Event::ChangeOfIntention *changeOfIntention
+            = dynamic_cast<Event::ChangeOfIntention *>(event);
+        
+        int id = changeOfIntention->getPlayer();
+        Object::Player *player = main->getWorldManager()->getPlayer(id);
+        
+        player->setIntention(changeOfIntention->getIntention());
         
         break;
     }
@@ -121,8 +130,9 @@ bool ServerMain::ServerObserver::interestedIn(Event::EventType::type_t type) {
     case Event::EventType::TOGGLE_PAINT:  // handled by PaintSubsystem
     case Event::EventType::PAUSE_GAME:  // handled by AccelControl
         return false;
-    case Event::EventType::CREATE_OBJECT:
-    case Event::EventType::DESTROY_OBJECT:
+    case Event::EventType::PHYSICS_TICK:  // don't care for the moment
+        return false;
+    case Event::EventType::WARP_ONTO_TRACK:  // handled by PlayerManager
         return false;
     default:
         break;
@@ -132,6 +142,7 @@ bool ServerMain::ServerObserver::interestedIn(Event::EventType::type_t type) {
 }
 
 ServerMain::ServerMain() : clientCount(0), visitor(this) {
+    // install CTRL-C handler
 #ifdef WIN32
     signal(SIGINT, terminationHandler);
     signal(SIGTERM, terminationHandler);
@@ -146,31 +157,24 @@ ServerMain::ServerMain() : clientCount(0), visitor(this) {
 #endif
 }
 
-ServerMain::~ServerMain() {
-    delete networkPortal;
-}
-
-void ServerMain::run() {
-    accelControl = new Timing::AccelControl();
-    Physics::PhysicsWorld *physicsWorld = new Physics::PhysicsWorld();
+void ServerMain::init() {
+    accelControl = boost::shared_ptr<Timing::AccelControl>(
+        new Timing::AccelControl());
     
-    Connection::ServerManager server;
-    ClientManager clients;
+    server = boost::shared_ptr<Connection::ServerManager>(
+        new Connection::ServerManager());
+    clients = boost::shared_ptr<ClientManager>(new ClientManager());
     
-    server.addServer(GET_SETTING("network.port", 1820));
+    server->addServer(GET_SETTING("network.serverport", 1820));
     
-    networkPortal = new ServerNetworkPortal(&clients);
+    networkPortal = boost::shared_ptr<ServerNetworkPortal>(
+        new ServerNetworkPortal(clients.get()));
     
-    Mesh::MeshLoader *meshLoader = new Mesh::MeshLoader();
-    /*meshLoader->loadOBJ("testTerrain", GET_SETTING("map", "models/testterrain.obj"));
-    Render::MeshGroup *test_terrain = meshLoader->getModelByName("testTerrain");
-    
-    Physics::PhysicsWorld::getInstance()->registerRigidBody(
-        Physics::PhysicsFactory::createRigidTriMesh(
-            test_terrain->getTriangles()));*/
+    // this must execute before MapLoader loads the map
+    meshLoader = boost::shared_ptr<Mesh::MeshLoader>(new Mesh::MeshLoader());
     
     //Instantiate the map
-    map = new Map::HRMap();
+    map = boost::shared_ptr<Map::HRMap>(new Map::HRMap());
     if (map->loadMapFile(GET_SETTING("map", "maps/testtrack.hrm"))) {
         LOG(WORLD, "Loaded Map File " << GET_SETTING("map", "data/testtrack.hrm"));
     }
@@ -180,38 +184,69 @@ void ServerMain::run() {
     
     ADD_OBSERVER(new ServerObserver(this));
     
-    Physics::Suspension *suspension = new Physics::Suspension(10);
+    basicWorld = boost::shared_ptr<World::BasicWorld>(new World::BasicWorld());
+    basicWorld->constructBeforeConnect();
+    basicWorld->constructSkippingConnect();
     
-    worldManager = new Object::WorldManager();
-    paintSubsystem = new Paint::PaintSubsystem(worldManager, &paintManager, 20);
+    Map::MapLoader().load(map.get(), NULL);
+    basicWorld->constructAfterConnect(map.get());
     
-    Map::MapLoader().load(map, NULL);
-    raceManager = new Map::RaceManager(map);
+    paintManager = boost::shared_ptr<Paint::PaintManager>(
+        new Paint::PaintManager());
+    paintManager->setPaintCells(map->getPaintCells());
+    
+    paintSubsystem = boost::shared_ptr<Paint::PaintSubsystem>(
+        new Paint::PaintSubsystem(
+            basicWorld->getWorldManager(), paintManager.get(), 20));
+}
+
+void ServerMain::initAI() {
+    aiManager = boost::shared_ptr<AI::AIManager>(
+        new AI::AIManager(
+            basicWorld->getRaceManager(),
+            basicWorld->getPathManager(),
+            basicWorld->getPlayerManager()));
+    
+    int aiCount = GET_SETTING("server.aicount", 0);
+    aiManager->createAIs(aiCount);
+    clientCount += aiCount;
+}
+
+void ServerMain::run() {
+    init();
+    initAI();
     
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
     quit = false;
     while(!quit) {
         for(;;) {
-            Connection::Socket *socket = server.checkForConnections();
+            Connection::Socket *socket = server->checkForConnections();
             if(!socket) break;
             
             Network::PacketSerializer packetSerializer;
-            Network::Packet *packet = new Network::HandshakePacket(clientCount);
+            Network::Packet *packet = new Network::HandshakePacket(
+                clientCount, Misc::Sleeper::getTimeMilliseconds());
             
             Network::StringSerializer stringSerializer(socket);
             stringSerializer.sendString(
                 packetSerializer.packetToString(packet));
             delete packet;
             
-            Math::Point location
-                = raceManager->startingPointForPlayer(clientCount);
+            Math::Point location = basicWorld->getRaceManager()
+                ->startingPointForPlayer(clientCount);
+            Math::Point direction = basicWorld->getRaceManager()
+                ->startingPlayerDirection();
             
-            clients.addClient(socket);
-            Object::Player *player = new Object::Player(clientCount, location);
+            clients->addClient(socket);
+            Object::Player *player = new Object::Player(
+                clientCount, location, direction);
+			player->setPathTracker(new Map::PathTracker(
+                *basicWorld->getPathManager()));
             //worldManager->addPlayer(player);
             
             Event::EntireWorld *entireWorld = new Event::EntireWorld(
-                worldManager->getWorld(), worldManager->getPlayerList());
+                getWorldManager()->getWorld(),
+                getWorldManager()->getPlayerList());
             packet = new Network::EventPacket(entireWorld);
             stringSerializer.sendString(
                 packetSerializer.packetToString(packet));
@@ -224,14 +259,14 @@ void ServerMain::run() {
         }
         
         int disconnected;
-        while((disconnected = clients.nextDisconnectedClient()) >= 0) {
+        while((disconnected = clients->nextDisconnectedClient()) >= 0) {
             LOG2(NETWORK, CONNECT,
                 "Client " << disconnected << " has disconnected");
         }
         
         {
             Network::Packet *packet;
-            while((packet = clients.nextPacket(&whichSocket))) {
+            while((packet = clients->nextPacket(&whichSocket))) {
                 /*LOG(NETWORK, "Packet received from "
                     << whichSocket << ": " << packet);*/
                 
@@ -241,20 +276,9 @@ void ServerMain::run() {
         }
         
         paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
-        suspension->setData(worldManager, NULL);
-        suspension->checkForWheelsOnGround();
         
-        if(!Timing::AccelControl::getInstance()->getPaused()) {
-            static unsigned long lastPhysicsTime
-                = Misc::Sleeper::getTimeMilliseconds();
-            lastPhysicsTime += Timing::AccelControl::getInstance()
-                ->getPauseSkip();
-            unsigned long thisTime = Misc::Sleeper::getTimeMilliseconds();
-            physicsWorld->stepWorld((thisTime - lastPhysicsTime) * 1000);
-            lastPhysicsTime = thisTime;
-        }
-        
-        suspension->doStep(Misc::Sleeper::getTimeMilliseconds());
+        basicWorld->doPhysics();
+        basicWorld->doAI();
         
         static int loops = 0;
         if(++loops == 5) {
@@ -263,10 +287,11 @@ void ServerMain::run() {
             Event::UpdateWorld *update
                 = new Event::UpdateWorld(
                     Misc::Sleeper::getTimeMilliseconds(),
-                    worldManager);
+                    getWorldManager());
             Network::Packet *packet = new Network::EventPacket(update);
-            clients.sendPacket(packet);
+            clients->sendPacket(packet);
             delete packet;
+            delete update;
         }
         
         {
@@ -283,14 +308,6 @@ void ServerMain::run() {
         
         accelControl->clearPauseSkip();
     }
-    
-    delete worldManager;
-    delete paintSubsystem;
-    
-    delete meshLoader;
-    delete physicsWorld;
-    
-    delete accelControl;
 }
 
 }  // namespace Server

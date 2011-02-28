@@ -34,6 +34,8 @@ public:
     */
     void addUpdate(UpdateObject *update) { updates.push_back(update); }
     
+    unsigned long getMilliseconds() const { return milliseconds; }
+    
     std::vector<UpdateObject *> &getVector() { return updates; }
     
     virtual EventType::type_t getType() const

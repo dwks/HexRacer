@@ -3,7 +3,7 @@
 
 #include "ShaderProgram.h"
 #include "ShaderParamSetter.h"
-#include "Render/RenderSettings.h"
+#include "render/RenderSettings.h"
 #include <vector>
 
 namespace Project {
@@ -14,20 +14,21 @@ class ShaderParamSetter;
 class ShaderManager {
 public:
 
-	static const int NUM_STANDARD_UNIFORMS = 7;
+	static const int NUM_STANDARD_UNIFORMS = 8;
 	enum StandardUniform {
 		UINT_NUM_LIGHTS,
 		UINTV_HAS_TEXTURE,
 		UINT_COLOR_MAP,
 		UINT_NORMAL_MAP,
 		UINT_GLOW_MAP,
+		UINT_SHADOW_MAP,
 		UINT_CUBE_MAP,
 		UM4_CAMERA_MATRIX
 	};
 	static const int NUM_STANDARD_ATTRIBUTES = 2;
 	enum StandardAttribute {
 		AV3_TANGENT,
-		AV3_BITANGENT,
+		AV3_BITANGENT
 	};
 	static const char* standardUniformName(StandardUniform uniform);
 	static const char* standardAttributeName(StandardAttribute attribute);
@@ -52,7 +53,7 @@ private:
 public:
 
 	ShaderManager(Render::RenderSettings& _settings);
-	ShaderManager::~ShaderManager();
+	~ShaderManager();
 
 	void loadShadersFile(std::string filename);
 	void loadShader(std::string name, string fragment_file, string vertex_file);
@@ -66,6 +67,7 @@ public:
 	int shaderIndexFromName(std::string name);
 
 	const ShaderParamSetter& getShaderParamSetter() const { return setter; }
+	void setHasNormalMap(bool has) { setter.setHasNormalMap(has); }
 
 };
 

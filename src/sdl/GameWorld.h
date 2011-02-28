@@ -5,51 +5,47 @@
 
 #include <string>
 
+#include "world/BasicWorld.h"
+
 #include "NetworkPortal.h"
+#include "history/Historian.h"
+
 #include "map/HRMap.h"
 #include "map/RaceManager.h"
 
-#include "PlayerManager.h"
 #include "ClientData.h"
-
-#include "physics/PhysicsWorld.h"
-#include "physics/Suspension.h"
-
-#include "map/PathManager.h"
 
 namespace Project {
 namespace SDL {
 
 class GameWorld {
 private:
+    boost::shared_ptr<World::BasicWorld> basicWorld;
+    
     boost::shared_ptr<NetworkPortal> network;
-    boost::shared_ptr<Map::RaceManager> raceManager;
+    boost::shared_ptr<History::Historian> historian;
     
-    boost::shared_ptr<PlayerManager> playerManager;
     boost::shared_ptr<ClientData> clientData;
-    
-    boost::shared_ptr<Object::WorldManager> worldManager;
-    boost::shared_ptr<Physics::PhysicsWorld> physicsWorld;
-    boost::shared_ptr<Physics::Suspension> suspension;
-
-	boost::shared_ptr<Map::PathManager> pathManager;
     
     bool isConnectedToNetwork;
 public:
-    void doConnect(const std::string &host, unsigned short port);
+    bool tryConnect(const std::string &host, unsigned short port);
+    void constructAfterConnect(Map::HRMap *map);
     
-    void construct(const std::string &host, unsigned short port);
-    void construct2(Map::HRMap *map);
-    
-    PlayerManager *getPlayerManager() { return playerManager.get(); }
+    World::PlayerManager *getPlayerManager()
+        { return basicWorld->getPlayerManager(); }
     ClientData *getClientData() { return clientData.get(); }
-    Object::WorldManager *getWorldManager() { return worldManager.get(); }
+    Object::WorldManager *getWorldManager()
+        { return basicWorld->getWorldManager(); }
     
     void checkNetwork();
     void doPhysics();
-	void updatePlayerPathing();
+	void doAI();
     
     void render();
+private:
+    bool doConnect(const std::string &host, unsigned short port);
+    void doNotConnect();
 };
 
 }  // namespace SDL

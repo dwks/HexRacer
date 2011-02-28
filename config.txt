@@ -1,10 +1,11 @@
 ################
 # Settings for the project
 
-#map = data/testtrack.hrm
 #map = data/testtrack2.hrm
 map = data/testtrack2.hrm
-#map = data/testtrackbanking.hrm
+#map = data/testtrack2big.hrm
+
+include maps.txt
 
 ########
 ### Display settings
@@ -19,26 +20,50 @@ display.bpp        = 0
 ########
 ### Physics settings
 
+# Physics simulation settings
+physics.maxtimesteps              = 2
+
 # World settings
-physics.constant.gravity          = 12
+physics.constant.gravity          = 11
 
 # Acceleration and responsiveness of input
-physics.constant.turn             = 0.15
-physics.constant.accel            = 3.5
+physics.constant.turn             = 0.2
+physics.constant.accel            = 3.6
+physics.constant.brake            = 6.0
 physics.constant.centripetal      = 1.0
 
 # Vehicle suspension
 physics.driving.enablesuspension  = 1
-physics.driving.minlength         = 0.0
-physics.driving.restlength        = 0.5
-physics.driving.stretchlength     = 1.0
-physics.driving.constant.k        = 5.0
-physics.driving.constant.c        = 30.0
+physics.driving.minlength         = 0.20
+physics.driving.restlength        = 0.35
+physics.driving.stretchlength     = 0.5
+physics.driving.constant.k        = 8
+physics.driving.constant.c        = 45.0
+physics.driving.mindownfactor = 0.25
 
-# Drag forces
+#Turning
+physics.turning.constant = 3.0
+physics.turning.speedfactor = 0.55
+physics.turning.speedthreshhold = 20.0
+physics.turning.fallofffactor = 0.1
+
+# Display options for the vehicle wheels
+physics.wheel.diameter = 0.155
+physics.wheel.frontsep = 0.35
+physics.wheel.frontz = 0.65
+physics.wheel.backsep = 0.35
+physics.wheel.backz = -0.5
+
+# Drag forces (when on the ground and when in the air)
 physics.driving.lineardrag        = 0.5
+physics.driving.airlineardrag     = 0.2
 physics.driving.angulardrag       = 0.5
+physics.driving.airangulardrag    = 0.2
 physics.driving.sidewaysdrag      = 20.0
+
+game.paint.colorbenefit = 1.0
+game.paint.colorpenalty = -0.25
+game.paint.boostinfluence = 0.8
 
 game.enablepathing = 1
 
@@ -51,20 +76,37 @@ game.enablepathing = 1
 #    2 = medium
 #    3 = high
 render.quality = 2
-render.shaderoutput = 1
+render.shaderoutput = 0
+render.showfps = 1
+
+render.bloom.enable = 0
+render.bloom.width = 640
+render.bloom.height = 480
+render.bloom.farplane = 200.0
+render.bloom.blurpasses = 6
+
+render.shadow.enable = 0
+render.shadow.width = 4096
+render.shadow.height = 4096
+render.shadow.farplane = 50.0
+
+render.playerglow.min = 0.6
+render.playerglow.factor = 1.5
+render.playerglow.constant = -0.80
 
 ########
 ### Rendering frustrum settings
 render.camera.nearplane = 0.1
 render.camera.farplane = 200.0
-render.camera.paintthreshhold = 0.5
+render.camera.paintthreshhold = 0.35
 render.camera.fieldofview = 60.0
-render.camera.speedboostfov = 50.0
-#render.camera.lodthreshhold = 1.0
+render.camera.fovboost = 65.0
+render.camera.fovslow = 60.0
 
 # for AI debugging
 render.drawpathnodes = 0
 render.drawlightspheres = 1
+render.drawshadowcamera = 0
 
 # Models
 render.model.vehicle = data/vehicle/vehicle01.obj
@@ -78,7 +120,7 @@ render.tire.scale = 2.5
 
 hud.minimap.enable = 1
 hud.minimap.drawheight = 0.35
-hud.minimap.height = 100.0
+hud.minimap.height = 120.0
 
 hud.speedometer.enable = 1
 hud.speedometer.drawheight = 0.35
@@ -89,41 +131,34 @@ hud.lapprogress.drawheight = 0.75
 
 ########
 ### Camera settings
-# step is the Interpolation Increment.
-# This is how fast the
-# camera interpolates between current
-# and destination positions
-camera.step = 0.03
+camera.step = 0.1
+camera.fovstep = 0.05
 
-# This is how fast the
-# camera interpolates between current
-# and destination orientations
-### this value is currently not used ###
-# because we are testing a camera
-# without quaternion rotations.
-camera.rotationstep = 0.005
+camera.followdefault.x = 0.0
+camera.followdefault.y = 2.0
+camera.followdefault.z = -6.0
 
-# This is how fast the
-# camera interpolates between current
-# and destination FOVs Speedburst
-# fov value can be changed in this file as well
-camera.fovstep = 0.01
+camera.followboost.x = 0.0
+camera.followboost.y = 1.75
+camera.followboost.z = -6.5
 
-# The following values let you set the 
-# destination position behind a player.
-# You can modify how the default follow
-# orientation looks here.
-camera.follow.x = 0.0
-camera.follow.y = 2.0
-camera.follow.z = -7.0
+camera.followslow.x = 0.0
+camera.followslow.y = 2.25
+camera.followslow.z = -5.5
 
 ########
 ### Network settings
 
-# Network settings for both client and server
+# Network settings for both client
 network.port = 1820
 network.host = localhost
 
+# Network settings for server
+network.serverport = 1820
+
+########
+### AI and server settings
+server.aicount     = 3
 
 ########
 include guiconfig.txt

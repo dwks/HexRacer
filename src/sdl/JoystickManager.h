@@ -15,12 +15,15 @@ public:
     JoystickManager();
     ~JoystickManager();
     
-    void open();
+    bool open();
+	bool hasJoystick() { return joystick != NULL; }
     
     /** Returns the value of the joystick axis @a axis, normalized to the range
         [-1.0, 1.0]. This value will be 0.0 if the joystick was not detected.
     */
     double getNormalizedAxisValue(int axis, double deadzone = 0.0);
+
+	bool getButtonDown(int button);
 };
 
 }  // namespace SDL

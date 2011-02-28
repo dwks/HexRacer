@@ -47,6 +47,7 @@ public:
     */
     virtual bool tryReceive(std::string &message, std::size_t size) = 0;
 };
+
 }  // namespace Connection
 }  // namespace Project
 

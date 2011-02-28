@@ -11,6 +11,10 @@ MenuBackground::MenuBackground() {
 }
 
 void MenuBackground::render() {
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     
     rotate += 0.02;

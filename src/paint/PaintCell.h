@@ -19,21 +19,22 @@ public:
 	PaintCell(Math::Point _center, Math::Point* vertices, Math::Point _normal, int _index);
 	~PaintCell();
 
-	bool vertexSet [CELL_VERTICES];
-	Math::Point vertex [CELL_VERTICES];
-	Math::Point normal;
+	Math::Point** vertex;
+	Math::Point* normal;
 	Math::Point center;
 	int playerColor;
 	int index;
 	GLuint displayList;
 
 	int getOppositeVertex(int vert_index);
-	void fillEmptyVertices();
 	void setBoundingDimensions();
 	void calculateNormal();
 	void contractVertices(double amount);
 	void setVertex(int vert_index, Math::Point _vertex);
+	void setNormal(Math::Point _normal);
 	void setDisplayList();
+	void optimize();
+	void translateVertices(const Math::Point& translation);
 	Math::Point calcVertexLocation(int vert_index, double cell_radius = PAINT_CELL_RADIUS);
 
 };

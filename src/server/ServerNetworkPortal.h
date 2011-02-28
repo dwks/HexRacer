@@ -2,12 +2,13 @@
 #define PROJECT_SERVER__SERVER_NETWORK_PORTAL_H
 
 #include "ClientManager.h"
+#include "event/Enabler.h"
 #include "event/MultiObserver.h"
 
 namespace Project {
 namespace Server {
 
-class ServerNetworkPortal {
+class ServerNetworkPortal : public Event::Enabler {
 private:
     class EventPropagator : public Event::MultiObserver {
     private:

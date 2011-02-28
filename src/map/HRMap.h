@@ -12,11 +12,12 @@
 #include "math/BoundingPlane3D.h"
 #include "PathNode.h"
 #include "MeshInstance.h"
+#include "MapOptions.h"
 #include <string>
 #include <vector>
 
 #define HRMAP_NUM_MESHES 5
-#define HRMAP_VERSION "0.0.2"
+#define HRMAP_VERSION "0.1.0"
 #define HRMAP_VERSION_LABEL "version"
 #define HRMAP_PROPMESH_LABEL "propMesh"
 #define HRMAP_LIGHT_LABEL "light"
@@ -50,6 +51,7 @@ private:
 	std::vector<Math::Vertex3D*> startPoints;
 	std::vector<MeshInstance*> meshInstances;
 	Math::BoundingPlane3D finishPlane;
+	Math::BoundingBox3D mapBoundingBox;
 
 	std::vector<std::string> propMeshNames;
 	std::vector<std::string> propMeshFilenames;
@@ -58,6 +60,8 @@ private:
 	Math::Point map2DCenter;
 	double map2DWidth;
 	double map2DHeight;
+
+	MapOptions mapOptions;
 
 	Math::BSPTree3D* collisionTree;
 
@@ -87,6 +91,7 @@ public:
 	Math::Point getMap2DCenter() const { return map2DCenter; }
 	double getMap2DWidth() const { return map2DWidth; }
 	double getMap2DHeight() const { return map2DHeight; }
+	MapOptions& getMapOptions() { return mapOptions; }
 
 	void setMap2DFile(std::string file) { map2DFile = file; }
 	void setMap2DCenter(Math::Point center) { map2DCenter = center; }
@@ -119,16 +124,22 @@ public:
 	void removeMeshInstance(MeshInstance* mesh);
 	void clearMeshInstances();
 
+	Math::BoundingBox3D getMapBoundingBox() const { return mapBoundingBox; }
+
 	std::string getFilename() const { return filename; }
 
 	static std::string meshName(MeshType type);
 	static std::string meshTitle(MeshType type);
 	static bool meshIsInvisible(MeshType type);
 	static bool meshIsSolid(MeshType type);
+	
+	void scaleAll(double scale, Math::Point origin = Math::Point());
+
 
 private:
 
 	void clearCollisionTree();
+	void updateMapBoundingBox();
 
 };
 

@@ -1,17 +1,21 @@
 #include "PaintSubsystem.h"
 
 #include "event/PaintEvent.h"
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 #include "config.h"
 
 namespace Project {
 namespace Paint {
 
-void PaintSubsystem::TogglePaintingHandler::observe(
+/*void PaintSubsystem::TogglePaintingHandler::observe(
     Event::TogglePainting *toggle) {
     
     subsystem->setPainting(toggle->getID(), toggle->getPaintType());
+}*/
+
+void PaintSubsystem::togglePaintingObserver(Event::TogglePainting *toggle) {
+    setPainting(toggle->getID(), toggle->getPaintType());
 }
 
 PaintSubsystem::PaintSubsystem(Object::WorldManager *worldManager,
@@ -19,7 +23,7 @@ PaintSubsystem::PaintSubsystem(Object::WorldManager *worldManager,
     : TimedSubsystem(tickTime), worldManager(worldManager),
     paintManager(paintManager) {
     
-    ADD_OBSERVER(new TogglePaintingHandler(this));
+    METHOD_OBSERVER(&PaintSubsystem::togglePaintingObserver);
 }
 
 void PaintSubsystem::setPainting(int id,
@@ -72,10 +76,14 @@ void PaintSubsystem::doAction(unsigned long currentTime) {
 }
 
 void PaintSubsystem::calculateBoostSpeeds() {
+
     Object::WorldManager::PlayerIteratorType iterator
         = worldManager->getPlayerIterator();
+
     while(iterator.hasNext()) {
         Object::Player *player = iterator.next();
+
+		player->setPaintType(getPainting(player->getID()));
         
         if(getPainting(player->getID()) == Event::TogglePainting::NOTHING) {
             double factor = paintManager->weightedCellsInRadius(

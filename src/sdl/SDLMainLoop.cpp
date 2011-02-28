@@ -7,7 +7,7 @@
 #include "MenuLoop.h"
 #include "GameLoop.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 
 #include "settings/SettingsManager.h"
 
@@ -16,23 +16,52 @@
 namespace Project {
 namespace SDL {
 
-void SDLMainLoop::QuitObserver::observe(Event::QuitEvent *event) {
-    if(!mainLoop->currentlyUsingMenuLoop()) {
-        mainLoop->useMenuLoop();
+void SDLMainLoop::quitHandler(Event::QuitEvent *event) {
+    if(!currentlyUsingMenuLoop()) {
+        useMenuLoop();
     }
     else {
-        mainLoop->setQuit();
+        setQuit();
     }
 }
 
-void SDLMainLoop::JoinGameObserver::observe(Event::JoinGame *event) {
-    GameLoop *loop = new GameLoop(event->getHost(), event->getPort());
+void SDLMainLoop::changeScreenModeHandler(Event::ChangeScreenMode *event) {
+    int width = event->getWidth();
+    int height = event->getHeight();
+    int bpp = event->getBPP();
+    
+    Settings::SettingsManager::getInstance()->set(
+        "display.width", Misc::StreamAsString() << width);
+    Settings::SettingsManager::getInstance()->set(
+        "display.height", Misc::StreamAsString() << height);
+    Settings::SettingsManager::getInstance()->set(
+        "display.bpp", Misc::StreamAsString() << bpp);
+    
+    SDL_SetVideoMode(width, height, bpp, this->sdl_init_flags);
+    resizeGL(width, height);
+}
+
+void SDLMainLoop::joinGameHandler(Event::JoinGame *event) {
+    GameLoop *loop = new GameLoop();
+    if(!loop->tryConnect(event->getHost(), event->getPort())) {
+        delete loop;
+        
+        Widget::TextWidget *error = dynamic_cast<Widget::TextWidget *>(
+            menuLoop->getGUI()->getWidget("connect/error"));
+        if(error) {
+            error->setText(Misc::StreamAsString()
+                << "Could not connect to " << event->getHost()
+                << ":" << event->getPort());
+        }
+        
+        return;
+    }
     loop->construct();
     
     loop->setGuiPointers(
-        mainLoop->menuLoop->getGUI(),
-        mainLoop->menuLoop->getGUIInput());
-    mainLoop->menuLoop->getGUI()->selectScreen("running");
+        menuLoop->getGUI(),
+        menuLoop->getGUIInput());
+    menuLoop->getGUI()->selectScreen("running");
     
 	// set up camera if necessary
     loop->setProjection(Point2D(
@@ -40,7 +69,7 @@ void SDLMainLoop::JoinGameObserver::observe(Event::JoinGame *event) {
         SDL_GetVideoSurface()->h));
     
     //Timing::AccelControl::getInstance()->setPauseSkipDirectly(SDL_GetTicks());
-    mainLoop->useLoopBase(loop);
+    useLoopBase(loop);
 }
 
 SDLMainLoop::SDLMainLoop() {
@@ -49,8 +78,9 @@ SDLMainLoop::SDLMainLoop() {
     // it's dangerous to add observers inside a constructor, but in this case
     // we know that SDLMainLoop was not constructed from within an event, so
     // it's okay.
-    ADD_OBSERVER(new QuitObserver(this));
-    ADD_OBSERVER(new JoinGameObserver(this));
+    METHOD_OBSERVER(&SDLMainLoop::quitHandler);
+    METHOD_OBSERVER(&SDLMainLoop::changeScreenModeHandler);
+    METHOD_OBSERVER(&SDLMainLoop::joinGameHandler);
     
     initSDL();
     initOpenGL();
@@ -60,6 +90,9 @@ SDLMainLoop::SDLMainLoop() {
 }
 
 SDLMainLoop::~SDLMainLoop() {
+    delete menuLoop;
+    if(!currentlyUsingMenuLoop()) delete loop;
+    
     TTF_Quit();
     SDL_Quit();
 }
@@ -69,6 +102,8 @@ void SDLMainLoop::useLoopBase(LoopBase *loop) {
 }
 
 void SDLMainLoop::useMenuLoop() {
+    delete this->loop;  // delete the other menu, whatever it is
+    
     menuLoop->getGUI()->selectScreen("main");
     this->loop = menuLoop;
 }
@@ -104,6 +139,7 @@ void SDLMainLoop::initSDL() {
     }
     
     SDL_SetVideoMode(width, height, bpp, sdl_init_flags);
+    projector.setCurrentDimensions(Point2D(width, height));
 }
 
 void SDLMainLoop::initOpenGL() {
@@ -118,6 +154,8 @@ void SDLMainLoop::initOpenGL() {
 }
 
 void SDLMainLoop::resizeGL(int width, int height) {
+    LOG(SDL, "Resizing viewport to " << width << " by " << height);
+    
     // in case of divide by zero
     if (height == 0) height = 1;
     
@@ -180,8 +218,8 @@ void SDLMainLoop::handleEvents() {
             SDL_SetVideoMode(event.resize.w, event.resize.h,
                 0, sdl_init_flags);
             resizeGL(event.resize.w, event.resize.h);
-            projector.setCurrentDimensions(
-                Point2D(event.resize.w, event.resize.h));
+            /*projector.setCurrentDimensions(
+                Point2D(event.resize.w, event.resize.h));*/
             break;
         }
         

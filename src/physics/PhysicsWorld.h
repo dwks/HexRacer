@@ -9,7 +9,7 @@
 #include "PhysicalPlayer.h"
 #include "DebugDrawer.h"
 
-#include "event/TypedObserver.h"
+#include "event/Enabler.h"
 #include "event/SetDebugDrawing.h"
 
 #include "btBulletCollisionCommon.h"
@@ -18,25 +18,19 @@
 namespace Project {
 namespace Physics {
 
-class PhysicsWorld {
+class PhysicsWorld : public Event::Enabler {
 private:
     static PhysicsWorld *instance;
 public:
     static PhysicsWorld *getInstance() { return instance; }
-public:
-    class DebugDrawingObserver
-        : public Event::TypedObserver<Event::SetDebugDrawing> {
-    public:
-        virtual void observe(Event::SetDebugDrawing *event);
-    };
-    
-    friend class DebugDrawingObserver;
+protected:
+    void setDebugDrawingHandler(Event::SetDebugDrawing *event);
 public:
     PhysicsWorld();
     ~PhysicsWorld();
     
     void setupPhysicsWorld();
-    void stepWorld(float microseconds);
+    void stepWorld(unsigned long milliseconds);
     void setGravity(float xAccel, float yAccel, float zAccel);
     
     void registerRigidBody(btRigidBody *body);
@@ -54,6 +48,8 @@ public:
     DebugDrawer &getDebug() { return debug; }
 private:
     void setDebug(bool on);
+    
+    void registerTickCallback();
 private:
     btBroadphaseInterface *broadPhaseInterface;
     btCollisionDispatcher *collisionDispatcher;

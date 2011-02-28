@@ -9,6 +9,8 @@ namespace Event {
 /** Simple abstract class for Observers which are interested in more than one
     event type. A typical implementation would perform a switch on the type of
     the event and downcast as appropriate.
+    
+    Currently this is no different from Observer itself.
 */
 class MultiObserver : public Observer {
 public:

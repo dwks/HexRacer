@@ -12,6 +12,7 @@
 #include "render/RenderList.h"
 #include "render/BackgroundRenderable.h"
 #include "map/HRMap.h"
+#include "CubeMapDialog.h"
 using namespace Project;
 using namespace OpenGL;
 using namespace Math;
@@ -43,6 +44,9 @@ private:
 	GLuint sphereList;
 	GLuint hudCircleList;
 
+	RenderProperties* objectBufferProperties;
+	RenderProperties* normalRenderProperties;
+
 	HRMap* map;
 	RenderManager* renderer;
 	LightManager* lightManager;
@@ -55,6 +59,7 @@ private:
 
 	MapObject::ObjectType editObjectType;
 	QList<MapObject*> mapObjects[MapObject::NUM_OBJECT_TYPES];
+	bool drawObjects[MapObject::NUM_OBJECT_TYPES];
 	MapObject* selectedObject;
 	EditMode editMode;
 
@@ -72,6 +77,7 @@ public:
 	Color getSelectedColor(int color_index);
 	static bool editModeCompatible(MapObject::ObjectType type, EditMode mode);
 	EditMode getEditMode() const { return editMode; }
+	const bool* getDrawMapObject() { return drawObjects; }
 
 	//QSize sizeHint() const;
 	//QSize minimumSize () const;
@@ -106,7 +112,7 @@ private:
 	MapObject* getClickedObject(double u, double v, bool rerender = true);
 	bool getRaycastPosition(double u, double v, Point& p);
 	void renderObjects(MapObject::ObjectType type, bool object_buffer = false);
-	static void glBufferIndexColor(int buffer_index);
+	static Color glBufferIndexColor(int buffer_index);
 
 	void translateSelectedObject(Point translation);
 	void setSelectedObject(MapObject* object);
@@ -128,8 +134,10 @@ public slots:
 	void generatePathProgress();
 	void generate2DMap(string filename);
 	void setMapObjectType(MapObject::ObjectType type);
+	void setDrawMapObject(bool* draw_array);
 	void setEditMode(EditMode mode);
 	void loadCubeMap();
+	void showOptionsDialog();
 
 	void deleteSelected();
 	void deleteAll();
@@ -144,6 +152,7 @@ public slots:
 	void setLightStrength(double strength);
 	void setLightHasAttenuation(bool has);
 	void setMeshInstanceType(int type);
+	void scaleAll(double scale, Point origin);
 
 	void setPropMeshIndex(int index);
 	void addPropMesh(string name, string filename);

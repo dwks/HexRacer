@@ -8,12 +8,17 @@
 #include "render/FontManager.h"
 #include "render/WidgetTextureList.h"
 
+#include "event/Enabler.h"
+#include "event/PauseGame.h"
+#include "event/SwitchToScreen.h"
+
 namespace Project {
 namespace GUI {
 
-class GUIObservers;
-
-class GUISystem {
+class GUISystem : public Event::Enabler {
+protected:
+    void pauseGameHandler(Event::PauseGame *event);
+    void switchToScreenHandler(Event::SwitchToScreen *event);
 private:
     Render::FontManager *fontManager;
     Render::WidgetTextureList *textureList;
@@ -23,8 +28,6 @@ private:
     Widget::WidgetBase *currentScreen;
     
     Widget::WidgetPoint screenSize;
-    
-    GUIObservers *observers;
 public:
     GUISystem() : widgets(0), currentScreen(0) {}
     ~GUISystem();
@@ -38,6 +41,7 @@ public:
     
     Widget::WidgetBase *getWidget(const std::string &path);
     Widget::CompositeWidget *getScreen(const std::string &path);
+    Widget::WidgetBase *getCurrentScreen() { return currentScreen; }
     
     void setScreenSize(Widget::WidgetPoint screenSize)
         { this->screenSize = screenSize; }

@@ -1,13 +1,15 @@
 #include <iomanip>  // for std::setprecision()
-#include <vector>
+#include <math.h>
 
 #include "SDL.h"  // for SDL_GetVideoSurface()
 
 #include "GameRenderer.h"
 #include "opengl/GeometryDrawing.h"
 #include "opengl/MathWrapper.h"
+#include "math/BoundingBox3D.h"
 
 #include "map/MapLoader.h"
+#include "map/MapOptions.h"
 
 #include "hud/LapProgressBar.h"
 
@@ -17,7 +19,8 @@
 namespace Project {
 namespace SDL {
 
-void GameRenderer::construct(OpenGL::Camera *camera) {
+void GameRenderer::construct(OpenGL::Camera *camera)
+{
     //Instantiate the rendering objects
     meshLoader = boost::shared_ptr<Mesh::MeshLoader>(
         new Mesh::MeshLoader());
@@ -67,11 +70,42 @@ void GameRenderer::construct(OpenGL::Camera *camera) {
     paintManager->setPaintCells(map->getPaintCells());
     
     Map::MapLoader().load(map.get(), mapRenderable.get());
+
+	shadowProperties = NULL;
+	shadowCamera = NULL;
+
+	if (renderer->getRenderSettings()->getBloomEnabled())
+		initBloom();
+
+	if (renderer->getRenderSettings()->getShadowMappingEnabled())
+		initShadowMap();
 }
 
-void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
+void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldManager) {
+    if(fpsRate) fpsRate->countFrame();
+    
+	//Activate all lights visible to the camera
+    lightManager->activateIntersectingLights(*camera->getFrustrum());
+
+	Render::RenderList scene_render_list;
+	scene_render_list.addRenderable(worldManager->getWorld()->getRenderableObject());
+	scene_render_list.addRenderable(mapRenderable.get());
     
     //Init Rendering----------------------------------------------------------------------
+
+	worldManager->getWorld()->preRender();
+
+	OpenGL::Light* strongest_light = renderer->getLightManager()->getActiveLight(0);
+
+	if (renderer->getRenderSettings()->getShadowMappingEnabled() &&
+		GET_SETTING("render.shadow.enable", false) && strongest_light) {
+		updateShadowCamera(strongest_light->getPosition(), camera);
+		renderToShadowMap(scene_render_list);
+		renderer->setShadowMapTexture(shadowDepthTexture);
+		renderer->getRenderSettings()->setApplyToShadowMatrix(true);
+	}
+	else
+		renderer->setShadowMapTexture(0);
 
     double near_plane = GET_SETTING("render.camera.nearplane", 0.1);
     double far_plane = GET_SETTING("render.camera.farplane", 300.0);
@@ -89,20 +123,19 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
     glLoadIdentity();
     camera->glLookAt();
 
+	renderer->getLightManager()->reapplyActiveLights();
+
     OpenGL::Color::glColor(OpenGL::Color::WHITE);
     renderer->setCamera(camera);
-  
-    //Activate all lights visible to the camera
-    lightManager->activateIntersectingLights(*camera->getFrustrum());
-    
-    //Render the background
+
+	 //Render the background
     background->render(renderer.get());
 
-    //Render the active lights
+	//Render the active lights
     if(GET_SETTING("render.drawlightspheres", false))
         lightManager->drawActiveLightSpheres(false);
     
-    renderWorld(world);
+	renderWorld(worldManager->getWorld());
 
 	//Paint Rendering----------------------------------------------------------------------
 
@@ -114,16 +147,50 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::World *world) {
 	glCullFace(GL_BACK);
 	glEnable(GL_CULL_FACE);
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	//Render the paint
+	paintManager->setFadePlanes((float) (near_plane+(paint_far_plane-near_plane)*0.75), (float) paint_far_plane);
     paintManager->render(renderer.get());
 
+	//Render the erasing effects
+	Object::WorldManager::PlayerIteratorType iterator = worldManager->getPlayerIterator();
+	while (iterator.hasNext()) {
+		Object::Player* player = iterator.next();
+
+		if (player->getOnGround() && player->getPaintType() == Event::TogglePainting::ERASING) {
+			paintManager->renderEraseEffect(player->getPosition(), PAINTING_RADIUS);
+		}
+	}
+
 	//Revert Rendering Settings
+	renderer->getRenderSettings()->setApplyToShadowMatrix(false);
 	glDisable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+
+	if (renderer->getRenderSettings()->getBloomEnabled() && GET_SETTING("render.bloom.enable", false)) {
+
+		scene_render_list.addRenderable(paintManager.get());
+
+		//Render to the bloom buffer
+		camera->setFarPlane(GET_SETTING("render.bloom.farplane", 50.0));
+		bloomScene->setChild(&scene_render_list);
+		renderToBloomBuffer(*bloomRenderable);
+		textureProjection();
+		int blur_passes = GET_SETTING("render.bloom.blurpasses", 5);
+		for (int i = 0; i < blur_passes; i++)
+			bloomBlurPass();
+		applyBloomBuffer();
+
+		bloomScene->setChild(NULL);
+
+	}
 
 	camera->setFarPlane(far_plane);
 	camera->setFrustrumFarPlaneEnabled(false);
 
-    //Reset the lights
+	//Reset the lights
     lightManager->resetLights();
 }
 
@@ -194,8 +261,10 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 		HUD::LapProgressBar bar;
 		bar.setProgress(player->getPathTracker()->getLapProgress());
 		bar.render();
+		/*
         percentageComplete->setText(Misc::StreamAsString() << std::setprecision(3)
             << player->getPathTracker()->getLapProgress() * 100 << "%");
+		*/
 
     }
 
@@ -205,9 +274,14 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 }
 
 void GameRenderer::setGUI(boost::shared_ptr<GUI::GUISystem> gui) {
-
     this->gui = gui;
     
+    if(GET_SETTING("render.showfps", 1)) {
+        fpsRate = boost::shared_ptr<FPSRateMonitor>(new FPSRateMonitor());
+        gui->getScreen("running")->addChild(fpsRate->getWidget());
+    }
+    
+#if 0
     percentageComplete = new Widget::TextWidget(
         "percentageComplete", OpenGL::Color::WHITE, "0%",
         Widget::NormalTextLayout::ALIGN_HCENTRE | Widget::NormalTextLayout::ALIGN_VCENTRE);
@@ -215,6 +289,7 @@ void GameRenderer::setGUI(boost::shared_ptr<GUI::GUISystem> gui) {
     /*percentageComplete = new Widget::ButtonWidget("percentageComplete",
         "0%", Widget::WidgetRect(0.0, 0.1, 0.1, 0.05));*/
     gui->getScreen("running")->addChild(percentageComplete);
+#endif
 }
 
 void GameRenderer::renderWorld(Object::World *world) {
@@ -222,7 +297,6 @@ void GameRenderer::renderWorld(Object::World *world) {
     glEnable(GL_TEXTURE_2D);
     
     //Render most of the world
-    world->preRender();
     world->getRenderableObject()->render(renderer.get());
     
     //Render the map
@@ -233,18 +307,20 @@ void GameRenderer::renderWorld(Object::World *world) {
     glDisable(GL_TEXTURE_2D);
 }
 
-void GameRenderer::renderDebug(Object::WorldManager *worldManager, Object::Player *player) {
+void GameRenderer::renderDebug(OpenGL::Camera *camera, Object::WorldManager *worldManager, Object::Player *player) {
 
-	/*
+	if (GET_SETTING("render.drawshadowcamera", false))
+		renderShadowDebug();
+
 	camera->glProjection();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	camera->glLookAt();
-	*/
-	if (GET_SETTING("render.drawpathnodes", false)) {
-		renderAIDebug(player);
-	}
 
+	if (GET_SETTING("render.drawpathnodes", false))
+		renderAIDebug(player);
+
+	
 }
 
 void GameRenderer::renderAIDebug(Object::Player *player) {
@@ -292,6 +368,510 @@ void GameRenderer::renderAIDebug(Object::Player *player) {
 	Point p = player->getPathTracker()->getProgressPosition();
 	OpenGL::Color::glColor(OpenGL::Color::WHITE);
 	OpenGL::GeometryDrawing::drawBoundingBox3D(BoundingBox3D(0.5, 0.5, 0.5, p), true);
+
+}
+
+void GameRenderer::renderShadowDebug() {
+
+	glViewport(0, 0, SDL_GetVideoSurface()->w/4, SDL_GetVideoSurface()->h/4);
+
+	textureProjection();
+	//glClear(GL_COLOR_BUFFER_BIT);
+
+	glActiveTextureARB(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, shadowDepthTexture);
+	drawQuad();
+
+	OpenGL::Color::glColor(OpenGL::Color::RED);
+	glBegin(GL_LINES);
+	glVertex2f(0.5, 0.0);
+	glVertex2f(0.5, 1.0);
+	glVertex2f(0.0, 0.5);
+	glVertex2f(1.0, 0.5);
+	glEnd();
+
+
+	shadowCamera->glProjection();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	shadowCamera->glLookAt();
+	
+	if (shadowFocusFrustrum.size() >= 5) {
+		
+		glBegin(GL_LINES);
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[0]);
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[1]);
+
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[0]);
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[2]);
+
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[0]);
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[3]);
+
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[0]);
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[4]);
+
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[1]);
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[2]);
+
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[2]);
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[3]);
+
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[3]);
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[4]);
+
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[4]);
+		OpenGL::MathWrapper::glVertex(shadowFocusFrustrum[1]);
+		glEnd();
+	}
+	
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+
+	glViewport(0, 0, SDL_GetVideoSurface()->w, SDL_GetVideoSurface()->h);
+
+}
+void GameRenderer::initBloom() {
+
+	//Texture for storing color information
+
+	glGenTextures(1, &bloomColorTexture);
+	glBindTexture(GL_TEXTURE_2D, bloomColorTexture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+	glTexImage2D(GL_TEXTURE_2D,
+		0,
+		GL_RGB,
+		renderer->getRenderSettings()->getBloomWidth(),
+		renderer->getRenderSettings()->getBloomHeight(),
+		0,
+		GL_RGB,
+		GL_UNSIGNED_BYTE,
+		0);
+
+	//Texture for storing depth information
+
+	glGenTextures(1, &bloomDepthTexture);
+	glBindTexture(GL_TEXTURE_2D, bloomDepthTexture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+	glTexImage2D(GL_TEXTURE_2D,
+		0,
+		GL_DEPTH_COMPONENT,
+		renderer->getRenderSettings()->getBloomWidth(),
+		renderer->getRenderSettings()->getBloomHeight(),
+		0,
+		GL_DEPTH_COMPONENT,
+		GL_UNSIGNED_BYTE,
+		0);
+
+	//Texture for performing blur passes
+
+	glGenTextures(1, &bloomBlurTexture);
+	glBindTexture(GL_TEXTURE_2D, bloomBlurTexture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+	glTexImage2D(GL_TEXTURE_2D,
+		0,
+		GL_RGB,
+		renderer->getRenderSettings()->getBloomWidth(),
+		renderer->getRenderSettings()->getBloomHeight(),
+		0,
+		GL_RGB,
+		GL_UNSIGNED_BYTE,
+		0);
+
+	//Main bloom FBO
+
+	glGenFramebuffersEXT(1, &bloomFBO);
+	glBindFramebufferEXT(GL_FRAMEBUFFER, bloomFBO);
+
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER,
+		GL_COLOR_ATTACHMENT0,
+		GL_TEXTURE_2D,
+		bloomColorTexture,
+		0);
+
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER,
+		GL_DEPTH_ATTACHMENT,
+		GL_TEXTURE_2D,
+		bloomDepthTexture,
+		0);
+
+	//FBO for performing blur passes
+
+	glGenFramebuffersEXT(1, &bloomBlurFBO);
+	glBindFramebufferEXT(GL_FRAMEBUFFER, bloomBlurFBO);
+
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER,
+		GL_COLOR_ATTACHMENT0,
+		GL_TEXTURE_2D,
+		bloomBlurTexture,
+		0);
+
+	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
+
+	bloomRenderable = new Render::RenderList();
+	bloomScene = new Render::RenderParent();
+
+	bloomRenderable->addRenderable(bloomScene);
+
+	if (map->getMapOptions().getBGBloomEnable()) {
+		bloomBackground = new Render::RenderParent(background.get());
+		bloomRenderable->addRenderable(bloomBackground);
+		bloomBackground->getRenderProperties()->setWantsShaderName("backgroundBloomShader");
+		bloomBackground->getRenderProperties()->setShaderOverride(true);
+	}
+
+	OpenGL::Material* default_material = new OpenGL::Material("bloomDefault");
+	default_material->setAmbient(OpenGL::Color::BLACK);
+
+	bloomScene->getRenderProperties()->setWantsShaderName("bloomShader");
+	bloomScene->getRenderProperties()->setShaderOverride(true);
+	bloomScene->getRenderProperties()->setMaterial(default_material);
+	
+	hBlurShaderIndex = renderer->getShaderManager()->shaderIndexFromName("hBlurShader");
+	vBlurShaderIndex = renderer->getShaderManager()->shaderIndexFromName("vBlurShader");
+}
+
+void GameRenderer::renderToBloomBuffer(Render::RenderableObject& renderable) {
+
+	glViewport(0, 0,
+		renderer->getRenderSettings()->getBloomWidth(), renderer->getRenderSettings()->getBloomHeight());
+	glBindFramebufferEXT(GL_FRAMEBUFFER, bloomFBO);
+
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
+
+	renderer->getRenderSettings()->setRedrawMode(true);
+	renderable.render(renderer.get());
+	renderer->getRenderSettings()->setRedrawMode(false);
+	
+}
+
+void GameRenderer::textureProjection() {
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glDisable(GL_DEPTH_TEST);
+	glDepthMask(GL_FALSE);
+
+}
+void GameRenderer::bloomBlurPass() {
+
+	glActiveTextureARB(GL_TEXTURE0);
+
+	//Perform horizontal pass
+
+	glBindFramebufferEXT(GL_FRAMEBUFFER, bloomBlurFBO);
+	glBindTexture(GL_TEXTURE_2D, bloomColorTexture);
+
+	renderer->getShaderManager()->enableShader(hBlurShaderIndex);
+	renderer->getShaderManager()->getShaderParamSetter().setParamInt(
+		Shader::ShaderParameter::UNIFORM,
+		"viewWidth",
+		renderer->getRenderSettings()->getBloomWidth());
+	renderer->getShaderManager()->getShaderParamSetter().setStandardParamInt(
+		Shader::ShaderParameter::UNIFORM,
+		static_cast<int>(Shader::ShaderManager::UINT_COLOR_MAP),
+		0);
+
+	drawQuad();
+
+	//Perform vertical pass
+
+	glBindFramebufferEXT(GL_FRAMEBUFFER, bloomFBO);
+	glBindTexture(GL_TEXTURE_2D, bloomBlurTexture);
+
+	renderer->getShaderManager()->enableShader(vBlurShaderIndex);
+	renderer->getShaderManager()->getShaderParamSetter().setParamInt(
+		Shader::ShaderParameter::UNIFORM,
+		"viewHeight",
+		renderer->getRenderSettings()->getBloomHeight());
+	renderer->getShaderManager()->getShaderParamSetter().setStandardParamInt(
+		Shader::ShaderParameter::UNIFORM,
+		static_cast<int>(Shader::ShaderManager::UINT_COLOR_MAP),
+		0);
+
+	drawQuad();
+
+	renderer->getShaderManager()->disableShader();
+	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
+}
+
+void GameRenderer::applyBloomBuffer() {
+
+	glViewport(0, 0, SDL_GetVideoSurface()->w, SDL_GetVideoSurface()->h);
+	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+
+	glActiveTextureARB(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, bloomColorTexture);
+
+	OpenGL::Color::glColor(OpenGL::Color::WHITE);
+
+	drawQuad();
+
+	glDisable(GL_TEXTURE_2D);
+
+	glDisable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glDepthMask(GL_TRUE);
+	glEnable(GL_DEPTH_TEST);
+
+}
+
+void GameRenderer::drawQuad() {
+
+	glBegin(GL_QUADS);
+
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex2f(0.0f, 0.0f);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex2f(1.0f, 0.0f);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex2f(1.0f, 1.0f);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex2f(0.0f, 1.0f);
+
+	glEnd();
+
+}
+
+void GameRenderer::initShadowMap() {
+
+	glGenTextures(1, &shadowDepthTexture);
+	glBindTexture(GL_TEXTURE_2D, shadowDepthTexture);
+
+	GLfloat border_color [4] = {1.0f, 1.0f, 1.0f, 1.0f};
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border_color);
+
+	glTexImage2D(GL_TEXTURE_2D,
+		0,
+		GL_DEPTH_COMPONENT,
+		renderer->getRenderSettings()->getShadowMapWidth(),
+		renderer->getRenderSettings()->getShadowMapHeight(),
+		0,
+		GL_DEPTH_COMPONENT,
+		GL_UNSIGNED_BYTE,
+		0);
+
+
+	glGenFramebuffersEXT(1, &shadowFBO);
+	glBindFramebufferEXT(GL_FRAMEBUFFER, shadowFBO);
+
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER,
+		GL_DEPTH_ATTACHMENT,
+		GL_TEXTURE_2D,
+		shadowDepthTexture,
+		0);
+
+	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
+
+	shadowCamera = new OpenGL::Camera();
+	shadowCamera->setFrustrumFarPlaneEnabled(true);
+
+	shadowProperties = new Render::RenderProperties();
+	shadowProperties->setShaderOverride(true);
+	shadowProperties->setTexturePackOverride(true);
+	shadowProperties->setMaterialOverride(true);
+	shadowProperties->setColorOverride(true);
+
+}
+
+void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL::Camera* camera) {
+
+	double far_plane = GET_SETTING("render.shadow.farplane", 100.0);
+
+	shadowCamera->setPosition(light_position);
+	shadowCamera->setLookPosition(camera->cameraToWorld(0.5, 0.5, far_plane*0.5));
+	shadowCamera->setUpDirection(camera->getUpDirection());
+	//shadowCamera->setUpDirection(shadowCamera->getLookDirection().crossProduct(camera->getLookDirection()));
+
+	shadowFocusFrustrum.clear();
+	shadowFocusFrustrum.push_back(camera->getPosition());
+	shadowFocusFrustrum.push_back(camera->cameraToWorld(0.0, 0.0, far_plane));
+	shadowFocusFrustrum.push_back(camera->cameraToWorld(1.0, 0.0, far_plane));
+	shadowFocusFrustrum.push_back(camera->cameraToWorld(1.0, 1.0, far_plane));
+	shadowFocusFrustrum.push_back(camera->cameraToWorld(0.0, 1.0, far_plane));
+
+	double x_angle_min;
+	double y_angle_min;
+	double x_angle_max;
+	double y_angle_max;
+
+	for (unsigned int i = 0; i < shadowFocusFrustrum.size(); i++) {
+		Math::Point to_vector = shadowFocusFrustrum[i]-shadowCamera->getPosition();
+		double x = to_vector.dotProduct(shadowCamera->getRightDirection());
+		double y = to_vector.dotProduct(shadowCamera->getUpDirection());
+		double z = to_vector.dotProduct(shadowCamera->getLookDirection());
+		double x_angle = std::atan(x/z);
+		double y_angle = std::atan(y/z);
+		if (i == 0) {
+			x_angle_min = x_angle;
+			x_angle_max = x_angle;
+			y_angle_min = y_angle;
+			y_angle_max = y_angle;
+		}
+		else {
+			x_angle_min = Math::minimum(x_angle_min, x_angle);
+			x_angle_max = Math::maximum(x_angle_max, x_angle);
+			y_angle_min = Math::minimum(y_angle_min, y_angle);
+			y_angle_max = Math::maximum(y_angle_max, y_angle);
+		}
+	}
+
+	double x_rotate = (x_angle_max+x_angle_min)*0.5;
+	double y_rotate = (y_angle_max+y_angle_min)*0.5;
+	Math::Point camera_lookat = shadowCamera->cameraToWorld(0.5, 0.5, 1.0);
+	shadowCamera->setLookPosition(camera_lookat
+		+shadowCamera->getRightDirection()*std::tan(x_rotate)
+		+shadowCamera->getUpDirection()*std::tan(y_rotate)
+		);
+
+	double shadow_far_plane = 0.0;
+	for (unsigned int i = 0; i < shadowFocusFrustrum.size(); i++) {
+		Math::Point to_vector = shadowFocusFrustrum[i]-shadowCamera->getPosition();
+		double z = to_vector.dotProduct(shadowCamera->getLookDirection());
+		shadow_far_plane = Math::maximum(shadow_far_plane, z);
+	}
+
+	/*
+	bool near_plane_set = false;
+	double shadow_near_plane = 0.1;
+	Math::BoundingBox3D map_bound = map->getMapBoundingBox();
+	if (!map_bound.pointInside(shadowCamera->getPosition())) {
+		for (unsigned int i = 0; i < 8; i++) {
+			double vertex_plane = (map_bound.getCorner(i)-shadowCamera->getPosition()).dotProduct(shadowCamera->getLookDirection());
+			if (vertex_plane > 0.0) {
+				if (!near_plane_set) {
+					shadow_near_plane = vertex_plane;
+					near_plane_set = true;
+				}
+				else
+					shadow_near_plane = Math::minimum(shadow_near_plane, vertex_plane);
+			}
+			else {
+				shadow_near_plane = 0.1;
+				break;
+			}
+		}
+	}
+	*/
+
+	bool near_plane_set = false;
+	double shadow_near_plane = 0.1;
+	Math::BoundingBox3D map_bound = map->getMapBoundingBox();
+	if (!map_bound.pointInside(shadowCamera->getPosition())) {
+		for (unsigned int i = 0; i < 8; i++) {
+			double vertex_plane = (map_bound.getCorner(i)-shadowCamera->getPosition()).dotProduct(shadowCamera->getLookDirection());
+			if (vertex_plane > 0.0) {
+				if (!near_plane_set) {
+					shadow_near_plane = vertex_plane;
+					near_plane_set = true;
+				}
+				else
+					shadow_near_plane = Math::minimum(shadow_near_plane, vertex_plane);
+			}
+		}
+	}
+
+	shadowCamera->setNearPlane(shadow_near_plane);
+	shadowCamera->setFarPlane(shadow_far_plane);
+	shadowCamera->setFieldOfViewDegrees(Math::radiansToDegrees(y_angle_max-y_angle_min));
+	shadowCamera->setAspect(std::sin(x_angle_max-x_angle_min)/std::sin(y_angle_max-y_angle_min));
+
+}
+
+void GameRenderer::renderToShadowMap(Render::RenderableObject& renderable) {
+
+	glViewport(0, 0,
+		renderer->getRenderSettings()->getShadowMapWidth(), renderer->getRenderSettings()->getShadowMapHeight());
+
+	glBindFramebufferEXT(GL_FRAMEBUFFER, shadowFBO);
+
+	//Set up the camera and matrices
+	shadowCamera->glProjection();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	shadowCamera->glLookAt();
+
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	//Save the matrices to the texture matrix
+
+	const GLdouble bias[16] = {	
+		0.5, 0.0, 0.0, 0.0, 
+		0.0, 0.5, 0.0, 0.0,
+		0.0, 0.0, 0.5, 0.0,
+	0.5, 0.5, 0.5, 1.0};
+
+	double modelView[16];
+	double projection[16];
+
+	// Grab modelview and transformation matrices
+	glGetDoublev(GL_MODELVIEW_MATRIX, modelView);
+	glGetDoublev(GL_PROJECTION_MATRIX, projection);
+	
+	//Set the texture matrix
+	glMatrixMode(GL_TEXTURE);
+	glActiveTexture(Render::RenderManager::SHADOW_MAP_TEXTURE_UNIT);
+	glLoadIdentity();
+	glLoadMatrixd(bias);
+	glMultMatrixd(projection);
+	glMultMatrixd(modelView);
+
+	glMatrixMode(GL_MODELVIEW);
+
+	//Cull front faces
+	glCullFace(GL_FRONT);
+	glEnable(GL_CULL_FACE);
+
+	renderer->setCamera(shadowCamera);
+	renderer->setRenderProperties(shadowProperties);
+
+	//Render the scene from the shadow camera
+	renderable.render(renderer.get());
+
+	renderer->revertRenderProperties(shadowProperties);
+
+	//Revert to standard rendering settings
+	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glDisable(GL_CULL_FACE);
+	glViewport(0, 0, SDL_GetVideoSurface()->w, SDL_GetVideoSurface()->h);
 
 }
 

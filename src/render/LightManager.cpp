@@ -198,5 +198,20 @@ namespace Render {
 		light_tree->add(light_node);
 
 	}
+
+	OpenGL::Light* LightManager::getActiveLight(int index) const {
+		if (index < 0 || index >= static_cast<int>(activeLights.size()))
+			return NULL;
+		else
+			return activeLights[index]->light;
+	}
+
+	void LightManager::reapplyActiveLights() {
+		for (unsigned int i = 0; i < activeLights.size(); i++) {
+			activeLights[i]->light->glApply(GL_LIGHT0+i);
+		}
+	}
+
+
 }  // namespace Render
 }  // namespace Project

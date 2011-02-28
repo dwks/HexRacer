@@ -6,20 +6,33 @@
 
 #include "timing/TimedSubsystem.h"
 
-#include "PlayerManager.h"
 #include "ClientData.h"
 #include "JoystickManager.h"
+#include "world/PlayerManager.h"
+
+#include "input/InputMapper.h"
 
 namespace Project {
 namespace SDL {
 
 class InputManager : public Timing::TimedSubsystem {
-private:
-    bool keyDown[SDLK_LAST];
-    ClientData *clientData;
-    JoystickManager *joystick;
+
 public:
-    InputManager(int ms, ClientData *clientData);
+	enum PresetMapping { NO_JOYSTICK, XB360_WINDOWS };
+
+private:
+
+    ClientData *clientData;
+    World::PlayerManager *playerManager;
+    JoystickManager *joystick;
+	Input::InputMapper *inputMapper;
+
+	double debugCamera;
+
+public:
+
+    InputManager(int ms, ClientData *clientData,
+        World::PlayerManager *playerManager);
     ~InputManager();
     
     void init();
@@ -29,9 +42,12 @@ public:
     virtual void doAction(unsigned long currentTime);
     
     void doPausedChecks();
+
+	void setInputMappings(PresetMapping mapping = NO_JOYSTICK);
+
 private:
     void handlePaint();
-    void handleJoystick();
+    //void handleJoystick();
 };
 
 }  // namespace SDL

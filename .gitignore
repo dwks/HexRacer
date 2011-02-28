@@ -28,6 +28,7 @@ Makefile
 
 # Windows project stuff
 /Debug
+/Release
 /GeneratedFiles
 *.ncb
 *.suo
@@ -40,9 +41,13 @@ Makefile
 # Windows clutter
 *.db
 
+# Linux executables
+/netlag
+
 # Linux profiling
-mem.*
-profile.*
+profile*
+mem*
+/gmon.out
 
 # Objects and meshes and other game data
 /data

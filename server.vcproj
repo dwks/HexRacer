@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glew32.lib SDL.lib SDLmain.lib SDL_image.lib opengl.lib glu32.lib glu.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
+				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -133,6 +133,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -188,6 +189,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\AIManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\log\AliasStream.cpp"
 				>
 			</File>
@@ -197,6 +202,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\BaseRenderable.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\BasicWorld.cpp"
 				>
 			</File>
 			<File
@@ -256,6 +265,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\ChangeOfIntention.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\ChangeScreenMode.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\Color.cpp"
 				>
 			</File>
@@ -292,6 +309,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\Driver.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\Enabler.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\EntireWorld.cpp"
 				>
 			</File>
@@ -305,6 +330,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\EventSerializer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\EventSystem.cpp"
 				>
 			</File>
 			<File
@@ -329,6 +358,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\HRMap.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\JoinGame.cpp"
 				>
 			</File>
 			<File
@@ -400,6 +433,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\MethodObserver.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mesh\model_obj.cpp"
 				>
 			</File>
@@ -432,7 +469,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\event\ObserverList.cpp"
+				RelativePath=".\src\event\ObserverRegistry.cpp"
 				>
 			</File>
 			<File
@@ -480,6 +517,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\PathingUpdater.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\PathManager.cpp"
 				>
 			</File>
@@ -512,6 +553,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PhysicsTick.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\PhysicsWorld.cpp"
 				>
 			</File>
@@ -520,11 +565,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\event\PlayerAction.cpp"
+				RelativePath=".\src\world\PlayerIntention.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\object\PlayerList.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\PlayerManager.cpp"
 				>
 			</File>
 			<File
@@ -577,6 +626,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderParent.cpp"
 				>
 			</File>
 			<File
@@ -657,6 +710,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\SpatialList.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ai\StraightDriver.cpp"
 				>
 			</File>
 			<File
@@ -744,6 +801,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\WarpOntoTrack.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\object\World.cpp"
 				>
 			</File>
@@ -822,6 +883,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\AIManager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\log\AliasStream.h"
 				>
 			</File>
@@ -831,6 +896,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\BaseRenderable.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\BasicWorld.h"
 				>
 			</File>
 			<File
@@ -890,6 +959,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\ChangeOfIntention.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\ChangeScreenMode.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\Color.h"
 				>
 			</File>
@@ -926,6 +1003,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\Driver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\Enabler.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\EntireWorld.h"
 				>
 			</File>
@@ -939,6 +1024,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\EventSerializer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\EventSystem.h"
 				>
 			</File>
 			<File
@@ -963,6 +1052,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\HRMap.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\JoinGame.h"
 				>
 			</File>
 			<File
@@ -1034,6 +1127,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\MethodObserver.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mesh\model_obj.h"
 				>
 			</File>
@@ -1066,7 +1163,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\event\ObserverList.h"
+				RelativePath=".\src\event\ObserverRegistry.h"
 				>
 			</File>
 			<File
@@ -1118,6 +1215,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\PathingUpdater.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\PathManager.h"
 				>
 			</File>
@@ -1150,6 +1251,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PhysicsTick.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\PhysicsWorld.h"
 				>
 			</File>
@@ -1158,11 +1263,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\event\PlayerAction.h"
+				RelativePath=".\src\world\PlayerIntention.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\object\PlayerList.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\PlayerManager.h"
 				>
 			</File>
 			<File
@@ -1215,6 +1324,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\RenderParent.h"
 				>
 			</File>
 			<File
@@ -1310,6 +1423,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\StraightDriver.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\log\Stream.h"
 				>
 			</File>
@@ -1391,6 +1508,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\Vertex3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\WarpOntoTrack.h"
 				>
 			</File>
 			<File

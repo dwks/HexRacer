@@ -12,10 +12,14 @@
 #include "network/EventPacket.h"
 #include "network/HandshakePacket.h"
 
-#include "event/ObserverList.h"
+#include "event/EventSystem.h"
 #include "event/PacketReceived.h"
+#include "event/ChangeOfIntention.h"
 #include "event/TogglePainting.h"
 #include "event/EntireWorld.h"
+
+#include "history/PingTimeMeasurer.h"
+#include "misc/Sleeper.h"
 
 namespace Project {
 namespace SDL {
@@ -33,17 +37,23 @@ void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
             = dynamic_cast<Event::TogglePainting *>(event);
         if(!toggle->getPropagate()) break;
         toggle->setPropagate(false);
-        // fall-through
+        
+        send(event);
+        break;
     }
-    case Event::EventType::PLAYER_ACTION:
+    case Event::EventType::CHANGE_OF_INTENTION: {
+        Event::ChangeOfIntention *changeOfIntention
+            = dynamic_cast<Event::ChangeOfIntention *>(event);
+        if(!changeOfIntention->getPropagate()) break;
+        changeOfIntention->setPropagate(false);
+        
+        send(event);
+        break;
+    }
+    case Event::EventType::WARP_ONTO_TRACK:
     case Event::EventType::PAUSE_GAME:
     {
-        if(portal->getPortal() == NULL) break;
-        
-        Network::Packet *packet = new Network::EventPacket(event);
-        portal->getPortal()->sendPacket(packet);
-        delete packet;
-        
+        send(event);
         break;
     }
     case Event::EventType::PACKET_RECEIVED:
@@ -59,6 +69,14 @@ bool NetworkPortal::EventPropagator::interestedIn(
     Event::EventType::type_t type) {
     
     return true;  // !!! doesn't hurt to be over-notified right now
+}
+
+void NetworkPortal::EventPropagator::send(Event::EventBase *event) {
+    if(portal->getPortal() == NULL) return;
+    
+    Network::Packet *packet = new Network::EventPacket(event);
+    portal->getPortal()->sendPacket(packet);
+    delete packet;
 }
 
 NetworkPortal::NetworkPortal() {
@@ -110,7 +128,15 @@ void NetworkPortal::waitForWorld(Object::World *&world,
         if(packet) {
             Network::HandshakePacket *handshake
                 = dynamic_cast<Network::HandshakePacket *>(packet);
+            
             id = handshake->getClientID();
+            
+            unsigned long sent = handshake->getMilliseconds();
+            unsigned long now = Misc::Sleeper::getTimeMilliseconds();
+            long offset = -long(now - sent);
+            History::PingTimeMeasurer::getInstance()->setClockOffset(offset);
+            LOG(NETWORK, "ClockOffset set to " << offset);
+            
             delete packet;
             break;
         }
@@ -128,6 +154,7 @@ void NetworkPortal::waitForWorld(Object::World *&world,
                 = dynamic_cast<Network::EventPacket *>(packet);
             Event::EntireWorld *entireWorld
                 = dynamic_cast<Event::EntireWorld *>(event->getEvent());
+            
             world = entireWorld->getWorld();
             playerList = entireWorld->getPlayerList();
             delete entireWorld;
@@ -145,8 +172,10 @@ void NetworkPortal::waitForWorld(Object::World *&world,
 void NetworkPortal::checkNetwork() {
     if(!portal) return;
     
-    Network::Packet *packet = portal->nextPacket();
-    if(packet) {
+    for(;;) {
+        Network::Packet *packet = portal->nextPacket();
+        if(!packet) break;
+        
         //LOG2(NETWORK, PACKET, "Received packet " << typeid(*packet).name());
         
         if(dynamic_cast<Network::EventPacket *>(packet)) {

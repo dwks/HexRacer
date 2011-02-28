@@ -6,11 +6,14 @@ include_directories(.)
 
 include_directories(../build)  # for the moc
 
+aux_source_directory(ai AI_SOURCES)
 aux_source_directory(connection CONNECTION_SOURCES)
 aux_source_directory(event EVENT_SOURCES)
 aux_source_directory(gui GUI_SOURCES)
 aux_source_directory(handler HANDLER_SOURCES)
+aux_source_directory(history HISTORY_SOURCES)
 aux_source_directory(hud HUD_SOURCES)
+aux_source_directory(input INPUT_SOURCES)
 aux_source_directory(log LOG_SOURCES)
 aux_source_directory(map MAP_SOURCES)
 aux_source_directory(mapeditor MAP_EDITOR_DIR_SOURCES)
@@ -26,9 +29,11 @@ aux_source_directory(render RENDER_SOURCES)
 aux_source_directory(server SERVER_DIR_SOURCES)
 aux_source_directory(settings SETTINGS_SOURCES)
 aux_source_directory(sdl SDL_DIR_SOURCES)
+aux_source_directory(shader SHADER_SOURCES)
 aux_source_directory(sound SOUND_SOURCES)
 aux_source_directory(timing TIMING_SOURCES)
 aux_source_directory(widget WIDGET_SOURCES)
+aux_source_directory(world WORLD_SOURCES)
 
 set(SOURCES
     ${LOG_SOURCES}
@@ -42,21 +47,26 @@ set(SOURCES
     ${OPENGL_SOURCES}
     ${SETTINGS_SOURCES}
     ${RENDER_SOURCES}
+    ${SHADER_SOURCES}
     ${PAINT_SOURCES}
     ${TIMING_SOURCES}
     ${HANDLER_SOURCES}
     ${MAP_SOURCES}
-    ${MESH_SOURCES})
+    ${MESH_SOURCES}
+    ${WORLD_SOURCES})
 
 set(SDL_SOURCES
     ${SDL_DIR_SOURCES}
     ${SOUND_SOURCES}
     ${WIDGET_SOURCES}
     ${GUI_SOURCES}
-    ${HUD_SOURCES})
+    ${HUD_SOURCES}
+    ${HISTORY_SOURCES}
+    ${INPUT_SOURCES})
 
 set(SERVER_SOURCES
-    ${SERVER_DIR_SOURCES})
+    ${SERVER_DIR_SOURCES}
+    ${AI_SOURCES})
 
 set(MAP_EDITOR_SOURCES
     ${MAP_EDITOR_DIR_SOURCES})

@@ -18,7 +18,8 @@ private:
 	MeshInstance* meshInstance;
 	TransformedMesh* transformedMesh;
 	SimpleTransform transformation;
-	void update();
+	void updateTransformation();
+	void updateTint();
 
 public:
 
@@ -41,6 +42,14 @@ public:
 	virtual double getScale() const { return transformation.getScale(); }
 	virtual void setScale(double scale);
 	virtual void addToScale(double scale);
+
+	bool hasColors() const { return true; }
+	void setDiffuse(const Color& color);
+	void setSpecular(const Color& color);
+	void setAmbient(const Color& color);
+	Color getDiffuse() const { return meshInstance->getDiffuseTint(); }
+	Color getSpecular() const { return meshInstance->getSpecularTint(); }
+	Color getAmbient() const { return meshInstance->getAmbientTint(); }
 
 	Matrix getTransformMatrix() const { return transformation.getMatrix(); }
 

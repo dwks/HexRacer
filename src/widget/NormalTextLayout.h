@@ -21,13 +21,15 @@ public:
         ALIGN_BOTTOM    = 1 << 5
     };
 private:
-    WidgetRect hardBounds;
+    WidgetRect givenBounds;
     WidgetRect bounds;
     unsigned align;
     double aspectRatio;
 public:
     NormalTextLayout(unsigned align, double aspectRatio)
         : align(align), aspectRatio(aspectRatio) {}
+    
+    void setAspectRatio(double ratio) { aspectRatio = ratio; }
     
     virtual void update();
     virtual void update(const WidgetRect &newBounds);
