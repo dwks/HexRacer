@@ -127,6 +127,9 @@ namespace Map {
 			else if (keyword == HRMAP_VERSION_LABEL) {
 				in_file >> version;
 			}
+			else if (mapOptions.parseStream(keyword, in_file)) {
+
+			}
 			else  {
 
 				bool cube_map = false;
@@ -210,6 +213,8 @@ namespace Map {
 			out_file << HRMAP_MAP2DWIDTH_LABEL << ' ' << map2DWidth << '\n';
 			out_file << HRMAP_MAP2DHEIGHT_LABEL << ' ' << map2DHeight << '\n';
 		}
+		
+		mapOptions.saveToStream(out_file);
 
 		out_file << "#Prop Meshes\n";
 		for (unsigned int i = 0; i < propMeshNames.size(); i++) {
@@ -283,6 +288,8 @@ namespace Map {
 		version = "";
 		filename = "";
 		cubeMapFile->clear();
+
+		mapOptions.clear();
 
 		clearCubeMap();
 		clearCollisionTree();

@@ -498,6 +498,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\MapOptions.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\Material.cpp"
 				>
 			</File>
@@ -1505,6 +1509,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\MapLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\MapOptions.h"
 				>
 			</File>
 			<File

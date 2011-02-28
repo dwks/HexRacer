@@ -137,6 +137,7 @@ public slots:
 	void setDrawMapObject(bool* draw_array);
 	void setEditMode(EditMode mode);
 	void loadCubeMap();
+	void showOptionsDialog();
 
 	void deleteSelected();
 	void deleteAll();

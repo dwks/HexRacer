@@ -12,11 +12,12 @@
 #include "math/BoundingPlane3D.h"
 #include "PathNode.h"
 #include "MeshInstance.h"
+#include "MapOptions.h"
 #include <string>
 #include <vector>
 
 #define HRMAP_NUM_MESHES 5
-#define HRMAP_VERSION "0.0.2"
+#define HRMAP_VERSION "0.1.0"
 #define HRMAP_VERSION_LABEL "version"
 #define HRMAP_PROPMESH_LABEL "propMesh"
 #define HRMAP_LIGHT_LABEL "light"
@@ -60,6 +61,8 @@ private:
 	double map2DWidth;
 	double map2DHeight;
 
+	MapOptions mapOptions;
+
 	Math::BSPTree3D* collisionTree;
 
 public:
@@ -88,6 +91,7 @@ public:
 	Math::Point getMap2DCenter() const { return map2DCenter; }
 	double getMap2DWidth() const { return map2DWidth; }
 	double getMap2DHeight() const { return map2DHeight; }
+	MapOptions& getMapOptions() { return mapOptions; }
 
 	void setMap2DFile(std::string file) { map2DFile = file; }
 	void setMap2DCenter(Math::Point center) { map2DCenter = center; }

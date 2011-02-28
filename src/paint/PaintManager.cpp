@@ -72,6 +72,7 @@ namespace Paint {
 
 			temp_list.push_back(paint_cells[i]);
 			paint_cells[i]->index = i;
+			paint_cells[i]->optimize();
 		}
 
 		neutralPaintTree->resize(paint_bound);

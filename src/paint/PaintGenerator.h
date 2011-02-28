@@ -5,6 +5,7 @@
 #include "math/Triangle3D.h"
 #include "math/BSPTree3D.h"
 #include "math/Vertex3D.h"
+#include "math/BoundingBox3D.h"
 #include <vector>
 
 namespace Project {
@@ -14,8 +15,9 @@ class PaintGenerator {
 private:
 	std::vector<PaintCell*> paintCells;
 	Math::BSPTree3D* triangleTree;
+	Math::BoundingBox3D paintBound;
 
-	vector<double> heightsAtPoint(double u, double v);
+	void heightsAtPoint(double u, double v, vector<double>& vec);
 
 public:
 	PaintGenerator(std::vector<Math::Triangle3D> _triangles, double cell_radius = PAINT_CELL_RADIUS);

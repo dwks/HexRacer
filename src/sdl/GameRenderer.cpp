@@ -9,6 +9,7 @@
 #include "math/BoundingBox3D.h"
 
 #include "map/MapLoader.h"
+#include "map/MapOptions.h"
 
 #include "hud/LapProgressBar.h"
 
@@ -525,14 +526,16 @@ void GameRenderer::initBloom() {
 	glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
 
 	bloomRenderable = new Render::RenderList();
-	bloomBackground = new Render::RenderParent(background.get());
 	bloomScene = new Render::RenderParent();
 
-	bloomRenderable->addRenderable(bloomBackground);
 	bloomRenderable->addRenderable(bloomScene);
 
-	bloomBackground->getRenderProperties()->setWantsShaderName("backgroundBloomShader");
-	bloomBackground->getRenderProperties()->setShaderOverride(true);
+	if (map->getMapOptions().getBGBloomEnable()) {
+		bloomBackground = new Render::RenderParent(background.get());
+		bloomRenderable->addRenderable(bloomBackground);
+		bloomBackground->getRenderProperties()->setWantsShaderName("backgroundBloomShader");
+		bloomBackground->getRenderProperties()->setShaderOverride(true);
+	}
 
 	OpenGL::Material* default_material = new OpenGL::Material("bloomDefault");
 	default_material->setAmbient(OpenGL::Color::BLACK);
