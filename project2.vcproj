@@ -374,7 +374,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\HexGrid.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\HexHeightMap.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\history\Historian.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\HostProxy.cpp"
 				>
 			</File>
 			<File
@@ -383,6 +395,10 @@
 			</File>
 			<File
 				RelativePath=".\src\hud\HUDRenderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ImageWidget.cpp"
 				>
 			</File>
 			<File
@@ -446,6 +462,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ListEventProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ListItemEventProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ListScrollbarEventProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ListWidget.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\LoopBase.cpp"
 				>
 			</File>
@@ -466,7 +498,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\MapList.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\MapLoader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\MapOptions.cpp"
 				>
 			</File>
 			<File
@@ -682,6 +722,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ScrollbarEventProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ScrollbarLayout.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ScrollbarSliderEventProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ScrollbarWidget.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\SDLGame.cpp"
 				>
 			</File>
@@ -826,6 +882,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\WidgetModifiedEvent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\WidgetPoint.cpp"
 				>
 			</File>
@@ -835,6 +895,10 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\WidgetRenderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetSelectedEvent.cpp"
 				>
 			</File>
 			<File
@@ -1340,7 +1404,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\HexGrid.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\HexHeightMap.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\history\Historian.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\HostProxy.h"
 				>
 			</File>
 			<File
@@ -1349,6 +1425,10 @@
 			</File>
 			<File
 				RelativePath=".\src\hud\HUDRenderer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ImageWidget.h"
 				>
 			</File>
 			<File
@@ -1416,6 +1496,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ListEventProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ListItemEventProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ListScrollbarEventProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ListWidget.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\LoopBase.h"
 				>
 			</File>
@@ -1424,7 +1520,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\MapList.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\MapLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\MapOptions.h"
 				>
 			</File>
 			<File
@@ -1648,6 +1752,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ScrollbarEventProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ScrollbarLayout.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ScrollbarSliderEventProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ScrollbarWidget.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\SDLGame.h"
 				>
 			</File>
@@ -1804,6 +1924,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\WidgetModifiedEvent.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\WidgetPoint.h"
 				>
 			</File>
@@ -1813,6 +1937,10 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\WidgetRenderer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\WidgetSelectedEvent.h"
 				>
 			</File>
 			<File

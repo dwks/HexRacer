@@ -55,7 +55,7 @@ void main() {
 		if (attenuation >= 0.004) {
 			light = normalize((position-gl_LightSource[0].position).xyz);
 			kspec =-dot(reflection,light);
-			kspec = max(pow(kspec, gl_FrontMaterial.shininess), 0.0);
+			kspec = max( pow(kspec, gl_FrontMaterial.shininess)*(dot(light, eyeNormal) < 0.0) , 0.0);
 			specular_color += gl_LightSource[0].specular*kspec*attenuation;
 		}
 		light0factor = 1.0;
@@ -67,7 +67,7 @@ void main() {
 		if (attenuation >= 0.004) {
 			light = normalize((position-gl_LightSource[1].position).xyz);
 			kspec =-dot(reflection,light);
-			kspec = max(pow(kspec, gl_FrontMaterial.shininess), 0.0);
+			kspec = max( pow(kspec, gl_FrontMaterial.shininess)*(dot(light, eyeNormal) < 0.0) , 0.0);
 			specular_color += gl_LightSource[1].specular*kspec*attenuation;
 		}
 	}
@@ -77,7 +77,7 @@ void main() {
 		if (attenuation >= 0.004) {
 			light = normalize((position-gl_LightSource[2].position).xyz);
 			kspec =-dot(reflection,light);
-			kspec = max(pow(kspec, gl_FrontMaterial.shininess), 0.0);
+			kspec = max( pow(kspec, gl_FrontMaterial.shininess)*(dot(light, eyeNormal) < 0.0) , 0.0);
 			specular_color += gl_LightSource[2].specular*kspec*attenuation;
 		}
 	}
@@ -87,7 +87,7 @@ void main() {
 		if (attenuation >= 0.004) {
 			light = normalize((position-gl_LightSource[3].position).xyz);
 			kspec =-dot(reflection,light);
-			kspec = max(pow(kspec, gl_FrontMaterial.shininess), 0.0);
+			kspec = max( pow(kspec, gl_FrontMaterial.shininess)*(dot(light, eyeNormal) < 0.0) , 0.0);
 			specular_color += gl_LightSource[3].specular*kspec*attenuation;
 		}
 	}

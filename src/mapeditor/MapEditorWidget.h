@@ -137,6 +137,7 @@ public slots:
 	void setDrawMapObject(bool* draw_array);
 	void setEditMode(EditMode mode);
 	void loadCubeMap();
+	void showOptionsDialog();
 
 	void deleteSelected();
 	void deleteAll();
@@ -152,6 +153,8 @@ public slots:
 	void setLightHasAttenuation(bool has);
 	void setMeshInstanceType(int type);
 	void scaleAll(double scale, Point origin);
+
+	void clearPaint();
 
 	void setPropMeshIndex(int index);
 	void addPropMesh(string name, string filename);

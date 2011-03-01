@@ -72,6 +72,7 @@ namespace Paint {
 
 			temp_list.push_back(paint_cells[i]);
 			paint_cells[i]->index = i;
+			paint_cells[i]->optimize();
 		}
 
 		neutralPaintTree->resize(paint_bound);
@@ -168,24 +169,30 @@ namespace Paint {
 		BoundingSphere query_sphere(centroid, radius);
 		vector<ObjectSpatial*> candidate_cells;
 		coloredPaintTree->appendQuery(candidate_cells, query_sphere, SpatialContainer::NEARBY);
+
+		double color_benefit = GET_SETTING("game.paint.colorbenefit", 1.0);
+		double color_penalty = GET_SETTING("game.paint.colorpenalty", 0.0);
         
 		for (unsigned int i = 0; i < candidate_cells.size(); i++) {
 			PaintCell *cell = static_cast<PaintCell *>(candidate_cells[i]);
-			double dist = cell->center.distance(centroid);
+			double dist_squared = cell->center.distanceSquared(centroid);
             
-			if(dist <= query_sphere.getRadius()) {
+			if (dist_squared <= query_sphere.getRadiusSquared()) {
+
+				double dist = sqrt(dist_squared);
+
                 cell_count ++;
                 double colour_factor;
                 
                 if(cell->playerColor == color) {
-                    colour_factor = 1.0;
+                    colour_factor = color_benefit;
                 }
                 else if(cell->playerColor < 0) {
                     colour_factor = 0.0;
                     continue;
                 }
                 else {
-                    colour_factor = -0.5;
+                    colour_factor = color_penalty;
                 }
                 
                 double distance_weight = (query_sphere.getRadius() - dist)
@@ -264,6 +271,7 @@ namespace Paint {
 
 		OpenGL::Color::glColor(cell_color);
 		OpenGL::MathWrapper::glVertex(cell->center);
+		/*
 		cell_color *= 0.85f;
 		GLfloat values [4] = {cell_color.redf(), cell_color.greenf(), cell_color.bluef(), cell_color.alphaf()};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, values);
@@ -273,6 +281,7 @@ namespace Paint {
 		values[2] = cell_color[2];
 		values[3] = cell_color[3];
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, values);
+		*/
 		glCallList(cell->displayList);
 	}
 

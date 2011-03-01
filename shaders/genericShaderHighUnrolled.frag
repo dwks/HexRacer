@@ -58,7 +58,7 @@ void main() {
 				float kdiff = max( -dot(light, normal), 0.0) ;
 			
 				float kspec =-dot(reflection,light);
-				kspec = max( pow(kspec, gl_FrontMaterial.shininess) , 0.0);
+				kspec = max( pow(kspec, gl_FrontMaterial.shininess)*(dot(light, eyeNormal) < 0.0) , 0.0);
 			
 				diffuse_color += gl_LightSource[0].diffuse*kdiff*attenuation;
 				specular_color += gl_LightSource[0].specular*kspec*attenuation;
@@ -76,7 +76,7 @@ void main() {
 			float kdiff = max( -dot(light, normal), 0.0) ;
 			
 			float kspec =-dot(reflection,light);
-			kspec = max( pow(kspec, gl_FrontMaterial.shininess) , 0.0);
+			kspec = max( pow(kspec, gl_FrontMaterial.shininess)*(dot(light, eyeNormal) < 0.0) , 0.0);
 			
 			diffuse_color += gl_LightSource[1].diffuse*kdiff*attenuation;
 			specular_color += gl_LightSource[1].specular*kspec*attenuation;
@@ -93,7 +93,7 @@ void main() {
 			float kdiff = max( -dot(light, normal), 0.0) ;
 			
 			float kspec =-dot(reflection,light);
-			kspec = max( pow(kspec, gl_FrontMaterial.shininess) , 0.0);
+			kspec = max( pow(kspec, gl_FrontMaterial.shininess)*(dot(light, eyeNormal) < 0.0) , 0.0);
 			
 			diffuse_color += gl_LightSource[2].diffuse*kdiff*attenuation;
 			specular_color += gl_LightSource[2].specular*kspec*attenuation;
@@ -110,7 +110,7 @@ void main() {
 			float kdiff = max( -dot(light, normal), 0.0) ;
 			
 			float kspec =-dot(reflection,light);
-			kspec = max( pow(kspec, gl_FrontMaterial.shininess) , 0.0);
+			kspec = max( pow(kspec, gl_FrontMaterial.shininess)*(dot(light, eyeNormal) < 0.0) , 0.0);
 			
 			diffuse_color += gl_LightSource[3].diffuse*kdiff*attenuation;
 			specular_color += gl_LightSource[3].specular*kspec*attenuation;
@@ -127,7 +127,7 @@ void main() {
 			float kdiff = max( -dot(light, normal), 0.0) ;
 			
 			float kspec =-dot(reflection,light);
-			kspec = max( pow(kspec, gl_FrontMaterial.shininess) , 0.0);
+			kspec = max( pow(kspec, gl_FrontMaterial.shininess)*(dot(light, eyeNormal) < 0.0) , 0.0);
 			
 			diffuse_color += gl_LightSource[4].diffuse*kdiff*attenuation;
 			specular_color += gl_LightSource[4].specular*kspec*attenuation;
@@ -144,7 +144,7 @@ void main() {
 			float kdiff = max( -dot(light, normal), 0.0) ;
 			
 			float kspec =-dot(reflection,light);
-			kspec = max( pow(kspec, gl_FrontMaterial.shininess) , 0.0);
+			kspec = max( pow(kspec, gl_FrontMaterial.shininess)*(dot(light, eyeNormal) < 0.0) , 0.0);
 			
 			diffuse_color += gl_LightSource[5].diffuse*kdiff*attenuation;
 			specular_color += gl_LightSource[5].specular*kspec*attenuation;
@@ -161,7 +161,7 @@ void main() {
 			float kdiff = max( -dot(light, normal), 0.0) ;
 			
 			float kspec =-dot(reflection,light);
-			kspec = max( pow(kspec, gl_FrontMaterial.shininess) , 0.0);
+			kspec = max( pow(kspec, gl_FrontMaterial.shininess)*(dot(light, eyeNormal) < 0.0) , 0.0);
 			
 			diffuse_color += gl_LightSource[6].diffuse*kdiff*attenuation;
 			specular_color += gl_LightSource[6].specular*kspec*attenuation;
@@ -178,7 +178,7 @@ void main() {
 			float kdiff = max( -dot(light, normal), 0.0) ;
 			
 			float kspec =-dot(reflection,light);
-			kspec = max( pow(kspec, gl_FrontMaterial.shininess) , 0.0);
+			kspec = max( pow(kspec, gl_FrontMaterial.shininess)*(dot(light, eyeNormal) < 0.0) , 0.0);
 			
 			diffuse_color += gl_LightSource[7].diffuse*kdiff*attenuation;
 			specular_color += gl_LightSource[7].specular*kspec*attenuation;

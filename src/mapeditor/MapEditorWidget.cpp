@@ -16,6 +16,7 @@
 #include "MapEditorConstants.h"
 #include "CubeMapDialog.h"
 #include "map/PathManager.h"
+#include "MapOptionsDialog.h"
 using namespace Paint;
 
 MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget, Qt::WindowFlags f)
@@ -192,9 +193,9 @@ void MapEditorWidget::paintGL() {
 			glBegin(GL_TRIANGLE_FAN);
 			OpenGL::MathWrapper::glVertex(cell->center);
 			for (int j = 0; j < Paint::PaintCell::CELL_VERTICES; j++) {
-				OpenGL::MathWrapper::glVertex(cell->vertex[j]);
+				OpenGL::MathWrapper::glVertex(*cell->vertex[j]);
 			}
-			OpenGL::MathWrapper::glVertex(cell->vertex[0]);
+			OpenGL::MathWrapper::glVertex(*cell->vertex[0]);
 			glEnd();
 		}
 	}
@@ -553,8 +554,9 @@ void MapEditorWidget::translateCamera(Point translation) {
 
 void MapEditorWidget::newMap() {
 	map->clear();
-	mapObjectsChanged(MapObject::LIGHT);
-	mapObjectsChanged(MapObject::PATH_NODE);
+	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
+		mapObjectsChanged(static_cast<MapObject::ObjectType>(i));
+	}
 	mapCollisionChanged();
 	updateGL();
 }
@@ -1307,5 +1309,12 @@ void MapEditorWidget::removePropMesh() {
 void MapEditorWidget::scaleAll(double scale, Point origin) {
 	map->scaleAll(scale, origin);
 	mapObjectsChanged(MapObject::MESH_INSTANCE);
+	updateGL();
+}
+void MapEditorWidget::showOptionsDialog() {
+	MapOptionsDialog::showOptionsDialog(map->getMapOptions(), this);
+}
+void MapEditorWidget::clearPaint() {
+	map->clearPaint();
 	updateGL();
 }
