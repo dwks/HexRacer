@@ -374,6 +374,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\HexGrid.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\HexHeightMap.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\history\Historian.cpp"
 				>
 			</File>
@@ -1393,6 +1401,14 @@
 			</File>
 			<File
 				RelativePath=".\src\gui\GUISystem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\HexGrid.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\HexHeightMap.h"
 				>
 			</File>
 			<File
