@@ -47,7 +47,7 @@ const World::PlayerIntention &DirectionalDriver::getAction() {
     
     double distanceOff = (intersection - player->getPosition()).length();
     
-    intention.setTurn(0.0);
+    /*intention.setTurn(0.0);
     if(distanceOff > 3.0) {
         intention.setTurn(turnSign * 1.0);
     }
@@ -59,7 +59,9 @@ const World::PlayerIntention &DirectionalDriver::getAction() {
     }
     else if(distanceOff > 0.5) {
         intention.setTurn(turnSign * 0.1);
-    }
+    }*/
+    
+    intention.setTurn(turnSign * distanceOff * 0.2);
     
     detectSittingStill();
     
