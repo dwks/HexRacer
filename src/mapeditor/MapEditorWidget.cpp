@@ -1314,3 +1314,7 @@ void MapEditorWidget::scaleAll(double scale, Point origin) {
 void MapEditorWidget::showOptionsDialog() {
 	MapOptionsDialog::showOptionsDialog(map->getMapOptions(), this);
 }
+void MapEditorWidget::clearPaint() {
+	map->clearPaint();
+	updateGL();
+}

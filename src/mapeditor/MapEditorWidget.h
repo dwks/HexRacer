@@ -154,6 +154,8 @@ public slots:
 	void setMeshInstanceType(int type);
 	void scaleAll(double scale, Point origin);
 
+	void clearPaint();
+
 	void setPropMeshIndex(int index);
 	void addPropMesh(string name, string filename);
 	void removePropMesh();

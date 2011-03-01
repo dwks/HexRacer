@@ -10,6 +10,7 @@
 #include "mesh/MeshGroup.h"
 #include "paint/PaintCell.h"
 #include "math/BoundingPlane3D.h"
+#include "math/HexGrid.h"
 #include "PathNode.h"
 #include "MeshInstance.h"
 #include "MapOptions.h"
@@ -17,7 +18,7 @@
 #include <vector>
 
 #define HRMAP_NUM_MESHES 5
-#define HRMAP_VERSION "0.1.0"
+#define HRMAP_VERSION "0.1.5"
 #define HRMAP_VERSION_LABEL "version"
 #define HRMAP_PROPMESH_LABEL "propMesh"
 #define HRMAP_LIGHT_LABEL "light"
@@ -64,6 +65,7 @@ private:
 	MapOptions mapOptions;
 
 	Math::BSPTree3D* collisionTree;
+	Math::HexGrid hexGrid;
 
 public:
 
@@ -85,7 +87,7 @@ public:
 	void clearPaint();
 	void loadMapMesh(HRMap::MeshType type, string filename);
 	void clearMapMesh(HRMap::MeshType type);
-	void generatePaint(double cell_radius = PAINT_CELL_RADIUS);
+	void generatePaint();
 
 	std::string getMap2DFile() const { return map2DFile; }
 	Math::Point getMap2DCenter() const { return map2DCenter; }
@@ -132,6 +134,7 @@ public:
 	static std::string meshTitle(MeshType type);
 	static bool meshIsInvisible(MeshType type);
 	static bool meshIsSolid(MeshType type);
+	static bool meshIsTrack(MeshType type);
 	
 	void scaleAll(double scale, Math::Point origin = Math::Point());
 
@@ -139,7 +142,7 @@ public:
 private:
 
 	void clearCollisionTree();
-	void updateMapBoundingBox();
+	void updateDimensions();
 
 };
 

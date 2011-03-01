@@ -15,7 +15,8 @@ using namespace std;
 namespace Project {
 namespace Map {
 
-	HRMap::HRMap() {
+	HRMap::HRMap()
+		:hexGrid(PAINT_CELL_RADIUS, 0.0, 1.0, 0.0, 1.0) {
 
 		cubeMapFile = new CubeMapFile();
 		trackRenderable = NULL;
@@ -58,10 +59,24 @@ namespace Map {
 				in_file.ignore(9999, '\n');
 			}
 			else if (keyword == HRMAP_PAINTCELL_LABEL) {
-				PaintCell* cell = new PaintCell(Point());
-				in_file >> *cell;
-				cell->index = paintCells.size();
-				paintCells.push_back(cell);
+
+				if (version < "0.1.5") {
+					PaintCell* cell = new PaintCell(Point());
+					in_file >> *cell;
+					cell->index = paintCells.size();
+					paintCells.push_back(cell);
+				}
+				else {
+					int num_cells;
+					in_file >> num_cells;
+					for (int i = 0; i < num_cells; i++) {
+						PaintCell* cell = new PaintCell(Point());
+						in_file >> *cell;
+						cell->index = i;
+						paintCells.push_back(cell);
+					}
+				}
+
 			}
 			else if (keyword == HRMAP_PATHNODE_LABEL) {
 				Point p;
@@ -262,8 +277,9 @@ namespace Map {
 		}
 
 		out_file << "#Paint Cells\n";
+		out_file << HRMAP_PAINTCELL_LABEL << ' ' << paintCells.size() << '\n';
 		for (unsigned int i = 0; i < paintCells.size(); i++) {
-			out_file << HRMAP_PAINTCELL_LABEL << ' ' << (*paintCells[i]) << '\n';
+			out_file << (*paintCells[i]) << '\n';
 		}
 
 
@@ -332,7 +348,8 @@ namespace Map {
 		mapMeshFile[static_cast<int>(type)] = filename;
 		if (meshIsSolid(type))
 			clearCollisionTree();
-		updateMapBoundingBox();
+
+		updateDimensions();
 	}
 
 	void HRMap::clearMapMesh(HRMap::MeshType type) {
@@ -343,7 +360,7 @@ namespace Map {
 			if (meshIsSolid(type)) {
 				clearCollisionTree();
 			}
-			updateMapBoundingBox();
+			updateDimensions();
 		}
 		mapMeshFile[i] = "";
 	}
@@ -404,6 +421,14 @@ namespace Map {
 				return true;
 		}
 	}
+	bool HRMap::meshIsTrack(MeshType type) {
+		switch (type) {
+			case HRMap::TRACK: case HRMap::INVIS_TRACK:
+				return true;
+			default:
+				return false;
+		}
+	}
 	OpenGL::TextureCube* HRMap::getCubeMap() {
 		if (cubeMap == NULL) {
 			cubeMap = new TextureCube(*cubeMapFile);
@@ -416,7 +441,7 @@ namespace Map {
 			cubeMap = NULL;
 		}
 	}
-	void HRMap::generatePaint(double cell_radius) {
+	void HRMap::generatePaint() {
 
 		clearPaint();
 
@@ -427,7 +452,7 @@ namespace Map {
 		if (getMapMesh(INVIS_TRACK))
 			vectorAppend(triangles, getMapMesh(INVIS_TRACK)->getTriangles());
 
-		PaintGenerator generator(triangles, cell_radius);
+		PaintGenerator generator(triangles, hexGrid);
 		paintCells = generator.getPaintCells();
 	}
 
@@ -580,22 +605,51 @@ namespace Map {
 		return "";
 	}
 
-	void HRMap::updateMapBoundingBox() {
+	void HRMap::updateDimensions() {
 
-		bool set = false;
+		bool box_set = false;
+
+		bool hexgrid_set = false;
+		double min_track_x = 0.0;
+		double max_track_x = 0.0;
+		double min_track_z = 0.0;
+		double max_track_z = 0.0;
 
 		for (int i = 0; i < NUM_MESHES; i++) {
+
 			MeshType type = static_cast<MeshType>(i);
 			if (getMapMesh(type)) {
-				if (!set) {
+
+				if (!box_set) {
 					mapBoundingBox.setToObject(getMapMesh(type)->getBoundingBox());
-					set = true;
+					box_set = true;
 				}
 				else {
 					mapBoundingBox.expandToInclude(getMapMesh(type)->getBoundingBox());
 				}
+
+				if (meshIsTrack(type)) {
+					if (!hexgrid_set) {
+						min_track_x = getMapMesh(type)->getBoundingBox().minX();
+						max_track_x = getMapMesh(type)->getBoundingBox().maxX();
+						min_track_z = getMapMesh(type)->getBoundingBox().minZ();
+						max_track_z = getMapMesh(type)->getBoundingBox().maxZ();
+					}
+					else {
+						min_track_x = Math::minimum(min_track_x, getMapMesh(type)->getBoundingBox().minX());
+						max_track_x = Math::maximum(min_track_x, getMapMesh(type)->getBoundingBox().maxX());
+						min_track_z = Math::minimum(min_track_z, getMapMesh(type)->getBoundingBox().minZ());
+						max_track_z = Math::maximum(min_track_z, getMapMesh(type)->getBoundingBox().maxZ());
+					}
+					
+				}
+
 			}
+
 		}
+
+		hexGrid.setDimensions(min_track_x, max_track_x, min_track_z, max_track_z);
+
 
 	}
 

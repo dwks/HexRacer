@@ -192,6 +192,8 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	mapMenu->addAction("&Edit Map Options",	mapEditor, SLOT(showOptionsDialog()));
 	mapMenu->addSeparator();
 	mapMenu->addAction("&Generate Paint Cells",	mapEditor, SLOT(generatePaint()));
+	mapMenu->addAction("&Clear Paint Cells",	mapEditor, SLOT(clearPaint()));
+	mapMenu->addSeparator();
 	mapMenu->addAction("&Generate Path Progression", mapEditor, SLOT(generatePathProgress()));
 	mapMenu->addAction("&Generate 2D Map",	this, SLOT(save2DMapImage()));
 	mapMenu->addSeparator();
