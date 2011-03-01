@@ -160,6 +160,21 @@ bool PhysicsWorld::raycastPoint(const Math::Point &from, const Math::Point &to, 
 
 }
 
+void PhysicsWorld::allRaycastPoints(const Math::Point &from,
+    const Math::Point &to, std::vector<Math::Point> &points) {
+    
+    btVector3 fromv = Converter::toVector(from);
+    btVector3 tov = Converter::toVector(to);
+    
+    btCollisionWorld::AllHitsRayResultCallback ray(fromv, tov);
+    
+    dynamicsWorld->rayTest(fromv, tov, ray);
+    
+    for(int i = 0; i < ray.m_hitPointWorld.size(); i ++) {
+        points.push_back(Converter::toPoint(ray.m_hitPointWorld[i]));
+    }
+}
+
 void tickCallback(btDynamicsWorld *world, btScalar timeStep) {
     EMIT_EVENT(new Event::PhysicsTick(timeStep));
     

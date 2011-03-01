@@ -24,7 +24,9 @@ private:
 	Math::HexHeightMap heightMap;
 
 public:
-	PaintGenerator(std::vector<Math::Triangle3D> _triangles, const Math::HexGrid& grid);
+	PaintGenerator(const std::vector<Math::Triangle3D> &_triangles,
+        const Math::HexGrid& grid);
+    
 	std::vector<PaintCell*>& getPaintCells() { return paintCells; }
 };
 

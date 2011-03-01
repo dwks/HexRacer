@@ -1,12 +1,13 @@
 #include "HexGrid.h"
 #include "Values.h"
+#include <cmath>
 
 namespace Project {
 namespace Math {
 
 	HexGrid::HexGrid(double hex_radius, double min_u, double max_u, double min_v, double max_v) {
 
-		hexRadius = abs(hex_radius);
+		hexRadius = std::abs(hex_radius);
 		setDimensions(min_u, max_u, min_v, max_v);
 
 		updateDimensions();
