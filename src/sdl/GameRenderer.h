@@ -39,6 +39,7 @@ private:
 	Render::RenderList* bloomRenderable;
 	Render::RenderParent* bloomBackground;
 	Render::RenderParent* bloomScene;
+	Render::RenderParent* bloomPaint;
 
 	GLuint bloomBlurFBO;
 	GLuint bloomBlurTexture;

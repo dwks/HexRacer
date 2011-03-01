@@ -146,9 +146,11 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldMan
 	//Cull backfaces of paint cells
 	glCullFace(GL_BACK);
 	glEnable(GL_CULL_FACE);
-
+	//glEnable(GL_POLYGON_SMOOTH);
+	//glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	//glDepthFunc(GL_LEQUAL);
 
 	//Render the paint
 	paintManager->setFadePlanes((float) (near_plane+(paint_far_plane-near_plane)*0.75), (float) paint_far_plane);
@@ -168,10 +170,11 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldMan
 	renderer->getRenderSettings()->setApplyToShadowMatrix(false);
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
+	//glDisable(GL_POLYGON_SMOOTH);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glDepthFunc(GL_LEQUAL);
 
 	if (renderer->getRenderSettings()->getBloomEnabled() && GET_SETTING("render.bloom.enable", false)) {
-
-		scene_render_list.addRenderable(paintManager.get());
 
 		//Render to the bloom buffer
 		camera->setFarPlane(GET_SETTING("render.bloom.farplane", 50.0));
@@ -527,8 +530,10 @@ void GameRenderer::initBloom() {
 
 	bloomRenderable = new Render::RenderList();
 	bloomScene = new Render::RenderParent();
+	//bloomPaint = new Render::RenderParent(paintManager.get());
 
 	bloomRenderable->addRenderable(bloomScene);
+	bloomRenderable->addRenderable(paintManager.get());
 
 	if (map->getMapOptions().getBGBloomEnable()) {
 		bloomBackground = new Render::RenderParent(background.get());

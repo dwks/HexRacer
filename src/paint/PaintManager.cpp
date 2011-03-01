@@ -271,6 +271,7 @@ namespace Paint {
 
 		OpenGL::Color::glColor(cell_color);
 		OpenGL::MathWrapper::glVertex(cell->center);
+		/*
 		cell_color *= 0.85f;
 		GLfloat values [4] = {cell_color.redf(), cell_color.greenf(), cell_color.bluef(), cell_color.alphaf()};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, values);
@@ -280,6 +281,7 @@ namespace Paint {
 		values[2] = cell_color[2];
 		values[3] = cell_color[3];
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, values);
+		*/
 		glCallList(cell->displayList);
 	}
 
