@@ -337,6 +337,7 @@ namespace Map {
 		paintCells.clear();
 		*/
 		paintCellInfo.clear();
+		paintHeightMap.clear();
 	}
 
 	void HRMap::clear() {
@@ -679,6 +680,8 @@ namespace Map {
 		double min_track_z = 0.0;
 		double max_track_z = 0.0;
 
+		hexGrid.setHexRadius(PAINT_CELL_RADIUS);
+
 		for (int i = 0; i < NUM_MESHES; i++) {
 
 			MeshType type = static_cast<MeshType>(i);
@@ -689,12 +692,13 @@ namespace Map {
 						max_track_x = getMapMesh(type)->getBoundingBox().maxX();
 						min_track_z = getMapMesh(type)->getBoundingBox().minZ();
 						max_track_z = getMapMesh(type)->getBoundingBox().maxZ();
+						hexgrid_set = true;
 					}
 					else {
 						min_track_x = Math::minimum(min_track_x, getMapMesh(type)->getBoundingBox().minX());
-						max_track_x = Math::maximum(min_track_x, getMapMesh(type)->getBoundingBox().maxX());
+						max_track_x = Math::maximum(max_track_x, getMapMesh(type)->getBoundingBox().maxX());
 						min_track_z = Math::minimum(min_track_z, getMapMesh(type)->getBoundingBox().minZ());
-						max_track_z = Math::maximum(min_track_z, getMapMesh(type)->getBoundingBox().maxZ());
+						max_track_z = Math::maximum(max_track_z, getMapMesh(type)->getBoundingBox().maxZ());
 					}
 				}
 			}

@@ -132,13 +132,14 @@ namespace Math {
 	}
 
 	bool HexGrid::validVertex(const HexIndex& vert_index) const {
-		struct HexIndex hex(vert_index);
-		hex.uIndex /= 2;
-		return validHex(hex);
+		return validVertex(vert_index.uIndex, vert_index.vIndex);
 	}
 
 	bool HexGrid::validVertex(int u_index, int v_index) const {
-		u_index /= 2;
+
+		if (u_index > 0)
+			u_index /= 2;
+
 		return (u_index >= 0 && u_index < uIndices &&
 			v_index >= 0 && v_index < vIndices);
 	}
