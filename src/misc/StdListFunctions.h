@@ -27,7 +27,7 @@ namespace Misc {
 
 	template <typename Type>
 	static Type listElement(const std::list<Type>& list, int element) {
-		std::list<Type>::const_iterator iterator = list.begin();
+		typename std::list<Type>::const_iterator iterator = list.begin();
 		for (int i = 0; i < element; i++)
 			++iterator;
 
