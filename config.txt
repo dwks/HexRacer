@@ -64,6 +64,11 @@ physics.driving.sidewaysdrag      = 20.0
 game.paint.colorbenefit = 1.0
 game.paint.colorpenalty = -0.25
 game.paint.boostinfluence = 0.8
+game.paint.boostweightfactor = 1.5
+game.paint.boostmin = 0.5
+game.paint.boostmax = 1.5
+game.paint.paintingboost = 0.8
+game.paint.erasingboost = 0.8
 
 game.enablepathing = 1
 
@@ -120,7 +125,7 @@ render.tire.scale = 2.5
 
 hud.minimap.enable = 1
 hud.minimap.drawheight = 0.35
-hud.minimap.height = 120.0
+hud.minimap.height = 140.0
 
 hud.speedometer.enable = 1
 hud.speedometer.drawheight = 0.35

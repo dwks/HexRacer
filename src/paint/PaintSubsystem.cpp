@@ -3,6 +3,8 @@
 #include "event/PaintEvent.h"
 #include "event/EventSystem.h"
 
+#include "math/Values.h"
+
 #include "config.h"
 
 namespace Project {
@@ -86,18 +88,27 @@ void PaintSubsystem::calculateBoostSpeeds() {
 		player->setPaintType(getPainting(player->getID()));
         
         if(getPainting(player->getID()) == Event::TogglePainting::NOTHING) {
+
             double factor = paintManager->weightedCellsInRadius(
                 player->getPosition(),
                 PAINTING_RADIUS,
                 player->getID());
-            
-            //LOG(PAINT, "factor " << factor);
+
+			factor *= GET_SETTING("game.paint.boostweightfactor", 2.0);
+			factor += 1.0;
+			factor = Math::bound(factor,
+				GET_SETTING("game.paint.boostmin", 0.5),
+				GET_SETTING("game.paint.boostmax", 1.5)
+				);
             
             player->setSpeedBoost(factor);
         }
         else {
             // if painting or erasing, slow down the player no matter what
-            player->setSpeedBoost(0.8);
+			if (getPainting(player->getID()) == Event::TogglePainting::PAINTING)
+				player->setSpeedBoost(GET_SETTING("game.paint.paintingboost", 0.8));
+			else
+				player->setSpeedBoost(GET_SETTING("game.paint.erasingboost", 0.8));
         }
     }
 }

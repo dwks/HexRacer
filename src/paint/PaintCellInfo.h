@@ -28,6 +28,7 @@ public:
 	Math::BoundingBox3D getBoundingBox(const Math::HexHeightMap& height_map) const;
 	void render(const Math::HexHeightMap& height_map) const;
 
+	Math::Point centerPoint(const Math::HexHeightMap& height_map) const;
 	Math::Point vertexPoint(const Math::HexHeightMap& height_map, short vert_index) const;
 
 	bool operator < (const PaintCellInfo& other) const { return normal < other.normal; }

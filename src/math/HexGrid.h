@@ -3,6 +3,7 @@
 
 #include <istream>
 #include <ostream>
+#include "BoundingObject2D.h"
 
 namespace Project {
 namespace Math {
@@ -40,6 +41,13 @@ public:
 		double vPos;
 	};
 
+	struct HexIndexRange {
+		int minUIndex;
+		int maxUIndex;
+		int minVIndex;
+		int maxVIndex;
+	};
+
 	HexGrid(double hex_radius = 0.1, double min_u = 0.0, double max_u = 0.0, double min_v = 0.0, double max_v = 0.0);
 
 	void setDimensions(double min_u, double max_u, double min_v, double max_v);
@@ -53,6 +61,7 @@ public:
 	double getHexHalfHeight() const { return hexHalfHeight; }
 
 	int numUIndices() const { return uIndices; }
+	int numVertexUIndices() const { return uIndices*2; }
 	int numVIndices() const { return vIndices; }
 
 	double hexUPosition(int u_index, int v_index) const;
@@ -63,6 +72,10 @@ public:
 
 	struct HexPosition vertexPosition(const HexIndex& vert_index) const;
 	struct HexPosition vertexPosition(int u_index, int v_index) const;
+
+	struct HexIndexRange queryIndexRange(const BoundingObject2D& obj) const;
+
+	bool validRange(HexIndexRange& range) const;
 
 	static struct HexIndex vertexIndex(const HexIndex& hex_index, short vert_index);
 	static struct HexIndex vertexIndex(int u_index, int v_index, short vert_index);

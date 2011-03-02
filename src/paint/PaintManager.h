@@ -3,12 +3,16 @@
 
 #include <vector>
 
+#include "math/HexGrid.h"
 #include "PaintCell.h"
+#include "PaintGrid.h"
+#include "PaintCellInfo.h"
 
 #include "render/BaseRenderable.h"
 #include "math/BSPTree3D.h"
 #include "math/BoundingBox2D.h"
 #include "math/SpatialObjectOperator.h"
+#include "map/HRMap.h"
 
 #include "event/PaintEvent.h"
 #include "event/PaintCellsChanged.h"
@@ -30,13 +34,14 @@ protected:
 private:
 
 	std::vector<PaintCell*> paintList;
-	Math::BSPTree3D* neutralPaintTree;
 	Math::BSPTree3D* coloredPaintTree;
-	bool renderMinimap;
-	float renderAlpha;
 	float fadePlaneNear;
 	float fadePlaneFar;
 	GLuint targetList;
+
+	Math::HexGrid hexGrid;
+	PaintGrid paintGrid;
+	Map::HRMap* _map;
 
 	std::vector<PaintCell*> redrawBuffer;
 
@@ -47,6 +52,8 @@ private:
 	void renderCell(PaintCell* cell);
 	void renderCellMinimap(PaintCell* cell);
 
+	double paintCellArea;
+
 public:
 
 	struct ColorIndex {
@@ -56,41 +63,25 @@ public:
 
 	PaintManager();
 	~PaintManager();
-    
-	/** Set the paint cells that this class will manage
-	*/
-	void setPaintCells(const std::vector<PaintCell*>& paint_cells);
 
+	void setMap(Map::HRMap* map);
+    
 	void renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object, const Render::RenderSettings& settings);
 
-	void minimapRender(const Math::BoundingObject& bounding_object, float view_height, float alpha = 1.0f);
+	void minimapRender(const Math::BoundingObject2D& bounding_object, float view_height, float alpha = 1.0f);
 
 	void setFadePlanes(float near_plane, float far_plane) {
 		fadePlaneNear = near_plane;
 		fadePlaneFar = far_plane;
 	}
 
-	/** Color paint cells by their numerical index
-		@param cell_indices A vector with the indices of all paint cells to color
-		@parma new_color The color which to color the paint cells
-	*/
-	void colorCellsByIndex(const std::vector<int> &cell_indices, int new_color, bool force_color = false);
 
-	void colorCellByIndex(int cell_index, int new_color, bool force_color = false);
+	void colorCellByIndex(const Math::HexGrid::HexIndex& index, int new_color, bool force_color = false);
 
-	/** Color all neutral paint cells inside a sphere with center @a centroid and
-		radius @a radius to the player color @a new_color
-		Returns a vector of the indices of all paint cells that were colored
-	*/
-	std::vector<int> colorCellsInRadius(Math::Point centroid, double radius, int new_color, bool force_color = false);
+	void colorCellsInRadius(Math::Point centroid, double radius, int new_color, bool force_color = false, vector<Math::HexGrid::HexIndex>* changedIndices = NULL);
 
 	void renderEraseEffect(Math::Point centroid, double radius);
 
-	/** Returns a number representing the concentration of paint cells of color @a color
-		inside the given radius. Increasing from zero depending on proximity and quantity.
-		
-		This number will be in the range [0.5, 2.0].
-	*/
 	double weightedCellsInRadius(Math::Point centroid, double radius, int color);
 
 	void operateOnObject(Math::ObjectSpatial* object);

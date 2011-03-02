@@ -67,7 +67,8 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     
     paintManager = boost::shared_ptr<Paint::PaintManager>(
         new Paint::PaintManager());
-    paintManager->setPaintCells(map->getPaintCells());
+	paintManager->setMap(map.get());
+    //paintManager->setPaintCells(map->getPaintCells());
     
     Map::MapLoader().load(map.get(), mapRenderable.get());
 

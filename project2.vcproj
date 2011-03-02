@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
+				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib OpenAL32.lib alut.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -295,6 +295,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\DestroyObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ai\DirectionalDriver.cpp"
 				>
 			</File>
 			<File
@@ -602,6 +606,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\paint\PaintGrid.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\paint\PaintManager.cpp"
 				>
 			</File>
@@ -799,6 +807,10 @@
 			</File>
 			<File
 				RelativePath=".\src\misc\Sleeper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sound\SoundSystem.cpp"
 				>
 			</File>
 			<File
@@ -1332,6 +1344,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\DirectionalDriver.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\DirectoryFunctions.h"
 				>
 			</File>
@@ -1632,6 +1648,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\paint\PaintGrid.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\paint\PaintManager.h"
 				>
 			</File>
@@ -1833,6 +1853,10 @@
 			</File>
 			<File
 				RelativePath=".\src\misc\Sleeper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sound\SoundSystem.h"
 				>
 			</File>
 			<File

@@ -143,6 +143,30 @@ namespace Math {
 			v_index >= 0 && v_index < vIndices);
 	}
 
+
+
+	struct HexGrid::HexIndexRange HexGrid::queryIndexRange(const BoundingObject2D& obj) const {
+		HexIndexRange range;
+		range.minUIndex = static_cast<int>( (obj.minU()-hexRadius-(minU+oddRowOffset))/hexUDivision );
+		range.maxUIndex = static_cast<int>( std::ceil( (obj.maxU()+hexRadius-minU)/hexUDivision ) );
+		range.minVIndex = static_cast<int>( (obj.minV()-hexHalfHeight-minV)/hexHalfHeight );
+		range.maxVIndex = static_cast<int>( std::ceil( (obj.maxV()+hexHalfHeight-minV)/hexHalfHeight ) );
+		return range;
+	}
+
+	bool HexGrid::validRange(HexGrid::HexIndexRange& range) const {
+		if (range.maxUIndex < 0 || range.minUIndex >= uIndices ||
+			range.maxVIndex < 0 || range.minVIndex >= vIndices)
+			return false;
+
+		range.minUIndex = Math::maximum(range.minUIndex, 0);
+		range.maxUIndex = Math::minimum(range.maxUIndex, uIndices-1);
+		range.minVIndex = Math::maximum(range.minVIndex, 0);
+		range.maxVIndex = Math::minimum(range.maxVIndex, vIndices-1);
+
+		return true;
+	}
+
 	std::ostream &operator << (std::ostream &stream, const HexGrid::HexIndex &index) {
 		stream << index.uIndex << ' ' << index.vIndex;
 		return stream;

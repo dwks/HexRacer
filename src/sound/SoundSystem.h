@@ -33,5 +33,12 @@ private:
 }  // namespace Sound
 }  // namespace Project
 
-#endif
+#else
+
+namespace Project {
+namespace Sound {
+}
+}
+#endif 
+
 #endif
