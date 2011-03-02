@@ -44,6 +44,7 @@ public:
     void checkNetwork();
     void doPhysics();
 	void doAI();
+        void doSound();
     
     void render();
 private:

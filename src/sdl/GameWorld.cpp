@@ -103,6 +103,11 @@ void GameWorld::doAI() {
     basicWorld->doAI();
 }
 
+void GameWorld::doSound() {
+    soundSystem->doAction();
+}
+
+
 void GameWorld::render() {
     basicWorld->getPhysicsWorld()->render();
 }

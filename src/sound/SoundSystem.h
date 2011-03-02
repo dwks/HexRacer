@@ -4,14 +4,12 @@
 #include "config.h"
 #ifdef HAVE_OPENAL
 
-#include "timing/TimedSubsystem.h"
-
 #include "AL/al.h"
 
 namespace Project {
 namespace Sound {
 
-class SoundSystem : public Timing::TimedSubsystem {
+class SoundSystem {
 private:
     ALuint musicBuffer;
     ALuint musicSource;
@@ -21,7 +19,8 @@ public:
     
     virtual bool initialize();
     
-    virtual void doAction(unsigned long currentTime);
+    //virtual void doAction(unsigned long currentTime);
+    void doAction();
 private:
     void setupListener();
     
