@@ -45,6 +45,9 @@ public:
 
 	bool raycastPoint(const Math::Point &from, const Math::Point &to, Math::Point* point = NULL);
     
+    void allRaycastPoints(const Math::Point &from, const Math::Point &to,
+        std::vector<Math::Point> &points);
+    
     DebugDrawer &getDebug() { return debug; }
 private:
     void setDebug(bool on);

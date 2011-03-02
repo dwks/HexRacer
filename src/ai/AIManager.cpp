@@ -1,5 +1,6 @@
 #include "AIManager.h"
 #include "StraightDriver.h"
+#include "DirectionalDriver.h"
 
 #include "object/Player.h"
 #include "event/CreateObject.h"
@@ -41,7 +42,7 @@ void AIManager::createAIs(int count) {
         player->setPathTracker(new Map::PathTracker(*pathManager));
         
         boost::shared_ptr<Driver> driver
-            = boost::shared_ptr<Driver>(new StraightDriver(player));
+            = boost::shared_ptr<Driver>(new DirectionalDriver(player));
         driverList.push_back(driver);
         
         EMIT_EVENT(new Event::CreateObject(player));

@@ -83,12 +83,6 @@ set(OPENGL_LIBRARIES GL GLU GLEW)
 # OpenAL
 find_package(OpenAL)
 
-# Qt 4 stuff
-find_package(Qt4 COMPONENTS
-    QtCore QtGui QtOpenGL REQUIRED)
-include(${QT_USE_FILE})
-QT4_AUTOMOC(${MAP_EDITOR_SOURCES})
-
 # SDL stuff
 find_package(SDL)
 find_package(SDL_image)
@@ -114,6 +108,15 @@ add_library(${CORE_LIBRARY} ${SOURCES})
 # Executables
 add_executable(sdl ${SDL_SOURCES})
 add_executable(server ${SERVER_SOURCES})
+
+
+# Qt 4 stuff
+find_package(Qt4 COMPONENTS
+    QtCore QtGui QtOpenGL REQUIRED)
+include(${QT_USE_FILE})
+QT4_AUTOMOC(${MAP_EDITOR_SOURCES})
+
+
 add_executable(editor ${MAP_EDITOR_SOURCES})
 
 set(COMMON_LIBRARIES

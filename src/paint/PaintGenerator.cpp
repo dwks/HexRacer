@@ -1,9 +1,20 @@
 #include "PaintGenerator.h"
 
+#include "boost/smart_ptr.hpp"
+
 #include "math/BoundingBox2D.h"
 #include "math/Vertex2D.h"
 #include "math/Geometry.h"
-#include <math.h>
+
+#include "physics/PhysicsWorld.h"
+#include "physics/PhysicsFactory.h"
+
+#include "config.h"
+
+#include <cmath>
+
+#define USE_BULLET_RAYCASTS
+
 #ifdef QT_GUI_LIB
 #include <QtGui>
 #endif
@@ -15,7 +26,7 @@ namespace Project {
 namespace Paint {
 
 	PaintGenerator::PaintGenerator() {
-		triangleTree = NULL;
+		triangleTree = NULL;		
 	}
 
 	void PaintGenerator::generateHeightmap(const std::vector<Math::Triangle3D>& _triangles, const HexGrid& hex_grid) {
@@ -23,6 +34,15 @@ namespace Paint {
 		if (_triangles.size() <= 0)
 			return;
 
+#ifdef USE_BULLET_RAYCASTS
+    // bullet initialization
+    boost::shared_ptr<Physics::PhysicsWorld> physicsWorld(
+        new Physics::PhysicsWorld());
+    btRigidBody *meshBody
+        = Physics::PhysicsFactory::createRigidTriMesh(_triangles);
+    physicsWorld->registerRigidBody(meshBody);
+#endif
+			
 		heightMap = HexHeightMap(hex_grid);
 
 		vector<ObjectSpatial*> triangles;
@@ -245,6 +265,13 @@ namespace Paint {
 		d.setCoord(1.0, PaintCell::PAINT_AXIS);
 		RayIntersection intersect;
 
+#ifdef USE_BULLET_RAYCASTS
+    std::vector<Math::Point> data;
+    Physics::PhysicsWorld::getInstance()->allRaycastPoints(p, p+d*100000, data);
+    for(int x = 0; x < int(data.size()); x ++) {
+        vec.push_back(data[x].getCoord(PaintCell::PAINT_AXIS));
+    }
+#else
 		do {
 			Ray r(p, d, 0.0000001);
 			intersect = triangleTree->rayIntersection(r);
@@ -254,6 +281,7 @@ namespace Paint {
 			}
 
 		} while (intersect.intersects);
+#endif
 	}
 
 }  // namespace Paint
