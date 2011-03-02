@@ -151,6 +151,8 @@ camera.followslow.x = 0.0
 camera.followslow.y = 2.25
 camera.followslow.z = -5.5
 
+sound.enable = 1
+
 ########
 ### Network settings
 

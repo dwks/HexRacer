@@ -325,18 +325,6 @@ namespace Paint {
 		}
 
 		OpenGL::Color::glColor(cell_color);
-		OpenGL::MathWrapper::glVertex(cell->position);
-		/*
-		cell_color *= 0.85f;
-		GLfloat values [4] = {cell_color.redf(), cell_color.greenf(), cell_color.bluef(), cell_color.alphaf()};
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, values);
-		cell_color = cell_color*0.5f+OpenGL::Color(OpenGL::Color::DARKGREY)*0.25f;
-		values[0] = cell_color[0];
-		values[1] = cell_color[1];
-		values[2] = cell_color[2];
-		values[3] = cell_color[3];
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, values);
-		*/
 		glCallList(cell->displayList);
 	}
 

@@ -28,7 +28,9 @@ private:
     
     boost::shared_ptr<ClientData> clientData;
     
+#ifdef HAVE_OPENAL
     boost::shared_ptr<Sound::SoundSystem> soundSystem;
+#endif
     
     bool isConnectedToNetwork;
 public:
