@@ -7,7 +7,7 @@
 #define HAVE_BOOST
 
 // enables sound
-//#define HAVE_OPENAL
+#define HAVE_OPENAL
 
 #define VEHICLE_CHASSIS_MODEL_NAME "vehicleChassis"
 #define VEHICLE_WHEEL_MODEL_NAME "vehicleWheel"

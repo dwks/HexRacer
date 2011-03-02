@@ -84,6 +84,9 @@ void GameWorld::constructAfterConnect(Map::HRMap *map) {
             raceManager->startingPointForPlayer(clientData->getPlayerID()),
             raceManager->startingPlayerDirection());
     }
+    
+    soundSystem = boost::shared_ptr<Sound::SoundSystem>(new Sound::SoundSystem());
+    soundSystem->initialize();
 }
 
 void GameWorld::checkNetwork() {
