@@ -11,7 +11,7 @@
 namespace Project {
 namespace Sound {
 
-SoundSystem::SoundSystem() : Timing::TimedSubsystem(10) {
+SoundSystem::SoundSystem(){
     
 }
 
@@ -20,13 +20,8 @@ SoundSystem::~SoundSystem() {
 }
 
 bool SoundSystem::initialize() {
-    /*if(alutInit(NULL, 0)) {
-        LOG2(AUDIO, INIT, "Can't initialize OpenAL");
-        return false;
-    }*/
-    
     alutInit(NULL, 0);
-    alGetError();  // clear error bit . . . why?
+    alGetError();
     
     LOG2(AUDIO, INIT, "Successfully initialized OpenAL");
     
@@ -72,8 +67,7 @@ void SoundSystem::setupMusic() {
     ALboolean loop;
     
     // !!! this is deprecated
-    alutLoadWAVFile((ALbyte *)"data/sound/music/mainloop.wav",
-        &format, &data, &size, &freq, &loop);
+    alutLoadWAVFile((ALbyte *)"data/sound/music/mainloop.wav", &format, &data, &size, &freq, &loop);
     alBufferData(musicBuffer, format, data, size, freq);
     alutUnloadWAV(format, data, size, freq);
     
@@ -107,7 +101,7 @@ void SoundSystem::destroyMusic() {
     alDeleteSources(1, &musicSource);
 }
 
-void SoundSystem::doAction(unsigned long currentTime) {
+void SoundSystem::doAction() {
     // nothing yet
 }
 

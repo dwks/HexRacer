@@ -64,6 +64,7 @@ void GameLoop::miscellaneous() {
     
     gameWorld->doPhysics();
 	gameWorld->doAI();
+        gameWorld->doSound();
     
     viewport->doCamera(SDL_GetTicks());
 }
