@@ -42,10 +42,10 @@ physics.driving.constant.c        = 45.0
 physics.driving.mindownfactor = 0.25
 
 #Turning
-physics.turning.constant = 3.0
-physics.turning.speedfactor = 0.55
+physics.turning.constant = 4.0
+physics.turning.speedfactor = 0.45
 physics.turning.speedthreshhold = 20.0
-physics.turning.fallofffactor = 0.1
+physics.turning.fallofffactor = 0.0
 
 # Display options for the vehicle wheels
 physics.wheel.diameter = 0.155
@@ -63,12 +63,13 @@ physics.driving.sidewaysdrag      = 20.0
 
 game.paint.colorbenefit = 1.0
 game.paint.colorpenalty = -0.25
-game.paint.boostinfluence = 0.8
+game.paint.boostinfluence = 0.75
 game.paint.boostweightfactor = 1.5
 game.paint.boostmin = 0.5
 game.paint.boostmax = 1.5
 game.paint.paintingboost = 0.8
 game.paint.erasingboost = 0.8
+game.paint.maxboostincrease = 0.02
 
 game.enablepathing = 1
 

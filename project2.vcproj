@@ -618,10 +618,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\paint\PaintVertex.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\map\PathingUpdater.cpp"
 				>
 			</File>
@@ -1657,10 +1653,6 @@
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintSubsystem.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\paint\PaintVertex.h"
 				>
 			</File>
 			<File

@@ -100,8 +100,13 @@ void PaintSubsystem::calculateBoostSpeeds() {
 				GET_SETTING("game.paint.boostmin", 0.5),
 				GET_SETTING("game.paint.boostmax", 1.5)
 				);
-            
-            player->setSpeedBoost(factor);
+
+			double max_boost_increase = GET_SETTING("game.paint.maxboostincrease", 0.01);
+			double current_boost = player->getSpeedBoost();
+			if (factor < current_boost+max_boost_increase)
+	            player->setSpeedBoost(factor);
+			else
+				player->setSpeedBoost(current_boost+max_boost_increase);
         }
         else {
             // if painting or erasing, slow down the player no matter what
