@@ -78,12 +78,18 @@ void GUISystem::construct() {
             = new Widget::CompositeWidget("main");
         widgets->addChild(main);
         
+		/*
         main->addChild(new Widget::TextWidget("title", OpenGL::Color::WHITE,
             "HexRacer",
             Widget::NormalTextLayout::ALIGN_HCENTRE | Widget::NormalTextLayout::ALIGN_TOP));
         
         main->getChild("title")->updateLayout(
             Widget::WidgetRect(0.0, 0.1, 1.0, 0.2));
+
+		*/
+
+		main->addChild(new Widget::ImageWidget("logo", "data/menu/hexracerlogo.png",
+			Widget::WidgetRect(0.0, 0.0, 1.0, 0.5)));
         
         main->addChild(new Widget::ButtonWidget("host", "Host game",
             Widget::WidgetRect(0.03, 0.6, 0.42, 0.08)));

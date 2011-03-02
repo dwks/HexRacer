@@ -21,7 +21,7 @@ Math::Point Projector::screenToGL(Point2D point) {
     //
     // offset is used to change the origin (0, 0) from the upper-left corner
     // to the centre of the screen as is expected in OpenGL unit coordinates.
-    if(currentDimensions.getX() > currentDimensions.getY()) {
+    if(currentDimensions.getX() > currentDimensions.getY() || true) {
         offset = Math::Point(
             double(currentDimensions.getX()) / currentDimensions.getY(), -1.0);
     }
@@ -44,7 +44,7 @@ Point2D Projector::GLtoScreen(Math::Point point) {
         currentDimensions.getX(),
         currentDimensions.getY());
     
-    if(currentDimensions.getX() > currentDimensions.getY()) {
+	if(currentDimensions.getX() > currentDimensions.getY() || true) {
         offset = Math::Point(
             double(currentDimensions.getX()) / currentDimensions.getY(), -1.0);
     }
@@ -109,6 +109,18 @@ Point2D Projector::projectPoint(Math::Point point) {
     return Point2D(
         static_cast<int>(x),
         static_cast<int>(view[3] - y));
+}
+
+void Projector::setCurrentDimensions(const Point2D &dimensions) {
+	currentDimensions = dimensions;
+	aspect = (double) dimensions.getX()/ (double) dimensions.getY();
+}
+
+void Projector::standardGLOrtho(bool y_flip) const {
+	if (!y_flip)
+		glOrtho(-aspect, aspect, -1.0, 1.0, -1.0, 1.0);
+	else
+		glOrtho(-aspect, aspect, 1.0, -1.0, -1.0, 1.0);
 }
 
 }  // namespace SDL
