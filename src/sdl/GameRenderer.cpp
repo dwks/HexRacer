@@ -523,7 +523,6 @@ void GameRenderer::initBloom() {
 
 	bloomRenderable = new Render::RenderList();
 	bloomScene = new Render::RenderParent();
-	//bloomPaint = new Render::RenderParent(paintManager.get());
 
 	bloomRenderable->addRenderable(bloomScene);
 	bloomRenderable->addRenderable(paintManager.get());

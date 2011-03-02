@@ -27,7 +27,7 @@ physics.maxtimesteps              = 2
 physics.constant.gravity          = 11
 
 # Acceleration and responsiveness of input
-physics.constant.turn             = 0.2
+physics.constant.turn             = 0.3
 physics.constant.accel            = 3.6
 physics.constant.brake            = 6.0
 physics.constant.centripetal      = 1.0
@@ -57,7 +57,7 @@ physics.wheel.backz = -0.5
 # Drag forces (when on the ground and when in the air)
 physics.driving.lineardrag        = 0.5
 physics.driving.airlineardrag     = 0.2
-physics.driving.angulardrag       = 0.5
+physics.driving.angulardrag       = 2.0
 physics.driving.airangulardrag    = 0.2
 physics.driving.sidewaysdrag      = 20.0
 
