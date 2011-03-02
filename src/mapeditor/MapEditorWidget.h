@@ -43,6 +43,7 @@ private:
 
 	GLuint sphereList;
 	GLuint hudCircleList;
+	GLuint paintList;
 
 	RenderProperties* objectBufferProperties;
 	RenderProperties* normalRenderProperties;
@@ -117,6 +118,8 @@ private:
 	void translateSelectedObject(Point translation);
 	void setSelectedObject(MapObject* object);
 	void updateSelectedObjectPosition();
+
+	void regenPaintList();
 
 public slots:
 

@@ -320,13 +320,21 @@ void Point::operator /= (double factor) {
     setW(getW()/factor);
 }
 
-bool Point::operator == (const Point &other) {
+bool Point::operator == (const Point &other) const {
     return getX() == other.getX()
         && getY() == other.getY()
         && getZ() == other.getZ()
         && getW() == other.getW();
 }
 
+bool Point::operator < (const Point &other) const {
+	return (
+		getX() < other.getX() ||
+		( getX() == other.getX() &&
+		(getY() < other.getY() || (getY() == other.getY() && getZ() < other.getZ()))
+		)
+		);
+}
 double Point::operator [] (int index) const {
     switch(index) {
     case 0:

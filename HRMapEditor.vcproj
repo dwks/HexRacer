@@ -123,7 +123,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="qtmaind.lib QtCored4.lib QtGuid4.lib QtOpenGLd4.lib opengl32.lib glu32.lib glew32.lib SDL.lib SDL_image.lib"
+				AdditionalDependencies="qtmaind.lib QtCored4.lib QtGuid4.lib QtOpenGLd4.lib opengl32.lib glu32.lib glew32.lib SDL.lib SDL_image.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				AdditionalLibraryDirectories="$(QTDIR)\lib"
 				GenerateDebugInformation="true"
@@ -237,6 +237,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\physics\Converter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mapeditor\CubeMapDialog.cpp"
 				>
 			</File>
@@ -245,11 +249,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\physics\DebugDrawer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\DirectoryFunctions.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\mapeditor\editormain.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\Enabler.cpp"
 				>
 			</File>
 			<File
@@ -377,6 +389,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\physics\MotionState.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mapeditor\MouseSelectorWidget.cpp"
 				>
 			</File>
@@ -393,7 +409,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\Observer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\ObserverRegistry.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\paint\PaintCell.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintCellInfo.cpp"
 				>
 			</File>
 			<File
@@ -414,6 +442,18 @@
 			</File>
 			<File
 				RelativePath=".\src\mapeditor\PathNodeObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicalPlayer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicsFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicsWorld.cpp"
 				>
 			</File>
 			<File
@@ -529,10 +569,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\TransformedMesh.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\mesh\TransformedMesh.cpp"
 				>
 			</File>
@@ -643,6 +679,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\physics\Converter.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mapeditor\CubeMapDialog.h"
 				>
 				<FileConfiguration
@@ -673,7 +713,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\physics\DebugDrawer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\DirectoryFunctions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\Enabler.h"
 				>
 			</File>
 			<File
@@ -871,6 +919,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\physics\MotionState.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mapeditor\MouseSelectorWidget.h"
 				>
 				<FileConfiguration
@@ -909,11 +961,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\Observer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\ObserverRegistry.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\OpenGL.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintCell.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintCellInfo.h"
 				>
 			</File>
 			<File
@@ -934,6 +998,18 @@
 			</File>
 			<File
 				RelativePath=".\src\mapeditor\PathNodeObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicalPlayer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicsFactory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\PhysicsWorld.h"
 				>
 			</File>
 			<File
@@ -1047,6 +1123,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\misc\StdListFunctions.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\StdVectorFunctions.h"
 				>
 			</File>
@@ -1076,10 +1156,6 @@
 			</File>
 			<File
 				RelativePath=".\src\opengl\Trackball.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\TransformedMesh.h"
 				>
 			</File>
 			<File

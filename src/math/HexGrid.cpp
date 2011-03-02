@@ -35,6 +35,10 @@ namespace Math {
 		updateDimensions();
 	}
 
+	void HexGrid::setHexRadius(double radius) {
+		hexRadius = fabs(radius);
+		updateDimensions();
+	}
 	double HexGrid::hexUPosition(int u_index, int v_index) const {
 		return (
 			minU+
@@ -73,11 +77,11 @@ namespace Math {
 		return pos;
 	}
 
-	struct HexGrid::HexIndex HexGrid::vertexIndex(const HexGrid::HexIndex& hex_index, short vert_index) const {
+	struct HexGrid::HexIndex HexGrid::vertexIndex(const HexGrid::HexIndex& hex_index, short vert_index) {
 		return vertexIndex(hex_index.uIndex, hex_index.vIndex, vert_index);
 	}
 
-	struct HexGrid::HexIndex HexGrid::vertexIndex(int u_index, int v_index, short vert_index) const {
+	struct HexGrid::HexIndex HexGrid::vertexIndex(int u_index, int v_index, short vert_index) {
 
 		struct HexIndex vert;
 		short odd_row = static_cast<short>(v_index % 2);
@@ -122,11 +126,51 @@ namespace Math {
 			&& hex_index.vIndex >= 0 && hex_index.vIndex < vIndices);
 	}
 
+	bool HexGrid::validHex(int u_index, int v_index) const {
+		return (u_index >= 0 && u_index < uIndices &&
+			v_index >= 0 && v_index < vIndices);
+	}
+
 	bool HexGrid::validVertex(const HexIndex& vert_index) const {
 		struct HexIndex hex(vert_index);
 		hex.uIndex /= 2;
 		return validHex(hex);
 	}
 
+	bool HexGrid::validVertex(int u_index, int v_index) const {
+		u_index /= 2;
+		return (u_index >= 0 && u_index < uIndices &&
+			v_index >= 0 && v_index < vIndices);
+	}
+
+	std::ostream &operator << (std::ostream &stream, const HexGrid::HexIndex &index) {
+		stream << index.uIndex << ' ' << index.vIndex;
+		return stream;
+	}
+
+	std::istream &operator >> (std::istream &stream, HexGrid::HexIndex &index) {
+		stream >> index.uIndex >> index.vIndex;
+		return stream;
+	}
+
+
+	std::ostream &operator << (std::ostream &stream, const HexGrid &object) {
+		stream << object.getHexRadius() << ' '
+			<< object.getMinU() << ' ' << object.getMaxU() << ' '
+			<< object.getMinV() << ' ' << object.getMaxV();
+		return stream;
+	}
+
+	std::istream &operator >> (std::istream &stream, HexGrid &object) {
+		double hex_radius;
+		double min_u;
+		double max_u;
+		double min_v;
+		double max_v;
+		stream >> hex_radius >> min_u >> max_u >> min_v >> max_v;
+		object.setHexRadius(hex_radius);
+		object.setDimensions(min_u, max_u, min_v, max_v);
+		return stream;
+	}
 }  // namespace Math
 }  // namespace Project

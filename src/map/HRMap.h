@@ -9,8 +9,10 @@
 #include "mesh/TransformedMesh.h"
 #include "mesh/MeshGroup.h"
 #include "paint/PaintCell.h"
+#include "paint/PaintCellInfo.h"
 #include "math/BoundingPlane3D.h"
 #include "math/HexGrid.h"
+#include "math/HexHeightMap.h"
 #include "PathNode.h"
 #include "MeshInstance.h"
 #include "MapOptions.h"
@@ -18,7 +20,7 @@
 #include <vector>
 
 #define HRMAP_NUM_MESHES 5
-#define HRMAP_VERSION "0.1.5"
+#define HRMAP_VERSION "0.2.0"
 #define HRMAP_VERSION_LABEL "version"
 #define HRMAP_PROPMESH_LABEL "propMesh"
 #define HRMAP_LIGHT_LABEL "light"
@@ -26,11 +28,13 @@
 #define HRMAP_STARTPOINT_LABEL "startPoint"
 #define HRMAP_MESHINSTANCE_LABEL "meshInstance"
 #define HRMAP_FINISHPLANE_LABEL "finishPlane"
-#define HRMAP_PAINTCELL_LABEL "paintCell"
 #define HRMAP_MAP2DFILE_LABEL "map2DFile"
 #define HRMAP_MAP2DCENTER_LABEL "map2DCenter"
 #define HRMAP_MAP2DWIDTH_LABEL "map2DWidth"
 #define HRMAP_MAP2DHEIGHT_LABEL "map2DHeight"
+#define HRMAP_PAINTCELL_LABEL "paintCell"
+#define HRMAP_HEXGRID_LABEL "hexGrid"
+#define HRMAP_PAINTHEIGHTMAP_LABEL "paintHeightMap"
 
 namespace Project {
 namespace Map {
@@ -48,7 +52,6 @@ private:
 	OpenGL::TextureCube* cubeMap;
 	std::vector<OpenGL::Light*> lights;
 	std::vector<PathNode*> pathNodes;
-	std::vector<Paint::PaintCell*> paintCells;
 	std::vector<Math::Vertex3D*> startPoints;
 	std::vector<MeshInstance*> meshInstances;
 	Math::BoundingPlane3D finishPlane;
@@ -66,6 +69,9 @@ private:
 
 	Math::BSPTree3D* collisionTree;
 	Math::HexGrid hexGrid;
+	Math::HexHeightMap paintHeightMap;
+
+	std::vector<Paint::PaintCellInfo> paintCellInfo;
 
 public:
 
@@ -81,13 +87,17 @@ public:
 	const OpenGL::CubeMapFile* getCubeMapFile() const { return cubeMapFile; }
 	void setCubeMapFile(const OpenGL::CubeMapFile& file);
 	void clearCubeMap();
-	const std::vector<Paint::PaintCell*>& getPaintCells() const { return paintCells; }
 	Math::BSPTree3D* getCollisionTree();
 	void clear();
 	void clearPaint();
 	void loadMapMesh(HRMap::MeshType type, string filename);
 	void clearMapMesh(HRMap::MeshType type);
 	void generatePaint();
+
+	const Math::HexGrid& getHexGrid() const { return hexGrid; }
+	const Math::HexHeightMap& getPaintHeightMap() const { return paintHeightMap; }
+
+	const vector<Paint::PaintCellInfo>& getPaintCellInfo() const { return paintCellInfo; }
 
 	std::string getMap2DFile() const { return map2DFile; }
 	Math::Point getMap2DCenter() const { return map2DCenter; }
@@ -143,6 +153,7 @@ private:
 
 	void clearCollisionTree();
 	void updateDimensions();
+	void updateHexGrid();
 
 };
 

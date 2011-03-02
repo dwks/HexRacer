@@ -4,6 +4,7 @@
 #include <list>
 #include <vector>
 #include "HexGrid.h"
+#include "math/Point.h"
 
 namespace Project {
 namespace Math {
@@ -17,11 +18,22 @@ private:
 	std::vector<struct HexGrid::HexIndex> setHexIndices;
 	std::vector<struct HexGrid::HexIndex> setVertexIndices;
 
-	const HexGrid& hexGrid;
+	HexGrid hexGrid;
 
 public:
 
-	HexHeightMap(const HexGrid& hex_grid);
+	struct LayeredHexIndex {
+		HexGrid::HexIndex hexIndex;
+		int layerIndex;
+	};
+
+	struct HexIndexHeight {
+		HexGrid::HexIndex index;
+		double height;
+		bool operator < (const HexIndexHeight& other) const {return height < other.height;}
+	};
+
+	HexHeightMap(const HexGrid& hex_grid = HexGrid());
 	~HexHeightMap();
 
 	void addHexHeight(const HexGrid::HexIndex& hex_index, double height);
@@ -39,9 +51,23 @@ public:
 	const std::vector<struct HexGrid::HexIndex>& getSetHexIndices() const { return setHexIndices; }
 	const std::vector<struct HexGrid::HexIndex>& getSetVertexIndices() const { return setVertexIndices; }
 
+	void setHexGrid(const HexGrid& hex_grid);
+	const HexGrid& getHexGrid() const { return hexGrid; }
+
+	Math::Point hexToPoint(const LayeredHexIndex& hex_index, Math::Axis axis) const;
+	Math::Point hexToPoint(int u_index, int v_index, int layer_index, Math::Axis axis) const;
+	
+	Math::Point vertexToPoint(const LayeredHexIndex& vert_index, Math::Axis axis) const;
+	Math::Point vertexToPoint(int u_index, int v_index, int layer_index, Math::Axis axis) const;
+
 	void clear();
+
+	void operator = (const HexHeightMap& other);
 	
 };
+
+std::ostream &operator << (std::ostream &stream, const HexHeightMap &object);
+std::istream &operator >> (std::istream &stream, HexHeightMap &object);
 
 }  // namespace Math
 }  // namespace Project
