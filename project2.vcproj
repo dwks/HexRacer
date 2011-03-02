@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
+				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib OpenAL32.lib alut.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -298,6 +298,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\DirectionalDriver.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\DirectoryFunctions.cpp"
 				>
 			</File>
@@ -371,6 +375,14 @@
 			</File>
 			<File
 				RelativePath=".\src\gui\GUISystem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\HexGrid.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\HexHeightMap.cpp"
 				>
 			</File>
 			<File
@@ -578,6 +590,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\paint\PaintCellInfo.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\PaintCellsChanged.cpp"
 				>
 			</File>
@@ -590,15 +606,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\paint\PaintGrid.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\paint\PaintManager.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintSubsystem.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\paint\PaintVertex.cpp"
 				>
 			</File>
 			<File
@@ -787,6 +803,10 @@
 			</File>
 			<File
 				RelativePath=".\src\misc\Sleeper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sound\SoundSystem.cpp"
 				>
 			</File>
 			<File
@@ -1320,6 +1340,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\DirectionalDriver.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\DirectoryFunctions.h"
 				>
 			</File>
@@ -1393,6 +1417,14 @@
 			</File>
 			<File
 				RelativePath=".\src\gui\GUISystem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\HexGrid.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\HexHeightMap.h"
 				>
 			</File>
 			<File
@@ -1596,6 +1628,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\paint\PaintCellInfo.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\PaintCellsChanged.h"
 				>
 			</File>
@@ -1608,15 +1644,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\paint\PaintGrid.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\paint\PaintManager.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintSubsystem.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\paint\PaintVertex.h"
 				>
 			</File>
 			<File
@@ -1809,6 +1845,10 @@
 			</File>
 			<File
 				RelativePath=".\src\misc\Sleeper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sound\SoundSystem.h"
 				>
 			</File>
 			<File

@@ -14,6 +14,19 @@ using namespace Math;
 namespace Project {
 namespace Paint {
 
+	PaintCell::PaintCell(const Math::Point& _position) {
+		playerColor =-1;
+		displayList = 0;
+		nextCell = NULL;
+		position = _position;
+	}
+
+	PaintCell::~PaintCell() {
+		if (displayList > 0)
+			glDeleteLists(displayList, 1);
+	}
+
+	/*
 	PaintCell::PaintCell(Point _center) {
 		index = -1;
 		playerColor = -1;
@@ -87,11 +100,6 @@ namespace Paint {
 	}
 
 	Point PaintCell::calcVertexLocation(int vert_index, double cell_radius) {
-		/*
-		double angle = (double) vert_index * (PI/3.0);
-		Point p = Point::point2D(cos(angle)*cell_radius, sin(angle)*cell_radius, PAINT_AXIS);
-		return center+p;
-		*/
 		switch (vert_index) {
 			case 0:
 				return center+Point::point2D(cell_radius, 0.0, PAINT_AXIS);
@@ -161,5 +169,7 @@ namespace Paint {
 		cell.setBoundingDimensions();
 		return stream;
 	}
+
+	*/
 }  // namespace Paint
 }  // namespace Project

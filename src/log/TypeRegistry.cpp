@@ -52,6 +52,7 @@ TypeRegistry::TypeRegistry() {
         int counter = 1;
         registerType(Subsystem::AUDIO, "INIT", counter ++);
         registerType(Subsystem::AUDIO, "MUSIC", counter ++);
+        registerType(Subsystem::AUDIO, "SFX", counter ++);
     }
     
     // CAMERA OBJECT log message types

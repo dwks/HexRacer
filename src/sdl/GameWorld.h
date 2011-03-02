@@ -14,6 +14,7 @@
 #include "map/RaceManager.h"
 
 #include "ClientData.h"
+#include "sound/SoundSystem.h"
 
 namespace Project {
 namespace SDL {
@@ -26,6 +27,10 @@ private:
     boost::shared_ptr<History::Historian> historian;
     
     boost::shared_ptr<ClientData> clientData;
+    
+#ifdef HAVE_OPENAL
+    boost::shared_ptr<Sound::SoundSystem> soundSystem;
+#endif
     
     bool isConnectedToNetwork;
 public:
@@ -41,6 +46,7 @@ public:
     void checkNetwork();
     void doPhysics();
 	void doAI();
+        void doSound();
     
     void render();
 private:

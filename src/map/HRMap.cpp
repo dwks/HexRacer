@@ -15,7 +15,8 @@ using namespace std;
 namespace Project {
 namespace Map {
 
-	HRMap::HRMap() {
+	HRMap::HRMap()
+		:hexGrid(PAINT_CELL_RADIUS, 0.0, 1.0, 0.0, 1.0) {
 
 		cubeMapFile = new CubeMapFile();
 		trackRenderable = NULL;
@@ -58,10 +59,20 @@ namespace Map {
 				in_file.ignore(9999, '\n');
 			}
 			else if (keyword == HRMAP_PAINTCELL_LABEL) {
-				PaintCell* cell = new PaintCell(Point());
-				in_file >> *cell;
-				cell->index = paintCells.size();
-				paintCells.push_back(cell);
+
+				if (version >= "0.2.0") {
+					Point normal;
+					int num_cells;
+					in_file >> normal >> num_cells;
+					while (num_cells > 0) {
+						Paint::PaintCellInfo cell_info(0, 0);
+						in_file >> cell_info;
+						cell_info.normal = normal;
+						paintCellInfo.push_back(cell_info);
+						num_cells--;
+					}
+				}
+
 			}
 			else if (keyword == HRMAP_PATHNODE_LABEL) {
 				Point p;
@@ -107,6 +118,13 @@ namespace Map {
 				in_file >> mesh_filename;
 				mesh_filename = DirectoryFunctions::fromRelativeFilename(file_directory, mesh_filename);
 				addPropMesh(mesh_name, mesh_filename);
+			}
+			else if (keyword == HRMAP_HEXGRID_LABEL) {
+				in_file >> hexGrid;
+				paintHeightMap.setHexGrid(hexGrid);
+			}
+			else if (keyword == HRMAP_PAINTHEIGHTMAP_LABEL) {
+				in_file >> paintHeightMap;
 			}
 			else if (keyword == HRMAP_FINISHPLANE_LABEL) {
 				in_file >> finishPlane;
@@ -261,11 +279,46 @@ namespace Map {
 			out_file << HRMAP_MESHINSTANCE_LABEL << ' ' << (*meshInstances[i]) << '\n';
 		}
 
+		out_file << "#HexGrid\n";
+		out_file << HRMAP_HEXGRID_LABEL << ' ' << hexGrid << '\n';
+		out_file << "#Paint Height Map\n";
+		out_file << HRMAP_PAINTHEIGHTMAP_LABEL << ' ' << paintHeightMap << '\n';
+
 		out_file << "#Paint Cells\n";
-		for (unsigned int i = 0; i < paintCells.size(); i++) {
-			out_file << HRMAP_PAINTCELL_LABEL << ' ' << (*paintCells[i]) << '\n';
+
+		Misc::vectorMergeSort(paintCellInfo, 0, paintCellInfo.size()-1);
+
+		unsigned int i = 0;
+		while (i < paintCellInfo.size()) {
+
+			Math::Point last_normal = paintCellInfo[i].normal;
+
+			unsigned int num_same = 1;
+			while (i+num_same < paintCellInfo.size()
+				&& last_normal == paintCellInfo[i+num_same].normal) {
+				num_same++;
+			}
+
+			out_file << HRMAP_PAINTCELL_LABEL << ' ' << last_normal << ' ' << num_same << '\n';
+
+			while (num_same > 0) {
+				out_file << paintCellInfo[i] << '\n';
+				i++;
+				num_same--;
+			}
+
 		}
 
+
+		//out_file << "#Paint Height Map\n";
+
+		/*
+		out_file << "#Paint Cells\n";
+		out_file << HRMAP_PAINTCELL_LABEL << ' ' << paintCells.size() << '\n';
+		for (unsigned int i = 0; i < paintCells.size(); i++) {
+			out_file << (*paintCells[i]) << '\n';
+		}
+		*/
 
 		out_file.close();
 
@@ -277,10 +330,14 @@ namespace Map {
 	}
 
 	void HRMap::clearPaint() {
+		/*
 		for (unsigned int i = 0; i < paintCells.size(); i++) {
 			delete(paintCells[i]);
 		}
 		paintCells.clear();
+		*/
+		paintCellInfo.clear();
+		paintHeightMap.clear();
 	}
 
 	void HRMap::clear() {
@@ -332,7 +389,8 @@ namespace Map {
 		mapMeshFile[static_cast<int>(type)] = filename;
 		if (meshIsSolid(type))
 			clearCollisionTree();
-		updateMapBoundingBox();
+
+		updateDimensions();
 	}
 
 	void HRMap::clearMapMesh(HRMap::MeshType type) {
@@ -343,7 +401,7 @@ namespace Map {
 			if (meshIsSolid(type)) {
 				clearCollisionTree();
 			}
-			updateMapBoundingBox();
+			updateDimensions();
 		}
 		mapMeshFile[i] = "";
 	}
@@ -404,6 +462,14 @@ namespace Map {
 				return true;
 		}
 	}
+	bool HRMap::meshIsTrack(MeshType type) {
+		switch (type) {
+			case HRMap::TRACK: case HRMap::INVIS_TRACK:
+				return true;
+			default:
+				return false;
+		}
+	}
 	OpenGL::TextureCube* HRMap::getCubeMap() {
 		if (cubeMap == NULL) {
 			cubeMap = new TextureCube(*cubeMapFile);
@@ -416,19 +482,25 @@ namespace Map {
 			cubeMap = NULL;
 		}
 	}
-	void HRMap::generatePaint(double cell_radius) {
+	void HRMap::generatePaint() {
 
 		clearPaint();
 
 		vector<Triangle3D> triangles;
-
 		if (getMapMesh(TRACK))
 			triangles = getMapMesh(TRACK)->getTriangles();
 		if (getMapMesh(INVIS_TRACK))
 			vectorAppend(triangles, getMapMesh(INVIS_TRACK)->getTriangles());
 
-		PaintGenerator generator(triangles, cell_radius);
-		paintCells = generator.getPaintCells();
+		updateHexGrid();
+
+		PaintGenerator generator;
+		generator.generateHeightmap(triangles, hexGrid);
+		generator.generateCells();
+
+		paintHeightMap = generator.getHeightMap();
+		paintCellInfo = generator.getCellInfo();
+		//paintCells = generator.getPaintCells();
 	}
 
 	void HRMap::addLight(Light* light) {
@@ -580,22 +652,60 @@ namespace Map {
 		return "";
 	}
 
-	void HRMap::updateMapBoundingBox() {
+	void HRMap::updateDimensions() {
 
-		bool set = false;
+		bool box_set = false;
 
 		for (int i = 0; i < NUM_MESHES; i++) {
+
 			MeshType type = static_cast<MeshType>(i);
 			if (getMapMesh(type)) {
-				if (!set) {
+
+				if (!box_set) {
 					mapBoundingBox.setToObject(getMapMesh(type)->getBoundingBox());
-					set = true;
+					box_set = true;
 				}
 				else {
 					mapBoundingBox.expandToInclude(getMapMesh(type)->getBoundingBox());
 				}
 			}
 		}
+	}
+
+	void HRMap::updateHexGrid() {
+
+		bool hexgrid_set = false;
+		double min_track_x = 0.0;
+		double max_track_x = 0.0;
+		double min_track_z = 0.0;
+		double max_track_z = 0.0;
+
+		hexGrid.setHexRadius(PAINT_CELL_RADIUS);
+
+		for (int i = 0; i < NUM_MESHES; i++) {
+
+			MeshType type = static_cast<MeshType>(i);
+			if (getMapMesh(type)) {
+				if (meshIsTrack(type)) {
+					if (!hexgrid_set) {
+						min_track_x = getMapMesh(type)->getBoundingBox().minX();
+						max_track_x = getMapMesh(type)->getBoundingBox().maxX();
+						min_track_z = getMapMesh(type)->getBoundingBox().minZ();
+						max_track_z = getMapMesh(type)->getBoundingBox().maxZ();
+						hexgrid_set = true;
+					}
+					else {
+						min_track_x = Math::minimum(min_track_x, getMapMesh(type)->getBoundingBox().minX());
+						max_track_x = Math::maximum(max_track_x, getMapMesh(type)->getBoundingBox().maxX());
+						min_track_z = Math::minimum(min_track_z, getMapMesh(type)->getBoundingBox().minZ());
+						max_track_z = Math::maximum(max_track_z, getMapMesh(type)->getBoundingBox().maxZ());
+					}
+				}
+			}
+
+		}
+
+		hexGrid.setDimensions(min_track_x, max_track_x, min_track_z, max_track_z);
 
 	}
 

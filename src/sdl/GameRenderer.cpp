@@ -67,7 +67,9 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     
     paintManager = boost::shared_ptr<Paint::PaintManager>(
         new Paint::PaintManager());
-    paintManager->setPaintCells(map->getPaintCells());
+	paintManager->setMap(map.get());
+	map->clearPaint();
+    //paintManager->setPaintCells(map->getPaintCells());
     
     Map::MapLoader().load(map.get(), mapRenderable.get());
 
@@ -144,9 +146,6 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldMan
 	camera->setFrustrumFarPlaneEnabled(true);
 
 	//Cull backfaces of paint cells
-	glCullFace(GL_BACK);
-	glEnable(GL_CULL_FACE);
-
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -170,8 +169,6 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldMan
 	glDisable(GL_BLEND);
 
 	if (renderer->getRenderSettings()->getBloomEnabled() && GET_SETTING("render.bloom.enable", false)) {
-
-		scene_render_list.addRenderable(paintManager.get());
 
 		//Render to the bloom buffer
 		camera->setFarPlane(GET_SETTING("render.bloom.farplane", 50.0));
@@ -529,6 +526,7 @@ void GameRenderer::initBloom() {
 	bloomScene = new Render::RenderParent();
 
 	bloomRenderable->addRenderable(bloomScene);
+	bloomRenderable->addRenderable(paintManager.get());
 
 	if (map->getMapOptions().getBGBloomEnable()) {
 		bloomBackground = new Render::RenderParent(background.get());

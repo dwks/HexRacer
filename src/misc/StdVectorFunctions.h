@@ -78,7 +78,7 @@ static void vectorMergeSort(std::vector<Type>& v, int start_index = -1, int end_
 	
 	if (size == 2) {
 		//Trivial sort of a size 2 vector
-		if (v[start_index] > v[end_index]) {
+		if (v[end_index] < v[start_index]) {
 			Type temp = v[start_index];
 			v[start_index] = v[end_index];
 			v[end_index] = temp;

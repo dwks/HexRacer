@@ -84,6 +84,11 @@ void GameWorld::constructAfterConnect(Map::HRMap *map) {
             raceManager->startingPointForPlayer(clientData->getPlayerID()),
             raceManager->startingPlayerDirection());
     }
+    
+#ifdef HAVE_OPENAL
+    soundSystem = boost::shared_ptr<Sound::SoundSystem>(new Sound::SoundSystem());
+    soundSystem->initialize();
+#endif
 }
 
 void GameWorld::checkNetwork() {
@@ -99,6 +104,15 @@ void GameWorld::doPhysics() {
 void GameWorld::doAI() {
     basicWorld->doAI();
 }
+
+void GameWorld::doSound() {
+#ifdef HAVE_OPENAL
+	if (GET_SETTING("sound.enable", true)) {
+		soundSystem->doAction();
+	}
+#endif
+}
+
 
 void GameWorld::render() {
     basicWorld->getPhysicsWorld()->render();

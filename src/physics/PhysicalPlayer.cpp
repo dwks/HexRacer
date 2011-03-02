@@ -112,7 +112,9 @@ void PhysicalPlayer::applyAcceleration(double acceleration) {
     //LOG(PHYSICS, "accel at " << Misc::Sleeper::getTimeMilliseconds());
 
 	if (acceleration >= 0.0 || getLinearVelocity().dotProduct(orientation) < 0.0) {
-		applyForce(orientation * constant * acceleration * ((speedBoost-1.0)*GET_SETTING("game.paint.boostinfluence", 1.0)+1.0) );
+        double paintInfluence = (speedBoost - 1.0)
+            * GET_SETTING("game.paint.boostinfluence", 1.0) + 1.0;
+		applyForce(orientation * constant * acceleration * paintInfluence);
 	}
 	else {
 		applyForce(orientation * brakeConstant * acceleration);

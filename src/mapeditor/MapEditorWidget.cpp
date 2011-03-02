@@ -103,6 +103,8 @@ void MapEditorWidget::initializeGL() {
 	}
 	glEndList();
 
+	paintList = 0;
+
 	renderer = new RenderManager();
 	renderer->getShaderManager()->loadShadersFile("shaders.txt");
 	lightManager = renderer->getLightManager();
@@ -187,6 +189,7 @@ void MapEditorWidget::paintGL() {
 	//Draw Paint
 	if (showPaint) {
 		Color::glColor(Color::YELLOW);
+		/*
 		const vector<PaintCell*>& paint_cells = map->getPaintCells();
 		for (unsigned int i = 0; i < paint_cells.size(); i++) {
 			PaintCell* cell = paint_cells[i];
@@ -198,6 +201,9 @@ void MapEditorWidget::paintGL() {
 			OpenGL::MathWrapper::glVertex(*cell->vertex[0]);
 			glEnd();
 		}
+		*/
+		if (paintList > 0)
+			glCallList(paintList);
 	}
 
 	//Draw Map Objects
@@ -569,6 +575,7 @@ void MapEditorWidget::loadMap(string filename) {
 	}
 	mapCollisionChanged();
 	propMeshesChanged(map->getPropMeshNames());
+	regenPaintList();
 	updateGL();
 }
 
@@ -768,6 +775,7 @@ void MapEditorWidget::setShowInvisible(bool enabled) {
 }
 void MapEditorWidget::generatePaint() {
 	map->generatePaint();
+	regenPaintList();
 	updateGL();
 }
 
@@ -1313,4 +1321,20 @@ void MapEditorWidget::scaleAll(double scale, Point origin) {
 }
 void MapEditorWidget::showOptionsDialog() {
 	MapOptionsDialog::showOptionsDialog(map->getMapOptions(), this);
+}
+void MapEditorWidget::clearPaint() {
+	map->clearPaint();
+	regenPaintList();
+	updateGL();
+}
+
+void MapEditorWidget::regenPaintList() {
+	glDeleteLists(paintList, 1);
+	paintList = glGenLists(1);
+	glNewList(paintList, GL_COMPILE);
+	const vector<PaintCellInfo>& cell_info = map->getPaintCellInfo();
+	for (unsigned int i = 0; i < cell_info.size(); i++) {
+		cell_info[i].render(map->getPaintHeightMap());
+	}
+	glEndList();
 }

@@ -305,6 +305,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\DirectionalDriver.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\DirectoryFunctions.cpp"
 				>
 			</File>
@@ -357,6 +361,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\HexGrid.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\HexHeightMap.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\history\Historian.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\HRMap.cpp"
 				>
 			</File>
@@ -386,6 +402,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\MapLoader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\MapOptions.cpp"
 				>
 			</File>
 			<File
@@ -493,6 +513,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\paint\PaintCellInfo.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\PaintCellsChanged.cpp"
 				>
 			</File>
@@ -502,6 +526,10 @@
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintGrid.cpp"
 				>
 			</File>
 			<File
@@ -558,6 +586,10 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\PhysicsWorld.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\history\PingTimeMeasurer.cpp"
 				>
 			</File>
 			<File
@@ -999,6 +1031,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ai\DirectionalDriver.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\DirectoryFunctions.h"
 				>
 			</File>
@@ -1051,6 +1087,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\math\HexGrid.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\math\HexHeightMap.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\history\Historian.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\HRMap.h"
 				>
 			</File>
@@ -1080,6 +1128,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\MapLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\MapOptions.h"
 				>
 			</File>
 			<File
@@ -1191,6 +1243,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\paint\PaintCellInfo.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\PaintCellsChanged.h"
 				>
 			</File>
@@ -1200,6 +1256,10 @@
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintGrid.h"
 				>
 			</File>
 			<File
@@ -1256,6 +1316,10 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\PhysicsWorld.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\history\PingTimeMeasurer.h"
 				>
 			</File>
 			<File
@@ -1416,6 +1480,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\SpatialObjectOperator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc\StdListFunctions.h"
 				>
 			</File>
 			<File

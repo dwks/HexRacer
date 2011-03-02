@@ -193,7 +193,7 @@ void ServerMain::init() {
     
     paintManager = boost::shared_ptr<Paint::PaintManager>(
         new Paint::PaintManager());
-    paintManager->setPaintCells(map->getPaintCells());
+    paintManager->setMap(map.get());
     
     paintSubsystem = boost::shared_ptr<Paint::PaintSubsystem>(
         new Paint::PaintSubsystem(

@@ -43,6 +43,7 @@ private:
 
 	GLuint sphereList;
 	GLuint hudCircleList;
+	GLuint paintList;
 
 	RenderProperties* objectBufferProperties;
 	RenderProperties* normalRenderProperties;
@@ -118,6 +119,8 @@ private:
 	void setSelectedObject(MapObject* object);
 	void updateSelectedObjectPosition();
 
+	void regenPaintList();
+
 public slots:
 
 	void newMap();
@@ -153,6 +156,8 @@ public slots:
 	void setLightHasAttenuation(bool has);
 	void setMeshInstanceType(int type);
 	void scaleAll(double scale, Point origin);
+
+	void clearPaint();
 
 	void setPropMeshIndex(int index);
 	void addPropMesh(string name, string filename);
