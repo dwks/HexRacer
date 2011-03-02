@@ -397,6 +397,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\paint\PaintCellInfo.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\paint\PaintGenerator.cpp"
 				>
 			</File>
@@ -526,10 +530,6 @@
 			</File>
 			<File
 				RelativePath=".\src\opengl\Trackball.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\TransformedMesh.cpp"
 				>
 			</File>
 			<File
@@ -917,6 +917,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\paint\PaintCellInfo.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\paint\PaintGenerator.h"
 				>
 			</File>
@@ -1047,6 +1051,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\misc\StdListFunctions.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\StdVectorFunctions.h"
 				>
 			</File>
@@ -1076,10 +1084,6 @@
 			</File>
 			<File
 				RelativePath=".\src\opengl\Trackball.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\TransformedMesh.h"
 				>
 			</File>
 			<File

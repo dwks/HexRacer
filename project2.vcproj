@@ -586,6 +586,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\paint\PaintCellInfo.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\PaintCellsChanged.cpp"
 				>
 			</File>
@@ -1609,6 +1613,10 @@
 			</File>
 			<File
 				RelativePath=".\src\paint\PaintCell.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\paint\PaintCellInfo.h"
 				>
 			</File>
 			<File

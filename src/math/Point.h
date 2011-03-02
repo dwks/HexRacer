@@ -130,7 +130,9 @@ public:
     
     /** Compares two Points with exact floating-point comparisons.
     */
-    bool operator == (const Point &other);
+    bool operator == (const Point &other) const;
+
+	bool operator < (const Point &other) const;
     
     double operator [] (int index) const;
     double &operator [] (int index);
