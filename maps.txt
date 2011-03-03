@@ -4,8 +4,8 @@ maps.1         = data/testtrack3.hrm
 maps.1.title   = Crazy Curves
 maps.1.image   = data/thumbnail/testtrack3.png
 
-maps.2         = data/canyon2d.hrm
-maps.2.title   = The Purple Canyon
+maps.2         = data/canyon2/canyon2.hrm
+maps.2.title   = The Twisted Canyon
 maps.2.image   = data/thumbnail/canyon2.png
 
 maps.3         = data/testtrackbanking3.hrm
