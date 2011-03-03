@@ -1,5 +1,5 @@
 #include <iomanip>  // for std::setprecision()
-#include <math.h>
+#include <cmath>
 
 #include "SDL.h"  // for SDL_GetVideoSurface()
 
@@ -750,6 +750,7 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 		}
 	}
 
+#if 0
 	double x_rotate = (x_angle_max+x_angle_min)*0.5;
 	double y_rotate = (y_angle_max+y_angle_min)*0.5;
 	Math::Point camera_lookat = shadowCamera->cameraToWorld(0.5, 0.5, 1.0);
@@ -757,6 +758,7 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 		+shadowCamera->getRightDirection()*std::tan(x_rotate)
 		+shadowCamera->getUpDirection()*std::tan(y_rotate)
 		);
+#endif
 
 	double shadow_far_plane = 0.0;
 	for (unsigned int i = 0; i < shadowFocusFrustrum.size(); i++) {
@@ -807,9 +809,19 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 
 	shadowCamera->setNearPlane(shadow_near_plane);
 	shadowCamera->setFarPlane(shadow_far_plane);
+#if 0
 	shadowCamera->setFieldOfViewDegrees(Math::radiansToDegrees(y_angle_max-y_angle_min));
 	shadowCamera->setAspect(std::sin(x_angle_max-x_angle_min)/std::sin(y_angle_max-y_angle_min));
-
+#endif
+    
+    double y_largest = std::max(std::fabs(y_angle_max), std::fabs(y_angle_min));
+    double x_largest = std::max(std::fabs(x_angle_max), std::fabs(x_angle_min));
+    double aspect = std::sin(x_largest)/std::sin(y_largest);
+    y_largest = Math::radiansToDegrees(y_largest);
+    x_largest = Math::radiansToDegrees(x_largest);
+    
+    shadowCamera->setFieldOfViewDegrees(2 * y_largest);
+    shadowCamera->setAspect(aspect);
 }
 
 void GameRenderer::renderToShadowMap(Render::RenderableObject& renderable) {

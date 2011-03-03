@@ -8,7 +8,7 @@ namespace GUI {
 
 class RunningProxy : public Widget::EventProxy {
 public:
-    virtual void visit(Widget::WidgetActivateEvent *event);
+    virtual void visit(Widget::KeyEvent *event);
 };
 
 }  // namespace GUI
