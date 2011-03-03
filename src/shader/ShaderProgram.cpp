@@ -50,6 +50,8 @@ ShaderProgram::ShaderProgram(const GLchar *fs, const GLchar *vs) {
 			free(infoLog);
 		}
 	}
+
+	glUseProgram(NULL);
 }
 
 void ShaderProgram::turnShaderOn() const{

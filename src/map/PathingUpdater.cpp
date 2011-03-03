@@ -46,8 +46,8 @@ void PathingUpdater::update() {
             }
         }
         else {
-            // Reset (warp) the player if they are below the kill plane
-            if(origin_pos.getY() < raceManager->getKillPlaneY()) {
+            // Reset (warp) the player if they are out of bounds
+			if (!raceManager->inBounds(origin_pos)) {
                 EMIT_EVENT(new Event::WarpOntoTrack(player->getID()));
             }
         }

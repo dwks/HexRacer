@@ -48,5 +48,9 @@ Math::Point RaceManager::startingPointForPlayer(int id) {
     return data[id % data.size()]->getPosition()+offset;
 }
 
+bool RaceManager::inBounds(const Math::Point& position) const {
+	return (position.getY() > killPlaneY);
+}
+
 }  // namespace Map
 }  // namespace Project
