@@ -189,14 +189,12 @@ void GUISystem::construct() {
             = new Widget::CompositeWidget("running");
         widgets->addChild(running);
         
-		/*
-        running->addChild(new Widget::ButtonWidget("menu",
+        /*running->addChild(new Widget::ButtonWidget("menu",
             "Menu", Widget::WidgetRect(0.0, 0.0, 0.1, 0.05)));
         
-        setShortcut(getWidget("running/menu"), SDLK_ESCAPE);
+        setShortcut(getWidget("running/menu"), SDLK_ESCAPE);*/
         
-        getWidget("running/menu")->addEventProxy(new RunningProxy());
-		*/
+        getWidget("running")->addEventProxy(new RunningProxy());
     }
     
     {
