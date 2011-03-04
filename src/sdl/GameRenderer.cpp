@@ -6,6 +6,7 @@
 #include "GameRenderer.h"
 #include "opengl/GeometryDrawing.h"
 #include "opengl/MathWrapper.h"
+#include "math/Geometry.h"
 #include "math/BoundingBox3D.h"
 
 #include "map/MapLoader.h"
@@ -773,10 +774,25 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 
 	bool near_plane_set = false;
 	double shadow_near_plane = GAME_RENDERER_SHADOW_MIN_NEAR_PLANE;
-
 	Math::BoundingBox3D map_bound = map->getMapBoundingBox();
+
+	Math::Point shadow_cam_dir = shadowCamera->getLookDirection();
+
 	if (!map_bound.pointInside(shadowCamera->getPosition())) {
-		for (unsigned int i = 0; i < 5; i++) {
+
+		//Find the plane of the map bounding box closest to the shadow camera
+		Math::Axis longest_axis = shadow_cam_dir.longestAxis();
+		Math::Point plane_point;
+		Math::Point plane_normal;
+		double longest_axis_sign = Math::sign(shadow_cam_dir.getCoord(longest_axis));
+
+		plane_normal.setCoord(-1.0*longest_axis_sign, longest_axis);
+		if (longest_axis_sign > 0.0)
+			plane_point.setCoord(map_bound.minCoord(longest_axis), longest_axis);
+		else
+			plane_point.setCoord(map_bound.maxCoord(longest_axis), longest_axis);
+
+		for (unsigned int i = 0; i < 4; i++) {
 			Math::Ray ray;
 			switch (i) {
 				case 0: ray = shadowCamera->cameraRay(0.0, 0.0); break;
@@ -785,14 +801,15 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 				case 3: ray = shadowCamera->cameraRay(0.0, 1.0); break;
 				default: ray = shadowCamera->cameraRay(0.5, 0.5); break;
 			}
-			Math::RayIntersection intersection = map_bound.rayIntersection(ray);
+			Math::RayIntersection intersection = Math::Geometry::rayPlaneIntersection(ray, plane_point, plane_normal);
 			if (intersection.intersects) {
+				double intersect_near = intersection.t*(ray.direction.dotProduct(shadow_cam_dir));
 				if (!near_plane_set) {
-					shadow_near_plane = intersection.t;
+					shadow_near_plane = intersect_near;
 					near_plane_set = true;
 				}
 				else {
-					shadow_near_plane = Math::minimum(shadow_near_plane, intersection.t);
+					shadow_near_plane = Math::minimum(shadow_near_plane, intersect_near);
 				}
 			}
 		}
@@ -806,7 +823,7 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 		Math::Point to_vector = shadowFocusFrustrum[i]-shadowCamera->getPosition();
 		double x = to_vector.dotProduct(shadowCamera->getRightDirection());
 		double y = to_vector.dotProduct(shadowCamera->getUpDirection());
-		double z = to_vector.dotProduct(shadowCamera->getLookDirection());
+		double z = to_vector.dotProduct(shadow_cam_dir);
 
 		double x_angle = std::atan(x/z);
 		double y_angle = std::atan(y/z);

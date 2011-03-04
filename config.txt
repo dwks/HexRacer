@@ -39,7 +39,7 @@ physics.driving.restlength        = 0.35
 physics.driving.stretchlength     = 0.5
 physics.driving.constant.k        = 8
 physics.driving.constant.c        = 45.0
-physics.driving.mindownfactor = 0.25
+physics.driving.mindownfactor = 0.0
 
 #Turning
 physics.turning.constant = 4.0
@@ -60,6 +60,7 @@ physics.driving.airlineardrag     = 0.2
 physics.driving.angulardrag       = 2.0
 physics.driving.airangulardrag    = 0.2
 physics.driving.sidewaysdrag      = 20.0
+physics.driving.airsidewaysdrag   = 0.0
 
 game.paint.colorbenefit = 1.0
 game.paint.colorpenalty = -0.25
