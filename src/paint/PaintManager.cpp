@@ -129,9 +129,11 @@ namespace Paint {
 				for (int v = range.minVIndex; v <= range.maxVIndex; v++) {
 					
 					PaintCell* cell = paintGrid.getPaintCell(u, v);
-					while (cell != NULL && cell->playerColor >= 0) {
-						OpenGL::Color::glColor(ColorConstants::playerColor(cell->playerColor), alpha);
-						OpenGL::MathWrapper::glVertex(cell->position);
+					while (cell != NULL) {
+						if (cell->playerColor >= 0) {
+							OpenGL::Color::glColor(ColorConstants::playerColor(cell->playerColor), alpha);
+							OpenGL::MathWrapper::glVertex(cell->position);
+						}
 						cell = cell->nextCell;
 					}
 				}

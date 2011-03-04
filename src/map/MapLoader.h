@@ -3,6 +3,7 @@
 
 #include "HRMap.h"
 #include "opengl/Material.h"
+#include "paint/PaintManager.h"
 #include <vector>
 
 namespace Project {
@@ -19,7 +20,7 @@ public:
         
         @param mapRenderable can be NULL if no rendering is required.
     */
-    void load(HRMap *map, Render::RenderList *mapRenderable);
+	void load(HRMap *map, Render::RenderList *mapRenderable = NULL, Paint::PaintManager* paintManager = NULL);
 
 	/** Should be called whenever the map is unloaded
 	*/

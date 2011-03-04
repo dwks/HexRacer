@@ -68,11 +68,8 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     
     paintManager = boost::shared_ptr<Paint::PaintManager>(
         new Paint::PaintManager());
-	paintManager->setMap(map.get());
-	map->clearPaint();
-    //paintManager->setPaintCells(map->getPaintCells());
     
-    Map::MapLoader().load(map.get(), mapRenderable.get());
+    Map::MapLoader().load(map.get(), mapRenderable.get(), paintManager.get());
 
 	shadowProperties = NULL;
 	shadowCamera = NULL;
