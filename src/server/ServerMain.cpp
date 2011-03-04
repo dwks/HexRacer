@@ -191,7 +191,7 @@ void ServerMain::init() {
 	paintManager = boost::shared_ptr<Paint::PaintManager>(
         new Paint::PaintManager());
     
-    Map::MapLoader().load(map.get(), NULL, paintManager.get());
+    Map::MapLoader().load(map.get(), NULL, NULL, paintManager.get());
     basicWorld->constructAfterConnect(map.get());
     
     paintSubsystem = boost::shared_ptr<Paint::PaintSubsystem>(

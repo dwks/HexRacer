@@ -8,6 +8,7 @@
 #include "ScrollbarWidget.h"
 #include "ListWidget.h"
 #include "ImageWidget.h"
+#include "ProgressBarWidget.h"
 
 #include "opengl/OpenGL.h"
 #include "opengl/MathWrapper.h"
@@ -81,6 +82,10 @@ void WidgetRenderer::visit(ListWidget *widget) {
 }
 
 void WidgetRenderer::visit(ImageWidget *widget) {
+    widget->render();
+}
+
+void WidgetRenderer::visit(ProgressBarWidget *widget) {
     widget->render();
 }
 
