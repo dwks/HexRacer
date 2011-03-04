@@ -55,7 +55,7 @@ namespace Paint {
 		}
     }
 
-	void PaintManager::setMap(Map::HRMap* map) {
+	void PaintManager::setMap(Map::HRMap* map, Misc::ProgressTracker* progress_tracker) {
 		
 		hexGrid = map->getHexGrid();
 		paintGrid = PaintGrid(hexGrid);
@@ -66,7 +66,14 @@ namespace Paint {
 
 		BoundingBox3D paintBound;
 
+		if (progress_tracker)
+			progress_tracker->setTotalSteps(static_cast<int>(cell_info.size()));
+
 		for (unsigned int i = 0; i < cell_info.size(); i++) {
+
+			if (progress_tracker)
+				progress_tracker->setCurrentStep(static_cast<int>(i));
+
 			const PaintCellInfo& cell = cell_info[i];
 
 			PaintCell* new_cell = new PaintCell(cell.centerPoint(map->getPaintHeightMap()));

@@ -14,6 +14,8 @@
 
 #include "hud/LapProgressBar.h"
 
+#include "MenuLoop.h"
+
 #include "log/Logger.h"
 #include "config.h"
 
@@ -68,8 +70,8 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     
     paintManager = boost::shared_ptr<Paint::PaintManager>(
         new Paint::PaintManager());
-    
-    Map::MapLoader().load(map.get(), mapRenderable.get(), paintManager.get());
+
+	Map::MapLoader().load(map.get(), SDL::MenuLoop::getLoadingProgressTracker(), mapRenderable.get(), paintManager.get());
 
 	shadowProperties = NULL;
 	shadowCamera = NULL;

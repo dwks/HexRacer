@@ -9,6 +9,8 @@
 #include "GUIInputManager.h"
 #include "MenuBackground.h"
 
+#include "misc/ProgressTracker.h"
+
 namespace Project {
 namespace SDL {
 
@@ -17,6 +19,8 @@ private:
     boost::shared_ptr<GUI::GUISystem> gui;
     boost::shared_ptr<GUIInputManager> guiInputManager;
     boost::shared_ptr<MenuBackground> menuBackground;
+
+	static Misc::ProgressTracker* loadingProgressTracker;
 public:
     virtual void construct();
     
@@ -27,6 +31,8 @@ public:
     boost::shared_ptr<GUI::GUISystem> getGUI() { return gui; }
     boost::shared_ptr<GUIInputManager> getGUIInput()
         { return guiInputManager; }
+
+	static Misc::ProgressTracker* getLoadingProgressTracker() { return loadingProgressTracker; }
     
     virtual void setProjection(const Point2D &size) {}
 };

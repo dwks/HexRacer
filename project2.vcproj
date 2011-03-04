@@ -482,6 +482,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\LoadingProxy.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\LoopBase.cpp"
 				>
 			</File>
@@ -679,6 +683,10 @@
 			</File>
 			<File
 				RelativePath=".\src\settings\ProgramSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ProgressBarWidget.cpp"
 				>
 			</File>
 			<File
@@ -1528,6 +1536,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\LoadingProxy.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\LoopBase.h"
 				>
 			</File>
@@ -1717,6 +1729,14 @@
 			</File>
 			<File
 				RelativePath=".\src\settings\ProgramSettings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ProgressBarWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc\ProgressTracker.h"
 				>
 			</File>
 			<File

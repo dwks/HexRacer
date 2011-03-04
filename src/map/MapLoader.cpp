@@ -11,7 +11,7 @@
 namespace Project {
 namespace Map {
 
-void MapLoader::load(HRMap *map, Render::RenderList *mapRenderable, Paint::PaintManager* paintManager) {
+void MapLoader::load(HRMap *map, Misc::ProgressTracker* progressTracker, Render::RenderList *mapRenderable, Paint::PaintManager* paintManager) {
     //Instantiate the map
     /*map = new Map::HRMap();
     std::string mapName = GET_SETTING("map", "data/testtrack.hrm");
@@ -77,8 +77,9 @@ void MapLoader::load(HRMap *map, Render::RenderList *mapRenderable, Paint::Paint
         }
     }
 
+
 	if (paintManager) {
-		paintManager->setMap(map);
+		paintManager->setMap(map, progressTracker);
 		map->clearPaint();
 	}
 }

@@ -3,6 +3,8 @@
 namespace Project {
 namespace SDL {
 
+Misc::ProgressTracker* MenuLoop::loadingProgressTracker = NULL;
+
 void MenuLoop::construct() {
     gui = boost::shared_ptr<GUI::GUISystem>(
         new GUI::GUISystem());
@@ -11,6 +13,9 @@ void MenuLoop::construct() {
     
     gui->construct();
     gui->selectScreen("main");
+
+	loadingProgressTracker = dynamic_cast<Misc::ProgressTracker*>
+		(gui->getWidget("main/progressBar"));
     
     menuBackground = boost::shared_ptr<MenuBackground>(
         new MenuBackground());

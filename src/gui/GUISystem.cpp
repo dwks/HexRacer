@@ -13,6 +13,7 @@
 #include "widget/EditWidget.h"
 #include "widget/ListWidget.h"
 #include "widget/ImageWidget.h"
+#include "widget/ProgressBarWidget.h"
 
 #include "widget/NormalTextLayout.h"
 
@@ -94,6 +95,8 @@ void GUISystem::construct() {
             Widget::WidgetRect(0.55, 0.7, 0.42, 0.08)));
         main->addChild(new Widget::ButtonWidget("quit", "Quit",
             Widget::WidgetRect(0.55, 0.8, 0.42, 0.08)));
+
+		//main->addChild(new Widget::ProgressBarWidget("progressBar", Widget::WidgetRect(0.2, 0.2, 0.4, 0.2)));
         
         setShortcut(getWidget("main/host"), SDLK_h);
         setShortcut(getWidget("main/join"), SDLK_j);
@@ -184,6 +187,16 @@ void GUISystem::construct() {
         getWidget("connect/connect")->addEventProxy(new ConnectProxy(connect));
     }
     
+	/*{
+        Widget::CompositeWidget *loading
+            = new Widget::CompositeWidget("loading");
+        widgets->addChild(loading);
+        
+		loading->addChild(new Widget::ProgressBarWidget("progressBar", Widget::WidgetRect(0.2, 0.2, 0.4, 0.2)));
+
+        getWidget("running")->addEventProxy(new LoadingProxy());
+    }*/
+
     {
         Widget::CompositeWidget *running
             = new Widget::CompositeWidget("running");
