@@ -194,7 +194,11 @@ void GUISystem::construct() {
         
         setShortcut(getWidget("running/menu"), SDLK_ESCAPE);*/
         
-        getWidget("running")->addEventProxy(new RunningProxy());
+        running->addChild(new Widget::TextWidget(
+            "lapcount", "Lap 1", 0,
+            Widget::WidgetRect(0.0, 0.0, 0.2, 0.06)));
+        
+        getWidget("running")->addEventProxy(new RunningProxy(running));
     }
     
     {

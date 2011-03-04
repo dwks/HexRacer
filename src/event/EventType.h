@@ -35,6 +35,7 @@ public:
         PHYSICS_TICK,
         SWITCH_TO_SCREEN,
         CHANGE_SCREEN_MODE,
+        PLAYER_PROGRESS_EVENT,
         TYPES
     };
 };
