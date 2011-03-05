@@ -1,11 +1,14 @@
 #include "MapSettings.h"
 
+#include "settings/SettingsManager.h"
+
 namespace Project {
 namespace Map {
 
 MapSettings *MapSettings::instance = 0;
 
 void MapSettings::setMapFile(const std::string &filename) {
+    Settings::SettingsManager::getInstance()->set("map", filename);
     this->mapFile = filename;
 }
 

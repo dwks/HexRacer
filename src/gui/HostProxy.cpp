@@ -8,7 +8,6 @@
 #include "widget/ImageWidget.h"
 
 #include "event/SwitchToScreen.h"
-#include "event/JoinGame.h"
 #include "event/EventSystem.h"
 
 #include "map/MapSettings.h"
@@ -29,12 +28,11 @@ void HostProxy::visit(Widget::WidgetActivateEvent *event) {
         //LOG2(GUI, WARNING, "Hosting not yet implemented");
         
         std::string map = Map::MapSettings::getInstance()->getMapFile();
-        
         if(map != "") {
             LOG(GUI, "Using map \"" << map << "\"");
             
-            Settings::SettingsManager::getInstance()->set("map", map);
-            EMIT_EVENT(new Event::JoinGame());
+            //EMIT_EVENT(new Event::JoinGame());
+            EMIT_EVENT(new Event::SwitchToScreen("loading"));
         }
         else {
             LOG2(GUI, WARNING, "No map selected!");

@@ -1,5 +1,7 @@
 #include "MenuLoop.h"
 
+#include "widget/RepaintEvent.h"
+
 namespace Project {
 namespace SDL {
 
@@ -31,6 +33,12 @@ void MenuLoop::render() {
     menuBackground->render();
     
     gui->render();
+}
+
+void MenuLoop::postRender() {
+    // fire a repaint event to the current screen
+    Widget::RepaintEvent repaintEvent(gui->getCurrentScreen());
+    gui->handleEvent(&repaintEvent);
 }
 
 }  // namespace SDL

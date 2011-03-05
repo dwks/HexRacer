@@ -21,6 +21,7 @@
 #include "widget/KeyEvent.h"
 #include "widget/MouseMoveEvent.h"
 #include "widget/MouseButtonEvent.h"
+#include "widget/RepaintEvent.h"
 
 #include "widget/KeyboardShortcutProxy.h"
 
@@ -282,7 +283,10 @@ void GUISystem::render() {
     Widget::WidgetRenderer renderer(screenSize);
     
     renderer.begin();
+    
+    // first do actual rendering
     currentScreen->accept(renderer);
+    
     renderer.end();
 }
 

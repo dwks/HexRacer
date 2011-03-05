@@ -236,6 +236,8 @@ void SDLMainLoop::doRender() {
     
     glFlush();
     SDL_GL_SwapBuffers();
+    
+    loop->postRender();
 }
 
 }  // namespace SDL

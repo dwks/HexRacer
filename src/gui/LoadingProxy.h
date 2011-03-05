@@ -15,8 +15,11 @@ protected:
     void initialize(Event::SwitchToScreen *event);
 private:
     Widget::WidgetBase *loading;
+    Widget::WidgetBase *lastRepaint;
 public:
     LoadingProxy(Widget::WidgetBase *loading);
+    
+    virtual void visit(Widget::RepaintEvent *event);
 };
 
 }  // namespace GUI

@@ -30,6 +30,7 @@ public:
     virtual void handleEvent(SDL_Event *event);
     virtual void miscellaneous() {}
     virtual void render();
+    virtual void postRender();
     
     boost::shared_ptr<GUI::GUISystem> getGUI() { return gui; }
     boost::shared_ptr<GUIInputManager> getGUIInput()
