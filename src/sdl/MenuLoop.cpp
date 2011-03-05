@@ -6,6 +6,8 @@ namespace SDL {
 Misc::ProgressTracker* MenuLoop::loadingProgressTracker = NULL;
 
 void MenuLoop::construct() {
+    mapSettings = boost::shared_ptr<Map::MapSettings>(new Map::MapSettings());
+    
     gui = boost::shared_ptr<GUI::GUISystem>(
         new GUI::GUISystem());
     guiInputManager = boost::shared_ptr<GUIInputManager>(

@@ -17,6 +17,7 @@ private:
     std::string mapTitle;
 public:
     MapSettings() { instance = this; }
+    ~MapSettings() { instance = 0; }
     
     void setMapFile(const std::string &filename);
     const std::string &getMapFile() const;
