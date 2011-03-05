@@ -127,7 +127,7 @@ render.tire.scale = 2.5
 
 hud.minimap.enable = 1
 hud.minimap.drawheight = 0.35
-hud.minimap.height = 140.0
+hud.minimap.height = 120.0
 
 hud.speedometer.enable = 1
 hud.speedometer.drawheight = 0.35

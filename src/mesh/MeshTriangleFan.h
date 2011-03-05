@@ -12,9 +12,17 @@ class MeshTriangleFan
 	: public Math::BoundingBox3D {
 private:
 	std::vector<MeshVertex*> vertices;
+	unsigned int displayList;
+	int shaderIndex;
 public:
 	MeshTriangleFan(std::vector<MeshVertex*> _vertices);
 	const std::vector<MeshVertex*>& getVertices() const { return vertices; }
+
+	void setDisplayList(unsigned int display_list) { displayList = display_list; }
+	unsigned int getDisplayList() const { return displayList; }
+
+	void setShaderIndex(int shader_index) { shaderIndex = shader_index; }
+	int getShaderIndex() const { return shaderIndex; }
 };
 
 }  // namespace Mesh

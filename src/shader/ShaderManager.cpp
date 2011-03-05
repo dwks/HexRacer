@@ -111,6 +111,7 @@ namespace Shader {
 			shaderPrograms[shaderIndex]->turnShaderOn();
 			setter.setShaderProgram(
 				shaderPrograms[shaderIndex],
+				shaderIndex,
 				standardUniformLocations[shaderIndex],
 				standardAttributeLocations[shaderIndex]
 			);
@@ -120,7 +121,7 @@ namespace Shader {
 
 	void ShaderManager::disableShader() {
 		glUseProgram(NULL);
-		setter.setShaderProgram(NULL, NULL, NULL);
+		setter.setShaderProgram(NULL, 0, NULL, NULL);
 		activeShaderIndex = -1;
 	}
 

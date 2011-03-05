@@ -11,6 +11,9 @@ namespace Mesh {
 				expandToInclude(*vertices[i]);
 			}
 		}
+
+		displayList = 0;
+		shaderIndex =-1;
 	}
 
 }  // namespace Mesh
