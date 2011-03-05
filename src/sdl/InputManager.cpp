@@ -52,7 +52,7 @@ void InputManager::doAction(unsigned long currentTime) {
 	inputMapper->update(Input::INPUT_A_TURN);
 	inputMapper->update(Input::INPUT_A_ACCELERATE);
 	inputMapper->update(Input::INPUT_D_JUMP);
-	inputMapper->update(Input::INPUT_D_RESET);
+	inputMapper->update(Input::INPUT_D_WARP);
     
     World::PlayerIntention intention;
     inputMapper->getSnapshot().asPlayerIntention(intention);
@@ -212,7 +212,7 @@ void InputManager::setInputMappings(PresetMapping mapping) {
 	inputMapper->addKeyToAnalogMapping(SDLK_d, false, Input::INPUT_A_CAMERA_X_SPEED, 0.0, 1.0);
 
 	inputMapper->addKeyToDigitalMapping(SDLK_SPACE, false, Input::INPUT_D_JUMP);
-	inputMapper->addKeyToDigitalMapping(SDLK_h, false, Input::INPUT_D_RESET);
+	inputMapper->addKeyToDigitalMapping(SDLK_h, false, Input::INPUT_D_WARP);
 	inputMapper->addKeyToDigitalMapping(SDLK_RETURN, false, Input::INPUT_D_PHYSICS_DEBUG);
 	inputMapper->addKeyToDigitalMapping(SDLK_BACKSLASH, false, Input::INPUT_D_PATH_DEBUG);
 	inputMapper->addKeyToDigitalMapping(SDLK_c, false, Input::INPUT_D_CAMERA_DEBUG);

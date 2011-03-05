@@ -11,9 +11,6 @@ namespace Project {
 namespace AI {
 
 WeightedDriver::WeightedDriver(Object::Player *player) : Driver(player) {
-    sittingStill = false;
-    sittingStillSince = 0;
-    
     intention.setAccel(1.0);
     intention.setPaint(true);
 }
@@ -53,32 +50,7 @@ const World::PlayerIntention &WeightedDriver::getAction() {
     
     intention.setTurn(turnSign * distanceOff * 0.5);
     
-    detectSittingStill();
-    
     return intention;
-}
-
-void WeightedDriver::detectSittingStill() {
-    Object::Player *player = getPlayer();
-    
-    // if sitting still for too long, request a warp
-    intention.setReset(false);
-    if(player->getPhysicalObject()->getLinearVelocity().length() < 0.05) {
-        unsigned long now = Misc::Sleeper::getTimeMilliseconds();
-        
-        if(!sittingStill) {
-            sittingStill = true;
-            sittingStillSince = now;
-        }
-        else if(sittingStillSince + 2000 < now) {
-            LOG(PHYSICS, "Player " << player->getID() << " is trying to reset");
-            
-            intention.setReset(true);
-            
-            sittingStill = false;
-        }
-    }
-    else sittingStill = false;
 }
 
 }  // namespace AI

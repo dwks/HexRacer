@@ -7,7 +7,7 @@ namespace Input {
 enum DigitalInputEvent {
 	INPUT_D_PAINT,
 	INPUT_D_ERASE,
-	INPUT_D_RESET,
+	INPUT_D_WARP,
 	INPUT_D_JUMP,
 	INPUT_D_PHYSICS_DEBUG,
 	INPUT_D_PATH_DEBUG,

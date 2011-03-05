@@ -27,7 +27,10 @@ void PlayerManager::warpOntoTrackHandler(Event::WarpOntoTrack *event) {
 
 void PlayerManager::changeOfIntentionHandler(Event::ChangeOfIntention *event) {
     if(event->getIntention().getReset()) {
-        warpPlayerOntoTrack(getPlayer(event->getPlayer()));
+        getPlayer(event->getPlayer())->getPhysicalObject()
+            ->getWarpTracker()->setRequestingHelp(true);
+        
+        //warpPlayerOntoTrack(getPlayer(event->getPlayer()));
     }
 }
 
@@ -56,7 +59,7 @@ void PlayerManager::warpPlayerOntoTrack(Object::Player *player) {
         Math::Point origin = node->getPosition();
         Math::Point direction = (node->getNextNodes()[0]->getPosition() - node->getPosition()).normalized();
         
-        origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
+        origin.setY(origin.getY() + VEHICLE_WARP_Y_OFFSET);
         player->setPhysicalObject(
             Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
         
@@ -67,7 +70,7 @@ void PlayerManager::warpPlayerOntoTrack(Object::Player *player) {
         Math::Point origin = raceManager->startingPointForPlayer(player->getID());
         Math::Point direction = Math::Point(0.0, 0.0, -1.0);
         
-        origin.setY(origin.getY() + VEHICLE_RESET_Y_OFFSET);
+        origin.setY(origin.getY() + VEHICLE_WARP_Y_OFFSET);
         player->setPhysicalObject(
             Physics::PhysicsFactory::createPhysicalPlayer(origin, direction));
         

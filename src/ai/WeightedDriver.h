@@ -9,14 +9,10 @@ namespace AI {
 class WeightedDriver : public Driver {
 private:
     World::PlayerIntention intention;
-    bool sittingStill;
-    unsigned long sittingStillSince;
 public:
     WeightedDriver(Object::Player *player);
     
     virtual const World::PlayerIntention &getAction();
-private:
-    void detectSittingStill();
 };
 
 }  // namespace AI

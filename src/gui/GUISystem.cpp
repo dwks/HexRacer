@@ -71,6 +71,7 @@ void GUISystem::construct() {
             main            Main menu
             host            Hosting screen with map selection
             connect         Screen which prompts for host/port
+            loading         Loading screen
             running         Displayed while the game is running
             paused          Paused menu
             settings        The settings screen accessible from the main menu

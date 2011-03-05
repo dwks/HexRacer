@@ -132,7 +132,8 @@ bool ServerMain::ServerObserver::interestedIn(Event::EventType::type_t type) {
         return false;
     case Event::EventType::PHYSICS_TICK:  // don't care for the moment
         return false;
-    case Event::EventType::WARP_ONTO_TRACK:  // handled by PlayerManager
+    case Event::EventType::WARP_ONTO_TRACK:  // handled by WarpDetector
+    case Event::EventType::PLAYER_PROGRESS_EVENT:
         return false;
     default:
         break;

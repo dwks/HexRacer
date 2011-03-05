@@ -3,6 +3,7 @@
 
 #include "PhysicalObject.h"
 #include "Converter.h"
+#include "WarpTracker.h"
 
 #include "boost/serialization/access.hpp"
 #include "boost/serialization/split_member.hpp"
@@ -25,6 +26,7 @@ private:
             = Converter::toPoint(rigidBody->getAngularVelocity());
         
         ar << transformation << linearVelocity << angularVelocity;
+        ar << warpTracker;
     }
     
     template <typename Archive>
@@ -32,6 +34,7 @@ private:
         Math::Matrix transformation;
         Math::Point linearVelocity, angularVelocity;
         ar >> transformation >> linearVelocity >> angularVelocity;
+        ar >> warpTracker;
         
         //LOG(OPENGL, transformation);
         
@@ -63,6 +66,7 @@ private:
     bool onGround;  // not serialized
     double speedBoost;  // not serialized
 	double traction;
+    WarpTracker warpTracker;
 public:
     PhysicalPlayer() : rigidBody(NULL), onGround(false), speedBoost(1.0) {}
     PhysicalPlayer(const Math::Point &position, const Math::Point &direction);
@@ -116,6 +120,8 @@ public:
     virtual void setData(const Math::Matrix &transform,
         const Math::Point &linearVelocity,
         const Math::Point &angularVelocity);
+    
+    WarpTracker *getWarpTracker() { return &warpTracker; }
 };
 
 }  // namespace Physics

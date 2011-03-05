@@ -47,7 +47,7 @@ void InputSnapshot::asPlayerIntention(World::PlayerIntention &intention) const {
     intention.setTurn(Math::bound(getAnalogStatus(INPUT_A_TURN), -1.0, 1.0));
     intention.setJump(getDigitalStatus(INPUT_D_JUMP));
     
-    intention.setReset(getDigitalTriggered(INPUT_D_RESET));
+    intention.setReset(getDigitalTriggered(INPUT_D_WARP));
     intention.setPaint(getDigitalStatus(INPUT_D_PAINT));
     intention.setErase(getDigitalStatus(INPUT_D_ERASE));
 }

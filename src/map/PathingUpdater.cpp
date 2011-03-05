@@ -4,11 +4,24 @@
 #include "settings/SettingsManager.h"
 
 #include "event/EventSystem.h"
-#include "event/WarpOntoTrack.h"
 #include "event/PlayerProgressEvent.h"
 
 namespace Project {
 namespace Map {
+
+PathingUpdater::PathingUpdater(
+    boost::shared_ptr<Object::WorldManager> worldManager,
+    boost::shared_ptr<RaceManager> raceManager) {
+    
+    this->worldManager = worldManager;
+    this->raceManager = raceManager;
+    
+    warpDetector = new WarpDetector(raceManager.get());
+}
+
+PathingUpdater::~PathingUpdater() {
+    delete warpDetector;
+}
 
 void PathingUpdater::update() {
     if(!GET_SETTING("game.enablepathing", true)) {
@@ -50,12 +63,8 @@ void PathingUpdater::update() {
 
             }
         }
-        else {
-            // Reset (warp) the player if they are out of bounds
-			if (!raceManager->inBounds(origin_pos)) {
-                EMIT_EVENT(new Event::WarpOntoTrack(player->getID()));
-            }
-        }
+        
+        warpDetector->checkForWarping(player);
     }
 }
 
