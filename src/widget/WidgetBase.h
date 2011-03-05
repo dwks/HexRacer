@@ -80,6 +80,11 @@ public:
     */
     virtual WidgetBase *getChild(const std::string &name) = 0;
     
+    /** Looks up a sequences of children widgets, names separated by '/'
+        characters.
+    */
+    virtual WidgetBase *getChildPath(const std::string &path) = 0;
+    
     /** Returns the name of this widget; each widget should have a unique name
         amongst its siblings, so that name-based lookups are possible.
     */

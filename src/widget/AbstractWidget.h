@@ -33,6 +33,7 @@ public:
     virtual void removeAllEventProxies();
     
     virtual WidgetBase *getChild(const std::string &name) { return NULL; }
+    virtual WidgetBase *getChildPath(const std::string &path);
     
     virtual std::string getName() const { return name; }
 protected:

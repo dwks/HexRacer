@@ -51,5 +51,19 @@ void AbstractWidget::removeAllEventProxies() {
     proxyList.clear();
 }
 
+WidgetBase *AbstractWidget::getChildPath(const std::string &path) {
+    std::string::size_type end = path.find('/');
+    Widget::WidgetBase *child = getChild(path.substr(0, end));
+    
+    if(!child) return NULL;
+    
+    if(end == std::string::npos) {
+        return child;
+    }
+    else {
+        return child->getChildPath(path.substr(end + 1));
+    }
+}
+
 }  // namespace Widget
 }  // namespace Project
