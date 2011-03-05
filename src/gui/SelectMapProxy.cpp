@@ -18,6 +18,20 @@
 namespace Project {
 namespace GUI {
 
+void SelectMapProxy::initialize(Event::SwitchToScreen *event) {
+    if(event->getScreen() == "selectmap") {
+        Map::MapSettings *mapSettings = Map::MapSettings::getInstance();
+        
+        useMap(mapSettings->getMapFile());
+    }
+}
+
+SelectMapProxy::SelectMapProxy(Widget::WidgetBase *selectmap)
+    : selectmap(selectmap) {
+    
+    METHOD_OBSERVER(&SelectMapProxy::initialize);
+}
+
 void SelectMapProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();
     
@@ -47,10 +61,16 @@ void SelectMapProxy::visit(Widget::WidgetModifiedEvent *event) {
 void SelectMapProxy::visit(Widget::WidgetSelectedEvent *event) {
     std::string file = event->getSelected()->getName();
     std::string title = event->getSelected()->getData();
-    std::string thumbnail = Map::MapSettings::getInstance()
-        ->getMap(file).getThumbnail();
     
     LOG(GUI, "selected map \"" << title << "\"");
+    useMap(file);
+}
+
+void SelectMapProxy::useMap(const std::string &file) {
+    Map::MapSettings *mapSettings = Map::MapSettings::getInstance();
+    
+    std::string title = mapSettings->getMap(file).getTitle();
+    std::string thumbnail = mapSettings->getMap(file).getThumbnail();
     
     dynamic_cast<Widget::TextWidget *>(selectmap->getChild("title"))
         ->setText(title);

@@ -138,6 +138,7 @@ void GUIConstruction::constructHost() {
         "Host game", Widget::WidgetRect(0.5, 0.85, 0.35, 0.08)));
     
     setShortcut(getWidget("host/map"), SDLK_m);
+    setShortcut(getWidget("host/host"), SDLK_h);
     
     setShortcut(getWidget("host/cancel"), SDLK_ESCAPE);
     setShortcut(getWidget("host/host"), SDLK_RETURN);
@@ -162,6 +163,7 @@ void GUIConstruction::constructSinglePlayer() {
         "Start game", Widget::WidgetRect(0.5, 0.85, 0.35, 0.08)));
     
     setShortcut(getWidget("singleplayer/map"), SDLK_m);
+    setShortcut(getWidget("singleplayer/start"), SDLK_s);
     
     setShortcut(getWidget("singleplayer/cancel"), SDLK_ESCAPE);
     setShortcut(getWidget("singleplayer/start"), SDLK_RETURN);
