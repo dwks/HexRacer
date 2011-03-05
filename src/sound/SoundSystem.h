@@ -6,6 +6,8 @@
 
 #include "event/PhysicsCollision.h"
 #include "event/Enabler.h"
+#include "sound/EngineSound.h"
+#include "sound/ALHelpers.h"
 
 #include "AL/al.h"
 #include "object/WorldManager.h"
@@ -22,10 +24,12 @@ private:
     //Buffers
     ALuint musicBuffer;
     ALuint engineBuffers[16];
+    ALuint collisionBuffers[16];
     
     //Sources
     ALuint musicSource;
     ALuint engineSources[16];
+    ALuint collisionSources[16];
 public:
     SoundSystem();
     ~SoundSystem();
@@ -38,32 +42,17 @@ private:
     void setupListener();
     void setupGameMusic();
     void setupEngines();
+    void setupCollisions();
     
     void updateListener();
-    void updateEngines();
-    void changeEnginePitch(Object::Player *player, ALuint source);
-    void updateEngineDetails(Object::Player *player, ALuint source);
     
     void checkPlayerCount();
-    void playerCountChanged();
+    void playerCountChanged(int count);
     void checkMusicIntroComplete();
-    
-    void destroyBuffers();
-    void destroySources();
-    
-    void playFromSource(ALuint source);
-    void pauseFromSource(ALuint source);
-    void stopFromSource(ALuint source);
-    
-    void loadFileToBuffer(ALuint buffer, string file);
-    
-    void setupBuffer(ALuint *buffer, int count);
-    void setupSource(ALuint *source, int count);
-    void bindBufferToSource(ALuint buffer, ALuint source);
-    void enqueueBufferToSource(ALuint *buffer, ALuint source, int count);
     
     void cleanUp();
     
+    Sound::EngineSound *engineSound;
     Object::WorldManager *worldManager;
     World::PlayerManager *playerManager;
     int playerCount;
