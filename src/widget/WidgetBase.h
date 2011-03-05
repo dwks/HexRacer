@@ -2,6 +2,7 @@
 #define PROJECT_WIDGET__WIDGET_BASE_H
 
 #include <string>
+#include "boost/smart_ptr.hpp"
 
 #include "WidgetVisitor.h"
 #include "WidgetRect.h"
@@ -52,6 +53,11 @@ public:
     
     /** Adds another event proxy for this widget. When an event arrives, it
         will be sent to all registered proxies in order.
+    */
+    virtual void addEventProxy(boost::shared_ptr<EventProxy> proxy) = 0;
+    
+    /** Adds another event proxy for this widget. The proxy will be
+        automatically freed by this widget upon destruction.
     */
     virtual void addEventProxy(EventProxy *proxy) = 0;
     

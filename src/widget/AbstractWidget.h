@@ -10,7 +10,7 @@ namespace Widget {
 
 class AbstractWidget : public WidgetBase {
 protected:
-    typedef std::vector<EventProxy *> proxy_list_t;
+    typedef std::vector<boost::shared_ptr<EventProxy> > proxy_list_t;
 private:
     std::string name;
     Layout *layout;
@@ -30,6 +30,7 @@ public:
     virtual void handleEvent(WidgetEvent *event);
     
     virtual void addEventProxy(EventProxy *proxy);
+    virtual void addEventProxy(boost::shared_ptr<EventProxy> proxy);
     virtual void removeAllEventProxies();
     
     virtual WidgetBase *getChild(const std::string &name) { return NULL; }

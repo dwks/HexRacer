@@ -107,13 +107,14 @@ void GUISystem::construct() {
         setShortcut(getWidget("main/quit"), SDLK_q);
         setShortcut(getWidget("main/quit"), SDLK_ESCAPE);
         
-        getWidget("main/host")->addEventProxy(new MainMenuProxy());
-        getWidget("main/join")->addEventProxy(new MainMenuProxy());
-        getWidget("main/single")->addEventProxy(new MainMenuProxy());
+        boost::shared_ptr<Widget::EventProxy> proxy(new MainMenuProxy());
+        getWidget("main/host")->addEventProxy(proxy);
+        getWidget("main/join")->addEventProxy(proxy);
+        getWidget("main/single")->addEventProxy(proxy);
         
-        getWidget("main/settings")->addEventProxy(new MainMenuProxy());
-        getWidget("main/about")->addEventProxy(new MainMenuProxy());
-        getWidget("main/quit")->addEventProxy(new MainMenuProxy());
+        getWidget("main/settings")->addEventProxy(proxy);
+        getWidget("main/about")->addEventProxy(proxy);
+        getWidget("main/quit")->addEventProxy(proxy);
     }
     
     {
@@ -146,9 +147,10 @@ void GUISystem::construct() {
         setShortcut(getWidget("host/cancel"), SDLK_ESCAPE);
         setShortcut(getWidget("host/host"), SDLK_RETURN);
         
-        getWidget("host/maplist")->addEventProxy(new HostProxy(host));
-        getWidget("host/cancel")->addEventProxy(new HostProxy(host));
-        getWidget("host/host")->addEventProxy(new HostProxy(host));
+        boost::shared_ptr<Widget::EventProxy> proxy(new HostProxy(host));
+        getWidget("host/maplist")->addEventProxy(proxy);
+        getWidget("host/cancel")->addEventProxy(proxy);
+        getWidget("host/host")->addEventProxy(proxy);
     }
     
     {
@@ -182,11 +184,12 @@ void GUISystem::construct() {
         setShortcut(getWidget("connect/cancel"), SDLK_ESCAPE);
         setShortcut(getWidget("connect/connect"), SDLK_RETURN);
         
-        getWidget("connect/host")->addEventProxy(new ConnectProxy(connect));
-        getWidget("connect/port")->addEventProxy(new ConnectProxy(connect));
+        boost::shared_ptr<Widget::EventProxy> proxy(new ConnectProxy(connect));
+        getWidget("connect/host")->addEventProxy(proxy);
+        getWidget("connect/port")->addEventProxy(proxy);
         
-        getWidget("connect/cancel")->addEventProxy(new ConnectProxy(connect));
-        getWidget("connect/connect")->addEventProxy(new ConnectProxy(connect));
+        getWidget("connect/cancel")->addEventProxy(proxy);
+        getWidget("connect/connect")->addEventProxy(proxy);
     }
     
     {
@@ -199,7 +202,8 @@ void GUISystem::construct() {
         loading->addChild(new Widget::TextWidget("loading", "Loading ...", 0,
             Widget::WidgetRect(0.1, 0.65, 0.8, 0.3)));
         
-        getWidget("loading")->addEventProxy(new LoadingProxy(loading));
+        boost::shared_ptr<Widget::EventProxy> proxy(new LoadingProxy(loading));
+        getWidget("loading")->addEventProxy(proxy);
     }
 
     {
@@ -216,7 +220,8 @@ void GUISystem::construct() {
             "lapcount", "Lap 1", 0,
             Widget::WidgetRect(0.0, 0.0, 0.2, 0.06)));
         
-        getWidget("running")->addEventProxy(new RunningProxy(running));
+        boost::shared_ptr<Widget::EventProxy> proxy(new RunningProxy(running));
+        getWidget("running")->addEventProxy(proxy);
     }
     
     {
@@ -239,9 +244,10 @@ void GUISystem::construct() {
         setShortcut(getWidget("paused/settings"), SDLK_s);
         setShortcut(getWidget("paused/quit"), SDLK_q);
         
-        getWidget("paused/resume")->addEventProxy(new PauseMenuProxy());
-        getWidget("paused/settings")->addEventProxy(new PauseMenuProxy());
-        getWidget("paused/quit")->addEventProxy(new PauseMenuProxy());
+        boost::shared_ptr<Widget::EventProxy> proxy(new PauseMenuProxy());
+        getWidget("paused/resume")->addEventProxy(proxy);
+        getWidget("paused/settings")->addEventProxy(proxy);
+        getWidget("paused/quit")->addEventProxy(proxy);
     }
     
     {
@@ -269,8 +275,9 @@ void GUISystem::construct() {
         
         setShortcut(getWidget("settings/accept"), SDLK_ESCAPE);
         
-        getWidget("settings/screenmode")->addEventProxy(new SettingsProxy());
-        getWidget("settings/accept")->addEventProxy(new SettingsProxy());
+        boost::shared_ptr<Widget::EventProxy> proxy(new SettingsProxy());
+        getWidget("settings/screenmode")->addEventProxy(proxy);
+        getWidget("settings/accept")->addEventProxy(proxy);
     }
     
     selectScreen("main");

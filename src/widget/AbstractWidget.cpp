@@ -26,23 +26,21 @@ void AbstractWidget::handleEvent(WidgetEvent *event) {
     for(proxy_list_t::iterator i = proxyList.begin(); i != proxyList.end();
         ++ i) {
         
-        EventProxy *proxy = *i;
+        boost::shared_ptr<EventProxy> proxy = *i;
         event->accept(*proxy);
     }
 }
 
 void AbstractWidget::addEventProxy(EventProxy *proxy) {
+    addEventProxy(boost::shared_ptr<EventProxy>(proxy));
+}
+
+void AbstractWidget::addEventProxy(boost::shared_ptr<EventProxy> proxy) {
     proxyList.push_back(proxy);
 }
 
 void AbstractWidget::removeAllEventProxies() {
-    for(proxy_list_t::iterator i = proxyList.begin(); i != proxyList.end();
-        ++ i) {
-        
-        EventProxy *proxy = *i;
-        delete proxy;
-    }
-    
+    // smart pointers automatically free proxies if necessary
     proxyList.clear();
 }
 
