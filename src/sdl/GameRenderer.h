@@ -30,6 +30,8 @@
 namespace Project {
 namespace SDL {
 
+#define GAME_RENDERER_SHADOW_MIN_NEAR_PLANE 0.1
+
 class GameRenderer {
 private:
 
@@ -39,7 +41,6 @@ private:
 	Render::RenderList* bloomRenderable;
 	Render::RenderParent* bloomBackground;
 	Render::RenderParent* bloomScene;
-	Render::RenderParent* bloomPaint;
 
 	GLuint bloomBlurFBO;
 	GLuint bloomBlurTexture;

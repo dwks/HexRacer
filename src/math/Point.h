@@ -115,6 +115,8 @@ public:
     
 	Point operator * (double factor) const;
 	Point coordinateMultiply(const Point &other) const;
+
+	Axis longestAxis() const;
     
     /**
         Note: no divide-by-zero checking is performed here.

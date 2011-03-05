@@ -59,11 +59,15 @@ public:
     /** This function should be called before doStep().
     */
     void setData(Object::WorldManager *worldManager);
+
+	static double calculateDownFactor(const Math::Point& axis);
+
 private:
     void applySuspension();
     
     void calculateSuspensionForPlayer(Object::Player *player);
     void applyDragForce(Object::Player *player);
+	
 };
 
 }  // namespace Physics

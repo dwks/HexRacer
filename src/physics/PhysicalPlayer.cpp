@@ -17,6 +17,7 @@ namespace Physics {
 PhysicalPlayer::PhysicalPlayer(const Math::Point &position, const Math::Point &direction) {
     onGround = false;
     speedBoost = 1.0;
+	traction = 1.0;
     rigidBody = NULL;  // essential, constructRigidBody tries to delete it
     
 	Math::Matrix transformation = Math::Matrix::getTranslationMatrix(position);
@@ -114,10 +115,10 @@ void PhysicalPlayer::applyAcceleration(double acceleration) {
 	if (acceleration >= 0.0 || getLinearVelocity().dotProduct(orientation) < 0.0) {
         double paintInfluence = (speedBoost - 1.0)
             * GET_SETTING("game.paint.boostinfluence", 1.0) + 1.0;
-		applyForce(orientation * constant * acceleration * paintInfluence);
+		applyForce(orientation * constant * acceleration * paintInfluence * traction);
 	}
 	else {
-		applyForce(orientation * brakeConstant * acceleration);
+		applyForce(orientation * brakeConstant * acceleration * traction);
 	}
 }
 

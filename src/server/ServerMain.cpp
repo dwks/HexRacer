@@ -187,13 +187,12 @@ void ServerMain::init() {
     basicWorld = boost::shared_ptr<World::BasicWorld>(new World::BasicWorld());
     basicWorld->constructBeforeConnect();
     basicWorld->constructSkippingConnect();
-    
-    Map::MapLoader().load(map.get(), NULL);
-    basicWorld->constructAfterConnect(map.get());
-    
-    paintManager = boost::shared_ptr<Paint::PaintManager>(
+
+	paintManager = boost::shared_ptr<Paint::PaintManager>(
         new Paint::PaintManager());
-    paintManager->setMap(map.get());
+    
+    Map::MapLoader().load(map.get(), NULL, NULL, paintManager.get());
+    basicWorld->constructAfterConnect(map.get());
     
     paintSubsystem = boost::shared_ptr<Paint::PaintSubsystem>(
         new Paint::PaintSubsystem(

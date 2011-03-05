@@ -74,6 +74,7 @@ void InputManager::doPausedChecks() {
 	inputMapper->update(Input::INPUT_D_PHYSICS_DEBUG);
 	inputMapper->update(Input::INPUT_D_PATH_DEBUG);
 	inputMapper->update(Input::INPUT_D_CAMERA_DEBUG);
+	inputMapper->update(Input::INPUT_D_TOGGLE_PAUSED);
 	inputMapper->update(Input::INPUT_A_CAMERA_X_SPEED);
 	inputMapper->update(Input::INPUT_A_CAMERA_Z_SPEED);
 
@@ -109,6 +110,11 @@ void InputManager::doPausedChecks() {
         debugCamera = !debugCamera;
         EMIT_EVENT(new Event::SetDebugCamera(debugCamera));
     }
+
+	if (inputMapper->getDigitalTriggered(Input::INPUT_D_TOGGLE_PAUSED)) {
+		bool paused = Timing::AccelControl::getInstance()->getPaused();
+		EMIT_EVENT(new Event::PauseGame(!paused));
+	}
 
 	if (debugCamera) {
     
@@ -238,6 +244,8 @@ void InputManager::setInputMappings(PresetMapping mapping) {
 			inputMapper->addButtonToDigitalMapping(0, joystick, false, Input::INPUT_D_PAINT);
 			//B - Erase
 			inputMapper->addButtonToDigitalMapping(1, joystick, false, Input::INPUT_D_ERASE);
+			//Start - Pause
+			inputMapper->addButtonToDigitalMapping(7, joystick, false, Input::INPUT_D_TOGGLE_PAUSED);
 			/*
 			//Left-stick X - Debug camera X
 			inputMapper->addAxisToAnalogMapping(0, joystick, -1.0, 1.0, stick_deadzone,

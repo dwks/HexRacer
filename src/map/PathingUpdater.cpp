@@ -5,6 +5,7 @@
 
 #include "event/EventSystem.h"
 #include "event/WarpOntoTrack.h"
+#include "event/PlayerProgressEvent.h"
 
 namespace Project {
 namespace Map {
@@ -42,12 +43,16 @@ void PathingUpdater::update() {
                     LOG(WORLD, "Player: " << player->getID()
                         << " has finished lap "
                         << player->getPathTracker()->getNumLaps());
+                
+                EMIT_EVENT(new Event::PlayerProgressEvent(
+                    player->getPathTracker()->getNumLaps(),
+                    player->getPathTracker()->getLapProgress()));
 
             }
         }
         else {
-            // Reset (warp) the player if they are below the kill plane
-            if(origin_pos.getY() < raceManager->getKillPlaneY()) {
+            // Reset (warp) the player if they are out of bounds
+			if (!raceManager->inBounds(origin_pos)) {
                 EMIT_EVENT(new Event::WarpOntoTrack(player->getID()));
             }
         }

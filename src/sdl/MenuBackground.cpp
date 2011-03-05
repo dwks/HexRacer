@@ -3,6 +3,8 @@
 #include "opengl/OpenGL.h"
 #include "opengl/MathWrapper.h"
 
+#include "Projector.h"
+
 namespace Project {
 namespace SDL {
 
@@ -13,6 +15,8 @@ MenuBackground::MenuBackground() {
 void MenuBackground::render() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+
+	Projector::getInstance()->standardGLOrtho();
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();

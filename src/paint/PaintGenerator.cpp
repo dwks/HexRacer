@@ -29,19 +29,21 @@ namespace Paint {
 		triangleTree = NULL;		
 	}
 
-	void PaintGenerator::generateHeightmap(const std::vector<Math::Triangle3D>& _triangles, const HexGrid& hex_grid) {
+	void PaintGenerator::generateHeightmap(const std::vector<Math::Triangle3D>& _triangles,
+		const HexGrid& hex_grid,
+		Misc::ProgressTracker* progress_tracker) {
 
 		if (_triangles.size() <= 0)
 			return;
 
-#ifdef USE_BULLET_RAYCASTS
-    // bullet initialization
-    boost::shared_ptr<Physics::PhysicsWorld> physicsWorld(
-        new Physics::PhysicsWorld());
-    btRigidBody *meshBody
-        = Physics::PhysicsFactory::createRigidTriMesh(_triangles);
-    physicsWorld->registerRigidBody(meshBody);
-#endif
+		#ifdef USE_BULLET_RAYCASTS
+			// bullet initialization
+			boost::shared_ptr<Physics::PhysicsWorld> physicsWorld(
+				new Physics::PhysicsWorld());
+			btRigidBody *meshBody
+				= Physics::PhysicsFactory::createRigidTriMesh(_triangles);
+			physicsWorld->registerRigidBody(meshBody);
+		#endif
 			
 		heightMap = HexHeightMap(hex_grid);
 
@@ -54,8 +56,16 @@ namespace Paint {
 			triangles.push_back(new Triangle3D(_triangles[i]));
 		}
 
+		#ifndef USE_BULLET_RAYCASTS
+
 		triangleTree = new BSPTree3D(paintBound);
 		triangleTree->add(triangles);
+
+		#else
+
+		triangleTree = NULL;
+
+		#endif
 
 		double cell_radius = hex_grid.getHexRadius();
 
@@ -73,8 +83,16 @@ namespace Paint {
 			border_heights[i*2+1].resize(v_steps);
 		}
 
+		if (progress_tracker) {
+			progress_tracker->setCurrentStage("Generating heightmap...");
+			progress_tracker->setTotalSteps(v_steps);
+		}
+
 		//Perform all raycasts
 		for (int v = 0; v < v_steps; v++) {
+
+			if (progress_tracker)
+				progress_tracker->setCurrentStep(v);
 			
 			double v_pos = hex_grid.hexVPosition(v);
 			
@@ -106,12 +124,19 @@ namespace Paint {
 		delete triangleTree;
 	}
 
-	void PaintGenerator::generateCells() {
+	void PaintGenerator::generateCells(Misc::ProgressTracker* progress_tracker) {
 
 		int u_steps = heightMap.getHexGrid().numUIndices();
 		int v_steps = heightMap.getHexGrid().numVIndices();
 
+		if (progress_tracker) {
+			progress_tracker->setCurrentStage("Creating paint cells...");
+			progress_tracker->setTotalSteps(v_steps);
+		}
+
 		for (int v = 0; v < v_steps; v++) {
+
+			progress_tracker->setCurrentStep(v);
 
 			for (int u = 0; u < u_steps; u++) {
 
@@ -140,13 +165,13 @@ namespace Paint {
 		d.setCoord(1.0, PaintCell::PAINT_AXIS);
 		RayIntersection intersect;
 
-#ifdef USE_BULLET_RAYCASTS
-    std::vector<Math::Point> data;
-    Physics::PhysicsWorld::getInstance()->allRaycastPoints(p, p+d*100000, data);
-    for(int x = 0; x < int(data.size()); x ++) {
-        vec.push_back(data[x].getCoord(PaintCell::PAINT_AXIS));
-    }
-#else
+		#ifdef USE_BULLET_RAYCASTS
+			std::vector<Math::Point> data;
+			Physics::PhysicsWorld::getInstance()->allRaycastPoints(p, p+d*100000, data);
+			for(int x = 0; x < int(data.size()); x ++) {
+				vec.push_back(data[x].getCoord(PaintCell::PAINT_AXIS));
+			}
+		#else
 		do {
 			Ray r(p, d, 0.0000001);
 			intersect = triangleTree->rayIntersection(r);

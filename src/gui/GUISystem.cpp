@@ -5,6 +5,7 @@
 #include "RunningProxy.h"
 #include "PauseMenuProxy.h"
 #include "SettingsProxy.h"
+#include "LoadingProxy.h"
 
 #include "MapList.h"
 
@@ -13,12 +14,14 @@
 #include "widget/EditWidget.h"
 #include "widget/ListWidget.h"
 #include "widget/ImageWidget.h"
+#include "widget/ProgressBarWidget.h"
 
 #include "widget/NormalTextLayout.h"
 
 #include "widget/KeyEvent.h"
 #include "widget/MouseMoveEvent.h"
 #include "widget/MouseButtonEvent.h"
+#include "widget/RepaintEvent.h"
 
 #include "widget/KeyboardShortcutProxy.h"
 
@@ -77,13 +80,9 @@ void GUISystem::construct() {
         Widget::CompositeWidget *main
             = new Widget::CompositeWidget("main");
         widgets->addChild(main);
-        
-        main->addChild(new Widget::TextWidget("title", OpenGL::Color::WHITE,
-            "HexRacer",
-            Widget::NormalTextLayout::ALIGN_HCENTRE | Widget::NormalTextLayout::ALIGN_TOP));
-        
-        main->getChild("title")->updateLayout(
-            Widget::WidgetRect(0.0, 0.1, 1.0, 0.2));
+
+		main->addChild(new Widget::ImageWidget("logo", "data/menu/hexracerlogo.png",
+			Widget::WidgetRect(0.0, 0.05, 1.0, 0.5)));
         
         main->addChild(new Widget::ButtonWidget("host", "Host game",
             Widget::WidgetRect(0.03, 0.6, 0.42, 0.08)));
@@ -98,6 +97,8 @@ void GUISystem::construct() {
             Widget::WidgetRect(0.55, 0.7, 0.42, 0.08)));
         main->addChild(new Widget::ButtonWidget("quit", "Quit",
             Widget::WidgetRect(0.55, 0.8, 0.42, 0.08)));
+
+		//main->addChild(new Widget::ProgressBarWidget("progressBar", Widget::WidgetRect(0.2, 0.2, 0.4, 0.2)));
         
         setShortcut(getWidget("main/host"), SDLK_h);
         setShortcut(getWidget("main/join"), SDLK_j);
@@ -189,16 +190,33 @@ void GUISystem::construct() {
     }
     
     {
+        Widget::CompositeWidget *loading
+            = new Widget::CompositeWidget("loading");
+        widgets->addChild(loading);
+        
+        loading->addChild(new Widget::ImageWidget("thumbnail", "",
+            Widget::WidgetRect(0.1, 0.1, 0.8, 0.5)));
+        loading->addChild(new Widget::TextWidget("loading", "Loading ...", 0,
+            Widget::WidgetRect(0.1, 0.65, 0.8, 0.3)));
+        
+        getWidget("loading")->addEventProxy(new LoadingProxy(loading));
+    }
+
+    {
         Widget::CompositeWidget *running
             = new Widget::CompositeWidget("running");
         widgets->addChild(running);
         
-        running->addChild(new Widget::ButtonWidget("menu",
+        /*running->addChild(new Widget::ButtonWidget("menu",
             "Menu", Widget::WidgetRect(0.0, 0.0, 0.1, 0.05)));
         
-        setShortcut(getWidget("running/menu"), SDLK_ESCAPE);
+        setShortcut(getWidget("running/menu"), SDLK_ESCAPE);*/
         
-        getWidget("running/menu")->addEventProxy(new RunningProxy());
+        running->addChild(new Widget::TextWidget(
+            "lapcount", "Lap 1", 0,
+            Widget::WidgetRect(0.0, 0.0, 0.2, 0.06)));
+        
+        getWidget("running")->addEventProxy(new RunningProxy(running));
     }
     
     {
@@ -265,7 +283,10 @@ void GUISystem::render() {
     Widget::WidgetRenderer renderer(screenSize);
     
     renderer.begin();
+    
+    // first do actual rendering
     currentScreen->accept(renderer);
+    
     renderer.end();
 }
 

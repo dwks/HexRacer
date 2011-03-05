@@ -18,12 +18,12 @@ public:
     Projector() { instance = this; }
 private:
     Point2D currentDimensions;
+	double aspect;
 public:
     const Point2D &getCurrentDimensions() const
         { return currentDimensions; }
     
-    void setCurrentDimensions(const Point2D &dimensions)
-        { currentDimensions = dimensions; }
+    void setCurrentDimensions(const Point2D &dimensions);
     
     /** Converts the given point on the screen into the (x, y) equivalent
         in world unit coordinates, leaving the Z coordinate unset.
@@ -41,6 +41,9 @@ public:
         to actually be visible or within the bounds of the screen.
     */
     Point2D projectPoint(Math::Point point);
+
+	double getAspectRatio() const { return aspect; }
+	void standardGLOrtho(bool y_flip = false) const;
 protected:
     Point2D GLtoScreen(Math::Point point);
     Math::Point getZOfPoint(Point2D point);

@@ -62,6 +62,7 @@ private:
     SpringDisplacement spring[4];
     bool onGround;  // not serialized
     double speedBoost;  // not serialized
+	double traction;
 public:
     PhysicalPlayer() : rigidBody(NULL), onGround(false), speedBoost(1.0) {}
     PhysicalPlayer(const Math::Point &position, const Math::Point &direction);
@@ -74,6 +75,9 @@ public:
         { this->speedBoost = speedBoost; }
     double getSpeedBoost()
         { return this->speedBoost; }
+
+	void setTraction(double _traction) { traction = _traction; }
+	double getTraction() const { return traction; }
     
     const SpringDisplacement &getSpring(int i) { return spring[i]; }
     void setSpring(int i, SpringDisplacement d) { spring[i] = d; }

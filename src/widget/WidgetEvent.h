@@ -17,7 +17,8 @@ public:
         EVENT_ACTIVATE,
         EVENT_FOCUS,
         EVENT_MODIFIED,
-        EVENT_SELECTED
+        EVENT_SELECTED,
+        EVENT_REPAINT
     };
 public:
     WidgetEvent() {}

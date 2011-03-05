@@ -17,6 +17,7 @@ public:
     virtual void handleEvent(SDL_Event *event) = 0;
     virtual void miscellaneous() = 0;
     virtual void render() = 0;
+    virtual void postRender() = 0;
     
     virtual void setProjection(const Point2D &size) = 0;
 };

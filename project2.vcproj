@@ -482,6 +482,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\LoadingProxy.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\LoopBase.cpp"
 				>
 			</File>
@@ -511,6 +515,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\MapOptions.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\MapSettings.cpp"
 				>
 			</File>
 			<File
@@ -618,10 +626,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\paint\PaintVertex.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\map\PathingUpdater.cpp"
 				>
 			</File>
@@ -682,7 +686,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PlayerProgressEvent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\settings\ProgramSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ProgressBarWidget.cpp"
 				>
 			</File>
 			<File
@@ -727,6 +739,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\RepaintEvent.cpp"
 				>
 			</File>
 			<File
@@ -883,6 +899,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\WarpOntoTrack.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ai\WeightedDriver.cpp"
 				>
 			</File>
 			<File
@@ -1532,6 +1552,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\LoadingProxy.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\LoopBase.h"
 				>
 			</File>
@@ -1549,6 +1573,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\MapOptions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\MapSettings.h"
 				>
 			</File>
 			<File
@@ -1660,10 +1688,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\paint\PaintVertex.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\map\PathingUpdater.h"
 				>
 			</File>
@@ -1724,7 +1748,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PlayerProgressEvent.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\settings\ProgramSettings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ProgressBarWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc\ProgressTracker.h"
 				>
 			</File>
 			<File
@@ -1769,6 +1805,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderSettings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\RepaintEvent.h"
 				>
 			</File>
 			<File
@@ -1941,6 +1981,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\WarpOntoTrack.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ai\WeightedDriver.h"
 				>
 			</File>
 			<File
