@@ -16,7 +16,6 @@ void MenuLoop::construct() {
         new GUIInputManager(gui));
     
     gui->construct();
-    gui->selectScreen("main");
 
 	loadingProgressTracker = dynamic_cast<Misc::ProgressTracker*>
 		(gui->getWidget("main/progressBar"));

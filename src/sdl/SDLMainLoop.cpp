@@ -61,7 +61,7 @@ void SDLMainLoop::joinGameHandler(Event::JoinGame *event) {
     loop->setGuiPointers(
         menuLoop->getGUI(),
         menuLoop->getGUIInput());
-    menuLoop->getGUI()->selectScreen("running");
+    menuLoop->getGUI()->pushScreen("running");
     
 	// set up camera if necessary
     loop->setProjection(Point2D(
@@ -104,7 +104,7 @@ void SDLMainLoop::useLoopBase(LoopBase *loop) {
 void SDLMainLoop::useMenuLoop() {
     delete this->loop;  // delete the other menu, whatever it is
     
-    menuLoop->getGUI()->selectScreen("main");
+    menuLoop->getGUI()->popScreen("main");
     this->loop = menuLoop;
 }
 

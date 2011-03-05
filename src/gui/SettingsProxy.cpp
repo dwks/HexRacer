@@ -21,7 +21,7 @@ void SettingsProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();
     
     if(name == "accept") {
-        EMIT_EVENT(new Event::SwitchToScreen("main"));
+        EMIT_EVENT(new Event::SwitchToScreen(""));
     }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");

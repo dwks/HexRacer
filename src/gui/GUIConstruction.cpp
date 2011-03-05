@@ -12,12 +12,14 @@
 #include "widget/KeyboardShortcutProxy.h"
 
 #include "MainMenuProxy.h"
+#include "SelectMapProxy.h"
 #include "HostProxy.h"
 #include "ConnectProxy.h"
 #include "RunningProxy.h"
 #include "PauseMenuProxy.h"
 #include "SettingsProxy.h"
 #include "LoadingProxy.h"
+#include "SinglePlayerProxy.h"
 
 #include "misc/StreamAsString.h"
 #include "settings/SettingsManager.h"
@@ -31,8 +33,10 @@ Widget::CompositeWidget *GUIConstruction::construct() {
     /*
         Screens:
             main            Main menu
-            host            Hosting screen with map selection
+            selectmap       Map selection screen
+            host            Multiplayer game hosting screen
             connect         Screen which prompts for host/port
+            singleplayer    Begins a single-player game
             loading         Loading screen
             running         Displayed while the game is running
             paused          Paused menu
@@ -40,8 +44,10 @@ Widget::CompositeWidget *GUIConstruction::construct() {
     */
     
     constructMain();
+    constructSelectMap();
     constructHost();
     constructConnect();
+    constructSinglePlayer();
     constructLoading();
     constructRunning();
     constructPaused();
@@ -88,39 +94,83 @@ void GUIConstruction::constructMain() {
     getWidget("main/quit")->addEventProxy(proxy);
 }
 
-void GUIConstruction::constructHost() {
-    Widget::CompositeWidget *host = new Widget::CompositeWidget("host");
-    widgets->addChild(host);
-    
-    /*host->addChild(new Widget::ScrollbarWidget("scrollbar-horizontal", false,
-        Widget::WidgetRect(0.1, 0.4, 0.8, 0.08)));
-    host->addChild(new Widget::ScrollbarWidget("scrollbar-vertical", true,
-        Widget::WidgetRect(0.7, 0.1, 0.05, 0.3)));*/
+void GUIConstruction::constructSelectMap() {
+    Widget::CompositeWidget *selectmap
+        = new Widget::CompositeWidget("selectmap");
+    widgets->addChild(selectmap);
     
     Widget::ListWidget *mapList = new MapList(
         "maplist", true, false,
         Widget::WidgetRect(0.1, 0.1, 0.8, 0.3));
-    host->addChild(mapList);
+    selectmap->addChild(mapList);
     
-    host->addChild(new Widget::TextWidget("title", "",
+    selectmap->addChild(new Widget::TextWidget("title", "",
         Widget::NormalTextLayout::ALIGN_HCENTRE,
         Widget::WidgetRect(0.1, 0.42, 0.8, 0.07)));
     
-    host->addChild(new Widget::ImageWidget("thumbnail", "",
+    selectmap->addChild(new Widget::ImageWidget("thumbnail", "",
         Widget::WidgetRect(0.2, 0.5, 0.6, 0.3)));
+    
+    selectmap->addChild(new Widget::ButtonWidget("cancel",
+        "Cancel", Widget::WidgetRect(0.1, 0.85, 0.35, 0.08)));
+    selectmap->addChild(new Widget::ButtonWidget("selectmap",
+        "Select map", Widget::WidgetRect(0.5, 0.85, 0.35, 0.08)));
+    
+    setShortcut(getWidget("selectmap/cancel"), SDLK_ESCAPE);
+    setShortcut(getWidget("selectmap/selectmap"), SDLK_RETURN);
+    
+    boost::shared_ptr<Widget::EventProxy> proxy(new SelectMapProxy(selectmap));
+    getWidget("selectmap/maplist")->addEventProxy(proxy);
+    getWidget("selectmap/cancel")->addEventProxy(proxy);
+    getWidget("selectmap/selectmap")->addEventProxy(proxy);
+}
+
+void GUIConstruction::constructHost() {
+    Widget::CompositeWidget *host = new Widget::CompositeWidget("host");
+    widgets->addChild(host);
+    
+    host->addChild(new Widget::ButtonWidget("map",
+        "Choose map", Widget::WidgetRect(0.1, 0.1, 0.4, 0.08)));
     
     host->addChild(new Widget::ButtonWidget("cancel",
         "Cancel", Widget::WidgetRect(0.1, 0.85, 0.35, 0.08)));
     host->addChild(new Widget::ButtonWidget("host",
         "Host game", Widget::WidgetRect(0.5, 0.85, 0.35, 0.08)));
     
+    setShortcut(getWidget("host/map"), SDLK_m);
+    
     setShortcut(getWidget("host/cancel"), SDLK_ESCAPE);
     setShortcut(getWidget("host/host"), SDLK_RETURN);
     
     boost::shared_ptr<Widget::EventProxy> proxy(new HostProxy(host));
-    getWidget("host/maplist")->addEventProxy(proxy);
+    getWidget("host/map")->addEventProxy(proxy);
     getWidget("host/cancel")->addEventProxy(proxy);
     getWidget("host/host")->addEventProxy(proxy);
+}
+
+void GUIConstruction::constructSinglePlayer() {
+    Widget::CompositeWidget *singleplayer
+        = new Widget::CompositeWidget("singleplayer");
+    widgets->addChild(singleplayer);
+    
+    singleplayer->addChild(new Widget::ButtonWidget("map",
+        "Choose map", Widget::WidgetRect(0.1, 0.1, 0.4, 0.08)));
+    
+    singleplayer->addChild(new Widget::ButtonWidget("cancel",
+        "Cancel", Widget::WidgetRect(0.1, 0.85, 0.35, 0.08)));
+    singleplayer->addChild(new Widget::ButtonWidget("start",
+        "Start game", Widget::WidgetRect(0.5, 0.85, 0.35, 0.08)));
+    
+    setShortcut(getWidget("singleplayer/map"), SDLK_m);
+    
+    setShortcut(getWidget("singleplayer/cancel"), SDLK_ESCAPE);
+    setShortcut(getWidget("singleplayer/start"), SDLK_RETURN);
+    
+    boost::shared_ptr<Widget::EventProxy> proxy(
+        new SinglePlayerProxy(singleplayer));
+    getWidget("singleplayer/map")->addEventProxy(proxy);
+    getWidget("singleplayer/cancel")->addEventProxy(proxy);
+    getWidget("singleplayer/start")->addEventProxy(proxy);
 }
 
 void GUIConstruction::constructConnect() {

@@ -13,8 +13,10 @@ public:
     Widget::CompositeWidget *construct();
 private:
     void constructMain();
+    void constructSelectMap();
     void constructHost();
     void constructConnect();
+    void constructSinglePlayer();
     void constructLoading();
     void constructRunning();
     void constructPaused();

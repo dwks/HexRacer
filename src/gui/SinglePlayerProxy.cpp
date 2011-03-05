@@ -1,4 +1,4 @@
-#include "HostProxy.h"
+#include "SinglePlayerProxy.h"
 
 #include "widget/WidgetActivateEvent.h"
 
@@ -12,7 +12,7 @@
 namespace Project {
 namespace GUI {
 
-void HostProxy::visit(Widget::WidgetActivateEvent *event) {
+void SinglePlayerProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();
     
     if(name == "map") {
@@ -21,7 +21,7 @@ void HostProxy::visit(Widget::WidgetActivateEvent *event) {
     else if(name == "cancel") {
         EMIT_EVENT(new Event::SwitchToScreen(""));
     }
-    else if(name == "host") {
+    else if(name == "start") {
         std::string map = Map::MapSettings::getInstance()->getMapFile();
         if(map != "") {
             LOG(GUI, "Using map \"" << map << "\"");

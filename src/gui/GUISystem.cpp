@@ -18,15 +18,22 @@ namespace GUI {
 
 void GUISystem::pauseGameHandler(Event::PauseGame *event) {
     if(event->getPaused()) {
-        selectScreen("paused");
+        pushScreen("paused");
     }
     else {
-        selectScreen("running");
+        popScreen("running");
     }
 }
 
 void GUISystem::switchToScreenHandler(Event::SwitchToScreen *event) {
-    selectScreen(event->getScreen());
+    if(event->getScreen().empty()) {
+        LOG(GUI, "popping current screen");
+        popScreen();
+    }
+    else {
+        LOG(GUI, "pushing screen \"" << event->getScreen() << "\"");
+        pushScreen(event->getScreen());
+    }
 }
 
 GUISystem::~GUISystem() {
@@ -47,7 +54,7 @@ void GUISystem::construct() {
     LOG(GUI, "Constructing GUI system");
     widgets = GUIConstruction().construct();
     
-    selectScreen("main");
+    pushScreen("main");
     
     METHOD_OBSERVER(&GUISystem::pauseGameHandler);
     METHOD_OBSERVER(&GUISystem::switchToScreenHandler);
@@ -100,11 +107,34 @@ void GUISystem::handleEvent(Widget::WidgetEvent *event) {
     }
 }
 
-void GUISystem::selectScreen(const std::string &screen) {
+void GUISystem::pushScreen(const std::string &screen) {
+    screenStack.push_back(screen);
+    useScreen(screen);
+}
+
+void GUISystem::popScreen() {
+    if(screenStack.size() <= 1) return;
+    
+    screenStack.pop_back();
+    
+    useScreen(screenStack.back());
+}
+
+void GUISystem::popScreen(const std::string &until) {
+    while(!screenStack.empty() && screenStack.back() != until) {
+        screenStack.pop_back();
+    }
+    
+    if(screenStack.empty()) screenStack.push_back("main");
+    
+    useScreen(screenStack.back());
+}
+
+void GUISystem::useScreen(const std::string &screen) {
     currentScreen = getWidget(screen);
     
     // hack to enable unicode translation for screens with edit widgets
-    if(screen == "connect" || screen == "settings") {
+    if(screen != "running") {
         SDL_EnableUNICODE(1);
         SDL_EnableKeyRepeat(
             SDL_DEFAULT_REPEAT_DELAY,
