@@ -46,7 +46,7 @@ public:
     
     /** Returns the Layout registered in this Widget.
     */
-    virtual Layout *getLayout() const = 0;
+    virtual boost::shared_ptr<Layout> getLayout() const = 0;
     
     /** Registers a different Layout for this Widget. This layout will
         automatically be freed when the Widget is destroyed.

@@ -112,8 +112,10 @@ void TextWidget::preRender() {
         setLayout(new NormalTextLayout(align, aspectRatio));
     }
     else {
-        static_cast<NormalTextLayout *>(getLayout())
-            ->setAspectRatio(aspectRatio);
+        NormalTextLayout *normal
+            = dynamic_cast<NormalTextLayout *>(getLayout().get());
+        
+        if(normal) normal->setAspectRatio(aspectRatio);
         getLayout()->update();
     }
     

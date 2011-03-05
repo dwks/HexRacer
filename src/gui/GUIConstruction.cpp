@@ -7,6 +7,8 @@
 #include "widget/EditWidget.h"
 #include "widget/CheckWidget.h"
 
+#include "widget/CentreUponChangeLayout.h"
+
 #include "MapList.h"
 
 #include "SDL_keysym.h"
@@ -241,9 +243,13 @@ void GUIConstruction::constructRunning() {
         = new Widget::CompositeWidget("running");
     widgets->addChild(running);
     
-    running->addChild(new Widget::TextWidget(
+    Widget::WidgetBase *lapcount = new Widget::TextWidget(
         "lapcount", "Lap 1", 0,
-        Widget::WidgetRect(0.0, 0.0, 0.2, 0.06)));
+        Widget::WidgetRect(0.0, 0.0, 0.2, 0.06));
+    lapcount->setLayout(new Widget::CentreUponChangeLayout(
+        lapcount->getLayout(), 1500, 500,
+        Widget::WidgetRect(0.2, 0.3, 0.6, 0.2)));
+    running->addChild(lapcount);
     
     boost::shared_ptr<Widget::EventProxy> proxy(new RunningProxy(running));
     getWidget("running")->addEventProxy(proxy);

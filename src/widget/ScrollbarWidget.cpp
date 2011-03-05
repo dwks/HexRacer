@@ -124,7 +124,7 @@ void ScrollbarWidget::updateScrolling() {
     double from = value / max;
     double to = (value + size) / max;
     
-    dynamic_cast<ScrollbarLayout *>(getLayout())->setViewport(from, to);
+    dynamic_cast<ScrollbarLayout *>(getLayout().get())->setViewport(from, to);
     updateLayout();
 }
 

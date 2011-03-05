@@ -21,8 +21,8 @@ WidgetRect AbstractWidget::getBoundingRect() const {
     return layout->getBoundingRect();
 }
 
-Layout *AbstractWidget::getLayout() const {
-    return layout.get();
+boost::shared_ptr<Layout> AbstractWidget::getLayout() const {
+    return layout;
 }
 
 void AbstractWidget::setLayout(Layout *layout) {

@@ -23,7 +23,7 @@ public:
     virtual void updateLayout(const WidgetRect &newBounds);
     virtual WidgetRect getBoundingRect() const;
     
-    virtual Layout *getLayout() const;
+    virtual boost::shared_ptr<Layout> getLayout() const;
     virtual void setLayout(Layout *layout);
     
     virtual void handleEvent(WidgetEvent *event);
