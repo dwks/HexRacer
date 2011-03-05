@@ -21,9 +21,19 @@ void MapLoader::load(HRMap *map, Misc::ProgressTracker* progressTracker, Render:
     else {
         LOG(WORLD, "Unable to load map " << mapName);
     }*/
+
+	mapLoadTracker = progressTracker;
+	if (progressTracker) {
+		progressTracker->setCurrentStage("Loading map collision...");
+		progressTracker->setTotalSteps(nonPaintProgress+paintProgress);
+	}
     
     //Process map meshes
     for (int i = 0; i < Map::HRMap::NUM_MESHES; i++) {
+
+		if (progressTracker)
+			progressTracker->setCurrentStep( (i/Map::HRMap::NUM_MESHES)*nonPaintProgress/2 );
+
         HRMap::MeshType type = static_cast<Map::HRMap::MeshType>(i);
         if (map->getMapMesh(type)) {
 
@@ -46,6 +56,9 @@ void MapLoader::load(HRMap *map, Misc::ProgressTracker* progressTracker, Render:
     //Process mesh instances
     std::vector<Map::MeshInstance*> instances = map->getMeshInstances();
     for (unsigned i = 0; i < instances.size(); i++) {
+
+		if (progressTracker)
+			progressTracker->setCurrentStep( (i/instances.size())*(nonPaintProgress * 1.5)/2 );
         
         Mesh::TransformedMesh* transformed_mesh = new Mesh::TransformedMesh(
             instances[i]->getMeshGroup(), instances[i]->getTransformation());
@@ -79,9 +92,11 @@ void MapLoader::load(HRMap *map, Misc::ProgressTracker* progressTracker, Render:
 
 
 	if (paintManager) {
-		paintManager->setMap(map, progressTracker);
+		paintManager->setMap(map, this);
 		map->clearPaint();
 	}
+
+	mapLoadTracker = NULL;
 }
 
 void MapLoader::unload() {
@@ -89,6 +104,11 @@ void MapLoader::unload() {
 		delete meshTints[i];
 	}
 	meshTints.clear();
+}
+
+void MapLoader::setCurrentStep(int current_step) {
+	if (mapLoadTracker)
+		mapLoadTracker->setCurrentStep(nonPaintProgress+(current_step/totalPaintSteps)*paintProgress);
 }
 
 }  // namespace Map
