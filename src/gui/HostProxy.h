@@ -12,7 +12,6 @@ namespace GUI {
 class HostProxy : public Widget::EventProxy {
 private:
     Widget::WidgetBase *host;
-    static std::string map;  // augh, smart pointers please . . . .
 public:
     HostProxy(Widget::WidgetBase *host) : host(host) {}
     

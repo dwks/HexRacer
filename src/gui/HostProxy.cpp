@@ -11,13 +11,13 @@
 #include "event/JoinGame.h"
 #include "event/EventSystem.h"
 
+#include "map/MapSettings.h"
+
 #include "settings/SettingsManager.h"
 #include "log/Logger.h"
 
 namespace Project {
 namespace GUI {
-
-std::string HostProxy::map;
 
 void HostProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();
@@ -27,6 +27,8 @@ void HostProxy::visit(Widget::WidgetActivateEvent *event) {
     }
     else if(name == "host") {
         //LOG2(GUI, WARNING, "Hosting not yet implemented");
+        
+        std::string map = Map::MapSettings::getInstance()->getMapFile();
         
         if(map != "") {
             LOG(GUI, "Using map \"" << map << "\"");
@@ -60,7 +62,9 @@ void HostProxy::visit(Widget::WidgetSelectedEvent *event) {
     dynamic_cast<Widget::ImageWidget *>(host->getChild("thumbnail"))
         ->setFilename(thumbnail);
     
-    this->map = GET_SETTING(root, "");
+    Map::MapSettings::getInstance()->setMapFile(GET_SETTING(root, ""));
+    Map::MapSettings::getInstance()->setMapThumbnail(thumbnail);
+    Map::MapSettings::getInstance()->setMapTitle(title);
 }
 
 }  // namespace GUI

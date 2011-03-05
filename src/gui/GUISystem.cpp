@@ -5,6 +5,7 @@
 #include "RunningProxy.h"
 #include "PauseMenuProxy.h"
 #include "SettingsProxy.h"
+#include "LoadingProxy.h"
 
 #include "MapList.h"
 
@@ -187,15 +188,18 @@ void GUISystem::construct() {
         getWidget("connect/connect")->addEventProxy(new ConnectProxy(connect));
     }
     
-	/*{
+    {
         Widget::CompositeWidget *loading
             = new Widget::CompositeWidget("loading");
         widgets->addChild(loading);
         
-		loading->addChild(new Widget::ProgressBarWidget("progressBar", Widget::WidgetRect(0.2, 0.2, 0.4, 0.2)));
-
-        getWidget("running")->addEventProxy(new LoadingProxy());
-    }*/
+        loading->addChild(new Widget::ImageWidget("thumbnail", "",
+            Widget::WidgetRect(0.1, 0.1, 0.8, 0.5)));
+        loading->addChild(new Widget::TextWidget("loading", "Loading ...", 0,
+            Widget::WidgetRect(0.1, 0.65, 0.8, 0.3)));
+        
+        getWidget("loading")->addEventProxy(new LoadingProxy(loading));
+    }
 
     {
         Widget::CompositeWidget *running
