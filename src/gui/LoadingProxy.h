@@ -14,10 +14,10 @@ class LoadingProxy : public Widget::EventProxy, public Event::Enabler {
 protected:
     void initialize(Event::SwitchToScreen *event);
 private:
-    Widget::WidgetBase *loading;
+    Widget::WidgetBase *loading, *host;
     Widget::WidgetBase *lastRepaint;
 public:
-    LoadingProxy(Widget::WidgetBase *loading);
+    LoadingProxy(Widget::WidgetBase *loading, Widget::WidgetBase *host);
     
     virtual void visit(Widget::RepaintEvent *event);
 };

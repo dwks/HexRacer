@@ -80,6 +80,9 @@ void SDLMainLoop::joinGameHandler(Event::JoinGame *event) {
         
         return;
     }
+    else {
+        event->setSuccessful();
+    }
     loop->construct();
     
     loop->setGuiPointers(

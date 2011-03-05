@@ -49,7 +49,7 @@ Widget::CompositeWidget *GUIConstruction::construct() {
     constructHost();
     constructConnect();
     constructSinglePlayer();
-    constructLoading();
+    constructLoading();  // must happen after host
     constructRunning();
     constructPaused();
     constructSettings();
@@ -132,10 +132,13 @@ void GUIConstruction::constructHost() {
     
     host->addChild(new Widget::TextWidget("hostport-label", "Host port:",
         Widget::NormalTextLayout::ALIGN_RIGHT,
-        Widget::WidgetRect(0.1, 0.70, 0.35, 0.08)));
+        Widget::WidgetRect(0.1, 0.60, 0.35, 0.08)));
     host->addChild(new Widget::EditWidget("hostport",
         GET_SETTING("network.serverport", "1820"),
-        Widget::WidgetRect(0.5, 0.70, 0.35, 0.08)));
+        Widget::WidgetRect(0.5, 0.60, 0.35, 0.08)));
+    
+    host->addChild(new Widget::TextWidget("error", "", 0,
+        Widget::WidgetRect(0.1, 0.7, 0.8, 0.08)));
     
     host->addChild(new Widget::ButtonWidget("cancel",
         "Cancel", Widget::WidgetRect(0.1, 0.85, 0.35, 0.08)));
@@ -228,7 +231,8 @@ void GUIConstruction::constructLoading() {
     loading->addChild(new Widget::TextWidget("loading", "Loading ...", 0,
         Widget::WidgetRect(0.1, 0.65, 0.8, 0.3)));
     
-    boost::shared_ptr<Widget::EventProxy> proxy(new LoadingProxy(loading));
+    boost::shared_ptr<Widget::EventProxy> proxy(
+        new LoadingProxy(loading, getWidget("host")));
     getWidget("loading")->addEventProxy(proxy);
 }
 
