@@ -45,21 +45,19 @@ void SelectMapProxy::visit(Widget::WidgetModifiedEvent *event) {
 }
 
 void SelectMapProxy::visit(Widget::WidgetSelectedEvent *event) {
+    std::string file = event->getSelected()->getName();
     std::string title = event->getSelected()->getData();
-    LOG(GUI, "selected map \"" << title << "\"");
+    std::string thumbnail = Map::MapSettings::getInstance()
+        ->getMap(file).getThumbnail();
     
-    std::string root = event->getSelected()->getName();
-    std::string thumbnail = GET_SETTING(root + ".image", "");
+    LOG(GUI, "selected map \"" << title << "\"");
     
     dynamic_cast<Widget::TextWidget *>(selectmap->getChild("title"))
         ->setText(title);
-    
     dynamic_cast<Widget::ImageWidget *>(selectmap->getChild("thumbnail"))
         ->setFilename(thumbnail);
     
-    Map::MapSettings::getInstance()->setMapFile(GET_SETTING(root, ""));
-    Map::MapSettings::getInstance()->setMapThumbnail(thumbnail);
-    Map::MapSettings::getInstance()->setMapTitle(title);
+    Map::MapSettings::getInstance()->setMapFile(file);
 }
 
 }  // namespace GUI
