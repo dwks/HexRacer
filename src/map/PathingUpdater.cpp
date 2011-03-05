@@ -5,6 +5,7 @@
 
 #include "event/EventSystem.h"
 #include "event/WarpOntoTrack.h"
+#include "event/PlayerProgressEvent.h"
 
 namespace Project {
 namespace Map {
@@ -42,6 +43,10 @@ void PathingUpdater::update() {
                     LOG(WORLD, "Player: " << player->getID()
                         << " has finished lap "
                         << player->getPathTracker()->getNumLaps());
+                
+                EMIT_EVENT(new Event::PlayerProgressEvent(
+                    player->getPathTracker()->getNumLaps(),
+                    player->getPathTracker()->getLapProgress()));
 
             }
         }

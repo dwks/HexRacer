@@ -1,5 +1,7 @@
 #include "SDL.h"  // for SDL_GetTicks()
 
+#include "widget/RepaintEvent.h"
+
 #include "event/EventSystem.h"
 #include "GameLoop.h"
 
@@ -88,6 +90,12 @@ void GameLoop::render() {
             gameWorld->getClientData()->getPlayerID()));
 
     gui->render();
+}
+
+void GameLoop::postRender() {
+    // fire a repaint event to the current screen
+    Widget::RepaintEvent repaintEvent(gui->getCurrentScreen());
+    gui->handleEvent(&repaintEvent);
 }
 
 void GameLoop::setProjection(const Point2D &size) {

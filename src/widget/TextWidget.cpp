@@ -192,8 +192,10 @@ void TextWidget::addText(const std::string &add) {
 }
 
 void TextWidget::setText(const std::string &data) {
-    this->data = data;
-    textChanged();
+    if(data != this->data) {
+        this->data = data;
+        textChanged();
+    }
 }
 
 void TextWidget::textChanged() {
