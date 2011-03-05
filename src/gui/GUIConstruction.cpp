@@ -5,6 +5,7 @@
 #include "widget/ImageWidget.h"
 #include "widget/ButtonWidget.h"
 #include "widget/EditWidget.h"
+#include "widget/CheckWidget.h"
 
 #include "MapList.h"
 
@@ -274,7 +275,7 @@ void GUIConstruction::constructSettings() {
     
     settings->addChild(new Widget::TextWidget("screenmode-label",
         OpenGL::Color::WHITE, "Screen resolution:",
-        Widget::NormalTextLayout::ALIGN_RIGHT | Widget::NormalTextLayout::ALIGN_VCENTRE));
+        Widget::NormalTextLayout::ALIGN_RIGHT));
     settings->getChild("screenmode-label")
         ->updateLayout(Widget::WidgetRect(0.1, 0.1, 0.35, 0.08));
     Misc::StreamAsString currentSize;
@@ -284,8 +285,9 @@ void GUIConstruction::constructSettings() {
     settings->addChild(new Widget::EditWidget("screenmode",
         currentSize, Widget::WidgetRect(0.5, 0.1, 0.35, 0.08)));
     
-    settings->addChild(new Widget::EditWidget("testing",
-        "test", Widget::WidgetRect(0.5, 0.2, 0.35, 0.08)));
+    settings->addChild(new Widget::CheckWidget("fullscreen",
+        "Fullscreen", GET_SETTING("display.fullscreen", 0),
+        Widget::WidgetRect(0.5, 0.2, 0.35, 0.08)));
     
     settings->addChild(new Widget::ButtonWidget("accept",
         "Accept settings", Widget::WidgetRect(0.3, 0.9, 0.4, 0.08)));
@@ -294,6 +296,7 @@ void GUIConstruction::constructSettings() {
     
     boost::shared_ptr<Widget::EventProxy> proxy(new SettingsProxy());
     getWidget("settings/screenmode")->addEventProxy(proxy);
+    getWidget("settings/fullscreen")->addEventProxy(proxy);
     getWidget("settings/accept")->addEventProxy(proxy);
 }
 

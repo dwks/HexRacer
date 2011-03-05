@@ -23,6 +23,15 @@ void SettingsProxy::visit(Widget::WidgetActivateEvent *event) {
     if(name == "accept") {
         EMIT_EVENT(new Event::SwitchToScreen(""));
     }
+    else if(name == "fullscreen") {
+        int width = GET_SETTING("screen.width", 0);
+        int height = GET_SETTING("screen.height", 0);
+        int bpp = GET_SETTING("display.bpp", 0);
+        bool fullscreen = event->getDown();
+        
+        EMIT_EVENT(new Event::ChangeScreenMode(
+            width, height, bpp, fullscreen));
+    }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");
     }
@@ -45,8 +54,10 @@ void SettingsProxy::visit(Widget::WidgetModifiedEvent *event) {
         }
         
         int bpp = GET_SETTING("display.bpp", 0);
+        bool fullscreen = GET_SETTING("display.fullscreen", 0);
         
-        EMIT_EVENT(new Event::ChangeScreenMode(width, height, bpp));
+        EMIT_EVENT(new Event::ChangeScreenMode(
+            width, height, bpp, fullscreen));
     }
     else {
         LOG2(GUI, WARNING, "No action for modifying \"" << name << "\"");

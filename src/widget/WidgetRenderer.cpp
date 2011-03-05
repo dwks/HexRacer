@@ -9,6 +9,7 @@
 #include "ListWidget.h"
 #include "ImageWidget.h"
 #include "ProgressBarWidget.h"
+#include "CheckWidget.h"
 
 #include "opengl/OpenGL.h"
 #include "opengl/MathWrapper.h"
@@ -87,6 +88,10 @@ void WidgetRenderer::visit(ImageWidget *widget) {
 
 void WidgetRenderer::visit(ProgressBarWidget *widget) {
     widget->render();
+}
+
+void WidgetRenderer::visit(CheckWidget *widget) {
+    widget->render(*this);
 }
 
 void WidgetRenderer::glVertex(const WidgetPoint &point) {

@@ -25,6 +25,7 @@ public:
     virtual void visit(ListWidget *widget);
     virtual void visit(ImageWidget *widget);
 	virtual void visit(ProgressBarWidget *widget);
+    virtual void visit(CheckWidget *widget);
 public:
     static void glVertex(const WidgetPoint &point);
 };
