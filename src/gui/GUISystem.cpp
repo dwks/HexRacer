@@ -2,27 +2,15 @@
 #include "GUIConstruction.h"
 
 #include "widget/WidgetRenderer.h"
-#include "widget/ButtonWidget.h"
-#include "widget/EditWidget.h"
-#include "widget/ListWidget.h"
-#include "widget/ImageWidget.h"
-#include "widget/ProgressBarWidget.h"
-
-#include "widget/NormalTextLayout.h"
 
 #include "widget/KeyEvent.h"
 #include "widget/MouseMoveEvent.h"
 #include "widget/MouseButtonEvent.h"
-#include "widget/RepaintEvent.h"
-
-#include "widget/KeyboardShortcutProxy.h"
 
 #include "event/EventSystem.h"
 
 #include "SDL.h"
-#include "SDL_events.h"
 
-#include "settings/SettingsManager.h"
 #include "log/Logger.h"
 
 namespace Project {
@@ -56,6 +44,7 @@ void GUISystem::construct() {
     textureList = new Render::WidgetTextureList();
     focusManager = new Widget::FocusManager();
     
+    LOG(GUI, "Constructing GUI system");
     widgets = GUIConstruction().construct();
     
     selectScreen("main");
@@ -128,26 +117,11 @@ void GUISystem::selectScreen(const std::string &screen) {
 }
 
 Widget::WidgetBase *GUISystem::getWidget(const std::string &path) {
-    Widget::WidgetBase *widget = this->widgets;
-    
-    std::string::size_type start = 0, end;
-    do {
-        end = path.find('/', start);
-        
-        widget = widget->getChild(path.substr(start, end));
-        
-        start = end + 1;
-    } while(widget && end != std::string::npos);
-    
-    return widget;
+    return widgets->getChildPath(path);
 }
 
 Widget::CompositeWidget *GUISystem::getScreen(const std::string &path) {
     return dynamic_cast<Widget::CompositeWidget *>(getWidget(path));
-}
-
-void GUISystem::setShortcut(Widget::WidgetBase *widget, long key) {
-    widget->addEventProxy(new Widget::KeyboardShortcutProxy(widget, key));
 }
 
 }  // namespace GUI

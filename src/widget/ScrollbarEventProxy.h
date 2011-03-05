@@ -1,14 +1,14 @@
 #ifndef PROJECT_WIDGET__SCROLLBAR_EVENT_PROXY_H
 #define PROJECT_WIDGET__SCROLLBAR_EVENT_PROXY_H
 
-#include "widget/EventProxy.h"
+#include "EventProxy.h"
 
 namespace Project {
 namespace Widget {
 
 class ScrollbarWidget;
 
-class ScrollbarEventProxy : public Widget::EventProxy {
+class ScrollbarEventProxy : public EventProxy {
 private:
     ScrollbarWidget *widget;
 public:

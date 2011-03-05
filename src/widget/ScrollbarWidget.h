@@ -11,12 +11,14 @@ namespace Widget {
 class ScrollbarLayout;
 class ScrollbarEventProxy;
 class ScrollbarSliderEventProxy;
+class ListWidget;
 
 class ScrollbarWidget : public AbstractWidget {
 private:
     friend class ScrollbarLayout;
     friend class ScrollbarEventProxy;
     friend class ScrollbarSliderEventProxy;
+    friend class ListWidget;  // just for getLess(), getMore()
 private:
     bool vertical;
     ButtonWidget *less, *more;

@@ -45,8 +45,6 @@ public:
     
     void setScreenSize(Widget::WidgetPoint screenSize)
         { this->screenSize = screenSize; }
-private:
-    void setShortcut(Widget::WidgetBase *widget, long key);
 };
 
 }  // namespace GUI

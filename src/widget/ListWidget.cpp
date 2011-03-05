@@ -23,6 +23,8 @@ ListWidget::ListWidget(const std::string &name, bool vertical, bool horizontal,
     
     WidgetRect boxBounds = bounds;
     
+    boost::shared_ptr<EventProxy> scrollbarEventProxy(
+        new ListScrollbarEventProxy(this));
     if(vertical) {
         WidgetRect verticalBounds = bounds;
         verticalBounds.getDimensions().setX(0.06);
@@ -34,7 +36,11 @@ ListWidget::ListWidget(const std::string &name, bool vertical, bool horizontal,
         verticalBar = new ScrollbarWidget("list-vertical-scrollbar", true,
             verticalBounds);
         verticalBar->getSlider()
-            ->addEventProxy(new ListScrollbarEventProxy(this));
+            ->addEventProxy(scrollbarEventProxy);
+        verticalBar->getLess()
+            ->addEventProxy(scrollbarEventProxy);
+        verticalBar->getMore()
+            ->addEventProxy(scrollbarEventProxy);
     }
     if(horizontal) {
         WidgetRect horizontalBounds = bounds;
@@ -47,7 +53,11 @@ ListWidget::ListWidget(const std::string &name, bool vertical, bool horizontal,
         horizontalBar = new ScrollbarWidget("list-horizontal-scrollbar", false,
             horizontalBounds);
         horizontalBar->getSlider()
-            ->addEventProxy(new ListScrollbarEventProxy(this));
+            ->addEventProxy(scrollbarEventProxy);
+        horizontalBar->getLess()
+            ->addEventProxy(scrollbarEventProxy);
+        horizontalBar->getMore()
+            ->addEventProxy(scrollbarEventProxy);
     }
     
     box = new BoxWidget("list-box", "corners/in/normal");

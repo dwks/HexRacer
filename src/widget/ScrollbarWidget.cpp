@@ -6,6 +6,7 @@
 
 #include "ScrollbarEventProxy.h"
 #include "ScrollbarSliderEventProxy.h"
+#include "ScrollbarLessMoreEventProxy.h"
 
 #include "log/Logger.h"
 
@@ -26,6 +27,9 @@ ScrollbarWidget::ScrollbarWidget(const std::string &name, bool vertical,
     bar->setLayout(new AbsoluteLayout(bounds));
     slider->setLayout(new AbsoluteLayout(bounds));
     
+    EventProxy *lessMoreProxy = new ScrollbarLessMoreEventProxy(this);
+    less->addEventProxy(lessMoreProxy);
+    more->addEventProxy(lessMoreProxy);
     slider->addEventProxy(new ScrollbarSliderEventProxy(this));
     
     setLayout(new ScrollbarLayout(this, bounds));
