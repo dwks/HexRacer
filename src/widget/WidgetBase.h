@@ -14,7 +14,13 @@ class Layout;
 class EventProxy;
 class WidgetEvent;
 
-/** Abstract base class for all widgets.
+/** Abstract base class for all widgets. Every widget has:
+    - a unique name;
+    - a Layout to handle positioning of the widget;
+    - a list of EventProxies which are notified of events;
+    - an accept() function for the visitor pattern.
+    
+    Many widgets also have child widgets, accessible with getChild().
 */
 class WidgetBase {
 public:
@@ -53,6 +59,9 @@ public:
     
     /** Adds another event proxy for this widget. When an event arrives, it
         will be sent to all registered proxies in order.
+        
+        This is the primary overload of this function; all other overloads
+        should use this function underneath.
     */
     virtual void addEventProxy(boost::shared_ptr<EventProxy> proxy) = 0;
     

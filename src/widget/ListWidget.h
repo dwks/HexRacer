@@ -27,11 +27,12 @@ public:
     ListWidget(const std::string &name, bool vertical, bool horizontal,
         const WidgetRect &bounds);
     
+    using CompositeWidget::addChild;
     /** Overridden to automatically position the widget correctly; any child
         widget added to a ListWidget need only have its dimensions set, the
         position will be set appropriately.
     */
-    virtual void addChild(WidgetBase *widget);
+    virtual void addChild(boost::shared_ptr<WidgetBase> widget);
     
     void render(WidgetVisitor &renderer);
     

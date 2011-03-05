@@ -6,7 +6,6 @@ namespace Project {
 namespace Widget {
 
 AbstractWidget::~AbstractWidget() {
-    delete layout;
     removeAllEventProxies();
 }
 
@@ -22,6 +21,14 @@ WidgetRect AbstractWidget::getBoundingRect() const {
     return layout->getBoundingRect();
 }
 
+Layout *AbstractWidget::getLayout() const {
+    return layout.get();
+}
+
+void AbstractWidget::setLayout(Layout *layout) {
+    this->layout = boost::shared_ptr<Layout>(layout);
+}
+
 void AbstractWidget::handleEvent(WidgetEvent *event) {
     for(proxy_list_t::iterator i = proxyList.begin(); i != proxyList.end();
         ++ i) {
@@ -31,12 +38,12 @@ void AbstractWidget::handleEvent(WidgetEvent *event) {
     }
 }
 
-void AbstractWidget::addEventProxy(EventProxy *proxy) {
-    addEventProxy(boost::shared_ptr<EventProxy>(proxy));
-}
-
 void AbstractWidget::addEventProxy(boost::shared_ptr<EventProxy> proxy) {
     proxyList.push_back(proxy);
+}
+
+void AbstractWidget::addEventProxy(EventProxy *proxy) {
+    addEventProxy(boost::shared_ptr<EventProxy>(proxy));
 }
 
 void AbstractWidget::removeAllEventProxies() {
