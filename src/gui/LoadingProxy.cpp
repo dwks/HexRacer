@@ -6,7 +6,9 @@
 #include "widget/RepaintEvent.h"
 
 #include "map/MapSettings.h"
+#include "sdl/SpawnServer.h"
 
+#include "settings/SettingsManager.h"
 #include "log/Logger.h"
 
 namespace Project {
@@ -37,8 +39,28 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
         lastRepaint = event->getWidget();
         
         if(event->getWidget() == loading) {
-            // !!! don't try to connect to the network just yet
-            EMIT_EVENT(new Event::JoinGame());
+            std::string type = Map::MapSettings::getInstance()->getGameType();
+            
+            if(type == "connect") {
+                EMIT_EVENT(new Event::JoinGame(
+                    GET_SETTING("network.host", "localhost"),
+                    GET_SETTING("network.port", 1820)));
+            }
+            else if(type == "host") {
+                SDL::SpawnServer spawner;
+                spawner.spawn();
+                
+                EMIT_EVENT(new Event::JoinGame(
+                    GET_SETTING("network.host", "localhost"),
+                    GET_SETTING("network.port", 1820)));
+            }
+            else if(type == "singleplayer") {
+                EMIT_EVENT(new Event::JoinGame());
+            }
+            else {
+                LOG(GUI, "Unknown game type \"" << type << "\"");
+                EMIT_EVENT(new Event::SwitchToScreen(""));
+            }
         }
     }
 }

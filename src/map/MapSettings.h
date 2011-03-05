@@ -36,6 +36,8 @@ private:
     mapVectorType mapVector;
     
     SingleMap currentMap;
+private:
+    std::string gameType;
 public:
     MapSettings();
     ~MapSettings() { instance = 0; }
@@ -49,6 +51,9 @@ public:
     const SingleMap &getMap(int i) const { return mapVector[i]; }
     const SingleMap &getMap(const std::string &file) const
         { return mapList.at(file); }
+    
+    void setGameType(const std::string &type) { gameType = type; }
+    const std::string &getGameType() const { return gameType; }
 private:
     void loadMapList();
 };

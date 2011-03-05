@@ -151,7 +151,7 @@ void Historian::handleUpdateWorld(Event::UpdateWorld *updateWorld) {
         pingTime->setClockOffset(offset);
     }
     else {
-#if 1
+#if 0
         unsigned long sent = updateWorld->getMilliseconds();
         unsigned long now = Misc::Sleeper::getTimeMilliseconds();
         

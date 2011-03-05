@@ -26,6 +26,7 @@ void SinglePlayerProxy::visit(Widget::WidgetActivateEvent *event) {
         if(map != "") {
             LOG(GUI, "Using map \"" << map << "\"");
             
+            Map::MapSettings::getInstance()->setGameType("singleplayer");
             EMIT_EVENT(new Event::SwitchToScreen("loading"));
         }
         else {

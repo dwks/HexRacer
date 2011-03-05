@@ -11,10 +11,12 @@ namespace Map {
 
 PathingUpdater::PathingUpdater(
     boost::shared_ptr<Object::WorldManager> worldManager,
-    boost::shared_ptr<RaceManager> raceManager) {
+    boost::shared_ptr<RaceManager> raceManager,
+    boost::shared_ptr<World::PlayerManager> playerManager) {
     
     this->worldManager = worldManager;
     this->raceManager = raceManager;
+    this->playerManager = playerManager;
     
     warpDetector = new WarpDetector(raceManager.get());
 }
@@ -57,10 +59,11 @@ void PathingUpdater::update() {
                         << " has finished lap "
                         << player->getPathTracker()->getNumLaps());
                 
-                EMIT_EVENT(new Event::PlayerProgressEvent(
-                    player->getPathTracker()->getNumLaps(),
-                    player->getPathTracker()->getLapProgress()));
-
+                if(playerManager->getPlayer() == player) {
+                    EMIT_EVENT(new Event::PlayerProgressEvent(
+                        player->getPathTracker()->getNumLaps(),
+                        player->getPathTracker()->getLapProgress()));
+                }
             }
         }
         

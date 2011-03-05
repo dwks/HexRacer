@@ -12,7 +12,6 @@ MapSettings::MapSettings() {
     instance = this;
     
     loadMapList();
-    
     setMapFile(GET_SETTING("map", ""));
 }
 

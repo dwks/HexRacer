@@ -8,8 +8,9 @@
 #include "widget/WidgetModifiedEvent.h"
 
 #include "event/SwitchToScreen.h"
-#include "event/JoinGame.h"
 #include "event/EventSystem.h"
+
+#include "map/MapSettings.h"
 
 #include "settings/SettingsManager.h"
 #include "log/Logger.h"
@@ -26,9 +27,9 @@ void ConnectProxy::visit(Widget::WidgetActivateEvent *event) {
     }
     else if(name == "connect") {
         clearError();
-        EMIT_EVENT(new Event::JoinGame(
-            GET_SETTING("network.host", "localhost").c_str(),
-            GET_SETTING("network.port", 1820)));
+        
+        Map::MapSettings::getInstance()->setGameType("connect");
+        EMIT_EVENT(new Event::SwitchToScreen("loading"));
     }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");

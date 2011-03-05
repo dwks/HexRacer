@@ -54,6 +54,10 @@ void SDLMainLoop::joinGameHandler(Event::JoinGame *event) {
                 << ":" << event->getPort());
         }
         
+        if(menuLoop->getGUI()->getCurrentScreen()->getName() == "loading") {
+            menuLoop->getGUI()->popScreen();
+        }
+        
         return;
     }
     loop->construct();
