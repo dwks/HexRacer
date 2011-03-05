@@ -4,6 +4,9 @@
 #include "config.h"
 #ifdef HAVE_OPENAL
 
+#include "event/PhysicsCollision.h"
+#include "event/Enabler.h"
+
 #include "AL/al.h"
 #include "object/WorldManager.h"
 #include "world/PlayerManager.h"
@@ -12,7 +15,9 @@
 namespace Project {
 namespace Sound {
 
-class SoundSystem {
+class SoundSystem : public Event::Enabler {
+protected:
+    void physicsCollisionHandler(Event::PhysicsCollision *event);
 private:
     //Buffers
     ALuint musicBuffer;

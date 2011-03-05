@@ -8,6 +8,7 @@
 #include "opengl/OpenGL.h"
 
 #include "event/PhysicsTick.h"
+#include "event/PhysicsCollision.h"
 #include "event/EventSystem.h"
 #include "PhysicsFactory.h"
 
@@ -65,8 +66,8 @@ void PhysicsWorld::stepWorld(unsigned long milliseconds) {
         for (int i=0;i<numManifolds;i++)
         {
             btPersistentManifold* contactManifold =  dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
-            btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
-            btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
+            //btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
+            //btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
     
             int numContacts = contactManifold->getNumContacts();
             for (int j=0;j<numContacts;j++)
@@ -74,6 +75,9 @@ void PhysicsWorld::stepWorld(unsigned long milliseconds) {
                 btManifoldPoint& pt = contactManifold->getContactPoint(j);
                 if (pt.getDistance()<0.f)
                 {
+                    const btVector3& ptA = pt.getPositionWorldOnA();
+                    Math::Point collisionPoint = Converter::toPoint(ptA);
+                    EMIT_EVENT(new Event::PhysicsCollision(collisionPoint));
                     //const btVector3& ptA = pt.getPositionWorldOnA();
                     //const btVector3& ptB = pt.getPositionWorldOnB();
                     //const btVector3& normalOnB = pt.m_normalWorldOnB;

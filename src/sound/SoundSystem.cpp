@@ -8,6 +8,8 @@
 
 #include "log/Logger.h"
 
+#include "event/EventSystem.h"
+
 namespace Project {
 namespace Sound {
 
@@ -17,6 +19,10 @@ SoundSystem::SoundSystem(){
 
 SoundSystem::~SoundSystem() {
     cleanUp();
+}
+
+void SoundSystem::physicsCollisionHandler(Event::PhysicsCollision *event){
+    LOG2(AUDIO, UPDATE, "We had a collision!");
 }
 
 bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerManager *playerManager) {
@@ -31,6 +37,8 @@ bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerMa
     setupListener();
     setupEngines();
     setupGameMusic();
+    
+    METHOD_OBSERVER(&SoundSystem::physicsCollisionHandler);
     
     return true;
 }
@@ -198,16 +206,16 @@ void SoundSystem::updateEngineDetails(Object::Player *player, ALuint source){
         velocityPoint.getY(), 
         velocityPoint.getZ()};
     
-    ALfloat sourceOrientation[] = {
-        orientationPoint.getX(),
-        orientationPoint.getY(),
-        orientationPoint.getZ(),  // "at" position
-        0.0, 1.0, 0.0    // "up" direction
-    };
+//     ALfloat sourceOrientation[] = {
+//         orientationPoint.getX(),
+//         orientationPoint.getY(),
+//         orientationPoint.getZ(),  // "at" position
+//         0.0, 1.0, 0.0    // "up" direction
+//     };
     
     alSourcefv(source, AL_POSITION, sourcePosition);
     alSourcefv(source, AL_VELOCITY, sourceVelocity);
-    alSourcefv(source, AL_ORIENTATION, sourceOrientation);
+    //alSourcefv(source, AL_ORIENTATION, sourceOrientation);
 }
 
 void SoundSystem::changeEnginePitch(Object::Player *player, ALuint source){
