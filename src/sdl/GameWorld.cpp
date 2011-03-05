@@ -86,8 +86,10 @@ void GameWorld::constructAfterConnect(Map::HRMap *map) {
     }
     
 #ifdef HAVE_OPENAL
-    soundSystem = boost::shared_ptr<Sound::SoundSystem>(new Sound::SoundSystem());
-    soundSystem->initialize();
+    if(GET_SETTING("sound.enable", 0)==1){
+        soundSystem = boost::shared_ptr<Sound::SoundSystem>(new Sound::SoundSystem());
+        soundSystem->initialize(getWorldManager(),getPlayerManager());
+    }
 #endif
 }
 
