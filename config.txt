@@ -78,7 +78,7 @@ game.enablepathing = 1
 # falling off, flipping upside down, or requesting assistance.
 game.warp.falloff.countdown            = 1000
 game.warp.upsidedown.countdown         = 2000
-game.warp.helprequest.countdown        = 2000
+game.warp.helprequest.countdown        = 2500
 game.warp.stillvelocity                = 0.05
 
 ########
@@ -174,7 +174,7 @@ network.serverport = 1820
 
 ########
 ### AI and server settings
-server.aicount     = 3
+server.aicount     = 4
 
 ########
 include guiconfig.txt

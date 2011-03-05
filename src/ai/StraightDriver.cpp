@@ -4,15 +4,10 @@
 #include "math/Point.h"
 #include "math/Values.h"
 
-#include "misc/Sleeper.h"
-
 namespace Project {
 namespace AI {
 
 StraightDriver::StraightDriver(Object::Player *player) : Driver(player) {
-    sittingStill = false;
-    sittingStillSince = 0;
-    
     intention.setAccel(1.0);
     intention.setPaint(true);
 }
@@ -55,25 +50,6 @@ const World::PlayerIntention &StraightDriver::getAction() {
     else if(angle > +PI / 16) intention.setTurn(-0.5);
     else if(angle > +PI / 24) intention.setTurn(-0.2);
     else if(angle > +PI / 32) intention.setTurn(-0.1);
-    
-    // if sitting still for too long, request a warp
-    intention.setReset(false);
-    if(player->getPhysicalObject()->getLinearVelocity().length() < 0.05) {
-        unsigned long now = Misc::Sleeper::getTimeMilliseconds();
-        
-        if(!sittingStill) {
-            sittingStill = true;
-            sittingStillSince = now;
-        }
-        else if(sittingStillSince + 2000 < now) {
-            LOG(PHYSICS, "Player " << player->getID() << " is trying to reset");
-            
-            intention.setReset(true);
-            
-            sittingStill = false;
-        }
-    }
-    else sittingStill = false;
     
     return intention;
 }
