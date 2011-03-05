@@ -74,6 +74,7 @@ private:
     boost::shared_ptr<FPSRateMonitor> fpsRate;
 
 public:
+    ~GameRenderer();
     void construct(OpenGL::Camera *camera);
     
     void setGUI(boost::shared_ptr<GUI::GUISystem> gui);

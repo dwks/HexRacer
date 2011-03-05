@@ -41,5 +41,17 @@ WidgetBase *CompositeWidget::getChild(const std::string &name) {
     return NULL;
 }
 
+void CompositeWidget::removeChild(const std::string &name) {
+    for(ChildListType::iterator i = childList.begin(); i != childList.end();
+        ++ i) {
+        
+        WidgetBase *widget = (*i).get();
+        if(widget->getName() == name) {
+            childList.erase(i);
+            break;
+        }
+    }
+}
+
 }  // namespace Widget
 }  // namespace Project

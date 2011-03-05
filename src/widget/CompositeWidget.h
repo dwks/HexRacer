@@ -37,6 +37,8 @@ public:
     virtual void addChild(WidgetBase *widget);
     virtual WidgetBase *getChild(const std::string &name);
     
+    virtual void removeChild(const std::string &name);
+    
     IteratorType getIterator() { return IteratorType(childList); }
     
     virtual void accept(WidgetVisitor &visitor) { visitor.visit(this); }

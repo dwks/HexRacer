@@ -16,11 +16,20 @@
 
 #include "MenuLoop.h"
 
+#include "widget/CompositeWidget.h"
+
 #include "log/Logger.h"
 #include "config.h"
 
 namespace Project {
 namespace SDL {
+
+GameRenderer::~GameRenderer() {
+    if(fpsRate) {
+        dynamic_cast<Widget::CompositeWidget *>(gui->getScreen("running"))
+            ->removeChild(fpsRate->getWidget()->getName());
+    }
+}
 
 void GameRenderer::construct(OpenGL::Camera *camera)
 {

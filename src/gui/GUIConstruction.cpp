@@ -111,17 +111,14 @@ void GUIConstruction::constructSelectMap() {
     selectmap->addChild(new Widget::ImageWidget("thumbnail", "",
         Widget::WidgetRect(0.2, 0.5, 0.6, 0.3)));
     
-    selectmap->addChild(new Widget::ButtonWidget("cancel",
-        "Cancel", Widget::WidgetRect(0.1, 0.85, 0.35, 0.08)));
     selectmap->addChild(new Widget::ButtonWidget("selectmap",
-        "Select map", Widget::WidgetRect(0.5, 0.85, 0.35, 0.08)));
+        "Use selected map", Widget::WidgetRect(0.2, 0.85, 0.6, 0.08)));
     
-    setShortcut(getWidget("selectmap/cancel"), SDLK_ESCAPE);
+    setShortcut(getWidget("selectmap/selectmap"), SDLK_ESCAPE);
     setShortcut(getWidget("selectmap/selectmap"), SDLK_RETURN);
     
     boost::shared_ptr<Widget::EventProxy> proxy(new SelectMapProxy(selectmap));
     getWidget("selectmap/maplist")->addEventProxy(proxy);
-    getWidget("selectmap/cancel")->addEventProxy(proxy);
     getWidget("selectmap/selectmap")->addEventProxy(proxy);
 }
 
@@ -131,6 +128,13 @@ void GUIConstruction::constructHost() {
     
     host->addChild(new Widget::ButtonWidget("map",
         "Choose map", Widget::WidgetRect(0.1, 0.1, 0.4, 0.08)));
+    
+    host->addChild(new Widget::TextWidget("hostport-label", "Host port:",
+        Widget::NormalTextLayout::ALIGN_RIGHT,
+        Widget::WidgetRect(0.1, 0.70, 0.35, 0.08)));
+    host->addChild(new Widget::EditWidget("hostport",
+        GET_SETTING("network.serverport", "1820"),
+        Widget::WidgetRect(0.5, 0.70, 0.35, 0.08)));
     
     host->addChild(new Widget::ButtonWidget("cancel",
         "Cancel", Widget::WidgetRect(0.1, 0.85, 0.35, 0.08)));

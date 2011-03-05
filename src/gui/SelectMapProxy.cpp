@@ -35,10 +35,7 @@ SelectMapProxy::SelectMapProxy(Widget::WidgetBase *selectmap)
 void SelectMapProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();
     
-    if(name == "cancel") {
-        EMIT_EVENT(new Event::SwitchToScreen(""));
-    }
-    else if(name == "selectmap") {
+    if(name == "selectmap") {
         std::string map = Map::MapSettings::getInstance()->getMapFile();
         if(map != "") {
             LOG(GUI, "Using map \"" << map << "\"");
