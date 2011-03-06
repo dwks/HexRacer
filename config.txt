@@ -50,7 +50,7 @@ physics.turning.fallofffactor = 0.0
 
 # Slip state
 physics.slipstate.enter          = 4
-physics.slipstate.exit           = 3
+physics.slipstate.exit           = 2
 physics.slipstate.sidewaysfactor = 0.2
 physics.slipstate.accelfactor    = 0.5
 physics.slipstate.turnfactor     = 2

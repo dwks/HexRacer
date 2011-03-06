@@ -244,7 +244,7 @@ void Suspension::applyDragForce(Object::Player *player) {
         physicalPlayer->setSliding(false);
     }
     
-    LOG(PHYSICS, "sideways " << sidewaysSpeed << "\t" << physicalPlayer->getSliding());
+    //LOG(PHYSICS, "sideways " << sidewaysSpeed << "\t" << physicalPlayer->getSliding());
     
     if(physicalPlayer->getSliding()) {
         sidewaysDrag *= GET_SETTING("physics.slipstate.sidewaysfactor", 1.0);
