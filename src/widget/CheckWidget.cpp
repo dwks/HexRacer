@@ -25,6 +25,8 @@ CheckWidget::CheckWidget(const std::string &name, const std::string &label,
         NormalTextLayout::ALIGN_LEFT,
         WidgetRect(WidgetPoint(shiftedX, y), WidgetPoint(width, height)));
     
+    if(checked) box->getBox()->setArtwork("corners/in/normal");
+    
     setLayout(new AbsoluteLayout(bounds));
     addEventProxy(new CheckEventProxy(this));
 }

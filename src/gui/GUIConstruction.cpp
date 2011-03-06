@@ -6,6 +6,7 @@
 #include "widget/ButtonWidget.h"
 #include "widget/EditWidget.h"
 #include "widget/CheckWidget.h"
+#include "widget/ListWidget.h"
 
 #include "widget/CentreUponChangeLayout.h"
 
@@ -298,17 +299,47 @@ void GUIConstruction::constructSettings() {
         OpenGL::Color::WHITE, "Screen resolution:",
         Widget::NormalTextLayout::ALIGN_RIGHT));
     settings->getChild("screenmode-label")
-        ->updateLayout(Widget::WidgetRect(0.1, 0.1, 0.35, 0.08));
+        ->updateLayout(Widget::WidgetRect(0.1, 0.1, 0.35, 0.07));
     Misc::StreamAsString currentSize;
     currentSize
         << GET_SETTING("display.width", 0) << 'x'
         << GET_SETTING("display.height", 0);
     settings->addChild(new Widget::EditWidget("screenmode",
-        currentSize, Widget::WidgetRect(0.5, 0.1, 0.35, 0.08)));
+        currentSize, Widget::WidgetRect(0.5, 0.1, 0.35, 0.07)));
     
     settings->addChild(new Widget::CheckWidget("fullscreen",
         "Fullscreen", GET_SETTING("display.fullscreen", 0),
-        Widget::WidgetRect(0.5, 0.2, 0.35, 0.08)));
+        Widget::WidgetRect(0.5, 0.2, 0.4, 0.07)));
+    
+    settings->addChild(new Widget::TextWidget("screenmode-label",
+        "Rendering quality:", Widget::NormalTextLayout::ALIGN_RIGHT,
+        Widget::WidgetRect(0.1, 0.35, 0.35, 0.07)));
+    Widget::ListWidget *quality = new Widget::ListWidget(
+        "quality", true, false,
+        Widget::WidgetRect(0.5, 0.35, 0.3, 0.16));
+    quality->addChild(new Widget::TextWidget("0", "Very low",
+        Widget::NormalTextLayout::ALIGN_LEFT,
+        Widget::WidgetRect(0.0, 0.0, 0.8, 0.035)));
+    quality->addChild(new Widget::TextWidget("1", "Low",
+        Widget::NormalTextLayout::ALIGN_LEFT,
+        Widget::WidgetRect(0.0, 0.0, 0.8, 0.035)));
+    quality->addChild(new Widget::TextWidget("2", "Medium",
+        Widget::NormalTextLayout::ALIGN_LEFT,
+        Widget::WidgetRect(0.0, 0.0, 0.8, 0.035)));
+    quality->addChild(new Widget::TextWidget("3", "High",
+        Widget::NormalTextLayout::ALIGN_LEFT,
+        Widget::WidgetRect(0.0, 0.0, 0.8, 0.035)));
+    settings->addChild(quality);
+    
+    settings->addChild(new Widget::TextWidget("renderingeffects-label",
+        "Rendering effects:", Widget::NormalTextLayout::ALIGN_RIGHT,
+        Widget::WidgetRect(0.1, 0.55, 0.35, 0.07)));
+    settings->addChild(new Widget::CheckWidget("shadow",
+        "Shadows", GET_SETTING("render.shadow.enable", 0),
+        Widget::WidgetRect(0.5, 0.55, 0.4, 0.07)));
+    settings->addChild(new Widget::CheckWidget("bloom",
+        "Bloom", GET_SETTING("render.bloom.enable", 0),
+        Widget::WidgetRect(0.5, 0.65, 0.4, 0.07)));
     
     settings->addChild(new Widget::ButtonWidget("accept",
         "Accept settings", Widget::WidgetRect(0.3, 0.9, 0.4, 0.08)));
@@ -317,6 +348,9 @@ void GUIConstruction::constructSettings() {
     
     boost::shared_ptr<Widget::EventProxy> proxy(new SettingsProxy());
     getWidget("settings/screenmode")->addEventProxy(proxy);
+    getWidget("settings/quality")->addEventProxy(proxy);
+    getWidget("settings/shadow")->addEventProxy(proxy);
+    getWidget("settings/bloom")->addEventProxy(proxy);
     getWidget("settings/fullscreen")->addEventProxy(proxy);
     getWidget("settings/accept")->addEventProxy(proxy);
 }

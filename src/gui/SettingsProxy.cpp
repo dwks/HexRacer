@@ -4,8 +4,10 @@
 
 #include "widget/WidgetBase.h"
 #include "widget/EditWidget.h"
+#include "widget/ListWidget.h"
 #include "widget/WidgetActivateEvent.h"
 #include "widget/WidgetModifiedEvent.h"
+#include "widget/WidgetSelectedEvent.h"
 
 #include "event/SwitchToScreen.h"
 #include "event/ChangeScreenMode.h"
@@ -31,6 +33,16 @@ void SettingsProxy::visit(Widget::WidgetActivateEvent *event) {
         
         EMIT_EVENT(new Event::ChangeScreenMode(
             width, height, bpp, fullscreen));
+    }
+    else if(name == "shadow") {
+        Settings::SettingsManager::getInstance()->set(
+            "render.shadow.enable",
+            Misc::StreamAsString() << event->getDown());
+    }
+    else if(name == "bloom") {
+        Settings::SettingsManager::getInstance()->set(
+            "render.bloom.enable",
+            Misc::StreamAsString() << event->getDown());
     }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");
@@ -61,6 +73,18 @@ void SettingsProxy::visit(Widget::WidgetModifiedEvent *event) {
     }
     else {
         LOG2(GUI, WARNING, "No action for modifying \"" << name << "\"");
+    }
+}
+
+void SettingsProxy::visit(Widget::WidgetSelectedEvent *event) {
+    std::string name = event->getWidget()->getName();
+    
+    if(name == "quality") {
+        Settings::SettingsManager::getInstance()->set(
+            "render.quality", event->getSelected()->getName());
+    }
+    else {
+        LOG2(GUI, WARNING, "No action for selecting \"" << name << "\"");
     }
 }
 

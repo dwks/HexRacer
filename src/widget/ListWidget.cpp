@@ -163,7 +163,7 @@ void ListWidget::render(WidgetVisitor &renderer) {
             /*LOG(GUI, "considering painting child " << child->getName() << " at "
                 << child->getBoundingRect() << " given " << startY << "," << endY);*/
             
-            if(childY >= startY && childY + childHeight <= endY) {
+            if(childY >= startY && childY + childHeight <= endY + 1e-8) {
                 child->accept(renderer);
             }
         }
