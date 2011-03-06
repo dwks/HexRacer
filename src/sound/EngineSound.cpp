@@ -14,12 +14,16 @@ EngineSound::EngineSound(){
     
 EngineSound::EngineSound(Object::WorldManager *worldManager){
     this->worldManager = worldManager;
+    max_buffers = 16;
 }
 EngineSound::~EngineSound() {
     cleanUp();
 }
 void EngineSound::initialize(){
     playerCount = this->worldManager->getPlayerList()->getPlayerCount();
+    if(playerCount>max_buffers){
+        playerCount=max_buffers;
+    }
     ALHelpers::setupBuffer(engineBuffers, playerCount);
     ALHelpers::setupSource(engineSources, playerCount);
     ALHelpers::setupBuffer(skidBuffers, playerCount);
@@ -70,7 +74,7 @@ void EngineSound::updateEngines(){
     
     int count=0;
         
-    while(it.hasNext()){
+    while(it.hasNext()&&count<max_buffers){
         Object::Player *player = it.next();
         
         updateSkidForPlayer(player,skidSources[count]);
@@ -81,6 +85,9 @@ void EngineSound::updateEngines(){
 }
 void EngineSound::changePlayerCount(int count){
     playerCount = count;
+    if(playerCount>max_buffers){
+        playerCount=max_buffers;
+    }
     for(int i=0;i<playerCount;i++){
         engineTones[i]=1.0;
     }

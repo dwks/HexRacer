@@ -173,13 +173,13 @@ camera.followslow.z = -5.5
 ### Sound settings
 sound.enable = 1
 
-sound.engine.volume = 0.25
-sound.engine.attenuation = 0.15
+sound.engine.volume = 0.3
+sound.engine.attenuation = 0.1
 
 sound.music.volume = 0.25
 
 sound.collision.volume = 0.5
-sound.collision.attenuation = 0.25
+sound.collision.attenuation = 0.5
 
 sound.skid.volume = 0.5
 sound.skid.attenuation = 0.25

@@ -34,6 +34,7 @@ private:
     ALuint engineSources[16];
     float engineTones[16];
     int playerCount;
+    int max_buffers;
     
     Object::WorldManager *worldManager;
 };
