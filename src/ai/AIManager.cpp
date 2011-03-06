@@ -17,11 +17,14 @@ void AIManager::physicsTickHandler(Event::PhysicsTick *event) {
         Object::Player *player = playerManager->getPlayer(ai);
         bool identical = (intention == player->getIntention());
         if(!identical) {
+            bool equal = (player->getIntention() == intention);
             player->setIntention(intention);
             
-            EMIT_EVENT(new Event::ChangeOfIntention(
-                ai,
-                intention));
+            if(!equal) {
+                EMIT_EVENT(new Event::ChangeOfIntention(
+                    ai,
+                    intention));
+            }
         }
     }
 }

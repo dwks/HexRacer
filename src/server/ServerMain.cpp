@@ -134,6 +134,7 @@ bool ServerMain::ServerObserver::interestedIn(Event::EventType::type_t type) {
         return false;
     case Event::EventType::WARP_ONTO_TRACK:  // handled by WarpDetector
     case Event::EventType::PLAYER_PROGRESS_EVENT:
+    case Event::EventType::PHYSICS_COLLISION:
         return false;
     default:
         break;

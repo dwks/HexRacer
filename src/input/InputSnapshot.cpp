@@ -48,8 +48,12 @@ void InputSnapshot::asPlayerIntention(World::PlayerIntention &intention) const {
     intention.setJump(getDigitalStatus(INPUT_D_JUMP));
     
     intention.setReset(getDigitalTriggered(INPUT_D_WARP));
-    intention.setPaint(getDigitalStatus(INPUT_D_PAINT));
-    intention.setErase(getDigitalStatus(INPUT_D_ERASE));
+    if(getDigitalTriggered(INPUT_D_PAINT)) {
+        intention.setPaint(!intention.getPaint());
+    }
+    if(getDigitalTriggered(INPUT_D_ERASE)) {
+        intention.setErase(!intention.getErase());
+    }
 }
 
 }  // namespace Input

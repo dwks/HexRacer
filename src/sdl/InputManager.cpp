@@ -54,7 +54,8 @@ void InputManager::doAction(unsigned long currentTime) {
 	inputMapper->update(Input::INPUT_D_JUMP);
 	inputMapper->update(Input::INPUT_D_WARP);
     
-    World::PlayerIntention intention;
+    World::PlayerIntention intention
+        = playerManager->getPlayer()->getIntention();
     inputMapper->getSnapshot().asPlayerIntention(intention);
     
     bool identical = (intention == playerManager->getPlayer()->getIntention());
@@ -147,6 +148,7 @@ void InputManager::handlePaint() {
         paint = (paint + 1) % 8;
         
         if (painting) {
+            
             EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
                 Event::TogglePainting::PAINTING));
         }
