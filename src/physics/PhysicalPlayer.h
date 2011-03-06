@@ -70,7 +70,7 @@ private:
     bool sliding;
 public:
     PhysicalPlayer() : rigidBody(NULL), onGround(false), speedBoost(1.0),
-        sliding(false) {}
+        traction(1.0), sliding(false) {}
     PhysicalPlayer(const Math::Point &position, const Math::Point &direction);
     virtual ~PhysicalPlayer();
     

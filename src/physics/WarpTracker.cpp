@@ -48,6 +48,7 @@ bool WarpTracker::canReceiveWarp() {
 void WarpTracker::clear() {
     for(int type = 0; type < int(TYPES); type ++) {
         counting[type] = false;
+        countingSince[type] = 0;
     }
 }
 
