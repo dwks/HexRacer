@@ -7,6 +7,7 @@
 
 #include "AL/al.h"
 #include <boost/concept_check.hpp>
+#include <string>
 
 namespace Project {
 namespace Sound {

@@ -194,6 +194,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\sound\ALHelpers.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\BackgroundRenderable.cpp"
 				>
 			</File>
@@ -250,6 +254,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\CentreUponChangeLayout.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\ChangeOfIntention.cpp"
 				>
 			</File>
@@ -258,7 +266,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\CheckEventProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\CheckWidget.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\ClientData.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sound\CollisionSound.cpp"
 				>
 			</File>
 			<File
@@ -322,6 +342,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\sound\EngineSound.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\EntireWorld.cpp"
 				>
 			</File>
@@ -367,6 +391,10 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\GameWorld.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\GUIConstruction.cpp"
 				>
 			</File>
 			<File
@@ -658,6 +686,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PhysicsCollision.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\PhysicsFactory.cpp"
 				>
 			</File>
@@ -758,6 +790,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ScrollbarLessMoreEventProxy.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\ScrollbarSliderEventProxy.cpp"
 				>
 			</File>
@@ -771,6 +807,10 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\SDLMainLoop.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\SelectMapProxy.cpp"
 				>
 			</File>
 			<File
@@ -822,11 +862,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\SinglePlayerProxy.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\Sleeper.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\sound\SoundSystem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\SpawnServer.cpp"
 				>
 			</File>
 			<File
@@ -898,7 +946,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\WarpDetector.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\WarpOntoTrack.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\WarpTracker.cpp"
 				>
 			</File>
 			<File
@@ -1256,6 +1312,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\sound\ALHelpers.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\render\BackgroundRenderable.h"
 				>
 			</File>
@@ -1312,6 +1372,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\CentreUponChangeLayout.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\ChangeOfIntention.h"
 				>
 			</File>
@@ -1320,7 +1384,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\CheckEventProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\CheckWidget.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\ClientData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sound\CollisionSound.h"
 				>
 			</File>
 			<File
@@ -1388,6 +1464,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\sound\EngineSound.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\EntireWorld.h"
 				>
 			</File>
@@ -1433,6 +1513,10 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\GameWorld.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\GUIConstruction.h"
 				>
 			</File>
 			<File
@@ -1720,6 +1804,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PhysicsCollision.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\PhysicsFactory.h"
 				>
 			</File>
@@ -1828,6 +1916,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ScrollbarLessMoreEventProxy.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\ScrollbarSliderEventProxy.h"
 				>
 			</File>
@@ -1841,6 +1933,10 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\SDLMainLoop.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\SelectMapProxy.h"
 				>
 			</File>
 			<File
@@ -1892,6 +1988,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\SinglePlayerProxy.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\Sleeper.h"
 				>
 			</File>
@@ -1901,6 +2001,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\SpatialObjectOperator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\sdl\SpawnServer.h"
 				>
 			</File>
 			<File
@@ -1980,7 +2084,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\WarpDetector.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\WarpOntoTrack.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\WarpTracker.h"
 				>
 			</File>
 			<File

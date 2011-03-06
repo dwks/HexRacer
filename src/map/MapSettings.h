@@ -50,7 +50,7 @@ public:
     int getMaps() const { return mapVector.size(); }
     const SingleMap &getMap(int i) const { return mapVector[i]; }
     const SingleMap &getMap(const std::string &file) const
-        { return mapList.at(file); }
+	{ return (*(mapList.find(file))).second; }
     
     void setGameType(const std::string &type) { gameType = type; }
     const std::string &getGameType() const { return gameType; }
