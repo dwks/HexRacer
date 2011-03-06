@@ -31,6 +31,7 @@ physics.constant.turn             = 0.3
 physics.constant.accel            = 3.6
 physics.constant.brake            = 6.0
 physics.constant.centripetal      = 1.0
+#physics.constant.lean             = 0.6
 
 # Vehicle suspension
 physics.driving.enablesuspension  = 1
@@ -41,11 +42,19 @@ physics.driving.constant.k        = 8
 physics.driving.constant.c        = 45.0
 physics.driving.mindownfactor = 0.0
 
-#Turning
+# Turning
 physics.turning.constant = 4.0
 physics.turning.speedfactor = 0.45
 physics.turning.speedthreshhold = 20.0
 physics.turning.fallofffactor = 0.0
+
+# Slip state
+physics.slipstate.enter          = 4
+physics.slipstate.exit           = 3
+physics.slipstate.sidewaysfactor = 0.2
+physics.slipstate.accelfactor    = 0.5
+physics.slipstate.turnfactor     = 2
+physics.slipstate.centripetalfactor = 0.0
 
 # Display options for the vehicle wheels
 physics.wheel.diameter = 0.155

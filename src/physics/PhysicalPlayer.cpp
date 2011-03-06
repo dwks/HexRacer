@@ -19,6 +19,7 @@ PhysicalPlayer::PhysicalPlayer(const Math::Point &position, const Math::Point &d
     speedBoost = 1.0;
 	traction = 1.0;
     rigidBody = NULL;  // essential, constructRigidBody tries to delete it
+    sliding = false;
     
 	Math::Matrix transformation = Math::Matrix::getTranslationMatrix(position);
 	double angle = Math::Geometry::vectorTo2DAngle(direction.rotate90CW(Math::Y_AXIS), Math::Y_AXIS);
@@ -111,7 +112,11 @@ void PhysicalPlayer::applyAcceleration(double acceleration) {
         * Converter::toVector(Math::Point(0.0, 0.0, 1.0) * constant));
     
     //LOG(PHYSICS, "accel at " << Misc::Sleeper::getTimeMilliseconds());
-
+    
+    if(getSliding()) {
+        constant *= GET_SETTING("physics.slipstate.accelfactor", 1.0);
+    }
+    
 	if (acceleration >= 0.0 || getLinearVelocity().dotProduct(orientation) < 0.0) {
         double paintInfluence = (speedBoost - 1.0)
             * GET_SETTING("game.paint.boostinfluence", 1.0) + 1.0;
@@ -130,6 +135,7 @@ void PhysicalPlayer::applyTurning(double amount) {
     double constant = GET_SETTING("physics.constant.turn", 1.0);
     double centripetalConstant
         = GET_SETTING("physics.constant.centripetal", 1.0);
+    //double leanConstant = GET_SETTING("physics.constant.lean", 1.0);
     
     Math::Matrix matrix = getTransformation();
     Math::Point forwardAxis = matrix * Math::Point(0.0, 0.0, 1.0, 0.0);
@@ -165,8 +171,16 @@ void PhysicalPlayer::applyTurning(double amount) {
         turning_factor = -turning_factor;
     }
     
+    if(getSliding()) {
+        centripetalConstant *= GET_SETTING("physics.slipstate.centripetalfactor", 1.0);
+        constant *= GET_SETTING("physics.slipstate.turnfactor", 1.0);
+    }
+    
     applyForce(centripetalAxis * centripetalConstant * turning_factor * amount);
-    applyTorque(Math::Point(0.0, -1.0, 0.0) * constant * turning_factor * amount);
+    applyTorque(-getUpDirection() * constant * turning_factor * amount);
+    
+    // twist the car in response to a sharp turn
+    //applyTorque(getFrontDirection() * leanConstant * turning_factor * amount);
 }
 
 void PhysicalPlayer::doJump() {

@@ -67,8 +67,10 @@ private:
     double speedBoost;  // not serialized
 	double traction;
     WarpTracker warpTracker;
+    bool sliding;
 public:
-    PhysicalPlayer() : rigidBody(NULL), onGround(false), speedBoost(1.0) {}
+    PhysicalPlayer() : rigidBody(NULL), onGround(false), speedBoost(1.0),
+        sliding(false) {}
     PhysicalPlayer(const Math::Point &position, const Math::Point &direction);
     virtual ~PhysicalPlayer();
     
@@ -85,6 +87,9 @@ public:
     
     const SpringDisplacement &getSpring(int i) { return spring[i]; }
     void setSpring(int i, SpringDisplacement d) { spring[i] = d; }
+    
+    bool getSliding() const { return sliding; }
+    void setSliding(bool sliding) { this->sliding = sliding; }
     
     void destroyRigidBody();
     void constructRigidBody(const Math::Point &position);

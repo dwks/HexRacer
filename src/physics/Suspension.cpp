@@ -233,12 +233,29 @@ void Suspension::applyDragForce(Object::Player *player) {
     Math::Point sidewaysAxis = physicalPlayer->getRightDirection();
     double sidewaysSpeed = linearVelocity.dotProduct(sidewaysAxis);
     Math::Point sidewaysDrag = -sideways * sidewaysSpeed * sidewaysAxis;
+    
+    double enterSlipState = GET_SETTING("physics.slipstate.enter", 1.0);
+    double exitSlipState = GET_SETTING("physics.slipstate.exit", 1.0);
+    
+    if(std::fabs(sidewaysSpeed) >= enterSlipState) {
+        physicalPlayer->setSliding(true);
+    }
+    if(std::fabs(sidewaysSpeed) <= exitSlipState) {
+        physicalPlayer->setSliding(false);
+    }
+    
+    LOG(PHYSICS, "sideways " << sidewaysSpeed << "\t" << physicalPlayer->getSliding());
+    
+    if(physicalPlayer->getSliding()) {
+        sidewaysDrag *= GET_SETTING("physics.slipstate.sidewaysfactor", 1.0);
+    }
+    
     physicalPlayer->applyForce(sidewaysDrag);
 }
-
 
 double Suspension::calculateDownFactor(const Math::Point& axis) {
 	return Math::maximum(GET_SETTING("physics.driving.mindownfactor", 0.1), -axis.normalized().getY());
 }
+
 }  // namespace Physics
 }  // namespace Project
