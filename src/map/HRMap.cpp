@@ -35,7 +35,7 @@ namespace Map {
 		delete(cubeMapFile);
 	}
 
-	bool HRMap::loadMapFile(string _filename) {
+	bool HRMap::loadMapFile(string _filename, Misc::ProgressTracker* progress_tracker) {
 
 		clear();
 
@@ -51,8 +51,24 @@ namespace Map {
 			return false;
 		}
 
+		int file_size;
+		in_file.seekg(0, ios_base::end);
+		file_size = in_file.tellg();
+		in_file.seekg(0, ios_base::beg);
+
+		if (progress_tracker) {
+			progress_tracker->setCurrentStage("Loading map file...");
+			progress_tracker->setTotalSteps(100);
+			progress_tracker->setCurrentStep(0);
+		}
+
 		string keyword;
 		while (in_file >> keyword) {
+
+			if (progress_tracker) {
+				float progress = (float) in_file.tellg() / (float) file_size;
+				progress_tracker->setCurrentStep(static_cast<int>(progress*50));
+			}
 
 			if (keyword[0] == '#') {
 				//If the line starts with #, ignore the entire line
@@ -175,6 +191,10 @@ namespace Map {
 		}
 		in_file.close();
 
+		if (progress_tracker) {
+			progress_tracker->setCurrentStage("Loading map meshes...");
+		}
+
 		//Convert the mesh filenames from relative to absolute
 		for (int i = 0; i < NUM_MESHES; i++) {
 			if (mapMeshFile[i].length() > 0) {
@@ -182,6 +202,8 @@ namespace Map {
 				MeshType type = static_cast<MeshType>(i);
 				loadMapMesh(type, mapMeshFile[i]);
 			}
+			if (progress_tracker)
+				progress_tracker->setCurrentStep(50+i*(50/NUM_MESHES));
 		}
 
 		//Link all loaded path nodes
@@ -196,7 +218,17 @@ namespace Map {
 
 	}
 
-	bool HRMap::saveMapFile(std::string _filename) {
+	bool HRMap::saveMapFile(std::string _filename, Misc::ProgressTracker* progress_tracker) {
+
+		if (progress_tracker) {
+			progress_tracker->setCurrentStage("Saving map file...");
+			progress_tracker->setTotalSteps(
+				lights.size()+pathNodes.size()+startPoints.size()+pathNodes.size()+meshInstances.size()+
+				paintCellInfo.size()
+				);
+			progress_tracker->setCurrentStep(0);
+				
+		}
 
 		string save_directory = DirectoryFunctions::extractDirectory(_filename);
 
@@ -245,6 +277,10 @@ namespace Map {
 
 		out_file << "#Lights\n";
 		for (unsigned int i = 0; i < lights.size(); i++) {
+
+			if (progress_tracker)
+				progress_tracker->incrementStep();
+
 			out_file << HRMAP_LIGHT_LABEL << ' ' << (*lights[i]) << '\n';
 		}
 
@@ -254,6 +290,9 @@ namespace Map {
 			pathNodes[i]->index = i;
 
 		for (unsigned int i = 0; i < pathNodes.size(); i++) {
+
+			if (progress_tracker)
+				progress_tracker->incrementStep();
 
 			out_file << HRMAP_PATHNODE_LABEL << ' ' << (*pathNodes[i])
 				<< ' ' << pathNodes[i]->getProgress() << ' ';
@@ -271,18 +310,32 @@ namespace Map {
 
 		out_file << "#Start Points\n";
 		for (unsigned int i = 0; i < startPoints.size(); i++) {
+
+			if (progress_tracker)
+				progress_tracker->incrementStep();
+
 			out_file << HRMAP_STARTPOINT_LABEL << ' ' << (*startPoints[i]) << '\n';
 		}
 
 		out_file << "#Mesh Instances\n";
 		for (unsigned int i = 0; i < meshInstances.size(); i++) {
+
+			if (progress_tracker)
+				progress_tracker->incrementStep();
+
 			out_file << HRMAP_MESHINSTANCE_LABEL << ' ' << (*meshInstances[i]) << '\n';
 		}
+
+		if (progress_tracker)
+			progress_tracker->setCurrentStage("Saving paint height map...");
 
 		out_file << "#HexGrid\n";
 		out_file << HRMAP_HEXGRID_LABEL << ' ' << hexGrid << '\n';
 		out_file << "#Paint Height Map\n";
 		out_file << HRMAP_PAINTHEIGHTMAP_LABEL << ' ' << paintHeightMap << '\n';
+
+		if (progress_tracker)
+			progress_tracker->setCurrentStage("Saving Paint Cells...");
 
 		out_file << "#Paint Cells\n";
 
@@ -302,23 +355,16 @@ namespace Map {
 			out_file << HRMAP_PAINTCELL_LABEL << ' ' << last_normal << ' ' << num_same << '\n';
 
 			while (num_same > 0) {
+
+				if (progress_tracker)
+					progress_tracker->incrementStep();
+
 				out_file << paintCellInfo[i] << '\n';
 				i++;
 				num_same--;
 			}
 
 		}
-
-
-		//out_file << "#Paint Height Map\n";
-
-		/*
-		out_file << "#Paint Cells\n";
-		out_file << HRMAP_PAINTCELL_LABEL << ' ' << paintCells.size() << '\n';
-		for (unsigned int i = 0; i < paintCells.size(); i++) {
-			out_file << (*paintCells[i]) << '\n';
-		}
-		*/
 
 		out_file.close();
 
@@ -482,7 +528,7 @@ namespace Map {
 			cubeMap = NULL;
 		}
 	}
-	void HRMap::generatePaint() {
+	void HRMap::generatePaint(Misc::ProgressTracker* progress_tracker) {
 
 		clearPaint();
 
@@ -495,8 +541,8 @@ namespace Map {
 		updateHexGrid();
 
 		PaintGenerator generator;
-		generator.generateHeightmap(triangles, hexGrid);
-		generator.generateCells();
+		generator.generateHeightmap(triangles, hexGrid, progress_tracker);
+		generator.generateCells(progress_tracker);
 
 		paintHeightMap = generator.getHeightMap();
 		paintCellInfo = generator.getCellInfo();

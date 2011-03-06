@@ -518,6 +518,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\MapSettings.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\Material.cpp"
 				>
 			</File>
@@ -682,6 +686,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PlayerProgressEvent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\settings\ProgramSettings.cpp"
 				>
 			</File>
@@ -731,6 +739,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\RepaintEvent.cpp"
 				>
 			</File>
 			<File
@@ -887,6 +899,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\WarpOntoTrack.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ai\WeightedDriver.cpp"
 				>
 			</File>
 			<File
@@ -1560,6 +1576,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\MapSettings.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\Material.h"
 				>
 			</File>
@@ -1728,6 +1748,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\PlayerProgressEvent.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\settings\ProgramSettings.h"
 				>
 			</File>
@@ -1781,6 +1805,10 @@
 			</File>
 			<File
 				RelativePath=".\src\render\RenderSettings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\RepaintEvent.h"
 				>
 			</File>
 			<File
@@ -1953,6 +1981,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\WarpOntoTrack.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ai\WeightedDriver.h"
 				>
 			</File>
 			<File

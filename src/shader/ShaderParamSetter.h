@@ -16,6 +16,7 @@ class ShaderParamSetter {
 private:
 
 	ShaderProgram* shaderProgram;
+	int shaderIndex;
 	int* standardUniformLocations;
 	int* standardAttributeLocations;
 	bool hasNormalMap;
@@ -24,7 +25,7 @@ public:
 
 	ShaderParamSetter();
 
-	void setShaderProgram(ShaderProgram* program, int* standard_uni_locs, int* standard_attr_locs);
+	void setShaderProgram(ShaderProgram* program, int shader_index, int* standard_uni_locs, int* standard_attr_locs);
 
 	void setParamInt(ShaderParameter::ShaderParamType type, const char* name, GLint value) const;
 	void setParamFloat(ShaderParameter::ShaderParamType type, const char* name, GLfloat value) const;
@@ -44,16 +45,7 @@ public:
 
 	void setHasNormalMap(bool has) { hasNormalMap = has; }
 	bool getHasTangentSpace() const;
-	/*
-	void setUniformInt(const char *name, GLint value);
-	void setUniformIntArray(const char *name, GLint values[], int num_values);
-	void setUniformVector3(const char *name, Project::Math::Point point);
-	void setUniformVector4(const char *name, Project::OpenGL::Color color);
-	void setUniformMatrix4(const char *name, GLboolean transpose, const GLfloat* matrix);
-	void setAttributeVector3(const char *name, Project::Math::Point point);
-	void setAttributeVector4(const char *name, Project::OpenGL::Color color);
-	void setTangents(Math::Point tangent, Math::Point bitangent);
-	*/
+	bool shaderIndexActive(int index) const { return (shaderIndex == index && index >= 0); }
 
 };
 

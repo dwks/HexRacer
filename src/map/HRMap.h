@@ -13,6 +13,7 @@
 #include "math/BoundingPlane3D.h"
 #include "math/HexGrid.h"
 #include "math/HexHeightMap.h"
+#include "misc/ProgressTracker.h"
 #include "PathNode.h"
 #include "MeshInstance.h"
 #include "MapOptions.h"
@@ -79,8 +80,8 @@ public:
 
 	HRMap();
 	~HRMap();
-	bool loadMapFile(std::string _filename);
-	bool saveMapFile(std::string _filename);
+	bool loadMapFile(std::string _filename, Misc::ProgressTracker* progress_tracker = NULL);
+	bool saveMapFile(std::string _filename, Misc::ProgressTracker* progress_tracker = NULL);
 	Mesh::MeshGroup* getMapMesh(MeshType type) const { return mapMesh[static_cast<int>(type)]; }
 	Render::RenderList* getTrackRenderable() const { return trackRenderable; }
 	OpenGL::TextureCube* getCubeMap();
@@ -92,7 +93,7 @@ public:
 	void clearPaint();
 	void loadMapMesh(HRMap::MeshType type, string filename);
 	void clearMapMesh(HRMap::MeshType type);
-	void generatePaint();
+	void generatePaint(Misc::ProgressTracker* progress_tracker = NULL);
 
 	const Math::HexGrid& getHexGrid() const { return hexGrid; }
 	const Math::HexHeightMap& getPaintHeightMap() const { return paintHeightMap; }

@@ -23,8 +23,14 @@ private:
 	std::vector< MeshTriangleFan* > redrawBuffer;
 	Math::BSPTree3D* triangleFanTree;
 	OpenGL::Material* material;
+
 	const Shader::ShaderParamSetter* paramSetter;
+
+	bool useDisplayList;
 	GLuint displayList;
+	int displayListShader;
+
+	bool drawingCulled;
 
 	void generateTriangleFanTree();
 

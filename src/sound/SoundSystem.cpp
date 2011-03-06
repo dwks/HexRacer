@@ -8,101 +8,122 @@
 
 #include "log/Logger.h"
 
+#include "event/EventSystem.h"
+
 namespace Project {
 namespace Sound {
 
 SoundSystem::SoundSystem(){
-    
 }
 
 SoundSystem::~SoundSystem() {
     cleanUp();
 }
 
-bool SoundSystem::initialize() {
-    alutInit(NULL, 0);
-    alGetError();
+void SoundSystem::physicsCollisionHandler(Event::PhysicsCollision *event){
+    collisionSound->playCollision(event->getLocation());
+}
+
+bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerManager *playerManager) {
+    ALHelpers::initOpenAL();
     
-    LOG2(AUDIO, INIT, "Successfully initialized OpenAL");
+    playerCount = worldManager->getPlayerList()->getPlayerCount();
+    this->worldManager = worldManager;
+    this->playerManager = playerManager;
     
-    setupListener();
-    setupMusic();
+    ALHelpers::setupListener();
+    setupEngines();
+    setupCollisions();
+    setupGameMusic();
     
-    LOG2(AUDIO, INIT, "Set up background music");
-    
+    METHOD_OBSERVER(&SoundSystem::physicsCollisionHandler);
     return true;
 }
 
 void SoundSystem::cleanUp() {
-    destroyMusic();
-    alutExit();
+    ALHelpers::destroyBuffer(musicBuffer);
+    ALHelpers::destroySource(musicSource);
+    ALHelpers::exitOpenAL();
+    delete engineSound;
+    delete collisionSound;
 }
 
-void SoundSystem::setupListener() {
-    // position of the listener
-    static const ALfloat position[] = {0.0, 0.0, 0.0};
-    
-    // velocity of the listener
-    static const ALfloat velocity[] = {0.0, 0.0, 0.0};
-    
-    // orientation of the Listener
-    static const ALfloat orientation[] = {
-        0.0, 0.0, -1.0,  // "at" position
-        0.0, 1.0, 0.0    // "up" direction
-    };
-    
-    alListenerfv(AL_POSITION, position);
-    alListenerfv(AL_VELOCITY, velocity);
-    alListenerfv(AL_ORIENTATION, orientation);
+void SoundSystem::setupCollisions() {
+    collisionSound = new CollisionSound();
+    collisionSound->initialize();
 }
-
-void SoundSystem::setupMusic() {
-    // load data from .wav file
-    alGenBuffers(1, &musicBuffer);
+void SoundSystem::setupEngines(){
+    engineSound = new EngineSound(worldManager);
+    engineSound->initialize();
+}
+void SoundSystem::setupGameMusic() {
+    ALHelpers::setupBuffer(&musicBuffer,1);
     
-    ALenum format;
-    ALsizei size;
-    ALvoid *data;
-    ALsizei freq;
-    ALboolean loop;
+    //Load the music into the buffer
+    string file = "data/sound/music/GameMusicIntro.wav";
+    ALHelpers::loadFileToBuffer(musicBuffer,file);
     
-    // !!! this is deprecated
-    alutLoadWAVFile((ALbyte *)"data/sound/music/mainloop.wav", &format, &data, &size, &freq, &loop);
-    alBufferData(musicBuffer, format, data, size, freq);
-    alutUnloadWAV(format, data, size, freq);
+    //setup the music source
+    ALHelpers::setupSource(&musicSource,1);
     
     // bind a sound source to the buffer data
-    alGenSources(1, &musicSource);
+    ALHelpers::bindBufferToSource(musicBuffer, musicSource);
     
-    // Position of the source sound.
-    static const ALfloat sourcePosition[] = {0.0, 0.0, 0.0};
+    //Position of the source sound.
+    //Music is relative positioning
+    ALfloat sourcePosition[] = {0.0, 0.0, 0.0};
+    ALfloat sourceVelocity[] = {0.0, 0.0, 0.0};
     
-    // Velocity of the source sound.
-    static const ALfloat sourceVelocity[] = { 0.0, 0.0, 0.0 };
-    
-    alSourcei(musicSource, AL_BUFFER, musicBuffer);
+    alSourcei(musicSource, AL_SOURCE_RELATIVE, AL_TRUE);
     alSourcef(musicSource, AL_PITCH, 1.0);
-    alSourcef(musicSource, AL_GAIN, 1.0);
+    alSourcef(musicSource, AL_GAIN, 0.25);
+    alSourcei(musicSource, AL_LOOPING, AL_FALSE);
     alSourcefv(musicSource, AL_POSITION, sourcePosition);
     alSourcefv(musicSource, AL_VELOCITY, sourceVelocity);
-    alSourcei(musicSource, AL_LOOPING, AL_TRUE);  // don't use loop from file
     
-    // Do another error check and return.
-    
-    if(alGetError() != AL_NO_ERROR) {
-        LOG2(AUDIO, INIT, "Error initializing background music");
-    }
-    
-    alSourcePlay(musicSource);
+    ALHelpers::playFromSource(musicSource);
 }
 
-void SoundSystem::destroyMusic() {
-    alDeleteBuffers(1, &musicBuffer);
-    alDeleteSources(1, &musicSource);
+void SoundSystem::checkPlayerCount(){
+    int count = worldManager->getPlayerList()->getPlayerCount();
+    if(count != playerCount){
+        playerCountChanged(count);
+    }
+}
+
+void SoundSystem::playerCountChanged(int count){
+    playerCount = count;
+    engineSound->cleanUp();
+    engineSound->changePlayerCount(worldManager->getPlayerList()->getPlayerCount());
+    engineSound->initialize();
+}
+
+//This is the least hacky way I could figure out how to do this
+//and it is still pretty hacky
+void SoundSystem::checkMusicIntroComplete(){
+    ALint buffersProcessed = 0;
+    alGetSourcei(musicSource,AL_BUFFERS_PROCESSED,&buffersProcessed);
+    if((int)buffersProcessed == 1){
+        string file = "data/sound/music/GameMusicLoop.wav";
+        alSourceUnqueueBuffers(musicSource,1,&musicBuffer);
+        ALHelpers::loadFileToBuffer(musicBuffer,file);
+        ALHelpers::bindBufferToSource(musicBuffer, musicSource);
+        alSourcei(musicSource, AL_LOOPING, AL_TRUE);
+        ALHelpers::playFromSource(musicSource);
+    }
 }
 
 void SoundSystem::doAction() {
-    // nothing yet
+    checkMusicIntroComplete();
+    checkPlayerCount();
+    
+    Object::Player *player = playerManager->getPlayer();
+    Math::Point positionPoint = player->getPosition(); 
+    Math::Point velocityPoint = player->getPhysicalObject()->getLinearVelocity();
+    Math::Point orientationPoint = player->getPhysicalObject()->getFrontDirection();
+    ALHelpers::updateListener(positionPoint,velocityPoint,orientationPoint);
+    
+    engineSound->updateEngines();
 }
 
 }  // namespace Sound

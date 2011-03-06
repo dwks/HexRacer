@@ -143,7 +143,7 @@ render.tire.scale = 2.5
 
 hud.minimap.enable = 1
 hud.minimap.drawheight = 0.35
-hud.minimap.height = 140.0
+hud.minimap.height = 120.0
 
 hud.speedometer.enable = 1
 hud.speedometer.drawheight = 0.35
@@ -169,6 +169,8 @@ camera.followslow.x = 0.0
 camera.followslow.y = 2.25
 camera.followslow.z = -5.5
 
+########
+### Sound settings
 sound.enable = 1
 
 ########

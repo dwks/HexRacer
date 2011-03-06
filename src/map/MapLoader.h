@@ -15,9 +15,10 @@ class MapLoader
 
 private:
 	std::vector<OpenGL::Material*> meshTints;
-	Misc::ProgressTracker mapLoadTracker;
-	int totalSteps;
-	int currentStep;
+	Misc::ProgressTracker* mapLoadTracker;
+	static const int nonPaintProgress = 50;
+	static const int paintProgress = 50;
+	int totalPaintSteps;
 public:
 
     /** Both @a map and @a mapRenderable must be constructed before calling
@@ -31,8 +32,8 @@ public:
 	*/
 	void unload();
 
-	//void setTotalSteps(int total_steps) { totalSteps = total_steps; }
-	//void setCurrentStep(int current_step);
+	void setCurrentStep(int current_step);
+	void setTotalSteps(int total_steps) { totalPaintSteps = total_steps; }
 };
 
 }  // namespace Map

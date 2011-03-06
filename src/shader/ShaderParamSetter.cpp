@@ -12,8 +12,9 @@ namespace Shader {
 		hasNormalMap = false;
 	}
 
-	void ShaderParamSetter::setShaderProgram(ShaderProgram* program, int* standard_uni_locs, int* standard_attr_locs) {
+	void ShaderParamSetter::setShaderProgram(ShaderProgram* program, int shader_index, int* standard_uni_locs, int* standard_attr_locs) {
 		shaderProgram = program;
+		shaderIndex = shader_index;
 		standardUniformLocations = standard_uni_locs;
 		standardAttributeLocations = standard_attr_locs;
 		

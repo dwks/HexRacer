@@ -4,30 +4,53 @@
 #include "config.h"
 #ifdef HAVE_OPENAL
 
+#include "event/PhysicsCollision.h"
+#include "event/Enabler.h"
+#include "sound/EngineSound.h"
+#include "sound/CollisionSound.h"
+#include "sound/ALHelpers.h"
+
 #include "AL/al.h"
+#include "object/WorldManager.h"
+#include "world/PlayerManager.h"
+#include <boost/concept_check.hpp>
 
 namespace Project {
 namespace Sound {
 
-class SoundSystem {
+class SoundSystem : public Event::Enabler {
+protected:
+    void physicsCollisionHandler(Event::PhysicsCollision *event);
 private:
+    //Buffers
     ALuint musicBuffer;
+    
+    //Sources
     ALuint musicSource;
 public:
     SoundSystem();
     ~SoundSystem();
     
-    virtual bool initialize();
+    virtual bool initialize(Object::WorldManager *worldManager, World::PlayerManager *playerManager);
     
     //virtual void doAction(unsigned long currentTime);
     void doAction();
 private:
-    void setupListener();
+    void setupGameMusic();
+    void setupEngines();
+    void setupCollisions();
     
-    void setupMusic();
-    void destroyMusic();
+    void checkPlayerCount();
+    void playerCountChanged(int count);
+    void checkMusicIntroComplete();
     
     void cleanUp();
+    
+    Sound::EngineSound *engineSound;
+    Sound::CollisionSound *collisionSound;
+    Object::WorldManager *worldManager;
+    World::PlayerManager *playerManager;
+    int playerCount;
 };
 
 }  // namespace Sound

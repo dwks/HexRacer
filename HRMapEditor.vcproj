@@ -321,6 +321,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\mapeditor\MapEditorProgressBar.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mapeditor\MapEditorWidget.cpp"
 				>
 			</File>
@@ -803,6 +807,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\mapeditor\MapEditorProgressBar.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mapeditor\MapEditorWidget.h"
 				>
 				<FileConfiguration
@@ -1006,6 +1014,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\Point.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc\ProgressTracker.h"
 				>
 			</File>
 			<File

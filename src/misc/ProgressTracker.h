@@ -16,6 +16,7 @@ public:
 	virtual void setTotalSteps(int total_steps) {}
 	virtual void setCurrentStage(const std::string& stage) {}
 	virtual void setCurrentStep(int current_step) {}
+	virtual void incrementStep() {}
 };
 
 }  // namespace Misc
