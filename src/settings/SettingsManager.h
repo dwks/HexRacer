@@ -49,6 +49,10 @@ public:
     */
     void load(const char *filename);
     
+    /** Loads the setting inside the string @a line.
+    */
+    void parse(std::string line);
+    
     /** Sets the setting @a key to @a value.
     */
     void set(const std::string &key, const std::string &value);

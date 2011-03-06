@@ -7,7 +7,6 @@
 #include "widget/WidgetActivateEvent.h"
 #include "widget/WidgetModifiedEvent.h"
 
-#include "event/SwitchToScreen.h"
 #include "event/EventSystem.h"
 
 #include "map/MapSettings.h"
@@ -17,6 +16,20 @@
 
 namespace Project {
 namespace GUI {
+
+void ConnectProxy::initialize(Event::SwitchToScreen *event) {
+    if(event->getScreen() != "connect") return;
+    
+    Widget::EditWidget *port
+        = dynamic_cast<Widget::EditWidget *>(connect->getChild("port"));
+    if(port) {
+        port->setData(GET_SETTING("network.port", "1820"));
+    }
+}
+
+ConnectProxy::ConnectProxy(Widget::WidgetBase *connect) : connect(connect) {
+    METHOD_OBSERVER(&ConnectProxy::initialize);
+}
 
 void ConnectProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();

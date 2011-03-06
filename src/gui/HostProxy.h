@@ -14,6 +14,7 @@ public:
     HostProxy(Widget::WidgetBase *host) : host(host) {}
     
     virtual void visit(Widget::WidgetActivateEvent *event);
+    virtual void visit(Widget::WidgetModifiedEvent *event);
 };
 
 }  // namespace GUI

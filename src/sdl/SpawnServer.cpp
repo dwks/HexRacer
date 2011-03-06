@@ -9,13 +9,15 @@ namespace Project {
 namespace SDL {
 
 void SpawnServer::spawn() {
-    std::string serverport = GET_SETTING("network.serverport", "1820");
+    Misc::StreamAsString args;
+    args << " 'network.serverport = " << GET_SETTING("network.serverport", "1820") << "'";
+    args << " 'server.aicount = " << GET_SETTING("server.aicount", "0") << "'";
     
     Misc::StreamAsString command;
 #ifdef WIN32
-    command << "start server.exe --port " << serverport;
+    command << "start server.exe" << args.operator std::string();
 #else
-    command << "./server --port " << serverport << " &";
+    command << "./server" << args.operator std::string() << " &";
 #endif
     
     std::system(command.operator std::string().c_str());
