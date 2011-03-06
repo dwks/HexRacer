@@ -25,8 +25,11 @@ public:
     void updateEngines();
     void changeEnginePitch(Object::Player *player, ALuint source, int toneIndex);
     void updateEngineDetails(Object::Player *player, ALuint source);
+    void updateSkidForPlayer(Object::Player *player, ALuint source);
     void changePlayerCount(int count);
 private:
+    ALuint skidBuffers[16];
+    ALuint skidSources[16];
     ALuint engineBuffers[16];
     ALuint engineSources[16];
     float engineTones[16];
