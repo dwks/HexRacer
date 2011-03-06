@@ -24,9 +24,14 @@ void LoadingProxy::initialize(Event::SwitchToScreen *event) {
     Widget::ImageWidget *thumbnail
         = dynamic_cast<Widget::ImageWidget *>(loading->getChild("thumbnail"));
     
-    if(thumbnail) {
-        thumbnail->setFilename(
-            Map::MapSettings::getInstance()->getMapThumbnail());
+    if(Map::MapSettings::getInstance()->getGameType() == "connect") {
+        thumbnail->setFilename("");
+    }
+    else {
+        if(thumbnail) {
+            thumbnail->setFilename(
+                Map::MapSettings::getInstance()->getMapThumbnail());
+        }
     }
     
     lastRepaint = NULL;

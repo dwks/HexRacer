@@ -131,6 +131,9 @@ void NetworkPortal::waitForWorld(Object::World *&world,
             
             id = handshake->getClientID();
             
+            Settings::SettingsManager::getInstance()->set(
+                "map", handshake->getMap());
+            
             unsigned long sent = handshake->getMilliseconds();
             unsigned long now = Misc::Sleeper::getTimeMilliseconds();
             long offset = -long(now - sent);

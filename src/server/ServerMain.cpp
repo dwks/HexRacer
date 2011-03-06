@@ -225,7 +225,8 @@ void ServerMain::run() {
             
             Network::PacketSerializer packetSerializer;
             Network::Packet *packet = new Network::HandshakePacket(
-                clientCount, Misc::Sleeper::getTimeMilliseconds());
+                clientCount, GET_SETTING("map", "data/testtrack.hrm"),
+                Misc::Sleeper::getTimeMilliseconds());
             
             Network::StringSerializer stringSerializer(socket);
             stringSerializer.sendString(
