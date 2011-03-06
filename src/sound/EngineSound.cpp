@@ -30,6 +30,7 @@ void EngineSound::initialize(){
     //Load the engine sound into the buffers
     string file = "data/sound/soundfx/engine.wav";
     for(int i=0;i<playerCount;i++){
+        engineTones[i] = 1.0;
         ALHelpers::loadFileToBuffer(engineBuffers[i],file);
         
         // bind a sound source to the buffer data
@@ -59,18 +60,20 @@ void EngineSound::updateEngines(){
     while(it.hasNext()){
         Object::Player *player = it.next();
         
-        changeEnginePitch(player,engineSources[count]);
+        changeEnginePitch(player,engineSources[count],count);
         updateEngineDetails(player,engineSources[count]);
         count++;
     }
 }
 void EngineSound::changePlayerCount(int count){
     playerCount = count;
+    for(int i=0;i<playerCount;i++){
+        engineTones[i]=1.0;
+    }
 }
 void EngineSound::updateEngineDetails(Object::Player *player, ALuint source){
     Math::Point positionPoint = player->getPosition(); 
     Math::Point velocityPoint = player->getPhysicalObject()->getLinearVelocity();
-    Math::Point orientationPoint = player->getPhysicalObject()->getFrontDirection();
         
     ALfloat sourcePosition[] = {
         positionPoint.getX(), 
@@ -86,10 +89,9 @@ void EngineSound::updateEngineDetails(Object::Player *player, ALuint source){
     alSourcefv(source, AL_VELOCITY, sourceVelocity);
 }
 
-void EngineSound::changeEnginePitch(Object::Player *player, ALuint source){
+void EngineSound::changeEnginePitch(Object::Player *player, ALuint source, int toneIndex){
     float max_pitch = 3.0;
     float min_pitch = 0.5;
-    float final_pitch = 0.5;
     bool accelerating = player->getIntention().getAccel();
     bool onGround = player->getOnGround();
     
@@ -98,19 +100,25 @@ void EngineSound::changeEnginePitch(Object::Player *player, ALuint source){
     float speed = (float)velocityPoint.length();
     
     if(accelerating&&onGround){
-        final_pitch = (float)(min_pitch + (speed/30.0)*(max_pitch-min_pitch));
+        engineTones[toneIndex] = (float)(min_pitch + (speed/30.0)*(max_pitch-min_pitch));
     }
     if(!accelerating&&onGround){
-        final_pitch = (float)(min_pitch + (speed/30.0)*(max_pitch-min_pitch));
+        engineTones[toneIndex] = (float)(min_pitch + (speed/30.0)*(max_pitch-min_pitch));
     }
     if(accelerating&&!onGround){
-        final_pitch = (float)(min_pitch + (speed/30.0)*(max_pitch-min_pitch));
+        engineTones[toneIndex] += 0.01;
+        if(engineTones[toneIndex]>max_pitch){
+            engineTones[toneIndex]=max_pitch;
+        }
     }
     if(!accelerating&&!onGround){
-        final_pitch = min_pitch;
+        engineTones[toneIndex] -= 0.01;
+        if(engineTones[toneIndex]<min_pitch){
+            engineTones[toneIndex]=min_pitch;
+        }
     }
     
-    alSourcef(source, AL_PITCH, final_pitch);
+    alSourcef(source, AL_PITCH, engineTones[toneIndex]);
 }
 }  // namespace Sound
 }  // namespace Project

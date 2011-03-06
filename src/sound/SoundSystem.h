@@ -7,6 +7,7 @@
 #include "event/PhysicsCollision.h"
 #include "event/Enabler.h"
 #include "sound/EngineSound.h"
+#include "sound/CollisionSound.h"
 #include "sound/ALHelpers.h"
 
 #include "AL/al.h"
@@ -23,13 +24,9 @@ protected:
 private:
     //Buffers
     ALuint musicBuffer;
-    ALuint engineBuffers[16];
-    ALuint collisionBuffers[16];
     
     //Sources
     ALuint musicSource;
-    ALuint engineSources[16];
-    ALuint collisionSources[16];
 public:
     SoundSystem();
     ~SoundSystem();
@@ -39,12 +36,9 @@ public:
     //virtual void doAction(unsigned long currentTime);
     void doAction();
 private:
-    void setupListener();
     void setupGameMusic();
     void setupEngines();
     void setupCollisions();
-    
-    void updateListener();
     
     void checkPlayerCount();
     void playerCountChanged(int count);
@@ -53,6 +47,7 @@ private:
     void cleanUp();
     
     Sound::EngineSound *engineSound;
+    Sound::CollisionSound *collisionSound;
     Object::WorldManager *worldManager;
     World::PlayerManager *playerManager;
     int playerCount;

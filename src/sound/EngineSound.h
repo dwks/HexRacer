@@ -23,12 +23,13 @@ public:
     void initialize();
     void cleanUp();
     void updateEngines();
-    void changeEnginePitch(Object::Player *player, ALuint source);
+    void changeEnginePitch(Object::Player *player, ALuint source, int toneIndex);
     void updateEngineDetails(Object::Player *player, ALuint source);
     void changePlayerCount(int count);
 private:
     ALuint engineBuffers[16];
     ALuint engineSources[16];
+    float engineTones[16];
     int playerCount;
     
     Object::WorldManager *worldManager;

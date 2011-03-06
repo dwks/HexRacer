@@ -19,6 +19,19 @@ void ALHelpers::initOpenAL(){
         LOG2(AUDIO, INIT, "Successfully initialized OpenAL");
     }
 }
+
+void ALHelpers::setupListener() {
+    ALfloat position[] = {0.0, 0.0, 0.0};
+    ALfloat velocity[] = {0.0, 0.0, 0.0};
+    ALfloat orientation[] = {
+        0.0, 0.0, -1.0,  // "at" position
+        0.0, 1.0, 0.0    // "up" direction
+    };
+    
+    alListenerfv(AL_POSITION, position);
+    alListenerfv(AL_VELOCITY, velocity);
+    alListenerfv(AL_ORIENTATION, orientation);
+}
 void ALHelpers::loadFileToBuffer(ALuint buffer, std::string file){
     ALenum format;
     ALsizei size;
@@ -66,6 +79,32 @@ void ALHelpers::bindBufferToSource(ALuint buffer, ALuint source){
     if(alGetError() != AL_NO_ERROR) {
         LOG2(AUDIO, INIT, "Error binding buffer to source");
     }
+}
+
+void ALHelpers::updateListener(Math::Point positionPoint, Math::Point velocityPoint, Math::Point orientationPoint){
+    // position of the listener
+    ALfloat position[] = {
+        positionPoint.getX(), 
+        positionPoint.getY(), 
+        positionPoint.getZ()};
+    
+    // velocity of the listener
+    ALfloat velocity[] = {
+        velocityPoint.getX(), 
+        velocityPoint.getY(), 
+        velocityPoint.getZ()};
+    
+    // orientation of the Listener
+    ALfloat orientation[] = {
+        orientationPoint.getX(),
+        orientationPoint.getY(),
+        orientationPoint.getZ(),  // "at" position
+        0.0, 1.0, 0.0    // "up" direction
+    };
+    alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
+    alListenerfv(AL_POSITION, position);
+    alListenerfv(AL_VELOCITY, velocity);
+    alListenerfv(AL_ORIENTATION, orientation);
 }
 
 void ALHelpers::playFromSource(ALuint source){
@@ -121,6 +160,9 @@ void ALHelpers::destroySource(ALuint source) {
     if(alGetError() != AL_NO_ERROR) {
         LOG2(AUDIO, INIT, "Error deleting Source");
     }
+}
+void ALHelpers::exitOpenAL(){
+  alutExit();   
 }
 }  // namespace Sound
 }  // namespace Project

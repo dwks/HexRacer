@@ -21,7 +21,7 @@ SoundSystem::~SoundSystem() {
 }
 
 void SoundSystem::physicsCollisionHandler(Event::PhysicsCollision *event){
-    
+    collisionSound->playCollision(event->getLocation());
 }
 
 bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerManager *playerManager) {
@@ -31,9 +31,9 @@ bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerMa
     this->worldManager = worldManager;
     this->playerManager = playerManager;
     
-    setupListener();
+    ALHelpers::setupListener();
     setupEngines();
-    //setupCollisions();
+    setupCollisions();
     setupGameMusic();
     
     METHOD_OBSERVER(&SoundSystem::physicsCollisionHandler);
@@ -43,24 +43,14 @@ bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerMa
 void SoundSystem::cleanUp() {
     ALHelpers::destroyBuffer(musicBuffer);
     ALHelpers::destroySource(musicSource);
+    ALHelpers::exitOpenAL();
     delete engineSound;
-    alutExit();
+    delete collisionSound;
 }
 
-void SoundSystem::setupListener() {
-    ALfloat position[] = {0.0, 0.0, 0.0};
-    ALfloat velocity[] = {0.0, 0.0, 0.0};
-    ALfloat orientation[] = {
-        0.0, 0.0, -1.0,  // "at" position
-        0.0, 1.0, 0.0    // "up" direction
-    };
-    
-    alListenerfv(AL_POSITION, position);
-    alListenerfv(AL_VELOCITY, velocity);
-    alListenerfv(AL_ORIENTATION, orientation);
-}
 void SoundSystem::setupCollisions() {
-    
+    collisionSound = new CollisionSound();
+    collisionSound->initialize();
 }
 void SoundSystem::setupEngines(){
     engineSound = new EngineSound(worldManager);
@@ -123,44 +113,17 @@ void SoundSystem::checkMusicIntroComplete(){
     }
 }
 
-void SoundSystem::updateListener(){
-    Object::Player *player = playerManager->getPlayer();
-    
-    Math::Point positionPoint = player->getPosition(); 
-    Math::Point velocityPoint = player->getPhysicalObject()->getLinearVelocity();
-    Math::Point orientationPoint = player->getPhysicalObject()->getFrontDirection();
-    
-    // position of the listener
-    ALfloat position[] = {
-        positionPoint.getX(), 
-        positionPoint.getY(), 
-        positionPoint.getZ()};
-    
-    // velocity of the listener
-    ALfloat velocity[] = {
-        velocityPoint.getX(), 
-        velocityPoint.getY(), 
-        velocityPoint.getZ()};
-    
-    // orientation of the Listener
-    ALfloat orientation[] = {
-        orientationPoint.getX(),
-        orientationPoint.getY(),
-        orientationPoint.getZ(),  // "at" position
-        0.0, 1.0, 0.0    // "up" direction
-    };
-    alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
-    alListenerfv(AL_POSITION, position);
-    alListenerfv(AL_VELOCITY, velocity);
-    alListenerfv(AL_ORIENTATION, orientation);
-}
-
 void SoundSystem::doAction() {
     checkMusicIntroComplete();
     checkPlayerCount();
-    updateListener();
-    engineSound->updateEngines();
     
+    Object::Player *player = playerManager->getPlayer();
+    Math::Point positionPoint = player->getPosition(); 
+    Math::Point velocityPoint = player->getPhysicalObject()->getLinearVelocity();
+    Math::Point orientationPoint = player->getPhysicalObject()->getFrontDirection();
+    ALHelpers::updateListener(positionPoint,velocityPoint,orientationPoint);
+    
+    engineSound->updateEngines();
 }
 
 }  // namespace Sound
