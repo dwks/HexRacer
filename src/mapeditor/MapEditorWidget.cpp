@@ -115,6 +115,8 @@ void MapEditorWidget::initializeGL() {
 
 	normalRenderProperties = new RenderProperties();
 	normalRenderProperties->setShaderOverride(true);
+	normalRenderProperties->setColor(OpenGL::Color::WHITE);
+	normalRenderProperties->setColorOverride(true);
 
 	objectBufferProperties = new RenderProperties();
 	objectBufferProperties->setShaderOverride(true);

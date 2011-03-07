@@ -529,6 +529,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\misc\Sleeper.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\SpatialContainer.cpp"
 				>
 			</File>
@@ -594,6 +598,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\Vertex3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\WarpTracker.cpp"
 				>
 			</File>
 		</Filter>
@@ -1115,6 +1123,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\misc\Sleeper.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\SpatialContainer.h"
 				>
 			</File>
@@ -1188,6 +1200,10 @@
 			</File>
 			<File
 				RelativePath=".\src\math\Vertex3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\WarpTracker.h"
 				>
 			</File>
 		</Filter>

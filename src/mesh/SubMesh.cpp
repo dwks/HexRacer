@@ -21,8 +21,11 @@ namespace Mesh {
 
 	SubMesh::~SubMesh() {
 
-		for (unsigned int i = 0; i < triangleFans.size(); i++)
+		for (unsigned int i = 0; i < triangleFans.size(); i++) {
+			if (triangleFans[i]->getDisplayList() > 0)
+				glDeleteLists(triangleFans[i]->getDisplayList(), 1);
 			delete(triangleFans[i]);
+		}
 
 		if (material != NULL)
 			delete(material);
@@ -130,13 +133,14 @@ namespace Mesh {
 		int shader_index = getRenderProperties()->getShaderIndex();
 
 		drawingCulled = (bounding_object && triangleFanTree);
-		useDisplayList = setter.shaderIndexActive(shader_index) || !setter.getHasTangentSpace();
+		//useDisplayList = setter.shaderIndexActive(shader_index) || !setter.getHasTangentSpace();
+		useDisplayList = !setter.getHasTangentSpace();
 
 		if (!drawingCulled) {
 
 			if (useDisplayList) {
 
-				if (displayList > 0 && displayListShader == shader_index) {
+				if (displayList > 0/* && displayListShader == shader_index*/) {
 					glCallList(displayList);
 					return;
 				}
@@ -148,7 +152,7 @@ namespace Mesh {
 						drawTriangleFan(triangleFans[i], setter);
 					}
 					glEndList();
-					displayListShader = shader_index;
+					//displayListShader = shader_index;
 					return;
 				}
 
@@ -179,7 +183,7 @@ namespace Mesh {
 	inline void SubMesh::drawTriangleFan(MeshTriangleFan* fan, const Shader::ShaderParamSetter& setter) {
 
 		if (drawingCulled && useDisplayList) {
-			if (fan->getDisplayList() > 0 && getRenderProperties()->getShaderIndex() == fan->getShaderIndex()) {
+			if (fan->getDisplayList() > 0/* && getRenderProperties()->getShaderIndex() == fan->getShaderIndex()*/) {
 				glCallList(fan->getDisplayList());
 				return;
 			}
@@ -187,7 +191,7 @@ namespace Mesh {
 				glDeleteLists(fan->getDisplayList(), 1);
 				fan->setDisplayList(glGenLists(1));
 				glNewList(fan->getDisplayList(), GL_COMPILE_AND_EXECUTE);
-				fan->setShaderIndex(getRenderProperties()->getShaderIndex());
+				//fan->setShaderIndex(getRenderProperties()->getShaderIndex());
 			}
 		}
 
