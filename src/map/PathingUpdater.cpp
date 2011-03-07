@@ -4,10 +4,26 @@
 #include "settings/SettingsManager.h"
 
 #include "event/EventSystem.h"
-#include "event/WarpOntoTrack.h"
+#include "event/PlayerProgressEvent.h"
 
 namespace Project {
 namespace Map {
+
+PathingUpdater::PathingUpdater(
+    boost::shared_ptr<Object::WorldManager> worldManager,
+    boost::shared_ptr<RaceManager> raceManager,
+    boost::shared_ptr<World::PlayerManager> playerManager) {
+    
+    this->worldManager = worldManager;
+    this->raceManager = raceManager;
+    this->playerManager = playerManager;
+    
+    warpDetector = new WarpDetector(raceManager.get());
+}
+
+PathingUpdater::~PathingUpdater() {
+    delete warpDetector;
+}
 
 void PathingUpdater::update() {
     if(!GET_SETTING("game.enablepathing", true)) {
@@ -42,15 +58,16 @@ void PathingUpdater::update() {
                     LOG(WORLD, "Player: " << player->getID()
                         << " has finished lap "
                         << player->getPathTracker()->getNumLaps());
-
+                
+                if(playerManager->getPlayer() == player) {
+                    EMIT_EVENT(new Event::PlayerProgressEvent(
+                        player->getPathTracker()->getNumLaps(),
+                        player->getPathTracker()->getLapProgress()));
+                }
             }
         }
-        else {
-            // Reset (warp) the player if they are below the kill plane
-            if(origin_pos.getY() < raceManager->getKillPlaneY()) {
-                EMIT_EVENT(new Event::WarpOntoTrack(player->getID()));
-            }
-        }
+        
+        warpDetector->checkForWarping(player);
     }
 }
 

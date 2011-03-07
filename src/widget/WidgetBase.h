@@ -2,6 +2,7 @@
 #define PROJECT_WIDGET__WIDGET_BASE_H
 
 #include <string>
+#include "boost/smart_ptr.hpp"
 
 #include "WidgetVisitor.h"
 #include "WidgetRect.h"
@@ -13,7 +14,13 @@ class Layout;
 class EventProxy;
 class WidgetEvent;
 
-/** Abstract base class for all widgets.
+/** Abstract base class for all widgets. Every widget has:
+    - a unique name;
+    - a Layout to handle positioning of the widget;
+    - a list of EventProxies which are notified of events;
+    - an accept() function for the visitor pattern.
+    
+    Many widgets also have child widgets, accessible with getChild().
 */
 class WidgetBase {
 public:
@@ -39,7 +46,7 @@ public:
     
     /** Returns the Layout registered in this Widget.
     */
-    virtual Layout *getLayout() const = 0;
+    virtual boost::shared_ptr<Layout> getLayout() const = 0;
     
     /** Registers a different Layout for this Widget. This layout will
         automatically be freed when the Widget is destroyed.
@@ -52,6 +59,14 @@ public:
     
     /** Adds another event proxy for this widget. When an event arrives, it
         will be sent to all registered proxies in order.
+        
+        This is the primary overload of this function; all other overloads
+        should use this function underneath.
+    */
+    virtual void addEventProxy(boost::shared_ptr<EventProxy> proxy) = 0;
+    
+    /** Adds another event proxy for this widget. The proxy will be
+        automatically freed by this widget upon destruction.
     */
     virtual void addEventProxy(EventProxy *proxy) = 0;
     
@@ -64,6 +79,11 @@ public:
         querying children.
     */
     virtual WidgetBase *getChild(const std::string &name) = 0;
+    
+    /** Looks up a sequences of children widgets, names separated by '/'
+        characters.
+    */
+    virtual WidgetBase *getChildPath(const std::string &path) = 0;
     
     /** Returns the name of this widget; each widget should have a unique name
         amongst its siblings, so that name-based lookups are possible.

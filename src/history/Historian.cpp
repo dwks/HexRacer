@@ -4,6 +4,7 @@
 #include "event/DestroyObject.h"
 #include "event/UpdateObject.h"
 #include "event/UpdateWorld.h"
+#include "event/ChangeOfIntention.h"
 
 #include "event/EventSystem.h"
 
@@ -102,6 +103,31 @@ void Historian::WorldHandler::observe(Event::EventBase *event) {
         
         break;
     }
+    case Event::EventType::CHANGE_OF_INTENTION: {
+        Event::ChangeOfIntention *changeOfIntention
+            = dynamic_cast<Event::ChangeOfIntention *>(event);
+        
+        if(changeOfIntention->getIntention().getPaint()) {
+            EMIT_EVENT(new Event::TogglePainting(
+                changeOfIntention->getPlayer(),
+                Event::TogglePainting::PAINTING));
+        }
+        else if(changeOfIntention->getIntention().getErase()) {
+            EMIT_EVENT(new Event::TogglePainting(
+                changeOfIntention->getPlayer(),
+                Event::TogglePainting::ERASING));
+        }
+        else {
+            EMIT_EVENT(new Event::TogglePainting(
+                changeOfIntention->getPlayer(),
+                Event::TogglePainting::NOTHING));
+        }
+        
+        /*LOG(NETWORK, "Received change of intention for player "
+            << changeOfIntention->getPlayer());*/
+        
+        break;
+    }
     default:
         break;
     }
@@ -113,6 +139,7 @@ bool Historian::WorldHandler::interestedIn(Event::EventType::type_t type) {
     case Event::EventType::DESTROY_OBJECT:
     case Event::EventType::UPDATE_OBJECT:
     case Event::EventType::UPDATE_WORLD:
+    case Event::EventType::CHANGE_OF_INTENTION:
         return true;
     default:
         break;
@@ -151,7 +178,7 @@ void Historian::handleUpdateWorld(Event::UpdateWorld *updateWorld) {
         pingTime->setClockOffset(offset);
     }
     else {
-#if 1
+#if 0
         unsigned long sent = updateWorld->getMilliseconds();
         unsigned long now = Misc::Sleeper::getTimeMilliseconds();
         

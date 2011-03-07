@@ -1,11 +1,12 @@
 #include <iomanip>  // for std::setprecision()
-#include <math.h>
+#include <cmath>
 
 #include "SDL.h"  // for SDL_GetVideoSurface()
 
 #include "GameRenderer.h"
 #include "opengl/GeometryDrawing.h"
 #include "opengl/MathWrapper.h"
+#include "math/Geometry.h"
 #include "math/BoundingBox3D.h"
 
 #include "map/MapLoader.h"
@@ -13,11 +14,22 @@
 
 #include "hud/LapProgressBar.h"
 
+#include "MenuLoop.h"
+
+#include "widget/CompositeWidget.h"
+
 #include "log/Logger.h"
 #include "config.h"
 
 namespace Project {
 namespace SDL {
+
+GameRenderer::~GameRenderer() {
+    if(fpsRate) {
+        dynamic_cast<Widget::CompositeWidget *>(gui->getScreen("running"))
+            ->removeChild(fpsRate->getWidget()->getName());
+    }
+}
 
 void GameRenderer::construct(OpenGL::Camera *camera)
 {
@@ -67,11 +79,8 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     
     paintManager = boost::shared_ptr<Paint::PaintManager>(
         new Paint::PaintManager());
-	paintManager->setMap(map.get());
-	map->clearPaint();
-    //paintManager->setPaintCells(map->getPaintCells());
-    
-    Map::MapLoader().load(map.get(), mapRenderable.get());
+
+	Map::MapLoader().load(map.get(), SDL::MenuLoop::getLoadingProgressTracker(), mapRenderable.get(), paintManager.get());
 
 	shadowProperties = NULL;
 	shadowCamera = NULL;
@@ -189,6 +198,8 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldMan
 
 	//Reset the lights
     lightManager->resetLights();
+
+	renderer->cleanup();
 }
 
 void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player *player) {
@@ -714,8 +725,16 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 
 	shadowCamera->setPosition(light_position);
 	shadowCamera->setLookPosition(camera->cameraToWorld(0.5, 0.5, far_plane*0.5));
-	shadowCamera->setUpDirection(camera->getUpDirection());
-	//shadowCamera->setUpDirection(shadowCamera->getLookDirection().crossProduct(camera->getLookDirection()));
+
+	Math::Point up_dir;
+	if (
+		std::fabs(shadowCamera->getLookDirection().dotProduct(camera->getRightDirection())) >
+		std::fabs(shadowCamera->getLookDirection().dotProduct(camera->getUpDirection())) ) {
+		shadowCamera->setUpDirection(camera->getRightDirection());
+	}
+	else {
+		shadowCamera->setUpDirection(camera->getUpDirection());
+	}
 
 	shadowFocusFrustrum.clear();
 	shadowFocusFrustrum.push_back(camera->getPosition());
@@ -750,66 +769,95 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 		}
 	}
 
-	double x_rotate = (x_angle_max+x_angle_min)*0.5;
-	double y_rotate = (y_angle_max+y_angle_min)*0.5;
-	Math::Point camera_lookat = shadowCamera->cameraToWorld(0.5, 0.5, 1.0);
-	shadowCamera->setLookPosition(camera_lookat
-		+shadowCamera->getRightDirection()*std::tan(x_rotate)
-		+shadowCamera->getUpDirection()*std::tan(y_rotate)
+#if 1
+	double x_rotate = std::tan((x_angle_max+x_angle_min)*0.5);
+	double y_rotate = std::tan((y_angle_max+y_angle_min)*0.5);
+	shadowCamera->setLookPosition(
+		shadowCamera->getPosition()+shadowCamera->getLookDirection()
+		+shadowCamera->getRightDirection()*x_rotate
 		);
+	shadowCamera->setLookPosition(
+		shadowCamera->getPosition()+shadowCamera->getLookDirection()
+		+shadowCamera->getUpDirection()*y_rotate
+		);
+#endif
+
+	bool near_plane_set = false;
+	double shadow_near_plane = GAME_RENDERER_SHADOW_MIN_NEAR_PLANE;
+	Math::BoundingBox3D map_bound = map->getMapBoundingBox();
+
+	Math::Point shadow_cam_dir = shadowCamera->getLookDirection();
+
+	if (!map_bound.pointInside(shadowCamera->getPosition())) {
+
+		//Find the plane of the map bounding box closest to the shadow camera
+		Math::Axis longest_axis = shadow_cam_dir.longestAxis();
+		Math::Point plane_point;
+		Math::Point plane_normal;
+		double longest_axis_sign = Math::sign(shadow_cam_dir.getCoord(longest_axis));
+
+		plane_normal.setCoord(-1.0*longest_axis_sign, longest_axis);
+		if (longest_axis_sign > 0.0)
+			plane_point.setCoord(map_bound.minCoord(longest_axis), longest_axis);
+		else
+			plane_point.setCoord(map_bound.maxCoord(longest_axis), longest_axis);
+
+		for (unsigned int i = 0; i < 4; i++) {
+			Math::Ray ray;
+			switch (i) {
+				case 0: ray = shadowCamera->cameraRay(0.0, 0.0); break;
+				case 1: ray = shadowCamera->cameraRay(1.0, 0.0); break;
+				case 2: ray = shadowCamera->cameraRay(1.0, 1.0); break;
+				case 3: ray = shadowCamera->cameraRay(0.0, 1.0); break;
+				default: ray = shadowCamera->cameraRay(0.5, 0.5); break;
+			}
+			Math::RayIntersection intersection = Math::Geometry::rayPlaneIntersection(ray, plane_point, plane_normal);
+			if (intersection.intersects) {
+				double intersect_near = intersection.t*(ray.direction.dotProduct(shadow_cam_dir));
+				if (!near_plane_set) {
+					shadow_near_plane = intersect_near;
+					near_plane_set = true;
+				}
+				else {
+					shadow_near_plane = Math::minimum(shadow_near_plane, intersect_near);
+				}
+			}
+		}
+	}
+
+	double y_half_fov = 0.0;
+    double x_half_fov = 0.0;
 
 	double shadow_far_plane = 0.0;
 	for (unsigned int i = 0; i < shadowFocusFrustrum.size(); i++) {
 		Math::Point to_vector = shadowFocusFrustrum[i]-shadowCamera->getPosition();
-		double z = to_vector.dotProduct(shadowCamera->getLookDirection());
+		double x = to_vector.dotProduct(shadowCamera->getRightDirection());
+		double y = to_vector.dotProduct(shadowCamera->getUpDirection());
+		double z = to_vector.dotProduct(shadow_cam_dir);
+
+		double x_angle = std::atan(x/z);
+		double y_angle = std::atan(y/z);
+
+		x_half_fov = Math::maximum(std::fabs(x_angle), x_half_fov);
+		y_half_fov = Math::maximum(std::fabs(y_angle), y_half_fov);
+
 		shadow_far_plane = Math::maximum(shadow_far_plane, z);
-	}
-
-	/*
-	bool near_plane_set = false;
-	double shadow_near_plane = 0.1;
-	Math::BoundingBox3D map_bound = map->getMapBoundingBox();
-	if (!map_bound.pointInside(shadowCamera->getPosition())) {
-		for (unsigned int i = 0; i < 8; i++) {
-			double vertex_plane = (map_bound.getCorner(i)-shadowCamera->getPosition()).dotProduct(shadowCamera->getLookDirection());
-			if (vertex_plane > 0.0) {
-				if (!near_plane_set) {
-					shadow_near_plane = vertex_plane;
-					near_plane_set = true;
-				}
-				else
-					shadow_near_plane = Math::minimum(shadow_near_plane, vertex_plane);
-			}
-			else {
-				shadow_near_plane = 0.1;
-				break;
-			}
-		}
-	}
-	*/
-
-	bool near_plane_set = false;
-	double shadow_near_plane = 0.1;
-	Math::BoundingBox3D map_bound = map->getMapBoundingBox();
-	if (!map_bound.pointInside(shadowCamera->getPosition())) {
-		for (unsigned int i = 0; i < 8; i++) {
-			double vertex_plane = (map_bound.getCorner(i)-shadowCamera->getPosition()).dotProduct(shadowCamera->getLookDirection());
-			if (vertex_plane > 0.0) {
-				if (!near_plane_set) {
-					shadow_near_plane = vertex_plane;
-					near_plane_set = true;
-				}
-				else
-					shadow_near_plane = Math::minimum(shadow_near_plane, vertex_plane);
-			}
-		}
+		if (z > GAME_RENDERER_SHADOW_MIN_NEAR_PLANE)
+			shadow_near_plane = Math::minimum(shadow_near_plane, z);
 	}
 
 	shadowCamera->setNearPlane(shadow_near_plane);
 	shadowCamera->setFarPlane(shadow_far_plane);
-	shadowCamera->setFieldOfViewDegrees(Math::radiansToDegrees(y_angle_max-y_angle_min));
-	shadowCamera->setAspect(std::sin(x_angle_max-x_angle_min)/std::sin(y_angle_max-y_angle_min));
-
+#if 0
+	double y_fov = y_angle_max-y_angle_min;
+    double x_fov = x_angle_max-x_angle_min;
+	shadowCamera->setFieldOfViewDegrees(Math::radiansToDegrees(y_fov));
+	shadowCamera->setAspect(std::tan(x_fov*0.5)/std::tan(y_fov*0.5));
+#else
+    double aspect = std::tan(x_half_fov)/std::tan(y_half_fov);
+    shadowCamera->setFieldOfViewDegrees(2.0 * Math::radiansToDegrees(y_half_fov));
+    shadowCamera->setAspect(aspect);
+#endif
 }
 
 void GameRenderer::renderToShadowMap(Render::RenderableObject& renderable) {

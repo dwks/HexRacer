@@ -2,8 +2,9 @@
 # Settings for the project
 
 #map = data/testtrack2.hrm
-map = data/testtrack2.hrm
+#map = data/testtrack2.hrm
 #map = data/testtrack2big.hrm
+map = data/canyon2/canyon2.hrm
 
 include maps.txt
 
@@ -31,6 +32,7 @@ physics.constant.turn             = 0.3
 physics.constant.accel            = 3.6
 physics.constant.brake            = 6.0
 physics.constant.centripetal      = 1.0
+#physics.constant.lean             = 0.6
 
 # Vehicle suspension
 physics.driving.enablesuspension  = 1
@@ -39,13 +41,21 @@ physics.driving.restlength        = 0.35
 physics.driving.stretchlength     = 0.5
 physics.driving.constant.k        = 8
 physics.driving.constant.c        = 45.0
-physics.driving.mindownfactor = 0.25
+physics.driving.mindownfactor = 0.0
 
-#Turning
+# Turning
 physics.turning.constant = 4.0
 physics.turning.speedfactor = 0.45
 physics.turning.speedthreshhold = 20.0
 physics.turning.fallofffactor = 0.0
+
+# Slip state
+physics.slipstate.enter          = 4
+physics.slipstate.exit           = 2
+physics.slipstate.sidewaysfactor = 0.2
+physics.slipstate.accelfactor    = 0.5
+physics.slipstate.turnfactor     = 2
+physics.slipstate.centripetalfactor = 0.0
 
 # Display options for the vehicle wheels
 physics.wheel.diameter = 0.155
@@ -60,18 +70,26 @@ physics.driving.airlineardrag     = 0.2
 physics.driving.angulardrag       = 2.0
 physics.driving.airangulardrag    = 0.2
 physics.driving.sidewaysdrag      = 20.0
+physics.driving.airsidewaysdrag   = 0.0
 
-game.paint.colorbenefit = 1.0
-game.paint.colorpenalty = -0.25
-game.paint.boostinfluence = 0.75
+game.paint.colorbenefit      = 1.0
+game.paint.colorpenalty      = -0.25
+game.paint.boostinfluence    = 0.75
 game.paint.boostweightfactor = 1.5
-game.paint.boostmin = 0.5
-game.paint.boostmax = 1.5
-game.paint.paintingboost = 0.8
-game.paint.erasingboost = 0.8
-game.paint.maxboostincrease = 0.02
+game.paint.boostmin          = 0.5
+game.paint.boostmax          = 1.5
+game.paint.paintingboost     = 0.8
+game.paint.erasingboost      = 0.8
+game.paint.maxboostincrease  = 0.02
 
 game.enablepathing = 1
+
+# This allows players to be warped back onto the track after
+# falling off, flipping upside down, or requesting assistance.
+game.warp.falloff.countdown            = 1000
+game.warp.upsidedown.countdown         = 2000
+game.warp.helprequest.countdown        = 2500
+game.warp.stillvelocity                = 0.05
 
 ########
 ### Rendering settings
@@ -126,7 +144,7 @@ render.tire.scale = 2.5
 
 hud.minimap.enable = 1
 hud.minimap.drawheight = 0.35
-hud.minimap.height = 140.0
+hud.minimap.height = 120.0
 
 hud.speedometer.enable = 1
 hud.speedometer.drawheight = 0.35
@@ -152,7 +170,26 @@ camera.followslow.x = 0.0
 camera.followslow.y = 2.25
 camera.followslow.z = -5.5
 
+########
+### Sound settings
 sound.enable = 1
+sound.maxbuffers = 16
+
+sound.engine.playervolume = 0.3
+sound.engine.enemyvolume = 0.75
+sound.engine.attenuation = 0.1
+sound.engine.maxpitch = 3.0
+sound.engine.minpitch = 0.25
+
+sound.music.volume = 0.25
+
+sound.collision.volume = 0.75
+sound.collision.attenuation = 0.075
+
+sound.skid.volume = 0.5
+sound.skid.attenuation = 0.1
+sound.skid.maxpitch = 2.75
+sound.skid.minpitch = 0.5
 
 ########
 ### Network settings
@@ -166,7 +203,7 @@ network.serverport = 1820
 
 ########
 ### AI and server settings
-server.aicount     = 3
+server.aicount     = 4
 
 ########
 include guiconfig.txt

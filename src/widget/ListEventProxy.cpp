@@ -4,6 +4,7 @@
 #include "MouseMoveEvent.h"
 #include "MouseButtonEvent.h"
 #include "FocusEvent.h"
+#include "WidgetActivateEvent.h"
 
 #include "FocusManager.h"
 
@@ -65,7 +66,7 @@ void ListEventProxy::visit(MouseButtonEvent *event) {
         }
         
         if(child[x]->getBoundingRect().pointInside(event->getWhere())
-            && event->getDown()) {
+            /*&& event->getDown()*/) {
             
             child[x]->handleEvent(event);
             return;
@@ -94,6 +95,11 @@ void ListEventProxy::visit(MouseButtonEvent *event) {
 
 void ListEventProxy::visit(FocusEvent *event) {
     
+}
+
+void ListEventProxy::visit(WidgetActivateEvent *event) {
+    widget->getVerticalBar()->handleEvent(event);
+    widget->getHorizontalBar()->handleEvent(event);
 }
 
 }  // namespace Widget

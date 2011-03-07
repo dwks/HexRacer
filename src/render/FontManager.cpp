@@ -27,7 +27,7 @@ FontManager::~FontManager() {
 
 void FontManager::loadFonts() {
     TTF_Font *font = TTF_OpenFont(
-        GET_SETTING("font", "data/DejaVuSans.ttf").c_str(),
+        GET_SETTING("font", "data/gui/DejaVuSans.ttf").c_str(),
         GET_SETTING("font.size", 16));
     
     if(!font) {

@@ -13,6 +13,7 @@
 #include "render/BackgroundRenderable.h"
 #include "map/HRMap.h"
 #include "CubeMapDialog.h"
+#include "MapEditorProgressBar.h"
 using namespace Project;
 using namespace OpenGL;
 using namespace Math;
@@ -69,6 +70,8 @@ private:
 	QImage objectBuffer;
 
 	BSPTree3D* collisionTree;
+
+	MapEditorProgressBar progressBar;
 
 public:
 

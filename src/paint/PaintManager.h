@@ -18,6 +18,8 @@
 #include "event/PaintCellsChanged.h"
 #include "event/Enabler.h"
 
+#include "misc/ProgressTracker.h"
+
 #include "settings/SettingsManager.h"
 
 namespace Project {
@@ -64,7 +66,7 @@ public:
 	PaintManager();
 	~PaintManager();
 
-	void setMap(Map::HRMap* map);
+	void setMap(Map::HRMap* map, Misc::ProgressTracker* progress_tracker = NULL);
     
 	void renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object, const Render::RenderSettings& settings);
 

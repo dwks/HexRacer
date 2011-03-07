@@ -42,10 +42,14 @@ Math::Point RaceManager::startingPointForPlayer(int id) {
 
 	//Start a little higher than the actual start point to avoid starting inside the track
     double normalSpringOffset = GET_SETTING("physics.driving.restlength", 0.5);
-    normalSpringOffset += VEHICLE_RESET_Y_OFFSET;
+    normalSpringOffset += VEHICLE_WARP_Y_OFFSET;
 	Math::Point offset = Math::Point(0.0, normalSpringOffset, 0.0);
     
     return data[id % data.size()]->getPosition()+offset;
+}
+
+bool RaceManager::inBounds(const Math::Point& position) const {
+	return (position.getY() > killPlaneY);
 }
 
 }  // namespace Map

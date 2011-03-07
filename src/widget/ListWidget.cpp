@@ -23,6 +23,8 @@ ListWidget::ListWidget(const std::string &name, bool vertical, bool horizontal,
     
     WidgetRect boxBounds = bounds;
     
+    boost::shared_ptr<EventProxy> scrollbarEventProxy(
+        new ListScrollbarEventProxy(this));
     if(vertical) {
         WidgetRect verticalBounds = bounds;
         verticalBounds.getDimensions().setX(0.06);
@@ -34,7 +36,11 @@ ListWidget::ListWidget(const std::string &name, bool vertical, bool horizontal,
         verticalBar = new ScrollbarWidget("list-vertical-scrollbar", true,
             verticalBounds);
         verticalBar->getSlider()
-            ->addEventProxy(new ListScrollbarEventProxy(this));
+            ->addEventProxy(scrollbarEventProxy);
+        verticalBar->getLess()
+            ->addEventProxy(scrollbarEventProxy);
+        verticalBar->getMore()
+            ->addEventProxy(scrollbarEventProxy);
     }
     if(horizontal) {
         WidgetRect horizontalBounds = bounds;
@@ -47,7 +53,11 @@ ListWidget::ListWidget(const std::string &name, bool vertical, bool horizontal,
         horizontalBar = new ScrollbarWidget("list-horizontal-scrollbar", false,
             horizontalBounds);
         horizontalBar->getSlider()
-            ->addEventProxy(new ListScrollbarEventProxy(this));
+            ->addEventProxy(scrollbarEventProxy);
+        horizontalBar->getLess()
+            ->addEventProxy(scrollbarEventProxy);
+        horizontalBar->getMore()
+            ->addEventProxy(scrollbarEventProxy);
     }
     
     box = new BoxWidget("list-box", "corners/in/normal");
@@ -72,7 +82,7 @@ ListWidget::ListWidget(const std::string &name, bool vertical, bool horizontal,
     addEventProxy(new ListEventProxy(this));
 }
 
-void ListWidget::addChild(WidgetBase *widget) {
+void ListWidget::addChild(boost::shared_ptr<WidgetBase> widget) {
     // first check if the list widget needs to be made wider
     // (if there is no horizontal scrollbar, clip child to width)
     if(horizontalBar) {
@@ -85,6 +95,7 @@ void ListWidget::addChild(WidgetBase *widget) {
         }
     }
     
+    // next set the new child's position
     WidgetRect rect = widget->getBoundingRect();
     double y = viewArea.getCorner().getY() + totalHeight;
     if(verticalBar) y -= verticalBar->getValue();
@@ -92,8 +103,7 @@ void ListWidget::addChild(WidgetBase *widget) {
     rect.getCorner().setY(y);
     widget->updateLayout(rect);
     
-    //LOG(GUI, "child " << widget->getName() << " set at " << rect);
-    
+    // finally make the vertical scrollbar taller as necessary
     totalHeight += widget->getBoundingRect().getHeight();
     
     if(totalHeight > viewArea.getHeight()) {
@@ -106,8 +116,9 @@ void ListWidget::addChild(WidgetBase *widget) {
         }
     }
     
+    // add an event proxy which will scroll this child correctly
     widget->addEventProxy(new ListItemEventProxy(this,
-        dynamic_cast<TextWidget *>(widget)));
+        dynamic_cast<TextWidget *>(widget.get())));
     
     CompositeWidget::addChild(widget);
 }
@@ -152,7 +163,7 @@ void ListWidget::render(WidgetVisitor &renderer) {
             /*LOG(GUI, "considering painting child " << child->getName() << " at "
                 << child->getBoundingRect() << " given " << startY << "," << endY);*/
             
-            if(childY >= startY && childY + childHeight <= endY) {
+            if(childY >= startY && childY + childHeight <= endY + 1e-8) {
                 child->accept(renderer);
             }
         }

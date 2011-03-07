@@ -52,9 +52,10 @@ void InputManager::doAction(unsigned long currentTime) {
 	inputMapper->update(Input::INPUT_A_TURN);
 	inputMapper->update(Input::INPUT_A_ACCELERATE);
 	inputMapper->update(Input::INPUT_D_JUMP);
-	inputMapper->update(Input::INPUT_D_RESET);
+	inputMapper->update(Input::INPUT_D_WARP);
     
-    World::PlayerIntention intention;
+    World::PlayerIntention intention
+        = playerManager->getPlayer()->getIntention();
     inputMapper->getSnapshot().asPlayerIntention(intention);
     
     bool identical = (intention == playerManager->getPlayer()->getIntention());
@@ -74,6 +75,7 @@ void InputManager::doPausedChecks() {
 	inputMapper->update(Input::INPUT_D_PHYSICS_DEBUG);
 	inputMapper->update(Input::INPUT_D_PATH_DEBUG);
 	inputMapper->update(Input::INPUT_D_CAMERA_DEBUG);
+	inputMapper->update(Input::INPUT_D_TOGGLE_PAUSED);
 	inputMapper->update(Input::INPUT_A_CAMERA_X_SPEED);
 	inputMapper->update(Input::INPUT_A_CAMERA_Z_SPEED);
 
@@ -110,6 +112,11 @@ void InputManager::doPausedChecks() {
         EMIT_EVENT(new Event::SetDebugCamera(debugCamera));
     }
 
+	if (inputMapper->getDigitalTriggered(Input::INPUT_D_TOGGLE_PAUSED)) {
+		bool paused = Timing::AccelControl::getInstance()->getPaused();
+		EMIT_EVENT(new Event::PauseGame(!paused));
+	}
+
 	if (debugCamera) {
     
 		static const double CAMERA_FACTOR = 0.8;
@@ -141,6 +148,7 @@ void InputManager::handlePaint() {
         paint = (paint + 1) % 8;
         
         if (painting) {
+            
             EMIT_EVENT(new Event::TogglePainting(clientData->getPlayerID(),
                 Event::TogglePainting::PAINTING));
         }
@@ -206,7 +214,7 @@ void InputManager::setInputMappings(PresetMapping mapping) {
 	inputMapper->addKeyToAnalogMapping(SDLK_d, false, Input::INPUT_A_CAMERA_X_SPEED, 0.0, 1.0);
 
 	inputMapper->addKeyToDigitalMapping(SDLK_SPACE, false, Input::INPUT_D_JUMP);
-	inputMapper->addKeyToDigitalMapping(SDLK_h, false, Input::INPUT_D_RESET);
+	inputMapper->addKeyToDigitalMapping(SDLK_h, false, Input::INPUT_D_WARP);
 	inputMapper->addKeyToDigitalMapping(SDLK_RETURN, false, Input::INPUT_D_PHYSICS_DEBUG);
 	inputMapper->addKeyToDigitalMapping(SDLK_BACKSLASH, false, Input::INPUT_D_PATH_DEBUG);
 	inputMapper->addKeyToDigitalMapping(SDLK_c, false, Input::INPUT_D_CAMERA_DEBUG);
@@ -238,6 +246,8 @@ void InputManager::setInputMappings(PresetMapping mapping) {
 			inputMapper->addButtonToDigitalMapping(0, joystick, false, Input::INPUT_D_PAINT);
 			//B - Erase
 			inputMapper->addButtonToDigitalMapping(1, joystick, false, Input::INPUT_D_ERASE);
+			//Start - Pause
+			inputMapper->addButtonToDigitalMapping(7, joystick, false, Input::INPUT_D_TOGGLE_PAUSED);
 			/*
 			//Left-stick X - Debug camera X
 			inputMapper->addAxisToAnalogMapping(0, joystick, -1.0, 1.0, stick_deadzone,

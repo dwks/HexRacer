@@ -4,8 +4,10 @@
 
 #include "widget/WidgetBase.h"
 #include "widget/EditWidget.h"
+#include "widget/ListWidget.h"
 #include "widget/WidgetActivateEvent.h"
 #include "widget/WidgetModifiedEvent.h"
+#include "widget/WidgetSelectedEvent.h"
 
 #include "event/SwitchToScreen.h"
 #include "event/ChangeScreenMode.h"
@@ -21,7 +23,26 @@ void SettingsProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();
     
     if(name == "accept") {
-        EMIT_EVENT(new Event::SwitchToScreen("main"));
+        EMIT_EVENT(new Event::SwitchToScreen(""));
+    }
+    else if(name == "fullscreen") {
+        int width = GET_SETTING("screen.width", 0);
+        int height = GET_SETTING("screen.height", 0);
+        int bpp = GET_SETTING("display.bpp", 0);
+        bool fullscreen = event->getDown();
+        
+        EMIT_EVENT(new Event::ChangeScreenMode(
+            width, height, bpp, fullscreen));
+    }
+    else if(name == "shadow") {
+        Settings::SettingsManager::getInstance()->set(
+            "render.shadow.enable",
+            Misc::StreamAsString() << event->getDown());
+    }
+    else if(name == "bloom") {
+        Settings::SettingsManager::getInstance()->set(
+            "render.bloom.enable",
+            Misc::StreamAsString() << event->getDown());
     }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");
@@ -45,11 +66,25 @@ void SettingsProxy::visit(Widget::WidgetModifiedEvent *event) {
         }
         
         int bpp = GET_SETTING("display.bpp", 0);
+        bool fullscreen = GET_SETTING("display.fullscreen", 0);
         
-        EMIT_EVENT(new Event::ChangeScreenMode(width, height, bpp));
+        EMIT_EVENT(new Event::ChangeScreenMode(
+            width, height, bpp, fullscreen));
     }
     else {
         LOG2(GUI, WARNING, "No action for modifying \"" << name << "\"");
+    }
+}
+
+void SettingsProxy::visit(Widget::WidgetSelectedEvent *event) {
+    std::string name = event->getWidget()->getName();
+    
+    if(name == "quality") {
+        Settings::SettingsManager::getInstance()->set(
+            "render.quality", event->getSelected()->getName());
+    }
+    else {
+        LOG2(GUI, WARNING, "No action for selecting \"" << name << "\"");
     }
 }
 

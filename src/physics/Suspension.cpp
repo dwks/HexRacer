@@ -48,12 +48,6 @@ double Suspension::Spring::calculateForceFactor(
     if(!thisDisplacement.isOnGround()) {
         return 0.0;
     }
-
-	//Set the force scaling factor depending on the orientation of the wheel
-	double downwardsFactor = Math::maximum(
-		axis.unitDotProduct(Math::Point(0.0, -1.0, 0.0)),
-		GET_SETTING("physics.driving.mindownfactor", 0.25)
-		);
     
     double displacement = thisDisplacement.getDisplacement();
     double displacementSpeed
@@ -87,7 +81,7 @@ double Suspension::Spring::calculateForceFactor(
     
     //LOG(PHYSICS, "     " << -K*displacement << ", " << C*displacementSpeed);
     
-    return factor*downwardsFactor;
+    return factor;
 }
 
 Suspension::Suspension() : worldManager(NULL) {
@@ -133,8 +127,6 @@ void Suspension::setData(Object::WorldManager *worldManager) {
 }
 
 void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
-    // add +0.01 to Y so that suspension points are not usually underground
-    // multiply Z by 0.9 to shift suspension points inwards slightly
 
 	double front_sep = GET_SETTING("physics.wheel.frontsep", 0.4);
 	double front_z = GET_SETTING("physics.wheel.frontz", 0.68);
@@ -147,21 +139,15 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
         Math::Point(-back_sep, -0.2 + 0.05, back_z),
         Math::Point(back_sep, -0.2 + 0.05, back_z),
     };
-    
-    // bullet rays appear to have radius 0.01.
-    /*static const Math::Point suspensionPoint[] = {
-        Math::Point(0.4 + 0.010001, +0.2 + 0.1, 0.8 * 0.9),
-        Math::Point(-0.4 - 0.010001, +0.2 + 0.1, 0.8 * 0.9),
-        Math::Point(-0.4 - 0.010001, +0.2 + 0.1, -0.8 * 0.9),
-        Math::Point(0.4 + 0.010001, +0.2 + 0.1, -0.8 * 0.9),
-    };*/
-    
+
+	// downward axis of suspension springs
+    Math::Point axis = -player->getPhysicalObject()->getUpDirection();
+    axis.normalize();
+	double downFactor = calculateDownFactor(axis);
+	player->getPhysicalObject()->setTraction(std::sqrt(downFactor));
+
     for(int wheel = 0; wheel < 4; wheel ++) {
         Math::Matrix matrix = player->getTransformation();
-        
-        // downward axis of suspension springs
-        Math::Point axis = -player->getPhysicalObject()->getUpDirection();
-        axis.normalize();
         
         // suspension attachment point in world space
         Math::Point point = matrix * suspensionPoint[wheel];
@@ -187,7 +173,8 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
         // calculate and apply actual force
         Displacement displacement = spring.doRaycast();
         double forceFactor = spring.calculateForceFactor(displacement);
-        player->applyForce(axis * forceFactor, forcePoint);
+		
+        player->applyForce(axis * forceFactor * downFactor, forcePoint);
         
         // record displacement for next time
         player->getPhysicalObject()->setSpring(wheel, displacement);
@@ -222,14 +209,17 @@ void Suspension::applyDragForce(Object::Player *player) {
     
     double linear;
 	double angular;
+	double sideways;
 
 	if (player->getOnGround()) {
-		linear = GET_SETTING("physics.driving.lineardrag", 0.1);
-		angular = GET_SETTING("physics.driving.angulardrag", 0.1);
+		linear = GET_SETTING("physics.driving.lineardrag", 0.1)*player->getPhysicalObject()->getTraction();
+		angular = GET_SETTING("physics.driving.angulardrag", 0.1)*player->getPhysicalObject()->getTraction();
+		sideways = GET_SETTING("physics.driving.sidewaysdrag", 0.1)*player->getPhysicalObject()->getTraction();
 	}
 	else {
 		linear = GET_SETTING("physics.driving.airlineardrag", 0.1);
 		angular = GET_SETTING("physics.driving.airangulardrag", 0.1);
+		sideways = GET_SETTING("physics.driving.airsidewaysdrag", 0.1);
 	}
 
     Math::Point linearDrag = -linear * linearVelocity;
@@ -240,19 +230,31 @@ void Suspension::applyDragForce(Object::Player *player) {
     
     // sideways drag (prevent slipping)
     
-    if(player->getOnGround()) {
-        Math::Point sidewaysAxis = physicalPlayer->getRightDirection();
-        
-        if(linearVelocity.lengthSquared()) {
-            double sidewaysSpeed = linearVelocity.dotProduct(sidewaysAxis)
-                /*/ linearVelocity.length()*/;
-            
-            double sideways = GET_SETTING("physics.driving.sidewaysdrag", 0.1);
-            Math::Point sidewaysDrag = -sideways * sidewaysSpeed * sidewaysAxis;
-            
-            physicalPlayer->applyForce(sidewaysDrag);
-        }
+    Math::Point sidewaysAxis = physicalPlayer->getRightDirection();
+    double sidewaysSpeed = linearVelocity.dotProduct(sidewaysAxis);
+    Math::Point sidewaysDrag = -sideways * sidewaysSpeed * sidewaysAxis;
+    
+    double enterSlipState = GET_SETTING("physics.slipstate.enter", 1.0);
+    double exitSlipState = GET_SETTING("physics.slipstate.exit", 1.0);
+    
+    if(std::fabs(sidewaysSpeed) >= enterSlipState) {
+        physicalPlayer->setSliding(true);
     }
+    if(std::fabs(sidewaysSpeed) <= exitSlipState) {
+        physicalPlayer->setSliding(false);
+    }
+    
+    //LOG(PHYSICS, "sideways " << sidewaysSpeed << "\t" << physicalPlayer->getSliding());
+    
+    if(physicalPlayer->getSliding()) {
+        sidewaysDrag *= GET_SETTING("physics.slipstate.sidewaysfactor", 1.0);
+    }
+    
+    physicalPlayer->applyForce(sidewaysDrag);
+}
+
+double Suspension::calculateDownFactor(const Math::Point& axis) {
+	return Math::maximum(GET_SETTING("physics.driving.mindownfactor", 0.1), -axis.normalized().getY());
 }
 
 }  // namespace Physics

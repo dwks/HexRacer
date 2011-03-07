@@ -29,8 +29,8 @@ private:
     bool propagate;
 public:
     TogglePainting() : id(-1), propagate(true) {}
-    TogglePainting(int id, PaintType type)
-        : id(id), type(type), propagate(true) {}
+    TogglePainting(int id, PaintType type, bool propagate = true)
+        : id(id), type(type), propagate(propagate) {}
     
     int getID() const { return id; }
     PaintType getPaintType() const { return type; }

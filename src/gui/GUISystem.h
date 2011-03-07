@@ -1,6 +1,9 @@
 #ifndef PROJECT_GUI__GUISYSTEM_H
 #define PROJECT_GUI__GUISYSTEM_H
 
+#include <string>
+#include <vector>
+
 #include "widget/CompositeWidget.h"
 #include "widget/WidgetEvent.h"
 #include "widget/FocusManager.h"
@@ -28,6 +31,8 @@ private:
     Widget::WidgetBase *currentScreen;
     
     Widget::WidgetPoint screenSize;
+private:
+    std::vector<std::string> screenStack;
 public:
     GUISystem() : widgets(0), currentScreen(0) {}
     ~GUISystem();
@@ -37,7 +42,19 @@ public:
     void render();
     void handleEvent(Widget::WidgetEvent *event);
     
-    void selectScreen(const std::string &screen);
+    /** Pushes one screen onto the screen stack, which will become the current
+        screen.
+    */
+    void pushScreen(const std::string &screen);
+    
+    /** Pops one screen from the screen stack.
+    */
+    void popScreen();
+    
+    /** Pops as many screens as necessary from the screen stack until @a until
+        is on top.
+    */
+    void popScreen(const std::string &until);
     
     Widget::WidgetBase *getWidget(const std::string &path);
     Widget::CompositeWidget *getScreen(const std::string &path);
@@ -46,7 +63,7 @@ public:
     void setScreenSize(Widget::WidgetPoint screenSize)
         { this->screenSize = screenSize; }
 private:
-    void setShortcut(Widget::WidgetBase *widget, long key);
+    void useScreen(const std::string &screen);
 };
 
 }  // namespace GUI

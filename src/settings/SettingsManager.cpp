@@ -62,46 +62,50 @@ void SettingsManager::load(const char *filename) {
     
     std::string line;
     while(std::getline(stream, line)) {
-        // remove comments
-        std::string::size_type hash = line.find('#');
-        if(hash != std::string::npos) line.resize(hash);
-        
-        // skip empty lines
-        if(line.length() == 0) continue;
-        
-        std::istringstream linestream(line);
-        
-        // skip lines with no key (probably just whitespace)
-        std::string key;
-        if(!(linestream >> key)) continue;
-        
-        if(key == "include") {
-            // skip space after 'include'
-            linestream.get();
-            
-            std::string include;
-            std::getline(linestream, include);
-            load(include.c_str());
-            continue;
-        }
-        
-        // if there's no '=', the line is misformatted
-        char equal;
-        if(!(linestream >> equal) || equal != '=') {
-            LOG2(GLOBAL, SETTING, "Misformatted line: \"" << line << "\"");
-            continue;
-        }
-        
-        // skip space after '=' if there is one
-        if(linestream.peek() == ' ') linestream.get();
-        
-        // whatever remains is the data
-        std::string data;
-        std::getline(linestream, data);
-        
-        // record this setting
-        set(key, data);
+        parse(line);
     }
+}
+
+void SettingsManager::parse(std::string line) {
+    // remove comments
+    std::string::size_type hash = line.find('#');
+    if(hash != std::string::npos) line.resize(hash);
+    
+    // skip empty lines
+    if(line.length() == 0) return;
+    
+    std::stringstream linestream(line);
+    
+    // skip lines with no key (probably just whitespace)
+    std::string key;
+    if(!(linestream >> key)) return;
+    
+    if(key == "include") {
+        // skip space after 'include'
+        linestream.get();
+        
+        std::string include;
+        std::getline(linestream, include);
+        load(include.c_str());
+        return;
+    }
+    
+    // if there's no '=', the line is misformatted
+    char equal;
+    if(!(linestream >> equal) || equal != '=') {
+        LOG2(GLOBAL, SETTING, "Misformatted line: \"" << line << "\"");
+        return;
+    }
+    
+    // skip space after '=' if there is one
+    if(linestream.peek() == ' ') linestream.get();
+    
+    // whatever remains is the data
+    std::string data;
+    std::getline(linestream, data);
+    
+    // record this setting
+    set(key, data);
 }
 
 void SettingsManager::set(const std::string &key, const std::string &value) {

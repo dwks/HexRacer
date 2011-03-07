@@ -30,6 +30,8 @@
 namespace Project {
 namespace SDL {
 
+#define GAME_RENDERER_SHADOW_MIN_NEAR_PLANE 0.1
+
 class GameRenderer {
 private:
 
@@ -72,6 +74,7 @@ private:
     boost::shared_ptr<FPSRateMonitor> fpsRate;
 
 public:
+    ~GameRenderer();
     void construct(OpenGL::Camera *camera);
     
     void setGUI(boost::shared_ptr<GUI::GUISystem> gui);

@@ -5,15 +5,10 @@
 #include "math/Values.h"
 #include "math/Geometry.h"
 
-#include "misc/Sleeper.h"
-
 namespace Project {
 namespace AI {
 
 DirectionalDriver::DirectionalDriver(Object::Player *player) : Driver(player) {
-    sittingStill = false;
-    sittingStillSince = 0;
-    
     intention.setAccel(1.0);
     intention.setPaint(true);
 }
@@ -63,32 +58,7 @@ const World::PlayerIntention &DirectionalDriver::getAction() {
     
     intention.setTurn(turnSign * distanceOff * 0.2);
     
-    detectSittingStill();
-    
     return intention;
-}
-
-void DirectionalDriver::detectSittingStill() {
-    Object::Player *player = getPlayer();
-    
-    // if sitting still for too long, request a warp
-    intention.setReset(false);
-    if(player->getPhysicalObject()->getLinearVelocity().length() < 0.05) {
-        unsigned long now = Misc::Sleeper::getTimeMilliseconds();
-        
-        if(!sittingStill) {
-            sittingStill = true;
-            sittingStillSince = now;
-        }
-        else if(sittingStillSince + 2000 < now) {
-            LOG(PHYSICS, "Player " << player->getID() << " is trying to reset");
-            
-            intention.setReset(true);
-            
-            sittingStill = false;
-        }
-    }
-    else sittingStill = false;
 }
 
 }  // namespace AI

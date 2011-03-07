@@ -541,10 +541,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\paint\PaintVertex.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\map\PathingUpdater.cpp"
 				>
 			</File>
@@ -570,6 +566,10 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\PhysicalPlayer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\PhysicsCollision.cpp"
 				>
 			</File>
 			<File
@@ -833,7 +833,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\WarpDetector.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\WarpOntoTrack.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\WarpTracker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ai\WeightedDriver.cpp"
 				>
 			</File>
 			<File
@@ -1271,10 +1283,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\paint\PaintVertex.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\map\PathingUpdater.h"
 				>
 			</File>
@@ -1300,6 +1308,10 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\PhysicalPlayer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\PhysicsCollision.h"
 				>
 			</File>
 			<File
@@ -1579,7 +1591,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\WarpDetector.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\WarpOntoTrack.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\physics\WarpTracker.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ai\WeightedDriver.h"
 				>
 			</File>
 			<File

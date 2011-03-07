@@ -15,6 +15,7 @@ public:
     ListScrollbarEventProxy(ListWidget *list) : list(list) {}
     
     virtual void visit(MouseMoveEvent *event);
+    virtual void visit(WidgetActivateEvent *event);
 };
 
 }  // namespace Widget

@@ -380,6 +380,14 @@ namespace Render {
 	bool RenderManager::hasTransformation() const {
 		return (numTransformations > 0);
 	}
+	void RenderManager::cleanup() const {
+		//Unbind cube map texture
+		glActiveTextureARB(CUBE_MAP_TEXTURE_UNIT);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, NULL);
+		glDisable(GL_TEXTURE_CUBE_MAP);
+
+		glActiveTextureARB(GL_TEXTURE0);
+	}
 	
 
 }  // namespace Render

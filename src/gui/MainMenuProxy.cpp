@@ -25,7 +25,7 @@ void MainMenuProxy::visit(Widget::WidgetActivateEvent *event) {
         EMIT_EVENT(new Event::SwitchToScreen("connect"));
     }
     else if(name == "single") {
-        EMIT_EVENT(new Event::JoinGame());
+        EMIT_EVENT(new Event::SwitchToScreen("singleplayer"));
     }
     else if(name == "settings") {
         EMIT_EVENT(new Event::SwitchToScreen("settings"));

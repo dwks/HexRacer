@@ -12,6 +12,8 @@ class EditWidget;
 class ScrollbarWidget;
 class ListWidget;
 class ImageWidget;
+class ProgressBarWidget;
+class CheckWidget;
 
 class WidgetVisitor {
 public:
@@ -25,6 +27,8 @@ public:
     virtual void visit(ScrollbarWidget *widget) = 0;
     virtual void visit(ListWidget *widget) = 0;
     virtual void visit(ImageWidget *widget) = 0;
+	virtual void visit(ProgressBarWidget *widget) = 0;
+    virtual void visit(CheckWidget *widget) = 0;
 };
 
 }  // namespace Widget

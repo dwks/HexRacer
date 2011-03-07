@@ -10,6 +10,7 @@ class SettingsProxy : public Widget::EventProxy {
 public:
     virtual void visit(Widget::WidgetActivateEvent *event);
     virtual void visit(Widget::WidgetModifiedEvent *event);
+    virtual void visit(Widget::WidgetSelectedEvent *event);
 };
 
 }  // namespace GUI

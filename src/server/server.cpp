@@ -10,6 +10,10 @@ int main(int argc, char *argv[]) {
     Project::Settings::ProgramSettings programSettings(false);
     Project::Settings::SettingsManager settings(CONFIG_FILE);
     
+    for(int arg = 1; arg < argc; arg ++) {
+        settings.parse(argv[arg]);
+    }
+    
     Project::Server::ServerMain *server = new Project::Server::ServerMain();
     server->run();
     delete server;

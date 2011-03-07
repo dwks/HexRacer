@@ -132,7 +132,9 @@ bool ServerMain::ServerObserver::interestedIn(Event::EventType::type_t type) {
         return false;
     case Event::EventType::PHYSICS_TICK:  // don't care for the moment
         return false;
-    case Event::EventType::WARP_ONTO_TRACK:  // handled by PlayerManager
+    case Event::EventType::WARP_ONTO_TRACK:  // handled by WarpDetector
+    case Event::EventType::PLAYER_PROGRESS_EVENT:
+    case Event::EventType::PHYSICS_COLLISION:
         return false;
     default:
         break;
@@ -187,13 +189,12 @@ void ServerMain::init() {
     basicWorld = boost::shared_ptr<World::BasicWorld>(new World::BasicWorld());
     basicWorld->constructBeforeConnect();
     basicWorld->constructSkippingConnect();
-    
-    Map::MapLoader().load(map.get(), NULL);
-    basicWorld->constructAfterConnect(map.get());
-    
-    paintManager = boost::shared_ptr<Paint::PaintManager>(
+
+	paintManager = boost::shared_ptr<Paint::PaintManager>(
         new Paint::PaintManager());
-    paintManager->setMap(map.get());
+    
+    Map::MapLoader().load(map.get(), NULL, NULL, paintManager.get());
+    basicWorld->constructAfterConnect(map.get());
     
     paintSubsystem = boost::shared_ptr<Paint::PaintSubsystem>(
         new Paint::PaintSubsystem(
@@ -225,7 +226,8 @@ void ServerMain::run() {
             
             Network::PacketSerializer packetSerializer;
             Network::Packet *packet = new Network::HandshakePacket(
-                clientCount, Misc::Sleeper::getTimeMilliseconds());
+                clientCount, GET_SETTING("map", "data/testtrack.hrm"),
+                Misc::Sleeper::getTimeMilliseconds());
             
             Network::StringSerializer stringSerializer(socket);
             stringSerializer.sendString(

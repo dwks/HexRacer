@@ -24,6 +24,7 @@
 
 #include "object/Player.h"
 #include "world/PlayerIntention.h"
+#include "physics/WarpTracker.h"
 
 #include "PacketSerializer.h"
 #include "PointSerializer.h"
@@ -53,6 +54,7 @@ std::string PacketSerializer::packetToString(Packet *packet) {
     
     out.register_type<Object::Player>();
     out.register_type<World::PlayerIntention>();
+    out.register_type<Physics::WarpTracker>();
     
     try {
         out << packet;
@@ -88,6 +90,7 @@ Packet *PacketSerializer::stringToPacket(const std::string &string) {
     
     in.register_type<Object::Player>();
     in.register_type<World::PlayerIntention>();
+    in.register_type<Physics::WarpTracker>();
     
     Packet *packet;
     try {

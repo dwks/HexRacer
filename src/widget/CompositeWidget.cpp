@@ -16,28 +16,41 @@ CompositeWidget::CompositeWidget(const std::string &name)
 }
 
 CompositeWidget::~CompositeWidget() {
-    for(ChildListType::iterator i = childList.begin(); i != childList.end();
-        ++ i) {
-        
-        delete *i;
-    }
+    // smart pointers automatically free the child widgets if necessary
+    childList.clear();
+}
+
+void CompositeWidget::addChild(boost::shared_ptr<WidgetBase> widget) {
+    childList.push_back(widget);
 }
 
 void CompositeWidget::addChild(WidgetBase *widget) {
-    childList.push_back(widget);
+    addChild(boost::shared_ptr<WidgetBase>(widget));
 }
 
 WidgetBase *CompositeWidget::getChild(const std::string &name) {
     for(ChildListType::iterator i = childList.begin(); i != childList.end();
         ++ i) {
         
-        WidgetBase *widget = *i;
+        WidgetBase *widget = (*i).get();
         if(widget->getName() == name) {
             return widget;
         }
     }
     
     return NULL;
+}
+
+void CompositeWidget::removeChild(const std::string &name) {
+    for(ChildListType::iterator i = childList.begin(); i != childList.end();
+        ++ i) {
+        
+        WidgetBase *widget = (*i).get();
+        if(widget->getName() == name) {
+            childList.erase(i);
+            break;
+        }
+    }
 }
 
 }  // namespace Widget

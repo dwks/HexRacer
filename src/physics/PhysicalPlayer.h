@@ -3,6 +3,7 @@
 
 #include "PhysicalObject.h"
 #include "Converter.h"
+#include "WarpTracker.h"
 
 #include "boost/serialization/access.hpp"
 #include "boost/serialization/split_member.hpp"
@@ -25,6 +26,7 @@ private:
             = Converter::toPoint(rigidBody->getAngularVelocity());
         
         ar << transformation << linearVelocity << angularVelocity;
+        ar << warpTracker;
     }
     
     template <typename Archive>
@@ -32,6 +34,7 @@ private:
         Math::Matrix transformation;
         Math::Point linearVelocity, angularVelocity;
         ar >> transformation >> linearVelocity >> angularVelocity;
+        ar >> warpTracker;
         
         //LOG(OPENGL, transformation);
         
@@ -62,8 +65,12 @@ private:
     SpringDisplacement spring[4];
     bool onGround;  // not serialized
     double speedBoost;  // not serialized
+	double traction;
+    WarpTracker warpTracker;
+    bool sliding;
 public:
-    PhysicalPlayer() : rigidBody(NULL), onGround(false), speedBoost(1.0) {}
+    PhysicalPlayer() : rigidBody(NULL), onGround(false), speedBoost(1.0),
+        traction(1.0), sliding(false) {}
     PhysicalPlayer(const Math::Point &position, const Math::Point &direction);
     virtual ~PhysicalPlayer();
     
@@ -74,9 +81,15 @@ public:
         { this->speedBoost = speedBoost; }
     double getSpeedBoost()
         { return this->speedBoost; }
+
+	void setTraction(double _traction) { traction = _traction; }
+	double getTraction() const { return traction; }
     
     const SpringDisplacement &getSpring(int i) { return spring[i]; }
     void setSpring(int i, SpringDisplacement d) { spring[i] = d; }
+    
+    bool getSliding() const { return sliding; }
+    void setSliding(bool sliding) { this->sliding = sliding; }
     
     void destroyRigidBody();
     void constructRigidBody(const Math::Point &position);
@@ -112,6 +125,8 @@ public:
     virtual void setData(const Math::Matrix &transform,
         const Math::Point &linearVelocity,
         const Math::Point &angularVelocity);
+    
+    WarpTracker *getWarpTracker() { return &warpTracker; }
 };
 
 }  // namespace Physics

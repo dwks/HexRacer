@@ -29,6 +29,17 @@ void SDLMainLoop::changeScreenModeHandler(Event::ChangeScreenMode *event) {
     int width = event->getWidth();
     int height = event->getHeight();
     int bpp = event->getBPP();
+    bool fullscreen = event->getFullscreen();
+    
+    // special case: if just toggling fullscreen, and the operating system
+    // supports it, can just call ToggleFullScreen instead of setting the mode
+    if(width == GET_SETTING("display.width", 0)
+        && height == GET_SETTING("display.height", 0)
+        && bpp == GET_SETTING("display.bpp", 0)
+        && fullscreen != GET_SETTING("display.fullscreen", 0)) {
+        
+        if(SDL_WM_ToggleFullScreen(SDL_GetVideoSurface())) return;
+    }
     
     Settings::SettingsManager::getInstance()->set(
         "display.width", Misc::StreamAsString() << width);
@@ -36,6 +47,15 @@ void SDLMainLoop::changeScreenModeHandler(Event::ChangeScreenMode *event) {
         "display.height", Misc::StreamAsString() << height);
     Settings::SettingsManager::getInstance()->set(
         "display.bpp", Misc::StreamAsString() << bpp);
+    Settings::SettingsManager::getInstance()->set(
+        "display.fullscreen", Misc::StreamAsString() << fullscreen);
+    
+    if(fullscreen) {
+        sdl_init_flags |= SDL_FULLSCREEN;
+    }
+    else {
+        sdl_init_flags &= ~SDL_FULLSCREEN;
+    }
     
     SDL_SetVideoMode(width, height, bpp, this->sdl_init_flags);
     resizeGL(width, height);
@@ -54,14 +74,21 @@ void SDLMainLoop::joinGameHandler(Event::JoinGame *event) {
                 << ":" << event->getPort());
         }
         
+        if(menuLoop->getGUI()->getCurrentScreen()->getName() == "loading") {
+            menuLoop->getGUI()->popScreen();
+        }
+        
         return;
+    }
+    else {
+        event->setSuccessful();
     }
     loop->construct();
     
     loop->setGuiPointers(
         menuLoop->getGUI(),
         menuLoop->getGUIInput());
-    menuLoop->getGUI()->selectScreen("running");
+    menuLoop->getGUI()->pushScreen("running");
     
 	// set up camera if necessary
     loop->setProjection(Point2D(
@@ -104,7 +131,7 @@ void SDLMainLoop::useLoopBase(LoopBase *loop) {
 void SDLMainLoop::useMenuLoop() {
     delete this->loop;  // delete the other menu, whatever it is
     
-    menuLoop->getGUI()->selectScreen("main");
+    menuLoop->getGUI()->popScreen("main");
     this->loop = menuLoop;
 }
 
@@ -236,6 +263,8 @@ void SDLMainLoop::doRender() {
     
     glFlush();
     SDL_GL_SwapBuffers();
+    
+    loop->postRender();
 }
 
 }  // namespace SDL

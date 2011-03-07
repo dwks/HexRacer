@@ -33,8 +33,10 @@ public:
         ENTIRE_WORLD,
         JOIN_GAME,
         PHYSICS_TICK,
+        PHYSICS_COLLISION,
         SWITCH_TO_SCREEN,
         CHANGE_SCREEN_MODE,
+        PLAYER_PROGRESS_EVENT,
         TYPES
     };
 };

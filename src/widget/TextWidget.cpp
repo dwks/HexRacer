@@ -112,8 +112,10 @@ void TextWidget::preRender() {
         setLayout(new NormalTextLayout(align, aspectRatio));
     }
     else {
-        static_cast<NormalTextLayout *>(getLayout())
-            ->setAspectRatio(aspectRatio);
+        NormalTextLayout *normal
+            = dynamic_cast<NormalTextLayout *>(getLayout().get());
+        
+        if(normal) normal->setAspectRatio(aspectRatio);
         getLayout()->update();
     }
     
@@ -192,8 +194,10 @@ void TextWidget::addText(const std::string &add) {
 }
 
 void TextWidget::setText(const std::string &data) {
-    this->data = data;
-    textChanged();
+    if(data != this->data) {
+        this->data = data;
+        textChanged();
+    }
 }
 
 void TextWidget::textChanged() {

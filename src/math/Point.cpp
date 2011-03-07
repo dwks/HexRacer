@@ -278,6 +278,20 @@ Point Point::coordinateMultiply(const Point &other) const {
         getW() * other.getW());
 }
 
+Axis Point::longestAxis() const {
+	if (std::fabs(getX()) > std::fabs(getY())) {
+		if (std::fabs(getX()) > std::fabs(getZ()))
+			return X_AXIS;
+		else
+			return Z_AXIS;
+	}
+	else {
+		if (std::fabs(getY()) > std::fabs(getZ()))
+			return Y_AXIS;
+		else
+			return Z_AXIS;
+	}
+}
 Point Point::operator / (double factor) const {
     return Point(
         getX() / factor,

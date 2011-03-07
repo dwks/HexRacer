@@ -10,15 +10,9 @@ namespace Project {
 namespace GUI {
 
 class MapList : public Widget::ListWidget {
-private:
-    int maps;
 public:
     MapList(const std::string &name, bool vertical, bool horizontal,
         const Widget::WidgetRect &bounds);
-    
-    int getMaps() const { return maps; }
-private:
-    std::string mapRoot(int map);
 };
 
 }  // namespace GUI

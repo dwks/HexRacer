@@ -9,8 +9,6 @@ namespace AI {
 class StraightDriver : public Driver {
 private:
     World::PlayerIntention intention;
-    bool sittingStill;
-    unsigned long sittingStillSince;
 public:
     StraightDriver(Object::Player *player);
     

@@ -8,3 +8,8 @@
 
 - make PathTracker take a pointer, not a reference, in the constructor
 
+- auto-warping, no using 'h' to cheat
+- allow AIs to paint
+- fix bug: if a warp fires on the server, the client may never reset a
+  player help request
+

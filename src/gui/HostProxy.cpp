@@ -2,14 +2,12 @@
 
 #include "widget/WidgetActivateEvent.h"
 #include "widget/WidgetModifiedEvent.h"
-#include "widget/WidgetSelectedEvent.h"
-
-#include "widget/TextWidget.h"
-#include "widget/ImageWidget.h"
+#include "widget/EditWidget.h"
 
 #include "event/SwitchToScreen.h"
-#include "event/JoinGame.h"
 #include "event/EventSystem.h"
+
+#include "map/MapSettings.h"
 
 #include "settings/SettingsManager.h"
 #include "log/Logger.h"
@@ -17,22 +15,22 @@
 namespace Project {
 namespace GUI {
 
-std::string HostProxy::map;
-
 void HostProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();
     
-    if(name == "cancel") {
-        EMIT_EVENT(new Event::SwitchToScreen("main"));
+    if(name == "map") {
+        EMIT_EVENT(new Event::SwitchToScreen("selectmap"));
+    }
+    else if(name == "cancel") {
+        EMIT_EVENT(new Event::SwitchToScreen(""));
     }
     else if(name == "host") {
-        //LOG2(GUI, WARNING, "Hosting not yet implemented");
-        
+        std::string map = Map::MapSettings::getInstance()->getMapFile();
         if(map != "") {
             LOG(GUI, "Using map \"" << map << "\"");
             
-            Settings::SettingsManager::getInstance()->set("map", map);
-            EMIT_EVENT(new Event::JoinGame());
+            Map::MapSettings::getInstance()->setGameType("host");
+            EMIT_EVENT(new Event::SwitchToScreen("loading"));
         }
         else {
             LOG2(GUI, WARNING, "No map selected!");
@@ -44,23 +42,41 @@ void HostProxy::visit(Widget::WidgetActivateEvent *event) {
 }
 
 void HostProxy::visit(Widget::WidgetModifiedEvent *event) {
-    LOG2(GUI, WARNING, "HostProxy doesn't handle WidgetModifiedEvent");
-}
-
-void HostProxy::visit(Widget::WidgetSelectedEvent *event) {
-    std::string title = event->getSelected()->getData();
-    LOG(GUI, "selected map \"" << title << "\"");
+    std::string name = event->getWidget()->getName();
     
-    std::string root = event->getSelected()->getName();
-    std::string thumbnail = GET_SETTING(root + ".image", "");
-    
-    dynamic_cast<Widget::TextWidget *>(host->getChild("title"))
-        ->setText(title);
-    
-    dynamic_cast<Widget::ImageWidget *>(host->getChild("thumbnail"))
-        ->setFilename(thumbnail);
-    
-    this->map = GET_SETTING(root, "");
+    if(name == "hostport") {
+        unsigned short hostport;
+        std::istringstream stream(event->getWidget()->getData());
+        if(!(stream >> hostport)) {
+            LOG(GUI, "HostProxy: malformed host port \""
+                << event->getWidget()->getData() << "\"");
+            event->getWidget()->setData(
+                GET_SETTING("network.serverport", "1820"));
+            return;
+        }
+        
+        Settings::SettingsManager::getInstance()->
+            set("network.serverport", Misc::StreamAsString() << hostport);
+        Settings::SettingsManager::getInstance()->
+            set("network.port", Misc::StreamAsString() << hostport);
+    }
+    else if(name == "aicount") {
+        int aicount;
+        std::istringstream stream(event->getWidget()->getData());
+        if(!(stream >> aicount) || aicount >= 100) {
+            LOG(GUI, "HostProxy: malformed ai count \""
+                << event->getWidget()->getData() << "\"");
+            event->getWidget()->setData(
+                GET_SETTING("server.aicount", "0"));
+            return;
+        }
+        
+        Settings::SettingsManager::getInstance()->
+            set("server.aicount", Misc::StreamAsString() << aicount);
+    }
+    else {
+        LOG2(GUI, WARNING, "No action for modifying \"" << name << "\"");
+    }
 }
 
 }  // namespace GUI

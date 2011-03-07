@@ -115,6 +115,8 @@ void MapEditorWidget::initializeGL() {
 
 	normalRenderProperties = new RenderProperties();
 	normalRenderProperties->setShaderOverride(true);
+	normalRenderProperties->setColor(OpenGL::Color::WHITE);
+	normalRenderProperties->setColorOverride(true);
 
 	objectBufferProperties = new RenderProperties();
 	objectBufferProperties->setShaderOverride(true);
@@ -568,7 +570,11 @@ void MapEditorWidget::newMap() {
 }
 
 void MapEditorWidget::loadMap(string filename) {
-	map->loadMapFile(filename);
+
+	progressBar.open();
+	map->loadMapFile(filename, &progressBar);
+	progressBar.close();
+
 	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
 		MapObject::ObjectType type = static_cast<MapObject::ObjectType>(i);
 		mapObjectsChanged(type);
@@ -581,12 +587,16 @@ void MapEditorWidget::loadMap(string filename) {
 
 void MapEditorWidget::saveMap() {
 	if (map->getFilename().length() > 0) {
-		map->saveMapFile(map->getFilename());
+		progressBar.open();
+		map->saveMapFile(map->getFilename(), &progressBar);
+		progressBar.close();
 	}
 }
 
 void MapEditorWidget::saveMapAs(string filename) {
-	map->saveMapFile(filename);
+	progressBar.open();
+	map->saveMapFile(filename, &progressBar);
+	progressBar.close();
 }
 
 void MapEditorWidget::mapObjectsChanged(MapObject::ObjectType type) {
@@ -774,8 +784,10 @@ void MapEditorWidget::setShowInvisible(bool enabled) {
 	updateGL();
 }
 void MapEditorWidget::generatePaint() {
-	map->generatePaint();
+	progressBar.open();
+	map->generatePaint(&progressBar);
 	regenPaintList();
+	progressBar.close();
 	updateGL();
 }
 
@@ -1332,8 +1344,14 @@ void MapEditorWidget::regenPaintList() {
 	glDeleteLists(paintList, 1);
 	paintList = glGenLists(1);
 	glNewList(paintList, GL_COMPILE);
+
 	const vector<PaintCellInfo>& cell_info = map->getPaintCellInfo();
+
+	progressBar.setCurrentStage("Generating display list...");
+	progressBar.setTotalSteps(static_cast<int>(cell_info.size()));
+
 	for (unsigned int i = 0; i < cell_info.size(); i++) {
+		progressBar.setCurrentStep(i);
 		cell_info[i].render(map->getPaintHeightMap());
 	}
 	glEndList();

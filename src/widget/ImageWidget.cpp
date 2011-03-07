@@ -25,7 +25,7 @@ void ImageWidget::setFilename(const std::string &newFilename) {
     texture = OpenGL::TextureLoading::loadTexture2D(filename);
     LOG(WIDGET, "Loading \"" << filename << "\", ID is " << texture);
     
-    dynamic_cast<NormalTextLayout *>(getLayout())->setAspectRatio(1.0);
+    dynamic_cast<NormalTextLayout *>(getLayout().get())->setAspectRatio(1.0);
     updateLayout();
 }
 

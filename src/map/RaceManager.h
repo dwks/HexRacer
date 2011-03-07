@@ -18,6 +18,8 @@ public:
     Math::Point startingPointForPlayer(int id);
 	const Math::BoundingPlane3D& getBoundingPlane() { return finishPlane; }
 	double getKillPlaneY() { return killPlaneY; }
+
+	bool inBounds(const Math::Point& position) const;
 };
 
 }  // namespace Map

@@ -75,6 +75,8 @@ namespace HUD {
 
 	void HUDRenderer::disableAlphaMask() {
 
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, NULL);
 		glActiveTexture(GL_TEXTURE0);
 		alphaMaskShader->turnShaderOff();
 
@@ -100,6 +102,7 @@ namespace HUD {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDepthMask(GL_FALSE);
 		glDisable(GL_DEPTH_TEST);
+		glUseProgram(NULL);
 
 	}
 
@@ -108,6 +111,7 @@ namespace HUD {
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glDisable(GL_BLEND);
+		glUseProgram(NULL);
 
 	}
 
