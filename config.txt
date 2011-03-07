@@ -2,8 +2,9 @@
 # Settings for the project
 
 #map = data/testtrack2.hrm
-map = data/testtrack2.hrm
+#map = data/testtrack2.hrm
 #map = data/testtrack2big.hrm
+map = data/canyon2/canyon2.hrm
 
 include maps.txt
 
