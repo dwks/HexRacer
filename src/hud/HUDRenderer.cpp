@@ -75,6 +75,8 @@ namespace HUD {
 
 	void HUDRenderer::disableAlphaMask() {
 
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, NULL);
 		glActiveTexture(GL_TEXTURE0);
 		alphaMaskShader->turnShaderOff();
 
