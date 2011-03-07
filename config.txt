@@ -1,9 +1,6 @@
 ################
 # Settings for the project
 
-#map = data/testtrack2.hrm
-#map = data/testtrack2.hrm
-#map = data/testtrack2big.hrm
 map = data/canyon2/canyon2.hrm
 
 include maps.txt
@@ -142,15 +139,15 @@ render.tire.scale = 2.5
 ########
 ### HUD settings
 
-hud.minimap.enable = 1
+hud.minimap.enable = 0
 hud.minimap.drawheight = 0.35
 hud.minimap.height = 120.0
 
-hud.speedometer.enable = 1
+hud.speedometer.enable = 0
 hud.speedometer.drawheight = 0.35
 hud.speedometer.maxspeed = 30.0
 
-hud.lapprogress.enable = 1
+hud.lapprogress.enable = 0
 hud.lapprogress.drawheight = 0.75
 
 ########
