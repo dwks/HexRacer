@@ -1,29 +1,9 @@
 ### List of supported maps
 
-maps.1         = data/testtrack3.hrm
-maps.1.title   = Crazy Curves
-maps.1.image   = data/thumbnail/testtrack3.png
+maps.1         = data/canyon2/canyon2.hrm
+maps.1.title   = The Evening Canyon
+maps.1.image   = data/thumbnail/canyon2.png
 
-maps.2         = data/canyon2/canyon2.hrm
-maps.2.title   = The Evening Canyon
-maps.2.image   = data/thumbnail/canyon2.png
-
-maps.3         = data/testtrackbanking3.hrm
-maps.3.title   = With Banking Curves
-maps.3.image   = data/thumbnail/testtrackbanking3.png
-
-maps.4         = data/eightytwo-paint.hrm
-maps.4.title   = Figure Eighty-Two
-maps.4.image   = data/thumbnail/eightytwo.png
-
-maps.5         = data/wraparound2.hrm
-maps.5.title   = Wrap Around
-maps.5.image   = data/thumbnail/wraparound.png
-
-maps.6         = data/testtrack2big.hrm
-maps.6.title   = Crazy Curves x2
-maps.6.image   = data/thumbnail/testtrack2-big.png
-
-maps.7         = data/square-1.hrm
-maps.7.title   = The White Mountains
-maps.7.image   = data/thumbnail/square-1.png
+maps.2         = data/lagrange/lagrange.hrm
+maps.2.title   = Lagrange
+maps.2.image   = data/thumbnail/lagrange.png
