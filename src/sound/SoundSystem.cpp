@@ -21,7 +21,7 @@ SoundSystem::~SoundSystem() {
 }
 
 void SoundSystem::physicsCollisionHandler(Event::PhysicsCollision *event){
-    collisionSound->playCollision(event->getLocation());
+    collisionSound->playCollision(event->getLocation(),event->getImpulse());
 }
 
 bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerManager *playerManager) {
@@ -123,7 +123,7 @@ void SoundSystem::doAction() {
     Math::Point orientationPoint = player->getPhysicalObject()->getFrontDirection();
     ALHelpers::updateListener(positionPoint,velocityPoint,orientationPoint);
     
-    engineSound->updateEngines();
+    engineSound->updateEngines(playerManager->getPlayer()->getID());
 }
 
 }  // namespace Sound

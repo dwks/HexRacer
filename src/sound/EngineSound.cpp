@@ -14,7 +14,7 @@ EngineSound::EngineSound(){
     
 EngineSound::EngineSound(Object::WorldManager *worldManager){
     this->worldManager = worldManager;
-    max_buffers = 16;
+    max_buffers = GET_SETTING("sound.maxbuffers", 0);
 }
 EngineSound::~EngineSound() {
     cleanUp();
@@ -52,7 +52,7 @@ void EngineSound::initialize(){
         alSourcefv(skidSources[i], AL_VELOCITY, sourceVelocity);
         
         alSourcei(engineSources[i], AL_SOURCE_RELATIVE, AL_FALSE);
-        alSourcef(engineSources[i], AL_PITCH, 1.0);
+        alSourcef(engineSources[i], AL_PITCH, GET_SETTING("sound.engine.minpitch", 0.0));
         alSourcef(engineSources[i], AL_GAIN, GET_SETTING("sound.engine.volume", 0.0));
         alSourcef(engineSources[i], AL_ROLLOFF_FACTOR, GET_SETTING("sound.engine.attenuation", 0.0));
         alSourcei(engineSources[i], AL_LOOPING, AL_TRUE);
@@ -68,7 +68,7 @@ void EngineSound::cleanUp(){
     ALHelpers::destroyBuffers(skidBuffers,playerCount);
     ALHelpers::destroySources(skidSources,playerCount);
 }
-void EngineSound::updateEngines(){
+void EngineSound::updateEngines(int id){
     Object::WorldManager::PlayerIteratorType it
         = worldManager->getPlayerIterator();
     
@@ -78,7 +78,7 @@ void EngineSound::updateEngines(){
         Object::Player *player = it.next();
         
         updateSkidForPlayer(player,skidSources[count]);
-        changeEnginePitch(player,engineSources[count],count);
+        changeEnginePitch(player,engineSources[count],count,id);
         updateEngineDetails(player,engineSources[count]);
         count++;
     }
@@ -93,8 +93,8 @@ void EngineSound::changePlayerCount(int count){
     }
 }
 void EngineSound::updateSkidForPlayer(Object::Player *player, ALuint source){
-    float max_pitch = 3.0;
-    float min_pitch = 0.5;
+    float max_pitch = GET_SETTING("sound.skid.maxpitch", 0.0);
+    float min_pitch = GET_SETTING("sound.skid.minpitch", 0.0);
     float final_pitch = 0.5;
     if(player->getPhysicalObject()->getSliding() && player->getPhysicalObject()->getOnGround()){
         Math::Point positionPoint = player->getPosition(); 
@@ -121,9 +121,7 @@ void EngineSound::updateSkidForPlayer(Object::Player *player, ALuint source){
         alSourcefv(source, AL_VELOCITY, sourceVelocity);
         ALint state = 0;
         alGetSourcei(source,AL_SOURCE_STATE,&state);
-        if(state == AL_PLAYING){
-            //Do nothing
-        } else {
+        if(state != AL_PLAYING){
             ALHelpers::playFromSource(source);
         }
         
@@ -149,11 +147,12 @@ void EngineSound::updateEngineDetails(Object::Player *player, ALuint source){
     alSourcefv(source, AL_VELOCITY, sourceVelocity);
 }
 
-void EngineSound::changeEnginePitch(Object::Player *player, ALuint source, int toneIndex){
-    float max_pitch = 3.0;
-    float min_pitch = 0.5;
+void EngineSound::changeEnginePitch(Object::Player *player, ALuint source, int toneIndex, int id){
+    float max_pitch = GET_SETTING("sound.engine.maxpitch", 0.0);
+    float min_pitch = GET_SETTING("sound.engine.minpitch", 0.0);
     bool accelerating = player->getIntention().getAccel();
     bool onGround = player->getOnGround();
+    bool skidding = player->getPhysicalObject()->getSliding();
     
     Math::Point velocityPoint = player->getPhysicalObject()->getLinearVelocity();
     
@@ -165,19 +164,23 @@ void EngineSound::changeEnginePitch(Object::Player *player, ALuint source, int t
     if(!accelerating&&onGround){
         engineTones[toneIndex] = (float)(min_pitch + (speed/30.0)*(max_pitch-min_pitch));
     }
-    if(accelerating&&!onGround){
+    if(accelerating&&(!onGround||skidding)){
         engineTones[toneIndex] += 0.01;
         if(engineTones[toneIndex]>max_pitch){
             engineTones[toneIndex]=max_pitch;
         }
     }
-    if(!accelerating&&!onGround){
+    if(!accelerating&&(!onGround||skidding)){
         engineTones[toneIndex] -= 0.01;
         if(engineTones[toneIndex]<min_pitch){
             engineTones[toneIndex]=min_pitch;
         }
     }
-    
+    if(player->getID()==id){
+        alSourcef(source, AL_GAIN, GET_SETTING("sound.engine.playervolume", 0.0));
+    } else {
+        alSourcef(source, AL_GAIN, GET_SETTING("sound.engine.enemyvolume", 0.0));
+    }
     alSourcef(source, AL_PITCH, engineTones[toneIndex]);
 }
 }  // namespace Sound

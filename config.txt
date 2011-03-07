@@ -172,17 +172,23 @@ camera.followslow.z = -5.5
 ########
 ### Sound settings
 sound.enable = 1
+sound.maxbuffers = 16
 
-sound.engine.volume = 0.3
+sound.engine.playervolume = 0.3
+sound.engine.enemyvolume = 0.75
 sound.engine.attenuation = 0.1
+sound.engine.maxpitch = 3.0
+sound.engine.minpitch = 0.25
 
 sound.music.volume = 0.25
 
-sound.collision.volume = 0.5
-sound.collision.attenuation = 0.5
+sound.collision.volume = 0.75
+sound.collision.attenuation = 0.075
 
 sound.skid.volume = 0.5
-sound.skid.attenuation = 0.25
+sound.skid.attenuation = 0.1
+sound.skid.maxpitch = 2.75
+sound.skid.minpitch = 0.5
 
 ########
 ### Network settings

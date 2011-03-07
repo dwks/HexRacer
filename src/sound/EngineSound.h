@@ -22,8 +22,8 @@ public:
     
     void initialize();
     void cleanUp();
-    void updateEngines();
-    void changeEnginePitch(Object::Player *player, ALuint source, int toneIndex);
+    void updateEngines(int id);
+    void changeEnginePitch(Object::Player *player, ALuint source, int toneIndex, int id);
     void updateEngineDetails(Object::Player *player, ALuint source);
     void updateSkidForPlayer(Object::Player *player, ALuint source);
     void changePlayerCount(int count);

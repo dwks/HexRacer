@@ -22,7 +22,7 @@ public:
     
     void initialize();
     void cleanUp();
-    void playCollision(Math::Point location);
+    void playCollision(Math::Point location, float impulse);
 private:
     ALuint collisionBuffers[16];
     ALuint collisionSources[16];

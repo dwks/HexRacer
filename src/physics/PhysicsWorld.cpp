@@ -75,12 +75,10 @@ void PhysicsWorld::stepWorld(unsigned long milliseconds) {
                 btManifoldPoint& pt = contactManifold->getContactPoint(j);
                 if (pt.getDistance()<0.f)
                 {
+                    float collisionImpulse = pt.getAppliedImpulse();
                     const btVector3& ptA = pt.getPositionWorldOnA();
                     Math::Point collisionPoint = Converter::toPoint(ptA);
-                    EMIT_EVENT(new Event::PhysicsCollision(collisionPoint));
-                    //const btVector3& ptA = pt.getPositionWorldOnA();
-                    //const btVector3& ptB = pt.getPositionWorldOnB();
-                    //const btVector3& normalOnB = pt.m_normalWorldOnB;
+                    EMIT_EVENT(new Event::PhysicsCollision(collisionPoint,collisionImpulse));
                 }
             }
         }
