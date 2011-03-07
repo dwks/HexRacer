@@ -198,6 +198,8 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldMan
 
 	//Reset the lights
     lightManager->resetLights();
+
+	renderer->cleanup();
 }
 
 void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player *player) {

@@ -98,6 +98,8 @@ public:
 
 	RenderSettings* getRenderSettings() const { return settings; }
 
+	void cleanup() const;
+
 private:
 
 	bool colorsOverridden() { return (numColorOverrides > 0); }
