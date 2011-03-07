@@ -31,15 +31,15 @@ void CollisionSound::initialize(){
         "data/sound/soundfx/collision03.wav"
     };
     for(int i=0;i<16;i++){
-        ALHelpers::loadFileToBuffer(collisionBuffers[i],file[i%3]);
+        ALHelpers::loadFileToBuffer(collisionBuffers[i],file[i % 3]);
         
         // bind a sound source to the buffer data
         ALHelpers::bindBufferToSource(collisionBuffers[i], collisionSources[i]);
 
         alSourcei(collisionSources[i], AL_SOURCE_RELATIVE, AL_FALSE);
         alSourcef(collisionSources[i], AL_PITCH, 1.0);
-        alSourcef(collisionSources[i], AL_GAIN, 0.5);
-        alSourcef(collisionSources[i], AL_ROLLOFF_FACTOR, 0.25);
+        alSourcef(collisionSources[i], AL_GAIN, GET_SETTING("sound.collision.volume", 0.0));
+        alSourcef(collisionSources[i], AL_ROLLOFF_FACTOR, GET_SETTING("sound.collision.attenuation", 0.0));
         alSourcei(collisionSources[i], AL_LOOPING, AL_FALSE);
         alSourcefv(collisionSources[i], AL_POSITION, sourcePosition);
         alSourcefv(collisionSources[i], AL_VELOCITY, sourceVelocity);

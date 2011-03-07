@@ -43,9 +43,9 @@ bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerMa
 void SoundSystem::cleanUp() {
     ALHelpers::destroyBuffer(musicBuffer);
     ALHelpers::destroySource(musicSource);
-    ALHelpers::exitOpenAL();
     delete engineSound;
     delete collisionSound;
+    ALHelpers::exitOpenAL();
 }
 
 void SoundSystem::setupCollisions() {
@@ -76,7 +76,7 @@ void SoundSystem::setupGameMusic() {
     
     alSourcei(musicSource, AL_SOURCE_RELATIVE, AL_TRUE);
     alSourcef(musicSource, AL_PITCH, 1.0);
-    alSourcef(musicSource, AL_GAIN, 0.25);
+    alSourcef(musicSource, AL_GAIN, GET_SETTING("sound.music.volume", 0.0));
     alSourcei(musicSource, AL_LOOPING, AL_FALSE);
     alSourcefv(musicSource, AL_POSITION, sourcePosition);
     alSourcefv(musicSource, AL_VELOCITY, sourceVelocity);
