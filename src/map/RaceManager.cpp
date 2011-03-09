@@ -15,7 +15,7 @@ RaceManager::RaceManager(HRMap *_map)
 	killPlaneY = 0.0;
 	
 	//Find the lowest path node, set the kill plane to that plus an offset
-	const vector<PathNode*>& path_nodes = map->getPathNodes();
+	const vector<PathNode*>& path_nodes = map->getMapObjects().getPathNodes();
 	for (unsigned int i = 0; i < path_nodes.size(); i++) {
 		if (i == 0 || path_nodes[i]->getPosition().getY() < killPlaneY) {
 			killPlaneY = path_nodes[i]->getPosition().getY();
@@ -32,7 +32,7 @@ Math::Point RaceManager::startingPlayerDirection() {
 
 Math::Point RaceManager::startingPointForPlayer(int id) {
 
-    const std::vector<Math::Vertex3D *> &data = map->getStartPoints();
+    const std::vector<Math::Vertex3D *> &data = map->getMapObjects().getStartPoints();
     
     if(data.size() == 0) {
         LOG(GLOBAL, "No starting points in map, placing player "

@@ -2,6 +2,7 @@
 #include "misc/DirectoryFunctions.h"
 #include "misc/StdVectorFunctions.h"
 #include "paint/PaintGenerator.h"
+#include "mesh/MeshLoader.h"
 #include <fstream>
 using namespace Project;
 using namespace Misc;
@@ -19,7 +20,6 @@ namespace Map {
 		:hexGrid(PAINT_CELL_RADIUS, 0.0, 1.0, 0.0, 1.0) {
 
 		cubeMapFile = new CubeMapFile();
-		trackRenderable = NULL;
 		collisionTree = NULL;
 		cubeMap = NULL;
 
@@ -42,14 +42,11 @@ namespace Map {
 		string file_directory = DirectoryFunctions::extractDirectory(_filename);
 		filename = _filename;
 
-		vector< vector<int> > pathnode_links;
-
 		ifstream in_file;
 		in_file.open(filename.c_str());
 
-		if (!in_file) {
+		if (!in_file)
 			return false;
-		}
 
 		int file_size;
 		in_file.seekg(0, ios_base::end);
@@ -61,6 +58,8 @@ namespace Map {
 			progress_tracker->setTotalSteps(100);
 			progress_tracker->setCurrentStep(0);
 		}
+
+		mapObjects.parseBegin();
 
 		string keyword;
 		while (in_file >> keyword) {
@@ -90,50 +89,7 @@ namespace Map {
 				}
 
 			}
-			else if (keyword == HRMAP_PATHNODE_LABEL) {
-				Point p;
-				int num_links;
-				vector<int> links;
-				float progress;
-				in_file >> p;
-				in_file >> progress;
-				in_file >> num_links;
-				while (num_links > 0) {
-					int index;
-					in_file >> index;
-					links.push_back(index);
-					num_links--;
-				}
-				PathNode* node = new PathNode(p);
-				node->index = static_cast<int>(pathNodes.size());
-				node->setProgress(progress);
-				pathNodes.push_back(node);
-				pathnode_links.push_back(links);
-			}
-			else if (keyword == HRMAP_STARTPOINT_LABEL) {
-				Point p;
-				in_file >> p;
-				startPoints.push_back(new Vertex3D(p));
-			}
-			else if (keyword == HRMAP_LIGHT_LABEL) {
-				Light* light = new Light();
-				in_file >> *light;
-				lights.push_back(light);
-			}
-			else if (keyword == HRMAP_MESHINSTANCE_LABEL) {
-				MeshInstance* instance = new MeshInstance("", SimpleTransform());
-				in_file >> *instance;
-				if (!addMeshInstance(instance)) {
-					delete(instance);
-				}
-			}
-			else if (keyword == HRMAP_PROPMESH_LABEL) {
-				string mesh_name;
-				string mesh_filename;
-				in_file >> mesh_name;
-				in_file >> mesh_filename;
-				mesh_filename = DirectoryFunctions::fromRelativeFilename(file_directory, mesh_filename);
-				addPropMesh(mesh_name, mesh_filename);
+			else if (mapObjects.parseStream(keyword, in_file, file_directory, version)) {
 			}
 			else if (keyword == HRMAP_HEXGRID_LABEL) {
 				in_file >> hexGrid;
@@ -161,8 +117,7 @@ namespace Map {
 			else if (keyword == HRMAP_VERSION_LABEL) {
 				in_file >> version;
 			}
-			else if (mapOptions.parseStream(keyword, in_file)) {
-
+			else if (mapOptions.parseStream(keyword, in_file, version)) {
 			}
 			else  {
 
@@ -206,13 +161,7 @@ namespace Map {
 				progress_tracker->setCurrentStep(50+i*(50/NUM_MESHES));
 		}
 
-		//Link all loaded path nodes
-		for (unsigned int i = 0; i < pathnode_links.size(); i++) {
-			for (unsigned int j = 0; j < pathnode_links[i].size(); j++) {
-				pathNodes[i]->linkToNode(pathNodes[pathnode_links[i][j]]);
-				//pathNodes[i]->getNextNodes().push_back(pathNodes[pathnode_links[i][j]]);
-			}
-		}
+		mapObjects.parseFinish();
 
 		return true;
 
@@ -222,12 +171,8 @@ namespace Map {
 
 		if (progress_tracker) {
 			progress_tracker->setCurrentStage("Saving map file...");
-			progress_tracker->setTotalSteps(
-				lights.size()+pathNodes.size()+startPoints.size()+pathNodes.size()+meshInstances.size()+
-				paintCellInfo.size()
-				);
+			progress_tracker->setTotalSteps(mapObjects.getNumObjects()+paintCellInfo.size()+1);
 			progress_tracker->setCurrentStep(0);
-				
 		}
 
 		string save_directory = DirectoryFunctions::extractDirectory(_filename);
@@ -263,71 +208,18 @@ namespace Map {
 			out_file << HRMAP_MAP2DWIDTH_LABEL << ' ' << map2DWidth << '\n';
 			out_file << HRMAP_MAP2DHEIGHT_LABEL << ' ' << map2DHeight << '\n';
 		}
-		
-		mapOptions.saveToStream(out_file);
-
-		out_file << "#Prop Meshes\n";
-		for (unsigned int i = 0; i < propMeshNames.size(); i++) {
-			out_file << HRMAP_PROPMESH_LABEL << ' ' << propMeshNames[i] << ' '
-				<< DirectoryFunctions::toRelativeFilename(save_directory, propMeshFilenames[i]) << '\n';
-		}
 
 		out_file << "#Finish Plane\n";
 		out_file << HRMAP_FINISHPLANE_LABEL << ' ' << finishPlane << '\n';
 
-		out_file << "#Lights\n";
-		for (unsigned int i = 0; i < lights.size(); i++) {
+		mapOptions.saveToStream(out_file);
 
-			if (progress_tracker)
-				progress_tracker->incrementStep();
+		mapObjects.saveToStream(out_file, save_directory, progress_tracker);
 
-			out_file << HRMAP_LIGHT_LABEL << ' ' << (*lights[i]) << '\n';
-		}
-
-		out_file << "#Path Nodes\n";
-
-		for (unsigned int i = 0; i < pathNodes.size(); i++)
-			pathNodes[i]->index = i;
-
-		for (unsigned int i = 0; i < pathNodes.size(); i++) {
-
-			if (progress_tracker)
-				progress_tracker->incrementStep();
-
-			out_file << HRMAP_PATHNODE_LABEL << ' ' << (*pathNodes[i])
-				<< ' ' << pathNodes[i]->getProgress() << ' ';
-
-			const std::vector<PathNode*>& next_nodes = pathNodes[i]->getNextNodes();
-			out_file << next_nodes.size() << ' ';
-			for (unsigned int i = 0; i < next_nodes.size(); i++) {
-				out_file << next_nodes[i]->index;
-				if (i < next_nodes.size()-1) {
-					out_file << ' ';
-				}
-			}
-			out_file << '\n';
-		}
-
-		out_file << "#Start Points\n";
-		for (unsigned int i = 0; i < startPoints.size(); i++) {
-
-			if (progress_tracker)
-				progress_tracker->incrementStep();
-
-			out_file << HRMAP_STARTPOINT_LABEL << ' ' << (*startPoints[i]) << '\n';
-		}
-
-		out_file << "#Mesh Instances\n";
-		for (unsigned int i = 0; i < meshInstances.size(); i++) {
-
-			if (progress_tracker)
-				progress_tracker->incrementStep();
-
-			out_file << HRMAP_MESHINSTANCE_LABEL << ' ' << (*meshInstances[i]) << '\n';
-		}
-
-		if (progress_tracker)
+		if (progress_tracker) {
 			progress_tracker->setCurrentStage("Saving paint height map...");
+			progress_tracker->incrementStep();
+		}
 
 		out_file << "#HexGrid\n";
 		out_file << HRMAP_HEXGRID_LABEL << ' ' << hexGrid << '\n';
@@ -393,6 +285,7 @@ namespace Map {
 		cubeMapFile->clear();
 
 		mapOptions.clear();
+		mapObjects.clear();
 
 		clearCubeMap();
 		clearCollisionTree();
@@ -407,23 +300,7 @@ namespace Map {
 			}
 			mapMeshFile[i] = "";
 		}
-
-		for (unsigned int i = 0; i < propMeshNames.size(); i++) {
-			MeshLoader::getInstance()->deleteModelByName(propMeshNames[i]);
-		}
-		propMeshNames.clear();
-		propMeshFilenames.clear();
-
-		if (trackRenderable != NULL) {
-			delete(trackRenderable);
-			trackRenderable = NULL;
-		}
-
-		clearLights();
-		clearPathNodes();
-		clearStartPoints();
-		clearMeshInstances();
-
+		
 		clearPaint();
 
 	}
@@ -546,80 +423,7 @@ namespace Map {
 
 		paintHeightMap = generator.getHeightMap();
 		paintCellInfo = generator.getCellInfo();
-		//paintCells = generator.getPaintCells();
-	}
-
-	void HRMap::addLight(Light* light) {
-		lights.push_back(light);
-	}
-
-	void HRMap::removeLight(Light* light) {
-		if (Misc::vectorRemoveOneElement(lights, light)) {
-			delete(light);
-		}
-	}
-
-	void HRMap::clearLights() {
-		for (unsigned int i = 0; i < lights.size(); i++)
-			delete(lights[i]);
-		lights.clear();
-	}
-	void HRMap::addPathNode(PathNode* node) {
-		pathNodes.push_back(node);
-	}
-
-	void HRMap::removePathNode(PathNode* node) {
-
-		//Find all nodes with a link to or from the node to delete
-		vector<PathNode*> linked_nodes;
-		linked_nodes.insert(linked_nodes.end(), node->getNextNodes().begin(), node->getNextNodes().end());
-		linked_nodes.insert(linked_nodes.end(), node->getPreviousNodes().begin(), node->getPreviousNodes().end());
-
-		//Disassociate all linked nodes with the deleted node
-		for (unsigned int i = 0; i < linked_nodes.size(); i++)
-			linked_nodes[i]->disassociateNode(node);
-
-		//Delete the node
-		if (Misc::vectorRemoveOneElement(pathNodes, node))
-			delete(node);
-		
-	}
-	void HRMap::addStartPoint(Vertex3D* point) {
-		startPoints.push_back(point);
-	}
-
-	void HRMap::removeStartPoint(Vertex3D* point) {
-		if (Misc::vectorRemoveOneElement(startPoints, point)) {
-			delete(point);
-		}
-	}
-	void HRMap::clearPathNodes() {
-		for (unsigned int i = 0; i < pathNodes.size(); i++)
-			delete(pathNodes[i]);
-		pathNodes.clear();
-	}
-	void HRMap::clearStartPoints() {
-		for (unsigned int i = 0; i < startPoints.size(); i++)
-			delete(startPoints[i]);
-		startPoints.clear();
-	}
-	bool HRMap::addMeshInstance(MeshInstance* mesh) {
-		if (vectorContains(propMeshNames, mesh->getMeshName())) {
-			meshInstances.push_back(mesh);
-			return true;
-		}
-		else return false;
-	}
-	void HRMap::removeMeshInstance(MeshInstance* mesh) {
-		if (Misc::vectorRemoveOneElement(meshInstances, mesh)) {
-			delete(mesh);
-		}
-	}
-	void HRMap::clearMeshInstances() {
-		for (unsigned int i = 0; i < meshInstances.size(); i++)
-			delete(meshInstances[i]);
-		meshInstances.clear();
-	}
+	}	
 	BSPTree3D* HRMap::getCollisionTree() {
 
 		if (collisionTree == NULL) {
@@ -661,41 +465,6 @@ namespace Map {
 			delete(collisionTree);
 			collisionTree = NULL;
 		}
-	}
-
-	bool HRMap::addPropMesh(std::string name, std::string filename) {
-
-		if (!vectorContains(propMeshNames, name) && !MeshLoader::getInstance()->getModelByName(name, true)) {
-			if (MeshLoader::getInstance()->loadOBJ(name, filename)) {
-				propMeshNames.push_back(name);
-				propMeshFilenames.push_back(filename);
-				return true;
-			}
-		}
-
-		return false;
-
-	}
-	bool HRMap::removePropMesh(int index) {
-		if (index >= 0 && index < static_cast<int>(propMeshNames.size())) {
-			MeshLoader::getInstance()->deleteModelByName(propMeshNames[index]);
-			for (unsigned int i = 0; i < meshInstances.size(); i++) {
-				if (meshInstances[i]->getMeshName() == propMeshNames[index]) {
-					removeMeshInstance(meshInstances[i]);
-				}
-			}
-			vectorRemoveAtIndex(propMeshNames, index);
-			vectorRemoveAtIndex(propMeshFilenames, index);
-			return true;
-		}
-		return false;
-	}
-
-
-	std::string HRMap::getPropMeshName(int index) {
-		if (index >= 0 && index < static_cast<int>(propMeshNames.size()))
-			return propMeshNames[index];
-		return "";
 	}
 
 	void HRMap::updateDimensions() {
@@ -756,29 +525,9 @@ namespace Map {
 	}
 
 	void HRMap::scaleAll(double scale, Point origin) {
-		for (unsigned int i = 0; i < lights.size(); i++) {
-			lights[i]->translate(-origin);
-			lights[i]->moveCentroid(lights[i]->getPosition()*scale);
-			lights[i]->translate(origin);
-		}
-		for (unsigned int i = 0; i < pathNodes.size(); i++) {
-			pathNodes[i]->translate(-origin);
-			pathNodes[i]->moveCentroid(pathNodes[i]->getPosition()*scale);
-			pathNodes[i]->translate(origin);
-		}
-		for (unsigned int i = 0; i < startPoints.size(); i++) {
-			startPoints[i]->translate(-origin);
-			startPoints[i]->moveCentroid(startPoints[i]->getPosition()*scale);
-			startPoints[i]->translate(origin);
-		}
-		for (unsigned int i = 0; i < meshInstances.size(); i++) {
-			SimpleTransform transform = meshInstances[i]->getTransformation();
-			transform.setScale(transform.getScale()*scale);
-			transform.translate(-origin);
-			transform.setTranslation(transform.getTranslation()*scale);
-			transform.translate(origin);
-			meshInstances[i]->setTransformation(transform);
-		}
+		
+		mapObjects.scaleAll(scale, origin);
+
 		finishPlane.translate(-origin);
 		finishPlane.moveCentroid(finishPlane.centroid()*scale);
 		finishPlane.translate(origin);

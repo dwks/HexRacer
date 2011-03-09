@@ -18,7 +18,7 @@ public:
 	bool getBGBloomEnable() const { return bgBloomEnable; }
 	void setBGBloomEnable(bool enable) { bgBloomEnable = enable; }
 
-	bool parseStream(const std::string& keyword, std::ifstream& stream);
+	bool parseStream(const std::string& keyword, std::ifstream& stream, const std::string& version);
 	void saveToStream(std::ofstream& stream) const;
 	
 };

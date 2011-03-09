@@ -5,6 +5,7 @@
 #include "opengl/Material.h"
 #include "paint/PaintManager.h"
 #include "misc/ProgressTracker.h"
+#include "render/RenderList.h"
 #include <vector>
 
 namespace Project {

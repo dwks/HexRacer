@@ -35,7 +35,7 @@ void BasicWorld::constructAfterConnect(Map::HRMap *map) {
     raceManager = boost::shared_ptr<Map::RaceManager>(
         new Map::RaceManager(map));
     pathManager = boost::shared_ptr<Map::PathManager>(
-        new Map::PathManager(map->getPathNodes()));
+        new Map::PathManager(map->getMapObjects().getPathNodes()));
     pathingUpdater = boost::shared_ptr<Map::PathingUpdater>(
         new Map::PathingUpdater(worldManager, raceManager, playerManager));
     

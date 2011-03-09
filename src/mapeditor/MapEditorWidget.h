@@ -42,6 +42,8 @@ private:
 	bool cameraMovedSinceClick;
 	bool showInvisible;
 
+	bool loading;
+
 	GLuint sphereList;
 	GLuint hudCircleList;
 	GLuint paintList;

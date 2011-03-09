@@ -1,5 +1,6 @@
 #include "MapLoader.h"
 #include "HRMap.h"
+#include "mesh/TransformedMesh.h"
 
 #include "physics/PhysicsWorld.h"
 #include "physics/PhysicsFactory.h"
@@ -54,7 +55,7 @@ void MapLoader::load(HRMap *map, Misc::ProgressTracker* progressTracker, Render:
     }
     
     //Process mesh instances
-    std::vector<Map::MeshInstance*> instances = map->getMeshInstances();
+    std::vector<Map::MeshInstance*> instances = map->getMapObjects().getMeshInstances();
     for (unsigned i = 0; i < instances.size(); i++) {
 
 		if (progressTracker)

@@ -12,7 +12,7 @@ namespace Map {
 		bgBloomEnable = false;
 	}
 
-	bool MapOptions::parseStream(const std::string& keyword, std::ifstream& stream) {
+	bool MapOptions::parseStream(const std::string& keyword, std::ifstream& stream, const std::string& version) {
 		if (keyword == HRMAP_BGBLOOMENABLE_LABEL) {
 			stream >> bgBloomEnable;
 			return true;

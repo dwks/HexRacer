@@ -426,6 +426,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\HRMapObjects.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\hud\HUDRenderer.cpp"
 				>
 			</File>
@@ -1545,6 +1549,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\HRMap.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\HRMapObjects.h"
 				>
 			</File>
 			<File

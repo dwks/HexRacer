@@ -58,7 +58,7 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     }
     
     //Add the map lights to the light manager
-    std::vector<OpenGL::Light*> map_lights = map->getLights();
+    std::vector<OpenGL::Light*> map_lights = map->getMapObjects().getLights();
     for (unsigned i = 0; i < map_lights.size(); i++) {
         lightManager->addLight(map_lights[i], !map_lights[i]->getHasAttenuation(), false);
     }
@@ -342,7 +342,7 @@ void GameRenderer::renderAIDebug(Object::Player *player) {
 #define MAP_EDITOR_PATHNODE_LINK_START_COLOR OpenGL::Color::WHITE
 #define MAP_EDITOR_PATHNODE_LINK_END_COLOR OpenGL::Color::BLUE
     
-    std::vector<Map::PathNode *> nodeList = map->getPathNodes();
+    std::vector<Map::PathNode *> nodeList = map->getMapObjects().getPathNodes();
     
     for (unsigned int i = 0; i < nodeList.size(); i++) {
         Map::PathNode* node = nodeList[i];
