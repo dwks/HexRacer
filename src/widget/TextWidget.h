@@ -5,6 +5,7 @@
 #include "NormalTextLayout.h"
 
 #include "opengl/Color.h"
+#include "render/StringTexture.h"
 
 namespace Project {
 namespace Widget {
@@ -13,13 +14,13 @@ class TextWidget : public AbstractWidget {
 private:
     OpenGL::Color color;
     std::string data;
-    unsigned texture;
+	Render::StringTexture stringTexture;
     double widthFactor, heightFactor;
     unsigned align;
     bool dirty;
 public:
     TextWidget(const std::string &name)
-        : AbstractWidget(name), texture(-1), dirty(false) {}
+        : AbstractWidget(name), dirty(false) {}
     TextWidget(const std::string &name, OpenGL::Color color,
         const std::string &data, unsigned align);
     TextWidget(const std::string &name, const std::string &data,
@@ -36,7 +37,7 @@ public:
     
     virtual void accept(WidgetVisitor &visitor) { visitor.visit(this); }
 private:
-    int nextPowerOf2(int x);
+    
     void preRender();
     void textChanged();
 };

@@ -890,6 +890,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\StringTexture.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mesh\SubMesh.cpp"
 				>
 			</File>
@@ -2029,6 +2033,10 @@
 			</File>
 			<File
 				RelativePath=".\src\ai\StraightDriver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\StringTexture.h"
 				>
 			</File>
 			<File
