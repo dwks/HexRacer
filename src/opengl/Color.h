@@ -19,7 +19,22 @@ private:
 	static int colorFloatToInt(float f);
 public:
 
-	enum ColorPreset {RED, GREEN, BLUE, WHITE, BLACK, LIGHTGREY, GREY, DARKGREY, YELLOW, ORANGE, PURPLE, INDIGO, VIOLET, PINK, BROWN, TEAL};
+	enum ColorPreset {RED,
+		GREEN,
+		BLUE,
+		WHITE,
+		BLACK,
+		LIGHTGREY,
+		GREY,
+		DARKGREY,
+		YELLOW,
+		ORANGE,
+		PURPLE,
+		INDIGO,
+		VIOLET,
+		PINK,
+		BROWN,
+		TEAL};
 
 	Color(void)
 		: r(0.0f) , g(0.0f) , b(0.0f) , a(0.0f) {}

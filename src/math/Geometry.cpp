@@ -25,7 +25,7 @@ namespace Math {
         a = (ps_x/v_x - ps_y/v_y) / (pv_y/v_y - pv_x/v_x)
         b = (ps_y + a*pv_y) / v_y
 */
-void Geometry::intersectLine(Point start, Point end, Point point,
+void Geometry::intersectLine(const Point& start, const Point& end, const Point& point,
     Point *closest, double *segmentAlpha) {
     
     Point v = end - start;
@@ -45,7 +45,7 @@ void Geometry::intersectLine(Point start, Point end, Point point,
     }
 }
 
-bool Geometry::intersectLineSegment(Point start, Point end, Point point,
+bool Geometry::intersectLineSegment(const Point& start, const Point& end, const Point& point,
     Point *closest) {
     
     Point intersection;
@@ -68,7 +68,7 @@ bool Geometry::intersectLineSegment(Point start, Point end, Point point,
     return perpendicular;
 }
 
-Point Geometry::intersectLine3D(Point start, Point end, Point point) {
+Point Geometry::intersectLine3D(const Point& start, const Point& end, const Point& point) {
 
 	Point line_vector = end - start;
 
@@ -84,12 +84,13 @@ Point Geometry::intersectLine3D(Point start, Point end, Point point) {
 	return ray.atT(intersect.t);
 }
 
-double Geometry::distance(Point one, Point two) {
+/*
+double Geometry::distance(const Point& one, const Point& two) {
     return (two - one).length();
 }
+*/
 
-
-bool Geometry::lineHLineIntersects2D(Point line_a, Point line_b, 
+bool Geometry::lineHLineIntersects2D(const Point& line_a, const Point& line_b, 
 									 double hline_v, double hline_umin,
 									 double hline_umax, Axis project_axis)
 {
@@ -125,7 +126,7 @@ bool Geometry::lineHLineIntersects2D(Point line_a, Point line_b,
 	
 }
 
-bool Geometry::lineVLineIntersects2D(Point line_a, Point line_b, 
+bool Geometry::lineVLineIntersects2D(const Point& line_a, const Point& line_b, 
 									 double vline_u, double vline_vmin,
 									 double vline_vmax, Axis project_axis)
 {
@@ -160,29 +161,29 @@ bool Geometry::lineVLineIntersects2D(Point line_a, Point line_b,
 	
 }
 
-bool Geometry::sameSideOfLine2D(Point line_a, Point line_b, Point point_1, Point point_2, Axis project_axis) {
+bool Geometry::sameSideOfLine2D(const Point& line_a, const Point& line_b, const Point& point_1, const Point& point_2, Axis project_axis) {
+
+	Math::Point line_a_2D = Point::point2D(line_a, project_axis);
+	Math::Point line_b_2D = Point::point2D(line_b, project_axis);
+	Math::Point point_1_2D = Point::point2D(point_1, project_axis);
+	Math::Point point_2_2D = Point::point2D(point_2, project_axis);
+
+	Point line_normal = (line_b_2D-line_a_2D).rotate90CW(project_axis);
+	return (frontOfPlane(line_a_2D, line_normal, point_1_2D) == frontOfPlane(line_b_2D, line_normal, point_2_2D));
 
 	/*
-	line_a = Point::point2D(line_a, project_axis);
-	line_b = Point::point2D(line_b, project_axis);
-	point_1 = Point::point2D(point_1, project_axis);
-	point_2 = Point::point2D(point_2, project_axis);
-
-	Point line_normal = (line_b-line_a).rotate90CW(project_axis);
-	return (frontOfPlane(line_a, line_normal, point_1) == frontOfPlane(line_a, line_normal, point_2));
-	*/
-
 	Point cp1 = (line_b - line_a).crossProduct(point_1 - line_a);
     Point cp2 = (line_b - line_a).crossProduct(point_2 - line_a);
 	return (cp1.dotProduct(cp2) >= 0.0f);
+	*/
 
 }
 
-bool Geometry::frontOfPlane(Point plane_point, Point plane_normal, Point point) {
+bool Geometry::frontOfPlane(const Point& plane_point, const Point& plane_normal, const Point& point) {
 	return ((point-plane_point).dotProduct(plane_normal) >= 0.0f);
 }
 
-Point Geometry::triangleNormal(Point tri_a, Point tri_b, Point tri_c) {
+Point Geometry::triangleNormal(const Point& tri_a, const Point& tri_b, const Point& tri_c) {
 	Point u = tri_b-tri_a;
 	Point v = tri_c-tri_a;
 	Point normal = u.crossProduct(v);
@@ -190,13 +191,13 @@ Point Geometry::triangleNormal(Point tri_a, Point tri_b, Point tri_c) {
 	return normal;
 }
 
-RayIntersection Geometry::rayPlaneIntersection(Ray ray, Point plane_point, Point plane_normal) {
+RayIntersection Geometry::rayPlaneIntersection(const Ray& ray, const Point& plane_point, const Point& plane_normal) {
 
 	double d = plane_normal.dotProduct(ray.direction);
 	if (d != 0.0) {
 
 		Point v = ray.origin-plane_point;
-		float t = -(v.dotProduct(plane_normal))/d;
+		double t = -(v.dotProduct(plane_normal))/d;
 		//Fail if the intersection is not within the ray's range
 		if (!ray.insideRange(t))
 			return RayIntersection();
@@ -209,7 +210,7 @@ RayIntersection Geometry::rayPlaneIntersection(Ray ray, Point plane_point, Point
 
 }
 
-double Geometry::vectorTo2DAngle(Point vector, Axis project_axis) {
+double Geometry::vectorTo2DAngle(const Point& vector, Axis project_axis) {
 
 	double inner_angle = atan(vector.getV(project_axis) / vector.getU(project_axis));
 	if (vector.getU() >= 0.0f) {
@@ -224,7 +225,7 @@ double Geometry::vectorTo2DAngle(Point vector, Axis project_axis) {
 
 }
 
-double Geometry::getUOfLine(Point start, Point end, Point midpoint) {
+double Geometry::getUOfLine(const Point& start, const Point& end, const Point& midpoint) {
 
 	Axis test_axis;
 	double test_dist;

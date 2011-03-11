@@ -20,7 +20,7 @@ private:
 	Math::BSPTree3D* triangleTree;
 	Math::BoundingBox3D paintBound;
 
-	void heightsAtPoint(double u, double v, vector<double>& vec);
+	bool heightsAtPoint(double u, double v, vector<double>& vec);
 
 	Math::HexHeightMap heightMap;
 

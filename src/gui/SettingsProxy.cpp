@@ -37,12 +37,13 @@ void SettingsProxy::visit(Widget::WidgetActivateEvent *event) {
     else if(name == "shadow") {
         Settings::SettingsManager::getInstance()->set(
             "render.shadow.enable",
-            Misc::StreamAsString() << event->getDown());
+			event->getDown() ? "1" : "0");
+		LOG(GUI, "shadow button: " << event->getDown());
     }
     else if(name == "bloom") {
         Settings::SettingsManager::getInstance()->set(
             "render.bloom.enable",
-            Misc::StreamAsString() << event->getDown());
+            event->getDown() ? "1" : "0");
     }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");

@@ -19,6 +19,8 @@
 #include "map/HRMap.h"
 #include "map/RaceManager.h"
 
+#include "mesh/MeshLoader.h"
+
 #include "world/BasicWorld.h"
 #include "ai/AIManager.h"
 

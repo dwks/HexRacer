@@ -27,11 +27,11 @@ namespace Math {
 		maxT = max_t;
 	}
 
-	bool Ray::insideRange(double t) {
+	bool Ray::insideRange(double t) const {
 		return ((!minBounded || t >= minT) && (!maxBounded || t <= maxT));
 	}
 
-	Point Ray::atT(double t) {
+	Point Ray::atT(double t) const {
 		return (origin+direction*t);
 	}
 

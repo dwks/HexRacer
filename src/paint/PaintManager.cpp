@@ -131,7 +131,7 @@ namespace Paint {
 		glPointSize(viewportWidth/view_height);
 		glBegin(GL_POINTS);
 
-		HexGrid::HexIndexRange range = hexGrid.queryIndexRange(bounding_object);
+		HexGrid::HexIndexRange range = hexGrid.hexIndexRange(bounding_object);
 
 		if (hexGrid.validRange(range)) {
 			for (int u = range.minUIndex; u <= range.maxUIndex; u++) {
@@ -165,7 +165,7 @@ namespace Paint {
 
 		double radius_squared = radius*radius;
 		BoundingCircle query_circle(centroid, radius, PaintCell::PAINT_AXIS);
-		HexGrid::HexIndexRange range = hexGrid.queryIndexRange(query_circle);
+		HexGrid::HexIndexRange range = hexGrid.hexIndexRange(query_circle);
 
 		if (hexGrid.validRange(range)) {
 			for (int u = range.minUIndex; u <= range.maxUIndex; u++) {
@@ -202,7 +202,7 @@ namespace Paint {
 
 		double radius_squared = radius*radius;
 		BoundingCircle query_circle(centroid, radius, PaintCell::PAINT_AXIS);
-		HexGrid::HexIndexRange range = hexGrid.queryIndexRange(query_circle);
+		HexGrid::HexIndexRange range = hexGrid.hexIndexRange(query_circle);
 
 		if (hexGrid.validRange(range)) {
 			for (int u = range.minUIndex; u <= range.maxUIndex; u++) {
@@ -343,7 +343,7 @@ namespace Paint {
 
 		double radius_squared = radius*radius;
 		BoundingCircle query_circle(centroid, radius, PaintCell::PAINT_AXIS);
-		HexGrid::HexIndexRange range = hexGrid.queryIndexRange(query_circle);
+		HexGrid::HexIndexRange range = hexGrid.hexIndexRange(query_circle);
 
 		if (hexGrid.validRange(range)) {
 			for (int u = range.minUIndex; u <= range.maxUIndex; u++) {

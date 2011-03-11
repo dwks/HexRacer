@@ -88,7 +88,7 @@ void Player::preRender() {
 	float glow_scale = (float) Math::maximum(
 		GET_SETTING("render.playerglow.min", 0.6),
 		getSpeedBoost()*GET_SETTING("render.playerglow.factor", 1.25f)+GET_SETTING("render.playerglow.constant", 0.0f));
-	OpenGL::Color trim_color = Render::ColorConstants::playerColor(getID())*glow_scale;
+	OpenGL::Color trim_color = Render::ColorConstants::playerColor(getTeamID())*glow_scale;
 
     //LOG(OPENGL, "Player id: " << getID() << ", player is " << trim_color);
     

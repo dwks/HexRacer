@@ -70,17 +70,13 @@ namespace Paint {
 		double cell_radius = hex_grid.getHexRadius();
 
 		vector< vector< vector<PaintCell*> > > cell_array;
-		vector< vector< vector<double> > > border_heights;
 
 		int u_steps = hex_grid.numUIndices();
 		int v_steps = hex_grid.numVIndices();
 
 		cell_array.resize(u_steps);
-		border_heights.resize(u_steps*2);
 		for (int i = 0; i < u_steps; i++) {
 			cell_array[i].resize(v_steps);
-			border_heights[i*2].resize(v_steps);
-			border_heights[i*2+1].resize(v_steps);
 		}
 
 		if (progress_tracker) {
@@ -100,21 +96,21 @@ namespace Paint {
 
 				double u_pos = hex_grid.hexUPosition(u, v);
 				
-				vector<double> heights;
-				heightsAtPoint(u_pos, v_pos, heights);
+				vector<double> center_heights;
+				vector<double> vert_heights1;
+				vector<double> vert_heights2;
 
-				for (unsigned int i = 0; i < heights.size(); i++)
-					heightMap.addHexHeight(u, v, heights[i]);
+				if (heightsAtPoint(u_pos, v_pos, center_heights)
+					&& heightsAtPoint(u_pos-cell_radius, v_pos, vert_heights1)
+					&& heightsAtPoint(u_pos+cell_radius, v_pos, vert_heights2)) {
 
-				heights.clear();
-				heightsAtPoint(u_pos-cell_radius, v_pos, heights);
-				for (unsigned int i = 0; i < heights.size(); i++) 
-					heightMap.addVertexHeight(u*2, v, heights[i]);
-
-				heights.clear();
-				heightsAtPoint(u_pos+cell_radius, v_pos, heights);
-				for (unsigned int i = 0; i < heights.size(); i++) 
-					heightMap.addVertexHeight(u*2+1, v, heights[i]);
+					for (unsigned int i = 0; i < center_heights.size(); i++)
+						heightMap.addHexHeight(u, v, center_heights[i]);
+					for (unsigned int i = 0; i < vert_heights1.size(); i++) 
+						heightMap.addVertexHeight(u*2, v, vert_heights1[i]);
+					for (unsigned int i = 0; i < vert_heights2.size(); i++) 
+						heightMap.addVertexHeight(u*2+1, v, vert_heights2[i]);
+				}
 			}
 
 		}
@@ -129,34 +125,34 @@ namespace Paint {
 		int u_steps = heightMap.getHexGrid().numUIndices();
 		int v_steps = heightMap.getHexGrid().numVIndices();
 
+		const vector<HexGrid::HexIndex>& hex_indices = heightMap.getSetHexIndices();
+
 		if (progress_tracker) {
 			progress_tracker->setCurrentStage("Creating paint cells...");
-			progress_tracker->setTotalSteps(v_steps);
+			progress_tracker->setTotalSteps(static_cast<int>(hex_indices.size()));
 		}
 
-		for (int v = 0; v < v_steps; v++) {
+		for (unsigned int i = 0; i < hex_indices.size(); i++) {
 
-			progress_tracker->setCurrentStep(v);
+			if (progress_tracker)
+				progress_tracker->setCurrentStep(i);
 
-			for (int u = 0; u < u_steps; u++) {
+			const std::list<double>* heights = heightMap.getHexHeights(hex_indices[i]);
 
-				const std::list<double>* heights = heightMap.getHexHeights(u, v);
-				if (heights) {
-					for (unsigned int i = 0; i < heights->size(); i++) {
-						PaintCellInfo info(u, v);
-						if (info.calcLayerIndices(heightMap, i, PAINT_CELL_VERTEX_HEIGHT_THRESHHOLD)) {
-							info.calcNormal(heightMap);
-							cellInfo.push_back(info);
-						}
-					}
+			for (unsigned int j = 0; j < heights->size(); j++) {
+				PaintCellInfo info(hex_indices[i].uIndex, hex_indices[i].vIndex);
+				if (info.calcLayerIndices(heightMap, j, PAINT_CELL_VERTEX_HEIGHT_THRESHHOLD)) {
+					info.calcNormal(heightMap);
+					cellInfo.push_back(info);
 				}
-
 			}
 
 		}
 	}
 
-	void PaintGenerator::heightsAtPoint(double u, double v, vector<double>& vec) {
+	bool PaintGenerator::heightsAtPoint(double u, double v, vector<double>& vec) {
+
+		bool hit = false;
 
 		Point p = Point::point2D(u, v, PaintCell::PAINT_AXIS);
 		p.setCoord(paintBound.minCoord(PaintCell::PAINT_AXIS)-1.0, PaintCell::PAINT_AXIS);
@@ -168,8 +164,9 @@ namespace Paint {
 		#ifdef USE_BULLET_RAYCASTS
 			std::vector<Math::Point> data;
 			Physics::PhysicsWorld::getInstance()->allRaycastPoints(p, p+d*100000, data);
-			for(int x = 0; x < int(data.size()); x ++) {
+			for (int x = 0; x < int(data.size()); x ++) {
 				vec.push_back(data[x].getCoord(PaintCell::PAINT_AXIS));
+				hit = true;
 			}
 		#else
 		do {
@@ -178,10 +175,12 @@ namespace Paint {
 			if (intersect.intersects) {
 				p = r.atT(intersect.t);
 				vec.push_back(p.getCoord(PaintCell::PAINT_AXIS));
+				hit = true;
 			}
 
 		} while (intersect.intersects);
 #endif
+		return hit;
 	}
 
 }  // namespace Paint

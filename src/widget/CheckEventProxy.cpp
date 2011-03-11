@@ -27,7 +27,7 @@ void CheckEventProxy::visit(MouseButtonEvent *event) {
             
             widget->toggleChecked();
             
-            WidgetActivateEvent newEvent(widget, true);
+			WidgetActivateEvent newEvent(widget, widget->isChecked());
             
             LOG(WIDGET, "Checkbox \"" << widget->getName()
                 << "\" toggled at " << event->getWhere());

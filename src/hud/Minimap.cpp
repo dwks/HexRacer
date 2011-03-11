@@ -133,7 +133,7 @@ namespace HUD {
 				Math::Point v3 = player_pos-player_right_dir*player_width
 					-player_dir*player_length;
 				
-				OpenGL::Color player_color = Render::ColorConstants::playerColor(player->getID());
+				OpenGL::Color player_color = Render::ColorConstants::playerColor(player->getTeamID());
 
 				OpenGL::Color::glColor(player_color);
 				glBegin(GL_TRIANGLES);

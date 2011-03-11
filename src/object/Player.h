@@ -87,6 +87,8 @@ public:
 
 	Event::TogglePainting::PaintType getPaintType() const { return paintType; }
 	void setPaintType(Event::TogglePainting::PaintType paint_type) { paintType = paint_type; }
+
+	int getTeamID() const { return (getID()/2 % 8); }
     
     void initialize();
     
