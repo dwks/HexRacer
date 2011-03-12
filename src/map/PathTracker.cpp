@@ -98,5 +98,8 @@ namespace Map {
 		return _prog;
 	}
 
+	bool PathTracker::operator < (const PathTracker& other) const {
+		return (getRaceProgress() > other.getRaceProgress());
+	}
 }  // namespace Map
 }  // namespace Project

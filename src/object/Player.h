@@ -8,6 +8,7 @@
 #include "map/PathTracker.h"
 #include "event/TogglePainting.h"
 #include "world/PlayerIntention.h"
+#include <string>
 
 namespace Project {
 namespace Object {
@@ -70,6 +71,9 @@ public:
 		{ tracker = _tracker; }
 	Map::PathTracker* getPathTracker()
 		{ return tracker; }
+
+	const Map::PathTracker* getPathTracker() const
+		{ return tracker; }
     
     void applyAcceleration(double acceleration)
         { physical->applyAcceleration(acceleration); }
@@ -89,6 +93,9 @@ public:
 	void setPaintType(Event::TogglePainting::PaintType paint_type) { paintType = paint_type; }
 
 	int getTeamID() const { return (getID()/2 % 8); }
+	std::string getPlayerName() const;
+
+	bool operator < (const Player& other) const;
     
     void initialize();
     

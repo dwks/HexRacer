@@ -11,6 +11,10 @@ using namespace OpenGL;
 using namespace Math;
 using namespace std;
 
+#ifndef SQUARE_ROOT_THREE
+#define SQUARE_ROOT_THREE 1.7320508075688772935274463415058723669428052538103806280558
+#endif
+
 GeometryDrawing::GeometryDrawing(void)
 {
 }
@@ -265,4 +269,55 @@ void GeometryDrawing::drawBoundingSphere(const Math::BoundingSphere& object, boo
 	gluSphere(quad, object.getRadius(), 12, 12);
 	glPopMatrix();
 	gluDeleteQuadric(quad);
+}
+
+void GeometryDrawing::drawHexagon(const Math::Vertex2D& center, double radius, bool edge_only) {
+
+	Math::Point center_point = center.getPosition();
+
+	if (!edge_only) {
+		glBegin(GL_TRIANGLE_FAN);
+		MathWrapper::glVertex(center_point);
+	}
+	else
+		glBegin(GL_LINE_LOOP);
+
+	Math::Point first_vert;
+
+	for (short i = 0; i < 6; i++) {
+
+		Math::Point vert;
+
+		switch (i) {
+			case 0:
+				vert = center_point+Point::point2D(radius, 0.0, center.getProjectAxis());
+				first_vert = vert; break;
+			case 1:
+				vert = center_point+Point::point2D(radius*0.5, radius*SQUARE_ROOT_THREE*0.5, center.getProjectAxis());
+				break;
+			case 2:
+				vert = center_point+Point::point2D(-radius*0.5, radius*SQUARE_ROOT_THREE*0.5, center.getProjectAxis());
+				break;
+			case 3:
+				vert = center_point+Point::point2D(-radius, 0.0, center.getProjectAxis());
+				break;
+			case 4:
+				vert = center_point+Point::point2D(-radius*0.5, -radius*SQUARE_ROOT_THREE*0.5, center.getProjectAxis());
+				break;
+			case 5:
+				vert = center_point+Point::point2D(radius*0.5, -radius*SQUARE_ROOT_THREE*0.5, center.getProjectAxis());
+				break;
+			default:
+				vert = center_point;
+				break;
+		}
+
+		MathWrapper::glVertex(vert);
+	}
+
+	if (!edge_only)
+		MathWrapper::glVertex(first_vert);
+
+	glEnd();
+		
 }

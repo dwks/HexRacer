@@ -42,6 +42,8 @@ public:
     ClientData *getClientData() { return clientData.get(); }
     Object::WorldManager *getWorldManager()
         { return basicWorld->getWorldManager(); }
+	Map::RaceManager *getRaceManager()
+		{ return basicWorld->getRaceManager(); }
     
     void checkNetwork();
     void doPhysics();

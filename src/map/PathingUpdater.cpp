@@ -69,6 +69,8 @@ void PathingUpdater::update() {
         
         warpDetector->checkForWarping(player);
     }
+
+	raceManager->updatePlayerRankings(worldManager.get());
 }
 
 }  // namespace Map

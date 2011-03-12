@@ -87,7 +87,8 @@ void GameLoop::render() {
     gameRenderer->renderHUD(
         gameWorld->getWorldManager(),
         gameWorld->getWorldManager()->getPlayer(
-            gameWorld->getClientData()->getPlayerID()));
+            gameWorld->getClientData()->getPlayerID()),
+			gameWorld->getRaceManager());
 
     gui->render();
 }

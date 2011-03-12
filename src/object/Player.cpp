@@ -96,5 +96,31 @@ void Player::preRender() {
 
 }
 
+bool Player::operator < (const Player& other) const {
+	return (*tracker < *other.getPathTracker());
+}
+
+std::string Player::getPlayerName() const {
+	switch (getID()) {
+		case 0: return "Jake Gorb"; break;
+		case 1: return "Chufmoney"; break;
+		case 2: return "Phoenix"; break;
+		case 3: return "Edgeworth"; break;
+		case 4: return "Toblerone"; break;
+		case 5: return "Homeslice"; break;
+		case 6: return "St. Juib"; break;
+		case 7: return "Rasputin"; break;
+		case 8: return "The Sauce"; break;
+		case 9: return "Rainbow-BRITE"; break;
+		case 10: return "Pogs"; break;
+		case 11: return "Creamsicle"; break;
+		case 12: return "Fresh Prance"; break;
+		case 13: return "Carabeener"; break;
+		case 14: return "Three Sheets"; break;
+		case 15: return "Speak-N-Spell"; break;
+		default: return "..."; break;
+	}
+}
+
 }  // namespace Object
 }  // namespace Project

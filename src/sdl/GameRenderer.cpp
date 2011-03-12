@@ -41,6 +41,9 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     lightManager = renderer->getLightManager();
     mapRenderable = boost::shared_ptr<Render::RenderList>(
         new Render::RenderList());
+
+	stringTextureCache = boost::shared_ptr<Render::StringTextureCache>(
+        new Render::StringTextureCache());
     
     renderer->getShaderManager()->loadShadersFile("shaders.txt");
     
@@ -50,7 +53,7 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     
     //Instantiate the map
     map = boost::shared_ptr<Map::HRMap>(new Map::HRMap());
-    if (map->loadMapFile(GET_SETTING("map", "data/testtrack.hrm"))) {
+    if (map->loadMapFile(GET_SETTING("map", "data/testtrack.hrm"), SDL::MenuLoop::getLoadingProgressTracker())) {
         LOG(WORLD, "Loaded Map File " << GET_SETTING("map", "data/testtrack.hrm"));
     }
     else {
@@ -74,6 +77,8 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     minimap->setMapInfo(map.get());
 
 	speedometer = boost::shared_ptr<HUD::Speedometer>(new HUD::Speedometer());
+
+	placingList = boost::shared_ptr<HUD::PlacingList>(new HUD::PlacingList());
     
     renderer->setCubeMap(map->getCubeMap());
     
@@ -202,7 +207,7 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldMan
 	renderer->cleanup();
 }
 
-void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player *player) {
+void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player *player, Map::RaceManager *raceManager) {
 
     int viewWidth = SDL_GetVideoSurface()->w;
     int viewHeight = SDL_GetVideoSurface()->h;
@@ -269,12 +274,29 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 		HUD::LapProgressBar bar;
 		bar.setProgress(player->getPathTracker()->getLapProgress());
 		bar.render();
-		/*
-        percentageComplete->setText(Misc::StreamAsString() << std::setprecision(3)
-            << player->getPathTracker()->getLapProgress() * 100 << "%");
-		*/
-
     }
+
+	//-Placing List ----------------------------------------------------------------------------
+    if (GET_SETTING("hud.placinglist.enable", true)) {
+
+        int draw_height = viewHeight*GET_SETTING("hud.placinglist.drawheight", 0.5);
+		int draw_width = GET_SETTING("hud.placinglist.drawwidth", 400);
+		int entry_height = GET_SETTING("hud.placinglist.entryheight", 0.5);
+
+		hudRenderer->setupViewport(
+			HUD::HUDRenderer::ALIGN_MIN,
+			HUD::HUDRenderer::ALIGN_MID,
+			draw_width,
+			draw_height,
+			10,
+			0);
+	
+		placingList->setTotalWidth(draw_width);
+		placingList->setTotalHeight(draw_height);
+		placingList->setEntryHeight(entry_height);
+		placingList->render(raceManager);
+    }
+
 
 	hudRenderer->renderingStateReset();
 	hudRenderer->resetViewport();

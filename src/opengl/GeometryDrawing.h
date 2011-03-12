@@ -9,6 +9,7 @@
 #include "math/BoundingPlane3D.h"
 #include "math/BoundingConvexHull3D.h"
 #include "math/BoundingSphere.h"
+#include "math/Vertex2D.h"
 
 namespace Project {
 namespace OpenGL {
@@ -31,6 +32,8 @@ public:
 	static void drawBoundingPlane3D(const Math::BoundingPlane3D& object, bool wireframe = false);
 	static void drawBoundingConvexHull3D(const Math::BoundingConvexHull3D& object, bool wireframe = false);
 	static void drawBoundingSphere(const Math::BoundingSphere& object, bool wireframe = false);
+
+	static void drawHexagon(const Math::Vertex2D& center, double radius, bool edge_only = false);
 };
 
 }  // namespace OpenGL

@@ -1,5 +1,6 @@
 #include "RaceManager.h"
 #include "log/Logger.h"
+#include "misc/StdVectorFunctions.h"
 
 #include "settings/SettingsManager.h"
 #include "config.h"
@@ -52,5 +53,17 @@ bool RaceManager::inBounds(const Math::Point& position) const {
 	return (position.getY() > killPlaneY);
 }
 
+void RaceManager::updatePlayerRankings(Object::WorldManager* world) {
+	playerRankings.clear();
+
+	Object::WorldManager::PlayerIteratorType it
+		= world->getPlayerIterator();
+	while(it.hasNext()) {
+		playerRankings.push_back(it.next());
+	}
+
+	Misc::vectorPointerMergeSort(playerRankings);
+
+}
 }  // namespace Map
 }  // namespace Project

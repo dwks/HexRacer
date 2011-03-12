@@ -98,7 +98,7 @@ namespace Mesh {
 
 			triangleFans.push_back(new MeshTriangleFan(fan_vertices));
 		}
-		LOG(OPENGL, "Mesh: Generated " << triangleFans.size() << " triangle fans from " << triangles.size() << " triangles.");
+		//LOG(OPENGL, "Mesh: Generated " << triangleFans.size() << " triangle fans from " << triangles.size() << " triangles.");
 
 		if (cullable)
 			generateTriangleFanTree();

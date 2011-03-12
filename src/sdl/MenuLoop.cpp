@@ -1,6 +1,7 @@
 #include "MenuLoop.h"
 
 #include "widget/RepaintEvent.h"
+#include "misc/ProgressLogger.h"
 
 namespace Project {
 namespace SDL {
@@ -17,8 +18,12 @@ void MenuLoop::construct() {
     
     gui->construct();
 
+	loadingProgressTracker = new Misc::ProgressLogger();
+
+	/*
 	loadingProgressTracker = dynamic_cast<Misc::ProgressTracker*>
 		(gui->getWidget("main/progressBar"));
+		*/
     
     menuBackground = boost::shared_ptr<MenuBackground>(
         new MenuBackground());

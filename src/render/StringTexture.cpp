@@ -27,6 +27,9 @@ namespace Render {
 			clearTexture();
 			textureString = std::string(str);
 
+			if (str.empty())
+				return;
+
 			SDL_Color c;
 			c.r = text_color.getRedi();
 			c.g = text_color.getGreeni();

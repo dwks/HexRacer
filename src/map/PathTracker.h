@@ -42,6 +42,8 @@ public:
 	
 	bool atLeastOneNode() const { return manager.getStartNode() != NULL; }
 
+	bool operator < (const PathTracker& other) const;
+
 };
 
 }  // namespace Map

@@ -10,16 +10,19 @@
 #include "render/LightManager.h"
 #include "render/RenderList.h"
 #include "render/BackgroundRenderable.h"
+#include "render/StringTextureCache.h"
 
 #include "FPSRateMonitor.h"
 
 #include "paint/PaintManager.h"
 
 #include "map/HRMap.h"
+#include "map/RaceManager.h"
 
 #include "hud/HUDRenderer.h"
 #include "hud/Minimap.h"
 #include "hud/Speedometer.h"
+#include "hud/PlacingList.h"
 
 #include "gui/GUISystem.h"
 #include "widget/TextWidget.h"
@@ -61,6 +64,8 @@ private:
     Render::LightManager *lightManager;  // not allocated here
     boost::shared_ptr<Render::RenderList> mapRenderable;
     boost::shared_ptr<Render::BackgroundRenderable> background;
+
+	boost::shared_ptr<Render::StringTextureCache> stringTextureCache;
     
     boost::shared_ptr<Paint::PaintManager> paintManager;
     
@@ -68,6 +73,7 @@ private:
 	boost::shared_ptr<HUD::HUDRenderer> hudRenderer;
     boost::shared_ptr<HUD::Minimap> minimap;
 	boost::shared_ptr<HUD::Speedometer> speedometer;
+	boost::shared_ptr<HUD::PlacingList> placingList;
     
     boost::shared_ptr<GUI::GUISystem> gui;
     Widget::TextWidget *percentageComplete;
@@ -80,7 +86,7 @@ public:
     void setGUI(boost::shared_ptr<GUI::GUISystem> gui);
     
     void render(OpenGL::Camera *camera, Object::WorldManager *worldManager);
-    void renderHUD(Object::WorldManager *worldManager, Object::Player *player);
+	void renderHUD(Object::WorldManager *worldManager, Object::Player *player, Map::RaceManager *raceManager);
 	void renderDebug(OpenGL::Camera *camera, Object::WorldManager *worldManager, Object::Player *player);
     
     Map::HRMap *getMap() { return map.get(); }

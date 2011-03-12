@@ -518,6 +518,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\LobbyProxy.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\LoopBase.cpp"
 				>
 			</File>
@@ -714,6 +718,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\hud\PlacingList.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\world\PlayerIntention.cpp"
 				>
 			</File>
@@ -731,6 +739,10 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\ProgressBarWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc\ProgressLogger.cpp"
 				>
 			</File>
 			<File
@@ -894,6 +906,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\StringTextureCache.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mesh\SubMesh.cpp"
 				>
 			</File>
@@ -911,6 +927,10 @@
 			</File>
 			<File
 				RelativePath=".\src\opengl\TextureLoading.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TextureObjectChain.cpp"
 				>
 			</File>
 			<File
@@ -1652,6 +1672,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\LobbyProxy.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\LoopBase.h"
 				>
 			</File>
@@ -1840,6 +1864,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\hud\PlacingList.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\world\PlayerIntention.h"
 				>
 			</File>
@@ -1857,6 +1885,10 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\ProgressBarWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc\ProgressLogger.h"
 				>
 			</File>
 			<File
@@ -2040,6 +2072,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\render\StringTextureCache.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mesh\SubMesh.h"
 				>
 			</File>
@@ -2057,6 +2093,14 @@
 			</File>
 			<File
 				RelativePath=".\src\opengl\TextureLoading.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TextureObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TextureObjectChain.h"
 				>
 			</File>
 			<File
