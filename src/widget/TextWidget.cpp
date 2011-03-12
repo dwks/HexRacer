@@ -88,7 +88,7 @@ void TextWidget::render() {
         preRender();
     }
     
-	if(!stringTexture.hasTexture()) {
+	if(data.empty() || !stringTexture.hasTexture()) {
         return;  // empty text, or error in pre-rendering
     }
     
