@@ -1,5 +1,7 @@
 #include "GUIConstruction.h"
 
+#include "boost/asio/ip/host_name.hpp"
+
 #include "widget/CompositeWidget.h"
 #include "widget/TextWidget.h"
 #include "widget/ImageWidget.h"
@@ -19,6 +21,7 @@
 #include "SelectMapProxy.h"
 #include "HostProxy.h"
 #include "ConnectProxy.h"
+#include "LobbyProxy.h"
 #include "RunningProxy.h"
 #include "PauseMenuProxy.h"
 #include "SettingsProxy.h"
@@ -51,6 +54,7 @@ Widget::CompositeWidget *GUIConstruction::construct() {
     constructSelectMap();
     constructHost();
     constructConnect();
+    constructLobby();
     constructSinglePlayer();
     constructLoading();  // must happen after host
     constructRunning();
@@ -133,6 +137,9 @@ void GUIConstruction::constructHost() {
     host->addChild(new Widget::ButtonWidget("map",
         "Choose map", Widget::WidgetRect(0.1, 0.1, 0.4, 0.08)));
     
+    host->addChild(new Widget::ButtonWidget("debug",
+        "debug", Widget::WidgetRect(0.6, 0.1, 0.2, 0.08)));
+    
     host->addChild(new Widget::TextWidget("aicount-label", "Number of AIs:",
         Widget::NormalTextLayout::ALIGN_RIGHT,
         Widget::WidgetRect(0.1, 0.20, 0.35, 0.08)));
@@ -163,6 +170,7 @@ void GUIConstruction::constructHost() {
     
     boost::shared_ptr<Widget::EventProxy> proxy(new HostProxy(host));
     getWidget("host/map")->addEventProxy(proxy);
+    getWidget("host/debug")->addEventProxy(proxy);
     getWidget("host/aicount")->addEventProxy(proxy);
     
     getWidget("host/hostport")->addEventProxy(proxy);
@@ -233,6 +241,32 @@ void GUIConstruction::constructConnect() {
     
     getWidget("connect/cancel")->addEventProxy(proxy);
     getWidget("connect/connect")->addEventProxy(proxy);
+}
+
+void GUIConstruction::constructLobby() {
+    Widget::CompositeWidget *lobby
+        = new Widget::CompositeWidget("lobby");
+    widgets->addChild(lobby);
+    
+    std::string ip = boost::asio::ip::host_name();
+    lobby->addChild(new Widget::TextWidget("ipaddress",
+        Misc::StreamAsString() << "Server: " << ip, 0,
+        Widget::WidgetRect(0.1, 0.1, 0.8, 0.07)));
+    
+    lobby->addChild(new Widget::ListWidget("playerlist", true, false,
+        Widget::WidgetRect(0.1, 0.2, 0.8, 0.4)));
+    
+    lobby->addChild(new Widget::ButtonWidget("cancel",
+        "Cancel", Widget::WidgetRect(0.1, 0.85, 0.35, 0.08)));
+    lobby->addChild(new Widget::ButtonWidget("start",
+        "Start game", Widget::WidgetRect(0.5, 0.85, 0.35, 0.08)));
+    
+    boost::shared_ptr<Widget::EventProxy> proxy(new LobbyProxy(lobby));
+    getWidget("lobby/ipaddress")->addEventProxy(proxy);
+    getWidget("lobby/playerlist")->addEventProxy(proxy);
+    
+    getWidget("lobby/cancel")->addEventProxy(proxy);
+    getWidget("lobby/start")->addEventProxy(proxy);
 }
 
 void GUIConstruction::constructLoading() {

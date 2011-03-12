@@ -16,6 +16,7 @@ private:
     void constructSelectMap();
     void constructHost();
     void constructConnect();
+    void constructLobby();
     void constructSinglePlayer();
     void constructLoading();
     void constructRunning();

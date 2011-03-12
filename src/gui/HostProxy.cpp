@@ -21,6 +21,9 @@ void HostProxy::visit(Widget::WidgetActivateEvent *event) {
     if(name == "map") {
         EMIT_EVENT(new Event::SwitchToScreen("selectmap"));
     }
+    else if(name == "debug") {
+        EMIT_EVENT(new Event::SwitchToScreen("lobby"));
+    }
     else if(name == "cancel") {
         EMIT_EVENT(new Event::SwitchToScreen(""));
     }
