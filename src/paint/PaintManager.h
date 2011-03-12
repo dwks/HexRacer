@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "math/HexGrid.h"
+#include "math/HexHeightMap.h"
 #include "PaintCell.h"
 #include "PaintGrid.h"
 #include "PaintCellInfo.h"
@@ -78,9 +79,9 @@ public:
 	}
 
 
-	void colorCellByIndex(const Math::HexGrid::HexIndex& index, int new_color, bool force_color = false);
+	void colorCellByIndex(const Math::HexHeightMap::LayeredHexIndex& index, int new_color, bool force_color = false);
 
-	void colorCellsInRadius(Math::Point centroid, double radius, int new_color, bool force_color = false, vector<Math::HexGrid::HexIndex>* changedIndices = NULL);
+	void colorCellsInRadius(Math::Point centroid, double radius, int new_color, bool force_color = false, vector<Math::HexHeightMap::LayeredHexIndex>* changedIndices = NULL);
 
 	void renderEraseEffect(Math::Point centroid, double radius);
 

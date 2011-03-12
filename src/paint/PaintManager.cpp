@@ -47,7 +47,6 @@ namespace Paint {
 	}
 
 	PaintManager::~PaintManager() {
-        //delete(neutralPaintTree);
 		delete(coloredPaintTree);
 		delete(getRenderProperties()->getMaterial());
 		for (unsigned int i = 0; i < paintList.size(); i++) {
@@ -155,13 +154,18 @@ namespace Paint {
 
 	}
 
-	void PaintManager::colorCellByIndex(const HexGrid::HexIndex& index, int new_color, bool force_color) {
-		PaintCell* cell = paintGrid.getPaintCell(index);
+	void PaintManager::colorCellByIndex(const HexHeightMap::LayeredHexIndex& index, int new_color, bool force_color) {
+		PaintCell* cell = paintGrid.getPaintCell(index.hexIndex);
+		int layer = index.layerIndex;
+		while (layer > 0 && cell) {
+			cell = cell->nextCell;
+			layer--;
+		}
 		if (cell)
 			colorCell(cell, new_color, force_color);
 	}
 
-	void PaintManager::colorCellsInRadius(Math::Point centroid, double radius, int new_color, bool force_color, vector<HexGrid::HexIndex>* changedIndices) {
+	void PaintManager::colorCellsInRadius(Math::Point centroid, double radius, int new_color, bool force_color, vector<HexHeightMap::LayeredHexIndex>* changedIndices) {
 
 		double radius_squared = radius*radius;
 		BoundingCircle query_circle(centroid, radius, PaintCell::PAINT_AXIS);
@@ -172,16 +176,19 @@ namespace Paint {
 				for (int v = range.minVIndex; v <= range.maxVIndex; v++) {
 					
 					PaintCell* cell = paintGrid.getPaintCell(u, v);
+					int layer = 0;
 					while (cell != NULL) {
 						if (centroid.distanceSquared(cell->position) <= radius_squared) {
 							if (colorCell(cell, new_color, force_color) && changedIndices) {
-								HexGrid::HexIndex index;
-								index.uIndex = u;
-								index.vIndex = v;
+								HexHeightMap::LayeredHexIndex index;
+								index.hexIndex.uIndex = u;
+								index.hexIndex.vIndex = v;
+								index.layerIndex = layer;
 								changedIndices->push_back(index);
 							}
 						}
 						cell = cell->nextCell;
+						layer++;
 					}
 
 				}
