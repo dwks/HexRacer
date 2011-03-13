@@ -11,6 +11,8 @@
 #include "ProgressBarWidget.h"
 #include "CheckWidget.h"
 
+#include "SmoothTransitionLayout.h"
+
 #include "opengl/OpenGL.h"
 #include "opengl/MathWrapper.h"
 
@@ -52,10 +54,22 @@ void WidgetRenderer::visit(BoxWidget *widget) {
 void WidgetRenderer::visit(TextWidget *widget) {
     //LOG(WIDGET, "text at " << widget->getBoundingRect());
     
+    SmoothTransitionLayout *smooth
+        = dynamic_cast<SmoothTransitionLayout *>(widget->getLayout().get());
+    if(smooth) {
+        smooth->preRender();
+    }
+    
     widget->render();
 }
 
 void WidgetRenderer::visit(ButtonWidget *widget) {
+    SmoothTransitionLayout *smooth
+        = dynamic_cast<SmoothTransitionLayout *>(widget->getLayout().get());
+    if(smooth) {
+        smooth->preRender();
+    }
+    
     widget->getBox()->accept(*this);
     widget->getText()->accept(*this);
 }
@@ -83,6 +97,12 @@ void WidgetRenderer::visit(ListWidget *widget) {
 }
 
 void WidgetRenderer::visit(ImageWidget *widget) {
+    SmoothTransitionLayout *smooth
+        = dynamic_cast<SmoothTransitionLayout *>(widget->getLayout().get());
+    if(smooth) {
+        smooth->preRender();
+    }
+    
     widget->render();
 }
 

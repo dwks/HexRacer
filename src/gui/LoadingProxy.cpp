@@ -71,7 +71,10 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
                     Event::ObserverRegistry::getInstance().notifyObservers(
                         &joinGameEvent, false);
                     
-                    if(joinGameEvent.getSuccess()) return;
+                    if(joinGameEvent.getSuccess()) {
+                        //EMIT_EVENT(new Event::SwitchToScreen("lobby"));
+                        return;
+                    }
                     
                     Misc::Sleeper::sleep(1000);
                 }
@@ -84,6 +87,9 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
                     << "Could not connect to server at "
                     << joinGameEvent.getHost()
                     << ":" << joinGameEvent.getPort());
+            }
+            else if(type == "starting") {
+                
             }
             else if(type == "singleplayer") {
                 EMIT_EVENT(new Event::JoinGame());

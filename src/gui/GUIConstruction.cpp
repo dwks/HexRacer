@@ -11,6 +11,7 @@
 #include "widget/ListWidget.h"
 
 #include "widget/CentreUponChangeLayout.h"
+#include "widget/SmoothTransitionLayout.h"
 
 #include "MapList.h"
 
@@ -71,21 +72,39 @@ void GUIConstruction::constructMain() {
     widgets->addChild(main);
     
     main->addChild(new Widget::ImageWidget("logo", "data/menu/hexracerlogo.png",
-        Widget::WidgetRect(0.0, 0.05, 1.0, 0.5)));
+        Widget::WidgetRect(0.0, 0.0, 1.0, 1.0)));
     
     main->addChild(new Widget::ButtonWidget("host", "Host game",
-        Widget::WidgetRect(0.03, 0.6, 0.42, 0.08)));
+        Widget::WidgetRect(-0.01, -0.002, 0.01, 0.002)));
     main->addChild(new Widget::ButtonWidget("join", "Join game",
-        Widget::WidgetRect(0.03, 0.7, 0.42, 0.08)));
+        Widget::WidgetRect(-0.01, 0.4, 0.01, 0.002)));
     main->addChild(new Widget::ButtonWidget("single", "Single-player",
-        Widget::WidgetRect(0.03, 0.8, 0.42, 0.08)));
+        Widget::WidgetRect(-0.01, 0.8, 0.01, 0.002)));
     
     main->addChild(new Widget::ButtonWidget("settings", "Settings",
-        Widget::WidgetRect(0.55, 0.6, 0.42, 0.08)));
+        Widget::WidgetRect(1.01, -0.002, 0.01, 0.002)));
     main->addChild(new Widget::ButtonWidget("about", "About",
-        Widget::WidgetRect(0.55, 0.7, 0.42, 0.08)));
+        Widget::WidgetRect(1.01, 0.4, 0.01, 0.002)));
     main->addChild(new Widget::ButtonWidget("quit", "Quit",
-        Widget::WidgetRect(0.55, 0.8, 0.42, 0.08)));
+        Widget::WidgetRect(1.01, 0.8, 0.01, 0.002)));
+    
+    static const int LOGO_DISPLAY = 500;
+    smoothButtonUntil("main/logo", LOGO_DISPLAY, 700,
+        Widget::WidgetRect(0.0, 0.05, 1.0, 0.5));
+    
+    smoothButtonUntil("main/host", LOGO_DISPLAY + 0, 1000,
+        Widget::WidgetRect(0.03, 0.6, 0.42, 0.08));
+    smoothButtonUntil("main/join", LOGO_DISPLAY + 200, 900,
+        Widget::WidgetRect(0.03, 0.7, 0.42, 0.08));
+    smoothButtonUntil("main/single", LOGO_DISPLAY + 400, 800,
+        Widget::WidgetRect(0.03, 0.8, 0.42, 0.08));
+    
+    smoothButtonUntil("main/settings", LOGO_DISPLAY + 300, 1000,
+        Widget::WidgetRect(0.55, 0.6, 0.42, 0.08));
+    smoothButtonUntil("main/about", LOGO_DISPLAY + 500, 900,
+        Widget::WidgetRect(0.55, 0.7, 0.42, 0.08));
+    smoothButtonUntil("main/quit", LOGO_DISPLAY + 700, 800,
+        Widget::WidgetRect(0.55, 0.8, 0.42, 0.08));
     
     setShortcut(getWidget("main/host"), SDLK_h);
     setShortcut(getWidget("main/join"), SDLK_j);
@@ -448,6 +467,19 @@ void GUIConstruction::addListItem(Widget::ListWidget *list,
     item->setColor(color);
     
     list->addChild(item);
+}
+
+void GUIConstruction::smoothButtonUntil(const char *name,
+    int start, int duration, const Widget::WidgetRect &destination) {
+    
+    Widget::WidgetBase *widget = getWidget(name);
+    
+    Widget::SmoothTransitionLayout *newLayout
+        = new Widget::SmoothTransitionLayout(widget->getLayout(), duration,
+            Widget::SmoothTransitionLayout::SMOOTH_END);
+    widget->setLayout(newLayout);
+    
+    newLayout->doTransition(start, destination);
 }
 
 Widget::WidgetBase *GUIConstruction::getWidget(const std::string &path) {
