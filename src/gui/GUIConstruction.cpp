@@ -89,22 +89,22 @@ void GUIConstruction::constructMain() {
         Widget::WidgetRect(1.01, 0.8, 0.01, 0.002)));
     
     static const int LOGO_DISPLAY = 500;
-    smoothButtonUntil("main/logo", LOGO_DISPLAY, 700,
+    smoothButtonUntil("main/logo", LOGO_DISPLAY, 800,
         Widget::WidgetRect(0.0, 0.05, 1.0, 0.5));
     
-    smoothButtonUntil("main/host", LOGO_DISPLAY + 0, 1000,
-        Widget::WidgetRect(0.03, 0.6, 0.42, 0.08));
-    smoothButtonUntil("main/join", LOGO_DISPLAY + 200, 900,
-        Widget::WidgetRect(0.03, 0.7, 0.42, 0.08));
-    smoothButtonUntil("main/single", LOGO_DISPLAY + 400, 800,
-        Widget::WidgetRect(0.03, 0.8, 0.42, 0.08));
+    smoothButtonUntil("main/host", LOGO_DISPLAY + 0, 500,
+        Widget::WidgetRect(0.03, 0.65, 0.42, 0.08));
+    smoothButtonUntil("main/join", LOGO_DISPLAY + 100, 450,
+        Widget::WidgetRect(0.03, 0.75, 0.42, 0.08));
+    smoothButtonUntil("main/single", LOGO_DISPLAY + 200, 400,
+        Widget::WidgetRect(0.03, 0.85, 0.42, 0.08));
     
-    smoothButtonUntil("main/settings", LOGO_DISPLAY + 300, 1000,
-        Widget::WidgetRect(0.55, 0.6, 0.42, 0.08));
-    smoothButtonUntil("main/about", LOGO_DISPLAY + 500, 900,
-        Widget::WidgetRect(0.55, 0.7, 0.42, 0.08));
-    smoothButtonUntil("main/quit", LOGO_DISPLAY + 700, 800,
-        Widget::WidgetRect(0.55, 0.8, 0.42, 0.08));
+    smoothButtonUntil("main/settings", LOGO_DISPLAY + 150, 500,
+        Widget::WidgetRect(0.55, 0.65, 0.42, 0.08));
+    smoothButtonUntil("main/about", LOGO_DISPLAY + 250, 450,
+        Widget::WidgetRect(0.55, 0.75, 0.42, 0.08));
+    smoothButtonUntil("main/quit", LOGO_DISPLAY + 350, 400,
+        Widget::WidgetRect(0.55, 0.85, 0.42, 0.08));
     
     setShortcut(getWidget("main/host"), SDLK_h);
     setShortcut(getWidget("main/join"), SDLK_j);
