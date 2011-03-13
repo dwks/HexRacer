@@ -122,9 +122,6 @@ namespace Paint {
 
 	void PaintGenerator::generateCells(Misc::ProgressTracker* progress_tracker) {
 
-		int u_steps = heightMap.getHexGrid().numUIndices();
-		int v_steps = heightMap.getHexGrid().numVIndices();
-
 		const vector<HexGrid::HexIndex>& hex_indices = heightMap.getSetHexIndices();
 
 		if (progress_tracker) {

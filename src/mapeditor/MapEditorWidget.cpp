@@ -1073,9 +1073,6 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 			for (int i = 0; i < mapObjects[type_index].size(); i++) {
 
 				QList<MapObject*> v = mapObjects[type_index];
-				if (v.size() > 3) {
-					int b = 5;
-				}
 
 				if (object_buffer) {
 					objectBufferProperties->setColor(glBufferIndexColor(i));

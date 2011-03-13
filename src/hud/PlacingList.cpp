@@ -32,7 +32,7 @@ namespace HUD {
 
 		double hex_radius = entryHeight*0.5;
 		double hex_half_height = hex_radius*sqrt(3.0)*0.5;
-		double hex_y_offset = entryHeight*0.5;
+		//double hex_y_offset = entryHeight*0.5;
 		double x_offset;
 		double name_height = entryHeight*0.75;
 		double y_increment = hex_half_height*2.0;
