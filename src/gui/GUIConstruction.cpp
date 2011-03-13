@@ -251,19 +251,52 @@ void GUIConstruction::constructLobby() {
     std::string ip = boost::asio::ip::host_name();
     lobby->addChild(new Widget::TextWidget("ipaddress",
         Misc::StreamAsString() << "Server: " << ip, 0,
-        Widget::WidgetRect(0.1, 0.1, 0.8, 0.07)));
+        Widget::WidgetRect(0.05, 0.02, 0.9, 0.07)));
+    
+    lobby->addChild(new Widget::TextWidget("player-label",
+        "Player", 0,
+        Widget::WidgetRect(0.05, 0.1, 0.43, 0.06)));
+    lobby->addChild(new Widget::EditWidget("playername",
+        Misc::StreamAsString() << "Anonymous",
+        Widget::WidgetRect(0.05, 0.18, 0.43, 0.07)));
+    
+    Widget::ListWidget *colourList = new Widget::ListWidget("colourlist",
+        true, false,
+        Widget::WidgetRect(0.05, 0.26, 0.45, 0.2));
+    lobby->addChild(colourList);
+    
+    addListItem(colourList, "0", "red", OpenGL::Color::RED);
+    addListItem(colourList, "1", "green", OpenGL::Color::GREEN);
+    addListItem(colourList, "2", "blue", OpenGL::Color::BLUE);
+    addListItem(colourList, "3", "yellow", OpenGL::Color::YELLOW);
+    addListItem(colourList, "4", "purple", OpenGL::Color::PURPLE);
+    addListItem(colourList, "5", "pink", OpenGL::Color::PINK);
+    addListItem(colourList, "6", "teal", OpenGL::Color::TEAL);
+    addListItem(colourList, "7", "indigo", OpenGL::Color::INDIGO);
     
     lobby->addChild(new Widget::ListWidget("playerlist", true, false,
-        Widget::WidgetRect(0.1, 0.2, 0.8, 0.4)));
+        Widget::WidgetRect(0.52, 0.1, 0.43, 0.36)));
+    
+    lobby->addChild(new Widget::ListWidget("chatlist", true, false,
+        Widget::WidgetRect(0.05, 0.55, 0.9, 0.25)));
+    lobby->addChild(new Widget::TextWidget("chat-label",
+        "Chat:", Widget::NormalTextLayout::ALIGN_RIGHT,
+        Widget::WidgetRect(0.05, 0.8, 0.1, 0.06)));
+    lobby->addChild(new Widget::EditWidget("chat", "",
+        Widget::WidgetRect(0.17, 0.8, 0.7, 0.06)));
     
     lobby->addChild(new Widget::ButtonWidget("cancel",
-        "Cancel", Widget::WidgetRect(0.1, 0.85, 0.35, 0.08)));
+        "Disconnect", Widget::WidgetRect(0.1, 0.9, 0.35, 0.08)));
     lobby->addChild(new Widget::ButtonWidget("start",
-        "Start game", Widget::WidgetRect(0.5, 0.85, 0.35, 0.08)));
+        "Ready to start!", Widget::WidgetRect(0.5, 0.9, 0.4, 0.08)));
     
     boost::shared_ptr<Widget::EventProxy> proxy(new LobbyProxy(lobby));
     getWidget("lobby/ipaddress")->addEventProxy(proxy);
+    getWidget("lobby/playername")->addEventProxy(proxy);
     getWidget("lobby/playerlist")->addEventProxy(proxy);
+    
+    getWidget("lobby/chatlist")->addEventProxy(proxy);
+    getWidget("lobby/chat")->addEventProxy(proxy);
     
     getWidget("lobby/cancel")->addEventProxy(proxy);
     getWidget("lobby/start")->addEventProxy(proxy);
@@ -387,6 +420,18 @@ void GUIConstruction::constructSettings() {
     getWidget("settings/bloom")->addEventProxy(proxy);
     getWidget("settings/fullscreen")->addEventProxy(proxy);
     getWidget("settings/accept")->addEventProxy(proxy);
+}
+
+void GUIConstruction::addListItem(Widget::ListWidget *list,
+    const std::string &name, const std::string &text, OpenGL::Color color) {
+    
+    Widget::TextWidget *item = new Widget::TextWidget(name, text,
+        Widget::NormalTextLayout::ALIGN_LEFT,
+        Widget::WidgetRect(0.0, 0.0, 0.8, 0.04));
+    
+    item->setColor(color);
+    
+    list->addChild(item);
 }
 
 Widget::WidgetBase *GUIConstruction::getWidget(const std::string &path) {
