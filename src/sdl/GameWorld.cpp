@@ -28,6 +28,14 @@ bool GameWorld::doConnect(const std::string &host, unsigned short port) {
         return false;
     }
     
+    isConnectedToNetwork = true;
+    
+    return true;
+}
+
+void GameWorld::resumeConnect() {
+    if(!isConnectedToNetwork) return;
+    
     Object::World *world;
     Object::PlayerList *playerList;
     network->waitForWorld(world, playerList);
@@ -35,12 +43,9 @@ bool GameWorld::doConnect(const std::string &host, unsigned short port) {
     basicWorld->constructDuringConnect(world, playerList, network->getID());
     clientData = boost::shared_ptr<ClientData>(new ClientData(network->getID()));
     Settings::ProgramSettings::getInstance()->setConnected(true);
-    isConnectedToNetwork = true;
     
     historian->setWorldManager(basicWorld->getWorldManager());
     historian->setPhysicsWorld(basicWorld->getPhysicsWorld());
-    
-    return true;
 }
 
 void GameWorld::doNotConnect() {

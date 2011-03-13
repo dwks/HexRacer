@@ -14,6 +14,10 @@ bool GameLoop::tryConnect(const std::string &host, unsigned short port) {
     return gameWorld->tryConnect(host, port);
 }
 
+void GameLoop::resumeConnect() {
+    gameWorld->resumeConnect();
+}
+
 void GameLoop::construct() {
     viewport = boost::shared_ptr<GameViewport>(new GameViewport());
     viewport->setPlayerManager(gameWorld->getPlayerManager());

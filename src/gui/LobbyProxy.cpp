@@ -29,12 +29,12 @@ void LobbyProxy::visit(Widget::WidgetActivateEvent *event) {
     else if(name == "cancel") {
         EMIT_EVENT(new Event::SwitchToScreen("-main"));
     }
-    else if(name == "host") {
+    else if(name == "start") {
         std::string map = Map::MapSettings::getInstance()->getMapFile();
         if(map != "") {
             LOG(GUI, "Using map \"" << map << "\"");
             
-            Map::MapSettings::getInstance()->setGameType("host");
+            Map::MapSettings::getInstance()->setGameType("starting");
             EMIT_EVENT(new Event::SwitchToScreen("loading"));
         }
         else {

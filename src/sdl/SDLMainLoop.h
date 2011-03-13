@@ -7,8 +7,9 @@
 #include "Projector.h"
 
 #include "event/QuitEvent.h"
-#include "event/JoinGame.h"
 #include "event/ChangeScreenMode.h"
+#include "event/JoinGame.h"
+#include "event/StartingGame.h"
 #include "event/TypedObserver.h"
 #include "event/Enabler.h"
 
@@ -18,12 +19,14 @@ namespace Project {
 namespace SDL {
 
 class MenuLoop;
+class GameLoop;
 
 class SDLMainLoop : public Event::Enabler {
 private:
     int sdl_init_flags;
     bool quit;
     MenuLoop *menuLoop;
+    GameLoop *gameLoop;
     LoopBase *loop;
     
     Projector projector;
@@ -33,6 +36,7 @@ protected:
     void quitHandler(Event::QuitEvent *event);
     void changeScreenModeHandler(Event::ChangeScreenMode *event);
     void joinGameHandler(Event::JoinGame *event);
+    void startingGameHandler(Event::StartingGame *event);
 public:
     SDLMainLoop();
     ~SDLMainLoop();

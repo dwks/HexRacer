@@ -62,9 +62,10 @@ void SDLMainLoop::changeScreenModeHandler(Event::ChangeScreenMode *event) {
 }
 
 void SDLMainLoop::joinGameHandler(Event::JoinGame *event) {
-    GameLoop *loop = new GameLoop();
-    if(!loop->tryConnect(event->getHost(), event->getPort())) {
-        delete loop;
+    gameLoop = new GameLoop();
+    if(!gameLoop->tryConnect(event->getHost(), event->getPort())) {
+        delete gameLoop;
+        gameLoop = NULL;
         
         Widget::TextWidget *error = dynamic_cast<Widget::TextWidget *>(
             menuLoop->getGUI()->getWidget("connect/error"));
@@ -83,20 +84,27 @@ void SDLMainLoop::joinGameHandler(Event::JoinGame *event) {
     else {
         event->setSuccessful();
     }
-    loop->construct();
-    
-    loop->setGuiPointers(
-        menuLoop->getGUI(),
-        menuLoop->getGUIInput());
-    menuLoop->getGUI()->pushScreen("running");
-    
-	// set up camera if necessary
-    loop->setProjection(Point2D(
-        SDL_GetVideoSurface()->w,
-        SDL_GetVideoSurface()->h));
-    
-    //Timing::AccelControl::getInstance()->setPauseSkipDirectly(SDL_GetTicks());
-    useLoopBase(loop);
+}
+
+void SDLMainLoop::startingGameHandler(Event::StartingGame *event) {
+    if(event->getStatus() == Event::StartingGame::LOADING_MAP) {
+        gameLoop->resumeConnect();
+        
+        gameLoop->construct();
+        
+        gameLoop->setGuiPointers(
+            menuLoop->getGUI(),
+            menuLoop->getGUIInput());
+        menuLoop->getGUI()->pushScreen("running");
+        
+        // set up camera if necessary
+        gameLoop->setProjection(Point2D(
+            SDL_GetVideoSurface()->w,
+            SDL_GetVideoSurface()->h));
+        
+        //Timing::AccelControl::getInstance()->setPauseSkipDirectly(SDL_GetTicks());
+        useLoopBase(gameLoop);
+    }
 }
 
 SDLMainLoop::SDLMainLoop() {
@@ -108,11 +116,13 @@ SDLMainLoop::SDLMainLoop() {
     METHOD_OBSERVER(&SDLMainLoop::quitHandler);
     METHOD_OBSERVER(&SDLMainLoop::changeScreenModeHandler);
     METHOD_OBSERVER(&SDLMainLoop::joinGameHandler);
+    METHOD_OBSERVER(&SDLMainLoop::startingGameHandler);
     
     initSDL();
     initOpenGL();
     
     menuLoop = new MenuLoop();
+    gameLoop = NULL;
     loop = menuLoop;
 }
 
