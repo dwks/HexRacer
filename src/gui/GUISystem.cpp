@@ -32,7 +32,7 @@ void GUISystem::switchToScreenHandler(Event::SwitchToScreen *event) {
     }
     else if(event->getScreen()[0] == '-') {
         std::string until = event->getScreen().substr(1);
-        LOG(GUI, "popping until screen " << until);
+        LOG(GUI, "popping until screen \"" << until << "\"");
         popScreen(until);
     }
     else {

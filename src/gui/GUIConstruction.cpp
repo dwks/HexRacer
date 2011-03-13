@@ -27,6 +27,7 @@
 #include "SettingsProxy.h"
 #include "LoadingProxy.h"
 #include "SinglePlayerProxy.h"
+#include "AboutProxy.h"
 
 #include "misc/StreamAsString.h"
 #include "settings/SettingsManager.h"
@@ -60,6 +61,7 @@ Widget::CompositeWidget *GUIConstruction::construct() {
     constructRunning();
     constructPaused();
     constructSettings();
+    constructAbout();
     
     return widgets;
 }
@@ -89,6 +91,8 @@ void GUIConstruction::constructMain() {
     setShortcut(getWidget("main/join"), SDLK_j);
     setShortcut(getWidget("main/single"), SDLK_s);
     
+    setShortcut(getWidget("main/settings"), SDLK_e);
+    setShortcut(getWidget("main/about"), SDLK_a);
     setShortcut(getWidget("main/quit"), SDLK_q);
     setShortcut(getWidget("main/quit"), SDLK_ESCAPE);
     
@@ -420,6 +424,18 @@ void GUIConstruction::constructSettings() {
     getWidget("settings/bloom")->addEventProxy(proxy);
     getWidget("settings/fullscreen")->addEventProxy(proxy);
     getWidget("settings/accept")->addEventProxy(proxy);
+}
+
+void GUIConstruction::constructAbout() {
+    Widget::CompositeWidget *about
+        = new Widget::CompositeWidget("about");
+    widgets->addChild(about);
+    
+    about->addChild(new Widget::ButtonWidget("back", "Back to main menu",
+        Widget::WidgetRect(0.2, 0.9, 0.6, 0.07)));
+    
+    boost::shared_ptr<Widget::EventProxy> proxy(new AboutProxy(about));
+    getWidget("about/back")->addEventProxy(proxy);
 }
 
 void GUIConstruction::addListItem(Widget::ListWidget *list,

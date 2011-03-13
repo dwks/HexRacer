@@ -23,6 +23,7 @@ private:
     void constructRunning();
     void constructPaused();
     void constructSettings();
+    void constructAbout();
 private:
     void addListItem(Widget::ListWidget *list, const std::string &name,
         const std::string &text, OpenGL::Color color = OpenGL::Color::WHITE);
