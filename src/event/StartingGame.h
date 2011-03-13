@@ -18,6 +18,7 @@ private:
 public:
     enum GameStatus {
         LOADING_MAP,
+        FINISHED_LOADING_MAP,
         COUNTDOWN_STARTED,
         GAME_STARTED
     };

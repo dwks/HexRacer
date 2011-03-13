@@ -160,9 +160,6 @@ void GUIConstruction::constructHost() {
     host->addChild(new Widget::ButtonWidget("map",
         "Choose map", Widget::WidgetRect(0.1, 0.1, 0.4, 0.08)));
     
-    host->addChild(new Widget::ButtonWidget("debug",
-        "debug", Widget::WidgetRect(0.6, 0.1, 0.2, 0.08)));
-    
     host->addChild(new Widget::TextWidget("aicount-label", "Number of AIs:",
         Widget::NormalTextLayout::ALIGN_RIGHT,
         Widget::WidgetRect(0.1, 0.20, 0.35, 0.08)));
@@ -193,7 +190,6 @@ void GUIConstruction::constructHost() {
     
     boost::shared_ptr<Widget::EventProxy> proxy(new HostProxy(host));
     getWidget("host/map")->addEventProxy(proxy);
-    getWidget("host/debug")->addEventProxy(proxy);
     getWidget("host/aicount")->addEventProxy(proxy);
     
     getWidget("host/hostport")->addEventProxy(proxy);

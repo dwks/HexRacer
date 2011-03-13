@@ -20,13 +20,7 @@ namespace GUI {
 void LobbyProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();
     
-    if(name == "map") {
-        EMIT_EVENT(new Event::SwitchToScreen("selectmap"));
-    }
-    else if(name == "debug") {
-        EMIT_EVENT(new Event::SwitchToScreen("lobby"));
-    }
-    else if(name == "cancel") {
+    if(name == "cancel") {
         EMIT_EVENT(new Event::SwitchToScreen("-main"));
     }
     else if(name == "start") {
