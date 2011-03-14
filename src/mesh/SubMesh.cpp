@@ -128,7 +128,7 @@ namespace Mesh {
 
 	void SubMesh::renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object, const Render::RenderSettings& settings) {
 
-		//int shader_index = getRenderProperties()->getShaderIndex();
+		int shader_index = getRenderProperties()->getShaderIndex();
 
 		drawingCulled = (bounding_object && triangleFanTree);
 		
