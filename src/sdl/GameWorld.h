@@ -35,6 +35,7 @@ private:
     bool isConnectedToNetwork;
 public:
     bool tryConnect(const std::string &host, unsigned short port);
+    void resumeConnect();
     void constructAfterConnect(Map::HRMap *map);
     
     World::PlayerManager *getPlayerManager()

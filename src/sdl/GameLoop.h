@@ -33,6 +33,7 @@ private:
     boost::shared_ptr<GUIInputManager> guiInputManager;
 public:
     virtual bool tryConnect(const std::string &host, unsigned short port);
+    virtual void resumeConnect();
     
     virtual void construct();
     

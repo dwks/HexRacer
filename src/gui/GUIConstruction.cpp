@@ -11,6 +11,7 @@
 #include "widget/ListWidget.h"
 
 #include "widget/CentreUponChangeLayout.h"
+#include "widget/SmoothTransitionLayout.h"
 
 #include "MapList.h"
 
@@ -27,6 +28,7 @@
 #include "SettingsProxy.h"
 #include "LoadingProxy.h"
 #include "SinglePlayerProxy.h"
+#include "AboutProxy.h"
 
 #include "misc/StreamAsString.h"
 #include "settings/SettingsManager.h"
@@ -60,6 +62,7 @@ Widget::CompositeWidget *GUIConstruction::construct() {
     constructRunning();
     constructPaused();
     constructSettings();
+    constructAbout();
     
     return widgets;
 }
@@ -69,26 +72,46 @@ void GUIConstruction::constructMain() {
     widgets->addChild(main);
     
     main->addChild(new Widget::ImageWidget("logo", "data/menu/hexracerlogo.png",
-        Widget::WidgetRect(0.0, 0.05, 1.0, 0.5)));
+        Widget::WidgetRect(0.0, 0.0, 1.0, 1.0)));
     
     main->addChild(new Widget::ButtonWidget("host", "Host game",
-        Widget::WidgetRect(0.03, 0.6, 0.42, 0.08)));
+        Widget::WidgetRect(-0.01, -0.002, 0.01, 0.002)));
     main->addChild(new Widget::ButtonWidget("join", "Join game",
-        Widget::WidgetRect(0.03, 0.7, 0.42, 0.08)));
+        Widget::WidgetRect(-0.01, 0.4, 0.01, 0.002)));
     main->addChild(new Widget::ButtonWidget("single", "Single-player",
-        Widget::WidgetRect(0.03, 0.8, 0.42, 0.08)));
+        Widget::WidgetRect(-0.01, 0.8, 0.01, 0.002)));
     
     main->addChild(new Widget::ButtonWidget("settings", "Settings",
-        Widget::WidgetRect(0.55, 0.6, 0.42, 0.08)));
+        Widget::WidgetRect(1.01, -0.002, 0.01, 0.002)));
     main->addChild(new Widget::ButtonWidget("about", "About",
-        Widget::WidgetRect(0.55, 0.7, 0.42, 0.08)));
+        Widget::WidgetRect(1.01, 0.4, 0.01, 0.002)));
     main->addChild(new Widget::ButtonWidget("quit", "Quit",
-        Widget::WidgetRect(0.55, 0.8, 0.42, 0.08)));
+        Widget::WidgetRect(1.01, 0.8, 0.01, 0.002)));
+    
+    static const int LOGO_DISPLAY = 500;
+    smoothButtonUntil("main/logo", LOGO_DISPLAY, 800,
+        Widget::WidgetRect(0.0, 0.05, 1.0, 0.5));
+    
+    smoothButtonUntil("main/host", LOGO_DISPLAY + 0, 500,
+        Widget::WidgetRect(0.03, 0.65, 0.42, 0.08));
+    smoothButtonUntil("main/join", LOGO_DISPLAY + 100, 450,
+        Widget::WidgetRect(0.03, 0.75, 0.42, 0.08));
+    smoothButtonUntil("main/single", LOGO_DISPLAY + 200, 400,
+        Widget::WidgetRect(0.03, 0.85, 0.42, 0.08));
+    
+    smoothButtonUntil("main/settings", LOGO_DISPLAY + 150, 500,
+        Widget::WidgetRect(0.55, 0.65, 0.42, 0.08));
+    smoothButtonUntil("main/about", LOGO_DISPLAY + 250, 450,
+        Widget::WidgetRect(0.55, 0.75, 0.42, 0.08));
+    smoothButtonUntil("main/quit", LOGO_DISPLAY + 350, 400,
+        Widget::WidgetRect(0.55, 0.85, 0.42, 0.08));
     
     setShortcut(getWidget("main/host"), SDLK_h);
     setShortcut(getWidget("main/join"), SDLK_j);
     setShortcut(getWidget("main/single"), SDLK_s);
     
+    setShortcut(getWidget("main/settings"), SDLK_e);
+    setShortcut(getWidget("main/about"), SDLK_a);
     setShortcut(getWidget("main/quit"), SDLK_q);
     setShortcut(getWidget("main/quit"), SDLK_ESCAPE);
     
@@ -137,9 +160,6 @@ void GUIConstruction::constructHost() {
     host->addChild(new Widget::ButtonWidget("map",
         "Choose map", Widget::WidgetRect(0.1, 0.1, 0.4, 0.08)));
     
-    host->addChild(new Widget::ButtonWidget("debug",
-        "debug", Widget::WidgetRect(0.6, 0.1, 0.2, 0.08)));
-    
     host->addChild(new Widget::TextWidget("aicount-label", "Number of AIs:",
         Widget::NormalTextLayout::ALIGN_RIGHT,
         Widget::WidgetRect(0.1, 0.20, 0.35, 0.08)));
@@ -170,7 +190,6 @@ void GUIConstruction::constructHost() {
     
     boost::shared_ptr<Widget::EventProxy> proxy(new HostProxy(host));
     getWidget("host/map")->addEventProxy(proxy);
-    getWidget("host/debug")->addEventProxy(proxy);
     getWidget("host/aicount")->addEventProxy(proxy);
     
     getWidget("host/hostport")->addEventProxy(proxy);
@@ -251,19 +270,52 @@ void GUIConstruction::constructLobby() {
     std::string ip = boost::asio::ip::host_name();
     lobby->addChild(new Widget::TextWidget("ipaddress",
         Misc::StreamAsString() << "Server: " << ip, 0,
-        Widget::WidgetRect(0.1, 0.1, 0.8, 0.07)));
+        Widget::WidgetRect(0.05, 0.02, 0.9, 0.07)));
+    
+    lobby->addChild(new Widget::TextWidget("player-label",
+        "Player", 0,
+        Widget::WidgetRect(0.05, 0.1, 0.43, 0.06)));
+    lobby->addChild(new Widget::EditWidget("playername",
+        Misc::StreamAsString() << "Anonymous",
+        Widget::WidgetRect(0.05, 0.18, 0.43, 0.07)));
+    
+    Widget::ListWidget *colourList = new Widget::ListWidget("colourlist",
+        true, false,
+        Widget::WidgetRect(0.05, 0.26, 0.45, 0.2));
+    lobby->addChild(colourList);
+    
+    addListItem(colourList, "0", "red", OpenGL::Color::RED);
+    addListItem(colourList, "1", "green", OpenGL::Color::GREEN);
+    addListItem(colourList, "2", "blue", OpenGL::Color::BLUE);
+    addListItem(colourList, "3", "yellow", OpenGL::Color::YELLOW);
+    addListItem(colourList, "4", "purple", OpenGL::Color::PURPLE);
+    addListItem(colourList, "5", "pink", OpenGL::Color::PINK);
+    addListItem(colourList, "6", "teal", OpenGL::Color::TEAL);
+    addListItem(colourList, "7", "indigo", OpenGL::Color::INDIGO);
     
     lobby->addChild(new Widget::ListWidget("playerlist", true, false,
-        Widget::WidgetRect(0.1, 0.2, 0.8, 0.4)));
+        Widget::WidgetRect(0.52, 0.1, 0.43, 0.36)));
+    
+    lobby->addChild(new Widget::ListWidget("chatlist", true, false,
+        Widget::WidgetRect(0.05, 0.55, 0.9, 0.25)));
+    lobby->addChild(new Widget::TextWidget("chat-label",
+        "Chat:", Widget::NormalTextLayout::ALIGN_RIGHT,
+        Widget::WidgetRect(0.05, 0.8, 0.1, 0.06)));
+    lobby->addChild(new Widget::EditWidget("chat", "",
+        Widget::WidgetRect(0.17, 0.8, 0.7, 0.06)));
     
     lobby->addChild(new Widget::ButtonWidget("cancel",
-        "Cancel", Widget::WidgetRect(0.1, 0.85, 0.35, 0.08)));
+        "Disconnect", Widget::WidgetRect(0.1, 0.9, 0.35, 0.08)));
     lobby->addChild(new Widget::ButtonWidget("start",
-        "Start game", Widget::WidgetRect(0.5, 0.85, 0.35, 0.08)));
+        "Ready to start!", Widget::WidgetRect(0.5, 0.9, 0.4, 0.08)));
     
     boost::shared_ptr<Widget::EventProxy> proxy(new LobbyProxy(lobby));
     getWidget("lobby/ipaddress")->addEventProxy(proxy);
+    getWidget("lobby/playername")->addEventProxy(proxy);
     getWidget("lobby/playerlist")->addEventProxy(proxy);
+    
+    getWidget("lobby/chatlist")->addEventProxy(proxy);
+    getWidget("lobby/chat")->addEventProxy(proxy);
     
     getWidget("lobby/cancel")->addEventProxy(proxy);
     getWidget("lobby/start")->addEventProxy(proxy);
@@ -387,6 +439,43 @@ void GUIConstruction::constructSettings() {
     getWidget("settings/bloom")->addEventProxy(proxy);
     getWidget("settings/fullscreen")->addEventProxy(proxy);
     getWidget("settings/accept")->addEventProxy(proxy);
+}
+
+void GUIConstruction::constructAbout() {
+    Widget::CompositeWidget *about
+        = new Widget::CompositeWidget("about");
+    widgets->addChild(about);
+    
+    about->addChild(new Widget::ButtonWidget("back", "Back to main menu",
+        Widget::WidgetRect(0.2, 0.9, 0.6, 0.07)));
+    
+    boost::shared_ptr<Widget::EventProxy> proxy(new AboutProxy(about));
+    getWidget("about/back")->addEventProxy(proxy);
+}
+
+void GUIConstruction::addListItem(Widget::ListWidget *list,
+    const std::string &name, const std::string &text, OpenGL::Color color) {
+    
+    Widget::TextWidget *item = new Widget::TextWidget(name, text,
+        Widget::NormalTextLayout::ALIGN_LEFT,
+        Widget::WidgetRect(0.0, 0.0, 0.8, 0.04));
+    
+    item->setColor(color);
+    
+    list->addChild(item);
+}
+
+void GUIConstruction::smoothButtonUntil(const char *name,
+    int start, int duration, const Widget::WidgetRect &destination) {
+    
+    Widget::WidgetBase *widget = getWidget(name);
+    
+    Widget::SmoothTransitionLayout *newLayout
+        = new Widget::SmoothTransitionLayout(widget->getLayout(), duration,
+            Widget::SmoothTransitionLayout::SMOOTH_END);
+    widget->setLayout(newLayout);
+    
+    newLayout->doTransition(start, destination);
 }
 
 Widget::WidgetBase *GUIConstruction::getWidget(const std::string &path) {

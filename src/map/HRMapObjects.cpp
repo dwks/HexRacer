@@ -17,10 +17,11 @@ namespace Map {
 	}
 	void HRMapObjects::clear() {
 
-		for (unsigned int i = 0; i < propMeshNames.size(); i++) {
-			Mesh::MeshLoader::getInstance()->deleteModelByName(propMeshNames[i]);
-		}
 		Mesh::MeshLoader* loader = Mesh::MeshLoader::getInstance();
+		for (unsigned int i = 0; i < propMeshNames.size(); i++) {
+			loader->deleteModelByName(propMeshNames[i]);
+		}
+
 		propMeshNames.clear();
 		propMeshFilenames.clear();
 

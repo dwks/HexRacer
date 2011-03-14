@@ -69,12 +69,12 @@ namespace Render {
 
 			if (object && object->hasTexture()) {
 				if (orientation == HORIZONTAL) {
-					width += std::abs(object->getWidth());
-					height = Math::maximum(height, std::abs(object->getHeight()));
+					width += Math::intabs(object->getWidth());
+					height = Math::maximum(height, Math::intabs(object->getHeight()));
 				}
 				else {
-					width = Math::maximum(width, std::abs(object->getWidth()));
-					height += std::abs(object->getHeight());
+					width = Math::maximum(width, Math::intabs(object->getWidth()));
+					height += Math::intabs(object->getHeight());
 				}
 				numObjects++;
 			}

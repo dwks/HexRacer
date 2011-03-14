@@ -2,6 +2,8 @@
 #include "AbsoluteLayout.h"
 #include "EditEventProxy.h"
 
+#include "math/Values.h"
+
 namespace Project {
 namespace Widget {
 
@@ -15,8 +17,15 @@ EditWidget::EditWidget(const std::string &name, const std::string &initialData,
     text = new TextWidget("edit-text", OpenGL::Color::WHITE, initialData,
         NormalTextLayout::ALIGN_LEFT | NormalTextLayout::ALIGN_VCENTRE);
     WidgetRect textBounds = bounds;
-    textBounds.getCorner() += textBounds.getDimensions() * 0.15;
-    textBounds.getDimensions() *= 0.7;
+    
+    //textBounds.getCorner() += textBounds.getDimensions() * 0.15;
+    //textBounds.getDimensions() *= 0.7;
+    double corner = Math::minimum(
+        textBounds.getWidth() * 0.2,
+        textBounds.getHeight() * 0.2);
+    textBounds.getCorner() += WidgetPoint(corner, corner);
+    textBounds.getDimensions() -= WidgetPoint(corner*2, corner*2);
+    
     text->updateLayout(textBounds);
     
     setLayout(new AbsoluteLayout(bounds));
