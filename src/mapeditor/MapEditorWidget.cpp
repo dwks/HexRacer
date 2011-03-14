@@ -161,6 +161,7 @@ void MapEditorWidget::paintGL() {
 		//Activate all lights visible to the camera
 		lightManager->activateIntersectingLights(*camera->getFrustrum());
 		glEnable(GL_LIGHTING);
+		renderer->getRenderSettings()->setAllowDisplayLists(true);
 	}
 
 	renderer->setCubeMap(map->getCubeMap());
@@ -170,7 +171,7 @@ void MapEditorWidget::paintGL() {
 
 	if (!advancedRendering) {
 		renderer->setRenderProperties(normalRenderProperties);
-		//rootRenderable.getRenderProperties()->setShaderOverride(true);
+		renderer->getRenderSettings()->setAllowDisplayLists(false);
 	}
 
 	for (int i = 0; i < HRMap::NUM_MESHES; i++) {
@@ -190,25 +191,14 @@ void MapEditorWidget::paintGL() {
 	if (map->getCubeMap())
 		background->render(renderer);
 
+	renderer->getRenderSettings()->setAllowDisplayLists(false);
+
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
 
 	//Draw Paint
 	if (showPaint) {
 		Color::glColor(Color::YELLOW);
-		/*
-		const vector<PaintCell*>& paint_cells = map->getPaintCells();
-		for (unsigned int i = 0; i < paint_cells.size(); i++) {
-			PaintCell* cell = paint_cells[i];
-			glBegin(GL_TRIANGLE_FAN);
-			OpenGL::MathWrapper::glVertex(cell->center);
-			for (int j = 0; j < Paint::PaintCell::CELL_VERTICES; j++) {
-				OpenGL::MathWrapper::glVertex(*cell->vertex[j]);
-			}
-			OpenGL::MathWrapper::glVertex(*cell->vertex[0]);
-			glEnd();
-		}
-		*/
 		if (paintList > 0)
 			glCallList(paintList);
 	}

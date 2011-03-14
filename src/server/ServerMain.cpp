@@ -191,7 +191,7 @@ void ServerMain::init() {
     basicWorld->constructSkippingConnect();
 
 	paintManager = boost::shared_ptr<Paint::PaintManager>(
-        new Paint::PaintManager());
+        new Paint::PaintManager(false));
     
     Map::MapLoader().load(map.get(), NULL, NULL, paintManager.get());
     basicWorld->constructAfterConnect(map.get());

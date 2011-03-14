@@ -96,7 +96,16 @@ namespace Map {
 				paintHeightMap.setHexGrid(hexGrid);
 			}
 			else if (keyword == HRMAP_PAINTHEIGHTMAP_LABEL) {
-				in_file >> paintHeightMap;
+				if (version <= "0.2.0") {
+					in_file >> paintHeightMap;
+				}
+				else {
+					loadHeightMap(in_file, paintHeightMap, progress_tracker);
+					if (progress_tracker) {
+						progress_tracker->setCurrentStage("Loading map file...");
+						progress_tracker->setTotalSteps(100);
+					}
+				}
 			}
 			else if (keyword == HRMAP_FINISHPLANE_LABEL) {
 				in_file >> finishPlane;
@@ -171,7 +180,10 @@ namespace Map {
 
 		if (progress_tracker) {
 			progress_tracker->setCurrentStage("Saving map file...");
-			progress_tracker->setTotalSteps(mapObjects.getNumObjects()+paintCellInfo.size()+1);
+			progress_tracker->setTotalSteps(mapObjects.getNumObjects()
+				+paintHeightMap.getSetHexIndices().size()
+				+paintHeightMap.getSetVertexIndices().size()
+				+paintCellInfo.size());
 			progress_tracker->setCurrentStep(0);
 		}
 
@@ -216,15 +228,12 @@ namespace Map {
 
 		mapObjects.saveToStream(out_file, save_directory, progress_tracker);
 
-		if (progress_tracker) {
-			progress_tracker->setCurrentStage("Saving paint height map...");
-			progress_tracker->incrementStep();
-		}
-
 		out_file << "#HexGrid\n";
 		out_file << HRMAP_HEXGRID_LABEL << ' ' << hexGrid << '\n';
 		out_file << "#Paint Height Map\n";
-		out_file << HRMAP_PAINTHEIGHTMAP_LABEL << ' ' << paintHeightMap << '\n';
+		//out_file << HRMAP_PAINTHEIGHTMAP_LABEL << ' ' << paintHeightMap << '\n';
+		out_file << HRMAP_PAINTHEIGHTMAP_LABEL << '\n';
+		saveHeightMap(out_file, paintHeightMap, progress_tracker);
 
 		if (progress_tracker)
 			progress_tracker->setCurrentStage("Saving Paint Cells...");
@@ -268,12 +277,6 @@ namespace Map {
 	}
 
 	void HRMap::clearPaint() {
-		/*
-		for (unsigned int i = 0; i < paintCells.size(); i++) {
-			delete(paintCells[i]);
-		}
-		paintCells.clear();
-		*/
 		paintCellInfo.clear();
 		paintHeightMap.clear();
 	}
@@ -409,20 +412,31 @@ namespace Map {
 
 		clearPaint();
 
+		if (progress_tracker) {
+			progress_tracker->setCurrentStage("Collecting map triangles...");
+			progress_tracker->setTotalSteps(NUM_MESHES);
+			progress_tracker->setCurrentStep(0);
+		}
+
 		vector<Triangle3D> triangles;
-		if (getMapMesh(TRACK))
-			triangles = getMapMesh(TRACK)->getTriangles();
-		if (getMapMesh(INVIS_TRACK))
-			vectorAppend(triangles, getMapMesh(INVIS_TRACK)->getTriangles());
+
+		for (int i = 0; i < NUM_MESHES; i++) {
+			progress_tracker->setCurrentStep(i);
+			MeshType type = static_cast<MeshType>(i);
+			if (meshIsTrack(type) && getMapMesh(type)) {
+				getMapMesh(type)->appendTriangles(triangles);
+			}
+		}
 
 		updateHexGrid();
+		paintHeightMap.setHexGrid(hexGrid);
 
 		PaintGenerator generator;
-		generator.generateHeightmap(triangles, hexGrid, progress_tracker);
-		generator.generateCells(progress_tracker);
+		generator.generateHeightmap(triangles, paintHeightMap, progress_tracker);
+		generator.generateCells(paintHeightMap, paintCellInfo, progress_tracker);
 
-		paintHeightMap = generator.getHeightMap();
-		paintCellInfo = generator.getCellInfo();
+		//paintHeightMap = generator.getHeightMap();
+		//paintCellInfo = generator.getCellInfo();
 	}	
 	BSPTree3D* HRMap::getCollisionTree() {
 
@@ -431,15 +445,19 @@ namespace Map {
 			vector<ObjectSpatial*> collision_triangles;
 
 			BoundingBox3D collision_bound;
+			bool collision_bound_set = false;
+
 			for (int i = 0; i < NUM_MESHES; i++) {
 				MeshType type = static_cast<MeshType>(i);
 				if (meshIsSolid(type) && getMapMesh(type)) {
-					vector<Triangle3D> triangles = getMapMesh(type)->getTriangles();
+					if (!collision_bound_set)
+						collision_bound.setToObject(getMapMesh(type)->getBoundingBox());
+					else
+						collision_bound.expandToInclude(getMapMesh(type)->getBoundingBox());
+
+					vector<Triangle3D> triangles;
+					getMapMesh(type)->appendTriangles(triangles);
 					for (unsigned int t = 0; t < triangles.size(); t++) {
-						if (i == 0 && t == 0)
-							collision_bound.setToObject(triangles[t]);
-						else
-							collision_bound.expandToInclude(triangles[t]);
 						collision_triangles.push_back(new Triangle3D(triangles[t]));
 					}
 				}
@@ -533,5 +551,172 @@ namespace Map {
 		finishPlane.translate(origin);
 	}
 
+	void HRMap::loadHeightMap(std::ifstream& stream, Math::HexHeightMap& height_map, Misc::ProgressTracker* progress_tracker) {
+
+		int num_hexes;
+		int num_verts;
+
+		stream >> num_hexes >> num_verts;
+
+		if (progress_tracker) {
+			progress_tracker->setCurrentStage("Loading paint heightmap..");
+			progress_tracker->setTotalSteps(num_hexes+num_verts);
+			progress_tracker->setCurrentStep(0);
+		}
+
+		while (num_hexes > 0) {
+
+			HexGrid::HexIndex index;
+			int row_size;
+
+			stream >> index >> row_size;
+
+			while (row_size > 0) {
+
+				if (progress_tracker)
+					progress_tracker->incrementStep();
+
+				int heights;
+				stream >> heights;
+				
+				while (heights > 0) {
+					double height;
+					stream >> height;
+					height_map.addHexHeight(index, height);
+					heights--;
+				}
+				
+				index.uIndex++;
+
+				row_size--;
+				num_hexes--;
+			}
+			
+		}
+
+		while (num_verts > 0) {
+
+			HexGrid::HexIndex index;
+			int row_size;
+
+			stream >> index >> row_size;
+
+			while (row_size > 0) {
+
+				if (progress_tracker)
+					progress_tracker->incrementStep();
+
+				int heights;
+				stream >> heights;
+				
+				while (heights > 0) {
+					double height;
+					stream >> height;
+					height_map.addVertexHeight(index, height);
+					heights--;
+				}
+				
+				index.uIndex++;
+
+				row_size--;
+				num_verts--;
+			}
+			
+		}
+
+		
+
+	}
+	void HRMap::saveHeightMap(std::ofstream& stream, Math::HexHeightMap& height_map, Misc::ProgressTracker* progress_tracker) {
+
+		if (progress_tracker) {
+			progress_tracker->setCurrentStage("Saving height map...");
+		}
+
+		const std::vector<HexGrid::HexIndex>& set_hex_indices = height_map.getSetHexIndices();
+		const std::vector<HexGrid::HexIndex>& set_vert_indices = height_map.getSetVertexIndices();
+		stream << set_hex_indices.size() << '\n';
+		stream << set_vert_indices.size() << '\n';
+
+		int current_index = 0;
+
+		while (current_index < static_cast<int>(set_hex_indices.size())) {
+			int row_size = 1;
+			HexGrid::HexIndex index = set_hex_indices[current_index];
+			while (current_index+row_size < static_cast<int>(set_hex_indices.size()) &&
+				set_hex_indices[current_index+row_size].uIndex == index.uIndex+1 &&
+				set_hex_indices[current_index+row_size].vIndex == index.vIndex) {
+				row_size++;
+				index.uIndex++;
+			}
+
+			stream << set_hex_indices[current_index] << ' ' << row_size << '\n';
+
+			while (row_size > 0) {
+
+				if (progress_tracker) {
+					progress_tracker->incrementStep();
+				}
+
+				const std::list<double>* list = height_map.getHexHeights(set_hex_indices[current_index]);
+				stream << list->size() << ' ';
+				for (std::list<double>::const_iterator it = list->begin(); it != list->end(); ++it) {
+					stream << *it << ' ';
+				}
+				stream << '\n';
+				row_size--;
+				current_index++;
+			}
+		}
+
+		current_index = 0;
+
+		while (current_index < static_cast<int>(set_vert_indices.size())) {
+			int row_size = 1;
+			HexGrid::HexIndex index = set_vert_indices[current_index];
+			while (current_index+row_size < static_cast<int>(set_vert_indices.size()) &&
+				set_vert_indices[current_index+row_size].uIndex == index.uIndex+1 &&
+				set_vert_indices[current_index+row_size].vIndex == index.vIndex) {
+				row_size++;
+				index.uIndex++;
+			}
+
+			stream << set_vert_indices[current_index] << ' ' << row_size << '\n';
+
+			while (row_size > 0) {
+
+				if (progress_tracker) {
+					progress_tracker->incrementStep();
+				}
+
+				const std::list<double>* list = height_map.getVertexHeights(set_vert_indices[current_index]);
+				stream << list->size() << ' ';
+				for (std::list<double>::const_iterator it = list->begin(); it != list->end(); ++it) {
+					stream << *it << ' ';
+				}
+				stream << '\n';
+				row_size--;
+				current_index++;
+			}
+		}
+
+		/*
+		for (unsigned int i = 0; i < set_hex_indices.size(); i++) {
+
+			int row_size = 0;
+
+			while (
+
+			const std::list<double>* list = object.getHexHeights(set_hex_indices[i]);
+			stream << set_hex_indices[i] << ' ' << list->size() << ' ';
+			for (std::list<double>::const_iterator it = list->begin(); it != list->end(); ++it) {
+				stream << *it << ' ';
+			}
+			stream << '\n';
+		}
+		*/
+		
+
+	}
 }  // namespace Map
 }  // namespace Project

@@ -41,6 +41,7 @@ private:
 	float fadePlaneNear;
 	float fadePlaneFar;
 	GLuint targetList;
+	bool enableRendering;
 
 	Math::HexGrid hexGrid;
 	PaintGrid paintGrid;
@@ -64,7 +65,7 @@ public:
 		int index;
 	};
 
-	PaintManager();
+	PaintManager(bool enable_rendering = true);
 	~PaintManager();
 
 	void setMap(Map::HRMap* map, Misc::ProgressTracker* progress_tracker = NULL);

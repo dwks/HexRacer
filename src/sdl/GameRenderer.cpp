@@ -83,7 +83,7 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     renderer->setCubeMap(map->getCubeMap());
     
     paintManager = boost::shared_ptr<Paint::PaintManager>(
-        new Paint::PaintManager());
+        new Paint::PaintManager(true));
 
 	Map::MapLoader().load(map.get(), SDL::MenuLoop::getLoadingProgressTracker(), mapRenderable.get(), paintManager.get());
 

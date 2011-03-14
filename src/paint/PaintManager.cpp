@@ -30,12 +30,15 @@ namespace Paint {
 		*/
     }
     
-	PaintManager::PaintManager() {
+	PaintManager::PaintManager(bool enable_rendering) {
+
 		coloredPaintTree = new BSPTree3D(BoundingBox3D(), TREE_SPLIT_METHOD, TREE_SPLIT_SIZE);
 		getRenderProperties()->setWantsShaderName("paintShader");
 		OpenGL::Material* material = new OpenGL::Material("paintMaterial");
 		material->setShininess(4.0f);
 		getRenderProperties()->setMaterial(material);
+
+		enableRendering = enable_rendering;
 
 		fadePlaneNear = 0.0f;
 		fadePlaneFar = 0.0f;
@@ -78,16 +81,21 @@ namespace Paint {
 			const PaintCellInfo& cell = cell_info[i];
 
 			PaintCell* new_cell = new PaintCell(cell.centerPoint(map->getPaintHeightMap()));
-			new_cell->displayList = glGenLists(1);
-			glNewList(new_cell->displayList, GL_COMPILE);
-			cell.render(map->getPaintHeightMap());
-			glEndList();
 
-			new_cell->setToObject(cell.getBoundingBox(map->getPaintHeightMap()));
-			if (i == 0)
-				paintBound.setToObject(*new_cell);
-			else
-				paintBound.expandToInclude(*new_cell);
+			if (enableRendering) {
+
+				new_cell->displayList = glGenLists(1);
+				glNewList(new_cell->displayList, GL_COMPILE);
+				cell.render(map->getPaintHeightMap());
+				glEndList();
+
+				new_cell->setToObject(cell.getBoundingBox(map->getPaintHeightMap()));
+				if (i == 0)
+					paintBound.setToObject(*new_cell);
+				else
+					paintBound.expandToInclude(*new_cell);
+
+			}
 
 			paintGrid.addPaintCell(cell.uIndex, cell.vIndex, new_cell);
 			paintList.push_back(new_cell);
@@ -289,13 +297,16 @@ namespace Paint {
 
 	bool PaintManager::colorCell(PaintCell* cell, int new_color, bool force_color) {
 
+		if (cell->playerColor == new_color)
+			return false;
+
 		if (new_color >= 0) {
 			
 			if (cell->playerColor < 0) {
 
 				cell->playerColor = new_color;
-				//neutralPaintTree->remove(cell);
-				coloredPaintTree->add(cell);
+				if (enableRendering)
+					coloredPaintTree->add(cell);
 				return true;
 
 			}
@@ -311,8 +322,8 @@ namespace Paint {
 			if (cell->playerColor >= 0) {
 
 				cell->playerColor = new_color;
-				coloredPaintTree->remove(cell);
-				//neutralPaintTree->add(cell);
+				if (enableRendering)
+					coloredPaintTree->remove(cell);
 				return true;
 
 			}

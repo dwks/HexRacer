@@ -35,7 +35,7 @@ namespace Network {
 
 std::string PacketSerializer::packetToString(Packet *packet) {
     std::ostringstream stream;
-    boost::archive::binary_oarchive out(stream);
+	boost::archive::binary_oarchive out(stream);
     
     out.register_type<HandshakePacket>();
     out.register_type<EventPacket>();
@@ -71,7 +71,7 @@ Packet *PacketSerializer::stringToPacket(const std::string &string) {
     //LOG(NETWORK, "Parsing packet from \"" << string << "\"");
     
     std::istringstream stream(string);
-    boost::archive::binary_iarchive in(stream);
+	boost::archive::binary_iarchive in(stream);
     
     in.register_type<HandshakePacket>();
     in.register_type<EventPacket>();

@@ -44,9 +44,11 @@ void MapLoader::load(HRMap *map, Misc::ProgressTracker* progressTracker, Render:
 
             //Add solid meshes to the physics
             if (HRMap::meshIsSolid(type)) {
+				std::vector<Math::Triangle3D> triangles;
+				map->getMapMesh(type)->appendTriangles(triangles);
+
                 Physics::PhysicsWorld::getInstance()->registerRigidBody(
-                    Physics::PhysicsFactory::createRigidTriMesh(
-                        map->getMapMesh(type)->getTriangles()));
+                    Physics::PhysicsFactory::createRigidTriMesh(triangles));
             }
 
         }
@@ -90,9 +92,12 @@ void MapLoader::load(HRMap *map, Misc::ProgressTracker* progressTracker, Render:
         
         //If the instance is solid static, add it to the physics
         if (instances[i]->getType() == Map::MeshInstance::SOLID_STATIC) {
+
+			std::vector<Math::Triangle3D> triangles;
+			transformed_mesh->appendTransformedTriangles(triangles);
+
             Physics::PhysicsWorld::getInstance()->registerRigidBody(
-                Physics::PhysicsFactory::createRigidTriMesh(
-                    transformed_mesh->getTransformedTriangles()));
+                Physics::PhysicsFactory::createRigidTriMesh(triangles));
         }
     }
 

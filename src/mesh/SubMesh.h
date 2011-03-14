@@ -18,7 +18,6 @@ class SubMesh
 	: public Render::BaseRenderable, public Math::SpatialObjectOperator {
 private:
 
-	std::vector< Math::Triangle3D > triangles;
 	std::vector< MeshTriangleFan* > triangleFans;
 	std::vector< MeshTriangleFan* > redrawBuffer;
 	Math::BSPTree3D* triangleFanTree;
@@ -27,6 +26,7 @@ private:
 	const Shader::ShaderParamSetter* paramSetter;
 
 	bool useDisplayList;
+	bool genDisplayList;
 	GLuint displayList;
 	int displayListShader;
 
@@ -47,7 +47,7 @@ public:
 	SubMesh(vector< MeshTriangle* > _triangles, OpenGL::Material* _material = NULL, bool cullable = false);
 
 	void renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object, const Render::RenderSettings& settings);
-	const vector<Project::Math::Triangle3D>& getTriangles() { return triangles; }
+	void appendTriangles(std::vector<Math::Triangle3D>& vec) const;
 	void operateOnObject(Math::ObjectSpatial* object);
 };
 

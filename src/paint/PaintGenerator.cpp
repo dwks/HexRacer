@@ -30,7 +30,7 @@ namespace Paint {
 	}
 
 	void PaintGenerator::generateHeightmap(const std::vector<Math::Triangle3D>& _triangles,
-		const HexGrid& hex_grid,
+		Math::HexHeightMap& heightMap,
 		Misc::ProgressTracker* progress_tracker) {
 
 		if (_triangles.size() <= 0)
@@ -44,8 +44,8 @@ namespace Paint {
 				= Physics::PhysicsFactory::createRigidTriMesh(_triangles);
 			physicsWorld->registerRigidBody(meshBody);
 		#endif
-			
-		heightMap = HexHeightMap(hex_grid);
+
+		#ifndef USE_BULLET_RAYCASTS
 
 		vector<ObjectSpatial*> triangles;
 
@@ -56,16 +56,12 @@ namespace Paint {
 			triangles.push_back(new Triangle3D(_triangles[i]));
 		}
 
-		#ifndef USE_BULLET_RAYCASTS
-
 		triangleTree = new BSPTree3D(paintBound);
 		triangleTree->add(triangles);
 
-		#else
-
-		triangleTree = NULL;
-
 		#endif
+
+		Math::HexGrid hex_grid = heightMap.getHexGrid();
 
 		double cell_radius = hex_grid.getHexRadius();
 
@@ -96,34 +92,45 @@ namespace Paint {
 
 				double u_pos = hex_grid.hexUPosition(u, v);
 				
-				vector<double> center_heights;
+				
 				vector<double> vert_heights1;
 				vector<double> vert_heights2;
 
-				if (heightsAtPoint(u_pos, v_pos, center_heights)
-					&& heightsAtPoint(u_pos-cell_radius, v_pos, vert_heights1)
-					&& heightsAtPoint(u_pos+cell_radius, v_pos, vert_heights2)) {
+				heightsAtPoint(u_pos-cell_radius, v_pos, vert_heights1);
+
+				for (unsigned int i = 0; i < vert_heights1.size(); i++) 
+					heightMap.addVertexHeight(u*2, v, vert_heights1[i]);
+
+				heightsAtPoint(u_pos+cell_radius, v_pos, vert_heights2);
+
+				for (unsigned int i = 0; i < vert_heights2.size(); i++) 
+					heightMap.addVertexHeight(u*2+1, v, vert_heights2[i]);
+
+				if (!vert_heights1.empty() && !vert_heights2.empty()) {
+
+					vector<double> center_heights;
+					heightsAtPoint(u_pos, v_pos, center_heights);
 
 					for (unsigned int i = 0; i < center_heights.size(); i++)
 						heightMap.addHexHeight(u, v, center_heights[i]);
-					for (unsigned int i = 0; i < vert_heights1.size(); i++) 
-						heightMap.addVertexHeight(u*2, v, vert_heights1[i]);
-					for (unsigned int i = 0; i < vert_heights2.size(); i++) 
-						heightMap.addVertexHeight(u*2+1, v, vert_heights2[i]);
 				}
+				
 			}
 
 		}
 
+		#ifndef USE_BULLET_RAYCASTS
+
 		for (unsigned int i = 0; i < triangles.size(); i++)
 			delete triangles[i];
 		delete triangleTree;
+
+		#endif
 	}
 
-	void PaintGenerator::generateCells(Misc::ProgressTracker* progress_tracker) {
-
-		int u_steps = heightMap.getHexGrid().numUIndices();
-		int v_steps = heightMap.getHexGrid().numVIndices();
+	void PaintGenerator::generateCells(const Math::HexHeightMap& heightMap,
+		std::vector<PaintCellInfo>& cellInfo,
+		Misc::ProgressTracker* progress_tracker) {
 
 		const vector<HexGrid::HexIndex>& hex_indices = heightMap.getSetHexIndices();
 

@@ -1,6 +1,7 @@
 #include "MeshGroup.h"
 #include "render/RenderManager.h"
 #include "math/Values.h"
+#include "misc/StdVectorFunctions.h"
 using namespace Project;
 using namespace Math;
 using namespace std;
@@ -37,20 +38,16 @@ namespace Mesh {
 			delete(vertices[i]);
 	}
 
-	vector<Triangle3D> MeshGroup::getTriangles() {
-		if (!collisionMask.empty())
-			return collisionMask;
+	void MeshGroup::appendTriangles(std::vector<Math::Triangle3D>& vec) const {
 
-		if (meshes.size() == 1) {
-			return meshes[0]->getTriangles();
+		if (!collisionMask.empty()) {
+			Misc::vectorAppend(vec, collisionMask);
+			return;
 		}
-
-		vector<Triangle3D> return_list;
+		
 		for (unsigned int i = 0; i < meshes.size(); i++) {
-			const vector<Triangle3D>& mesh_triangles = meshes[i]->getTriangles();
-			return_list.insert(return_list.end(), mesh_triangles.begin(), mesh_triangles.end());
+			meshes[i]->appendTriangles(vec);
 		}
-		return return_list;
 	}
 
 	void MeshGroup::subRender(Render::RenderManager* manager) {

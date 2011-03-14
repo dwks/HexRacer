@@ -32,7 +32,7 @@ public:
 	~MeshGroup();
 	std::string getName() { return name; }
 	void subRender(Render::RenderManager* manager);
-	std::vector<Math::Triangle3D> getTriangles();
+	void appendTriangles(std::vector<Math::Triangle3D>& vec) const;
 	Math::BoundingBox3D getBoundingBox() { return boundingBox; }
 	double getRadiusFromOrigin() { return radiusFromOrigin; }
 

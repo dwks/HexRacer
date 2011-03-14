@@ -16,24 +16,23 @@ namespace Paint {
 
 class PaintGenerator {
 private:
-	std::vector<PaintCellInfo> cellInfo;
+	//std::vector<PaintCellInfo> cellInfo;
 	Math::BSPTree3D* triangleTree;
 	Math::BoundingBox3D paintBound;
 
 	bool heightsAtPoint(double u, double v, vector<double>& vec);
 
-	Math::HexHeightMap heightMap;
+	//Math::HexHeightMap heightMap;
 
 public:
 
 	PaintGenerator();
 	void generateHeightmap(const std::vector<Math::Triangle3D>& _triangles,
-		const Math::HexGrid& hex_grid,
+		Math::HexHeightMap& heightMap,
 		Misc::ProgressTracker* progress_tracker = NULL);
-	void generateCells(Misc::ProgressTracker* progress_tracker = NULL);
-	std::vector<PaintCellInfo>& getCellInfo() { return cellInfo; }
-
-	Math::HexHeightMap& getHeightMap() { return heightMap; }
+	void generateCells(const Math::HexHeightMap& heightMap, std::vector<PaintCellInfo>& cellInfo, Misc::ProgressTracker* progress_tracker = NULL);
+	//std::vector<PaintCellInfo>& getCellInfo() { return cellInfo; }
+	//Math::HexHeightMap& getHeightMap() { return heightMap; }
 };
 
 }  // namespace Paint

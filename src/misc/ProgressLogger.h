@@ -17,7 +17,7 @@ private:
 	void logProgress();
 public:
 
-	ProgressLogger(double progress_log_interval = 0.05);
+	ProgressLogger(double progress_log_interval = 0.1);
 
 	void setTotalSteps(int total_steps);
 	void setCurrentStage(const std::string& stage);

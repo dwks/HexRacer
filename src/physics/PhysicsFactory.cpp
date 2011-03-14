@@ -78,7 +78,7 @@ btRigidBody* PhysicsFactory::createRigidTriMesh(std::vector<Math::Point> tri_arr
     return rigidBody;
 }
 
-btRigidBody* PhysicsFactory::createRigidTriMesh(std::vector<Math::Triangle3D> tri_array){
+btRigidBody* PhysicsFactory::createRigidTriMesh(const std::vector<Math::Triangle3D>& tri_array){
     btTriangleMesh *mTriMesh = new btTriangleMesh();
     
     for(std::vector<Math::Triangle3D>::size_type x = 0; x < tri_array.size();

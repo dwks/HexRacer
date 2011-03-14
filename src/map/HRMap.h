@@ -18,7 +18,7 @@
 #include <vector>
 
 #define HRMAP_NUM_MESHES 5
-#define HRMAP_VERSION "0.2.0"
+#define HRMAP_VERSION "0.2.1"
 #define HRMAP_VERSION_LABEL "version"
 #define HRMAP_FINISHPLANE_LABEL "finishPlane"
 #define HRMAP_MAP2DFILE_LABEL "map2DFile"
@@ -118,6 +118,9 @@ private:
 	void clearCollisionTree();
 	void updateDimensions();
 	void updateHexGrid();
+	
+	void loadHeightMap(std::ifstream& stream, Math::HexHeightMap& height_map, Misc::ProgressTracker* progress_tracker = NULL);
+	void saveHeightMap(std::ofstream& stream, Math::HexHeightMap& height_map, Misc::ProgressTracker* progress_tracker = NULL);
 
 };
 
