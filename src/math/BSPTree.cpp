@@ -32,7 +32,8 @@ bool BSPTree::add(ObjectSpatial* object) {
 		}
 		else {
 			split();
-			vector<ObjectSpatial*> old_objects = list.all();
+			vector<ObjectSpatial*> old_objects;
+			appendAll(old_objects);
 			list.clear();
 			for (unsigned int i = 0; i < old_objects.size(); i++)
 				add(old_objects[i]);
@@ -66,6 +67,8 @@ void BSPTree::add(const vector<ObjectSpatial*>& objects) {
 			list.appendAll(insert_objects);
 			list.clear();
 			split(&insert_objects);
+			add(insert_objects);
+			return;
 		}
 	}
 	
