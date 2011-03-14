@@ -588,10 +588,14 @@ void GameRenderer::renderToBloomBuffer(Render::RenderableObject& renderable) {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	renderer->getRenderSettings()->setRedrawMode(true);
 	renderable.render(renderer.get());
 	renderer->getRenderSettings()->setRedrawMode(false);
+
+	glDisable(GL_BLEND);
 	
 }
 
