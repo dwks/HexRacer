@@ -59,8 +59,6 @@ namespace Render {
 			// copy data from first to second, translating to new format
 			SDL_BlitSurface(first, NULL, second, NULL);
 		    
-			//glEnable(GL_TEXTURE_2D);
-		    
 			glGenTextures(1, &textureID);
 			glBindTexture(GL_TEXTURE_2D, textureID);
 		    
@@ -72,7 +70,6 @@ namespace Render {
 				GL_UNSIGNED_BYTE, second->pixels);
 		    
 			glBindTexture(GL_TEXTURE_2D, NULL);
-			//glDisable(GL_TEXTURE_2D);
 
 			SDL_FreeSurface(first);
 			SDL_FreeSurface(second);

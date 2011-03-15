@@ -42,6 +42,10 @@ TextWidget::TextWidget(const std::string &name, const std::string &data,
 }
 
 TextWidget::~TextWidget() {
+	if (stringTexture.hasTexture()) {
+		glFinish();
+		stringTexture.clearTexture();
+	}
 }
 
 void TextWidget::preRender() {
@@ -104,7 +108,6 @@ void TextWidget::render() {
     
     glBlendFunc(GL_ONE, GL_ONE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
     
     glBegin(GL_QUADS);
     
@@ -128,10 +131,6 @@ void TextWidget::render() {
     glTexCoord2i(0, 1); WidgetRenderer::glVertex(lowerLeft);
     
     glEnd();
-    
-    // back to the blending the rest of the code expects
-    // note: must match SDLMain
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_BLEND);

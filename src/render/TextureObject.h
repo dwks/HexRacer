@@ -11,6 +11,8 @@ public:
 
 	enum TexCoordCorner { BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT };
 
+	virtual ~TextureObject() {}
+
 	virtual GLuint getTextureID() const = 0;
 	virtual bool hasTexture() const { return getTextureID() > 0; }
 
