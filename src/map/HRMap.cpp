@@ -83,6 +83,7 @@ namespace Map {
 						Paint::PaintCellInfo cell_info(0, 0);
 						in_file >> cell_info;
 						cell_info.normal = normal;
+						cell_info.normal.postNormalize();
 						paintCellInfo.push_back(cell_info);
 						num_cells--;
 					}
@@ -699,23 +700,6 @@ namespace Map {
 				current_index++;
 			}
 		}
-
-		/*
-		for (unsigned int i = 0; i < set_hex_indices.size(); i++) {
-
-			int row_size = 0;
-
-			while (
-
-			const std::list<double>* list = object.getHexHeights(set_hex_indices[i]);
-			stream << set_hex_indices[i] << ' ' << list->size() << ' ';
-			for (std::list<double>::const_iterator it = list->begin(); it != list->end(); ++it) {
-				stream << *it << ' ';
-			}
-			stream << '\n';
-		}
-		*/
-		
 
 	}
 }  // namespace Map
