@@ -7,3 +7,7 @@ maps.1.image   = data/thumbnail/canyon2.png
 maps.2         = data/lagrange/lagrange.hrm
 maps.2.title   = Lagrange
 maps.2.image   = data/thumbnail/lagrange.png
+
+maps.3         = data/lagrange/lagrange-paintless.hrm
+maps.3.title   = Lagrange-Paintless
+maps.3.image   = data/thumbnail/lagrange.png

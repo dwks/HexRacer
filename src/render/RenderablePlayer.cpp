@@ -22,7 +22,7 @@ void RenderablePlayer::initialize(int id) {
 
 	drawScale = GET_SETTING("render.vehicle.scale", 2.0);
 	Math::Matrix scale_matrix = Math::Matrix::getScalingMatrix(drawScale);
-	tireScaleMatrix =  Math::Matrix::getScalingMatrix(GET_SETTING("render.tire.scale", 2.5));
+	//tireScaleMatrix =  Math::Matrix::getScalingMatrix(GET_SETTING("render.tire.scale", 2.5));
    
 	Mesh::MeshGroup* chassis_mesh_group = Mesh::MeshLoader::getInstance()->getModelByName(VEHICLE_CHASSIS_MODEL_NAME);
 	chassisMesh = new RenderParent(chassis_mesh_group);
@@ -56,19 +56,25 @@ void RenderablePlayer::subRender(RenderManager* manager) {
     chassisMesh->render(manager);
     
     for (int wheel = 0; wheel < 4; wheel ++) {
-	Math::Matrix matrix = Math::Matrix::getTranslationMatrix(suspension[wheel]);
+
+		Math::Matrix matrix = Math::Matrix::getTranslationMatrix(suspension[wheel]);
+
+		double tire_scale = GET_SETTING("render.tire.scale", 2.5);
+		matrix.set(0, 0, tire_scale);
+		matrix.set(1, 1, tire_scale);
+		matrix.set(2, 2, tire_scale);
         
         if (wheel == 1 || wheel == 2) {
-		matrix *= Math::Matrix::getRotationMatrix(Math::Y_AXIS, PI);
+			//matrix *= Math::Matrix::getRotationMatrix(Math::Y_AXIS, PI);
+			matrix.set(0, 0, -matrix.get(0, 0));
+			matrix.set(2, 2, -matrix.get(2, 2));
         }
         
         if (wheel == 1 || wheel == 2){
-                matrix *= Math::Matrix::getRotationMatrix(Math::X_AXIS, -wheelRotationDegrees);
+			matrix *= Math::Matrix::getRotationMatrix(Math::X_AXIS, -wheelRotationDegrees);
         } else {
-                matrix *= Math::Matrix::getRotationMatrix(Math::X_AXIS, wheelRotationDegrees);
+			matrix *= Math::Matrix::getRotationMatrix(Math::X_AXIS, wheelRotationDegrees);
         }
-
-		matrix *= tireScaleMatrix;
 
 		tireMesh->getRenderProperties()->setTransformation(matrix);
         tireMesh->render(manager);

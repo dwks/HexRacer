@@ -24,11 +24,15 @@ namespace Render {
 		const OpenGL::Color& text_color,
 		bool power_of_two_size) {
 
+			if (str == textureString)
+				return;
+
 			clearTexture();
-			textureString = std::string(str);
 
 			if (str.empty())
 				return;
+
+			textureString = std::string(str);
 
 			SDL_Color c;
 			c.r = text_color.getRedi();

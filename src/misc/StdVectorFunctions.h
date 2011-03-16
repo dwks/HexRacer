@@ -14,6 +14,14 @@ static void vectorRemoveAtIndex(std::vector<Type>& v, int index) {
 }
 
 template <typename Type>
+static void vectorRemoveAtIndexKeepOrder(std::vector<Type>& v, int index) {
+	for (int i = index; i < static_cast<int>(v.size()-1); i++) {
+		v[i] = v[i+1];
+	}
+	v.resize(v.size()-1);
+}
+
+template <typename Type>
 static bool vectorRemoveOneElement(std::vector<Type>& v, const Type& element) {
 	for (unsigned int i = 0; i < v.size(); i++) {
 		if (v[i] == element) {
@@ -51,13 +59,33 @@ static std::vector<Type> vectorAppended(std::vector<Type>& v1, const std::vector
 }
 
 template <typename Type>
-static int vectorIndexOfFirst(std::vector<Type>& v, const Type& element) {
+static int vectorIndexOfFirst(const std::vector<Type>& v, const Type& element) {
 
 	for (unsigned int i = 0; i < v.size(); i++) {
 		if (v[i] == element) {
 			return static_cast<int>(i);
 		}
 	}
+	return -1;
+
+}
+
+template <typename Type>
+static int vectorIndexOfFirstSorted(const std::vector<Type>& v, const Type& element) {
+
+	int lower_bound = 0;
+	int upper_bound = v.size()-1;
+
+	while (lower_bound <= upper_bound) {
+		int index = (lower_bound+upper_bound)/2;
+		if (v[index] == element)
+			return index;
+		else if (v[index] < element)
+			lower_bound = index+1;
+		else
+			upper_bound = index-1;
+	}
+
 	return -1;
 
 }

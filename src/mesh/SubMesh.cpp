@@ -69,7 +69,7 @@ namespace Mesh {
 			fan_vertices.push_back(triangle->getMeshVertex((center_index+2)%3));
 			//Delete the first triangle
 			delete(triangle);
-			Misc::vectorRemoveOneElement(_triangles, triangle);
+			_triangles.resize(_triangles.size()-1);
 
 			bool vertex_added = true;
 			//Set the rest of the fan vertices

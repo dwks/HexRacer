@@ -104,7 +104,7 @@ void MapLoader::load(HRMap *map, Misc::ProgressTracker* progressTracker, Render:
 
 	if (paintManager) {
 		paintManager->setMap(map, progressTracker);
-		map->clearPaint();
+		//map->clearPaint();
 	}
 }
 

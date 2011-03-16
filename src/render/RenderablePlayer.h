@@ -28,7 +28,7 @@ private:
 	Math::BoundingSphere boundingSphere;
 
 	double drawScale;
-	Math::Matrix tireScaleMatrix;
+	//Math::Matrix tireScaleMatrix;
 
 public:
 
