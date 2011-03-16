@@ -20,30 +20,59 @@ namespace Input {
 		delete inputMapper;
 	}
 
+    void GlobalInputManager::startFindJoystick() {
+        allJoysticks.clear();
+        
+        int joysticks = SDL_NumJoysticks();
+        for(int j = 0; j < joysticks; j ++) {
+            JoystickManager *joy = new JoystickManager();
+            joy->open(j);
+            allJoysticks.push_back(joy);
+        }
+    }
 
 	bool GlobalInputManager::findJoystick() {
-
-		joystick->close();
-
-		int joysticks = SDL_NumJoysticks();
+		int joysticks = static_cast<int>(allJoysticks.size());
 
 		if (joysticks == 0)
 			return false;
 
-		for (int i = 0; i < joysticks; i++) {
-			if (joystick->open(i)) {
-				int buttons = joystick->getNumButtons();
-				for (int j = 0; j < buttons; j++) {
-					if (joystick->getButtonDown(j))
-						return true;
-				}
-				joystick->close();
-			}
+		for (int j = 0; j < joysticks; j++) {
+            JoystickManager *joy = allJoysticks[j];
+            if(!joy->hasJoystick()) continue;
+            
+            /*for(int axis = 0; axis < joystick->getNumAxes(); axis ++) {
+                if(joystick->getNormalizedAxisValue(axis, 0.5)) {
+                    return true;
+                }
+            }*/
+            
+            int buttons = joystick->getNumButtons();
+            for (int b = 0; b < buttons; b++) {
+                if (joy->getButtonDown(b)) {
+                    cancelFindJoystick();
+                    
+                    joystick->close();
+                    joystick->open(j);
+                    
+                    return true;
+                }
+            }
 		}
 
 		return false;
 	}
-
+    
+    void GlobalInputManager::cancelFindJoystick(int exceptFor) {
+        int joysticks = static_cast<int>(allJoysticks.size());
+        for(int j = 0; j < joysticks; j ++) {
+            if(j == exceptFor) continue;
+            
+            delete allJoysticks[j];
+        }
+        allJoysticks.clear();
+    }
+    
 	bool GlobalInputManager::openFirstJoystick() {
 
 		joystick->close();

@@ -5,6 +5,8 @@
 #include "widget/WidgetBase.h"
 #include "widget/EditWidget.h"
 #include "widget/ListWidget.h"
+
+#include "widget/RepaintEvent.h"
 #include "widget/WidgetActivateEvent.h"
 #include "widget/WidgetModifiedEvent.h"
 #include "widget/WidgetSelectedEvent.h"
@@ -13,11 +15,25 @@
 #include "event/ChangeScreenMode.h"
 #include "event/EventSystem.h"
 
+#include "input/GlobalInputManager.h"
+
 #include "settings/SettingsManager.h"
 #include "log/Logger.h"
 
 namespace Project {
 namespace GUI {
+
+void SettingsProxy::visit(Widget::RepaintEvent *event) {
+    if(checkingJoystick) {
+        if(Input::GlobalInputManager::getInstance()->findJoystick()) {
+            checkingJoystick = false;
+            LOG(GUI, "Found joystick!");
+            
+            dynamic_cast<Widget::ButtonWidget *>(settings->getChild("joyselect"))
+                ->getText()->setText("Select joystick");
+        }
+    }
+}
 
 void SettingsProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();
@@ -44,6 +60,15 @@ void SettingsProxy::visit(Widget::WidgetActivateEvent *event) {
         Settings::SettingsManager::getInstance()->set(
             "render.bloom.enable",
             event->getDown() ? "1" : "0");
+    }
+    else if(name == "joyselect") {
+        Input::GlobalInputManager::getInstance()->startFindJoystick();
+        
+        dynamic_cast<Widget::ButtonWidget *>(settings->getChild("joyselect"))
+            ->getText()->setText("Press any button on your joystick...");
+        
+        LOG(GUI, "Checking for joystick...");
+        checkingJoystick = true;
     }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");
