@@ -15,6 +15,7 @@ public:
 private:
 	static GlobalInputManager* instance;
 	JoystickManager* joystick;
+    std::vector<JoystickManager *> allJoysticks;
 	InputMapper* inputMapper;
 public:
 
@@ -23,7 +24,10 @@ public:
 	GlobalInputManager();
 	~GlobalInputManager();
 
+    void startFindJoystick();
 	bool findJoystick();
+    void cancelFindJoystick(int exceptFor = -1);
+    
 	bool openFirstJoystick();
 	void setInputMappings(PresetMapping mapping = NO_JOYSTICK);
 

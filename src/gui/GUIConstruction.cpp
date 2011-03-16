@@ -427,17 +427,23 @@ void GUIConstruction::constructSettings() {
         "Bloom", GET_SETTING("render.bloom.enable", 0),
         Widget::WidgetRect(0.5, 0.65, 0.4, 0.07)));
     
+    settings->addChild(new Widget::ButtonWidget("joyselect",
+        "Select joystick",
+        Widget::WidgetRect(0.2, 0.77, 0.6, 0.08)));
+    
     settings->addChild(new Widget::ButtonWidget("accept",
         "Accept settings", Widget::WidgetRect(0.3, 0.9, 0.4, 0.08)));
     
     setShortcut(getWidget("settings/accept"), SDLK_ESCAPE);
     
-    boost::shared_ptr<Widget::EventProxy> proxy(new SettingsProxy());
+    boost::shared_ptr<Widget::EventProxy> proxy(new SettingsProxy(settings));
+    getWidget("settings")->addEventProxy(proxy);
     getWidget("settings/screenmode")->addEventProxy(proxy);
     getWidget("settings/quality")->addEventProxy(proxy);
     getWidget("settings/shadow")->addEventProxy(proxy);
     getWidget("settings/bloom")->addEventProxy(proxy);
     getWidget("settings/fullscreen")->addEventProxy(proxy);
+    getWidget("settings/joyselect")->addEventProxy(proxy);
     getWidget("settings/accept")->addEventProxy(proxy);
 }
 

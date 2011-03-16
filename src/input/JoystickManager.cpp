@@ -50,6 +50,7 @@ bool JoystickManager::close() {
 	return true;
 
 }
+
 double JoystickManager::getNormalizedAxisValue(int axis, double deadzone) const {
     if (joystick == NULL) return 0.0;
     
@@ -63,6 +64,12 @@ double JoystickManager::getNormalizedAxisValue(int axis, double deadzone) const 
     return (std::fabs(normalized) < deadzone) ? 0.0 : normalized;
 }
 
+int JoystickManager::getNumAxes() const {
+    if(!hasJoystick()) return 0;
+    
+    return SDL_JoystickNumAxes(joystick);
+}
+
 bool JoystickManager::getButtonDown(int button) const {
 	return (joystick != NULL && SDL_JoystickGetButton(joystick, button) != 0);
 }
@@ -70,8 +77,10 @@ bool JoystickManager::getButtonDown(int button) const {
 int JoystickManager::getNumButtons() const {
 	if (!hasJoystick())
 		return 0;
-	else
+	else {
+        //LOG2(SDL, INPUT, "joystick has " << SDL_JoystickNumButtons(joystick) << " buttons");
 		return SDL_JoystickNumButtons(joystick);
+    }
 }
 
 }  // namespace Input

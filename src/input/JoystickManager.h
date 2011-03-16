@@ -23,6 +23,8 @@ public:
         [-1.0, 1.0]. This value will be 0.0 if the joystick was not detected.
     */
     double getNormalizedAxisValue(int axis, double deadzone = 0.0) const;
+    int getNumAxes() const;
+    
 	bool getButtonDown(int button) const;
 	int getNumButtons() const;
 };
