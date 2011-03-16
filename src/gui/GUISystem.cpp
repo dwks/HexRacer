@@ -6,6 +6,7 @@
 #include "widget/KeyEvent.h"
 #include "widget/MouseMoveEvent.h"
 #include "widget/MouseButtonEvent.h"
+#include "widget/MenuMoveEvent.h"
 
 #include "event/EventSystem.h"
 
@@ -110,6 +111,12 @@ void GUISystem::handleEvent(Widget::WidgetEvent *event) {
             }
         }
     }
+
+	if (dynamic_cast<Widget::MenuMoveEvent *>(event)) {
+		Widget::MenuMoveEvent *move
+            = dynamic_cast<Widget::MenuMoveEvent *>(event);
+		LOG(GUI, "Menu move event received. X: " << move->xDir << " Y: " << move->yDir);
+	}
 }
 
 void GUISystem::pushScreen(const std::string &screen) {

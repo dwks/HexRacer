@@ -24,6 +24,7 @@ public:
 	~GlobalInputManager();
 
 	bool findJoystick();
+	bool openFirstJoystick();
 	void setInputMappings(PresetMapping mapping = NO_JOYSTICK);
 
 	JoystickManager* getJoystick() { return joystick; }

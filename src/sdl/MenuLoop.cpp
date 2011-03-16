@@ -45,5 +45,9 @@ void MenuLoop::postRender() {
     gui->handleEvent(&repaintEvent);
 }
 
+void MenuLoop::miscellaneous() {
+	guiInputManager->generateMenuEvents();
+}
+
 }  // namespace SDL
 }  // namespace Project

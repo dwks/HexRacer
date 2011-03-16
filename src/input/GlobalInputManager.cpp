@@ -9,6 +9,7 @@ namespace Input {
 	GlobalInputManager::GlobalInputManager() {
 		instance = this;
 		joystick = new JoystickManager();
+		openFirstJoystick();
 		inputMapper = new InputMapper();
 
 		setInputMappings(XB360_WINDOWS);
@@ -22,27 +23,51 @@ namespace Input {
 
 	bool GlobalInputManager::findJoystick() {
 
+		joystick->close();
+
 		int joysticks = SDL_NumJoysticks();
 
 		if (joysticks == 0)
 			return false;
 
 		for (int i = 0; i < joysticks; i++) {
-			joystick->open(i);
-			int buttons = joystick->getNumButtons();
-			for (int j = 0; j < buttons; j++) {
-				if (joystick->getButtonDown(j))
-					return true;
+			if (joystick->open(i)) {
+				int buttons = joystick->getNumButtons();
+				for (int j = 0; j < buttons; j++) {
+					if (joystick->getButtonDown(j))
+						return true;
+				}
+				joystick->close();
 			}
-			joystick->close();
 		}
 
 		return false;
 	}
 
+	bool GlobalInputManager::openFirstJoystick() {
+
+		joystick->close();
+
+		int joysticks = SDL_NumJoysticks();
+
+		if (joysticks == 0)
+			return false;
+		else
+			return joystick->open(0);
+
+	}
+
 	void GlobalInputManager::setInputMappings(PresetMapping mapping) {
 
 		inputMapper->clearAllMappings();
+
+		//Menu mappings
+		inputMapper->addKeyToDigitalMapping(SDLK_LEFT, false, Input::INPUT_D_MENU_LEFT);
+		inputMapper->addKeyToDigitalMapping(SDLK_RIGHT, false, Input::INPUT_D_MENU_RIGHT);
+		inputMapper->addKeyToDigitalMapping(SDLK_UP, false, Input::INPUT_D_MENU_UP);
+		inputMapper->addKeyToDigitalMapping(SDLK_DOWN, false, Input::INPUT_D_MENU_DOWN);
+		inputMapper->addKeyToDigitalMapping(SDLK_RETURN, false, Input::INPUT_D_MENU_CONFIRM);
+		inputMapper->addKeyToDigitalMapping(SDLK_BACKSPACE, false, Input::INPUT_D_MENU_BACK);
 
 		//Standard keyboard mappings
 		inputMapper->addKeyToAnalogMapping(SDLK_LEFT, false, Input::INPUT_A_TURN, 0.0, -1.0);
@@ -76,6 +101,8 @@ namespace Input {
 
 		const double stick_deadzone = 0.15;
 
+		const double axis_menu_thresh = 0.6;
+
 		switch (mapping) {
 
 			case XB360_WINDOWS:
@@ -83,15 +110,27 @@ namespace Input {
 				//Left-stick X - Turning
 				inputMapper->addAxisToAnalogMapping(0, joystick, -1.0, 1.0, stick_deadzone,
 					Input::INPUT_A_TURN, -1.0, 1.0);
+
+				inputMapper->addAxisToDigitalMapping(0, joystick, axis_menu_thresh, 2.0, stick_deadzone,
+					Input::INPUT_D_MENU_RIGHT);
+				inputMapper->addAxisToDigitalMapping(0, joystick, -axis_menu_thresh, -2.0, stick_deadzone,
+					Input::INPUT_D_MENU_LEFT);
+				inputMapper->addAxisToDigitalMapping(1, joystick, axis_menu_thresh, 2.0, stick_deadzone,
+					Input::INPUT_D_MENU_DOWN);
+				inputMapper->addAxisToDigitalMapping(1, joystick, -axis_menu_thresh, -2.0, stick_deadzone,
+					Input::INPUT_D_MENU_UP);
+
 				//Right/Left Trigger Axis - Accelerate/Braking
 				inputMapper->addAxisToAnalogMapping(2, joystick, 1.0, -1.0, stick_deadzone,
 					Input::INPUT_A_ACCELERATE, -1.0, 1.0);
+
 				//A - Paint
 				inputMapper->addButtonToDigitalMapping(0, joystick, false, Input::INPUT_D_PAINT);
 				//B - Erase
 				inputMapper->addButtonToDigitalMapping(1, joystick, false, Input::INPUT_D_ERASE);
 				//Start - Pause
 				inputMapper->addButtonToDigitalMapping(7, joystick, false, Input::INPUT_D_TOGGLE_PAUSED);
+
 				/*
 				//Left-stick X - Debug camera X
 				inputMapper->addAxisToAnalogMapping(0, joystick, -1.0, 1.0, stick_deadzone,

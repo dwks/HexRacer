@@ -3,6 +3,8 @@
 #include "widget/MouseMoveEvent.h"
 #include "widget/MouseButtonEvent.h"
 #include "widget/KeyEvent.h"
+#include "widget/MenuMoveEvent.h"
+#include "input/GlobalInputManager.h"
 
 namespace Project {
 namespace SDL {
@@ -51,6 +53,35 @@ void GUIInputManager::handleEvent(SDL_Event *event) {
     default:
         break;
     }
+}
+
+void GUIInputManager::generateMenuEvents() {
+
+	Input::InputMapper* mapper = Input::GlobalInputManager::getInstance()->getInputMapper();
+
+	mapper->update(Input::INPUT_D_MENU_LEFT);
+	mapper->update(Input::INPUT_D_MENU_RIGHT);
+	mapper->update(Input::INPUT_D_MENU_UP);
+	mapper->update(Input::INPUT_D_MENU_DOWN);
+	mapper->update(Input::INPUT_D_MENU_CONFIRM);
+	mapper->update(Input::INPUT_D_MENU_BACK);
+
+	Widget::MenuMoveEvent* move_event = new Widget::MenuMoveEvent();
+
+	if (mapper->getDigitalTriggered(Input::INPUT_D_MENU_LEFT))
+		move_event->xDir = Widget::MenuMoveEvent::LEFT;
+	else if (mapper->getDigitalTriggered(Input::INPUT_D_MENU_RIGHT))
+		move_event->xDir = Widget::MenuMoveEvent::RIGHT;
+
+	if (mapper->getDigitalTriggered(Input::INPUT_D_MENU_UP))
+		move_event->yDir = Widget::MenuMoveEvent::UP;
+	else if (mapper->getDigitalTriggered(Input::INPUT_D_MENU_DOWN))
+		move_event->yDir = Widget::MenuMoveEvent::DOWN;
+
+	if (move_event->xDir != Widget::MenuMoveEvent::XNONE || move_event->yDir != Widget::MenuMoveEvent::YNONE) {
+		gui->handleEvent(move_event);
+	}
+
 }
 
 }  // namespace SDL

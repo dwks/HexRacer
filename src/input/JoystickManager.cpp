@@ -14,12 +14,13 @@ JoystickManager::JoystickManager() {
 }
 
 JoystickManager::~JoystickManager() {
-    close();
+    //close();
 }
 
 bool JoystickManager::open(int joystick_id) {
 
 	joystick = SDL_JoystickOpen(joystick_id);
+	LOG2(SDL, INPUT, "Opened joystick " << joystick_id);
 	return hasJoystick();
 
 	/*
@@ -40,12 +41,14 @@ bool JoystickManager::open(int joystick_id) {
 }
 
 bool JoystickManager::close() {
+
 	if (!hasJoystick())
 		return false;
 	else
 		SDL_JoystickClose(joystick);
 	joystick = NULL;
 	return true;
+
 }
 double JoystickManager::getNormalizedAxisValue(int axis, double deadzone) const {
     if (joystick == NULL) return 0.0;
