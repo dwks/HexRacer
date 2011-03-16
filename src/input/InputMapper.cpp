@@ -44,19 +44,19 @@ namespace Input {
             new InputKeyAction(key, invert, off_value, on_value));
 	}
 
-	void InputMapper::addButtonToDigitalMapping(int button, SDL::JoystickManager* joystick,
+	void InputMapper::addButtonToDigitalMapping(int button, JoystickManager* joystick,
 		bool invert, DigitalInputEvent event_id) {
 		digitalMappings[static_cast<int>(event_id)].push_back(new InputButtonAction(button, joystick, invert));
 	}
 
-	void InputMapper::addButtonToAnalogMapping(int button, SDL::JoystickManager* joystick, bool invert, AnalogInputEvent event_id,
+	void InputMapper::addButtonToAnalogMapping(int button, JoystickManager* joystick, bool invert, AnalogInputEvent event_id,
 		double off_value, double on_value) {
 		analogMappings[static_cast<int>(event_id)].push_back(
 			new InputButtonAction(button, joystick, invert, off_value, on_value)
 			);
 	}
 
-	void InputMapper::addAxisToDigitalMapping(int axis, SDL::JoystickManager* joystick,
+	void InputMapper::addAxisToDigitalMapping(int axis, JoystickManager* joystick,
 		double start_value, double end_value, double deadzone, DigitalInputEvent event_id) {
 
 		digitalMappings[static_cast<int>(event_id)].push_back(
@@ -64,7 +64,7 @@ namespace Input {
 			);
 	}
 
-	void InputMapper::addAxisToAnalogMapping(int axis, SDL::JoystickManager* joystick,
+	void InputMapper::addAxisToAnalogMapping(int axis, JoystickManager* joystick,
 		double start_value, double end_value, double deadzone, AnalogInputEvent event_id,
 		double off_value, double on_value) {
 

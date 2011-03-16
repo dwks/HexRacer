@@ -14,6 +14,8 @@
 #include "gui/GUISystem.h"
 #include "GUIInputManager.h"
 
+#include "input/GlobalInputManager.h"
+
 #include "paint/PaintSubsystem.h"
 #include "InputManager.h"
 

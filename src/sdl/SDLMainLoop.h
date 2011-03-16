@@ -14,6 +14,7 @@
 #include "event/Enabler.h"
 
 #include "timing/AccelControl.h"
+#include "input/GlobalInputManager.h"
 
 namespace Project {
 namespace SDL {
@@ -32,6 +33,7 @@ private:
     Projector projector;
     
     boost::shared_ptr<Timing::AccelControl> accelControl;
+	boost::shared_ptr<Input::GlobalInputManager> inputManager;
 protected:
     void quitHandler(Event::QuitEvent *event);
     void changeScreenModeHandler(Event::ChangeScreenMode *event);

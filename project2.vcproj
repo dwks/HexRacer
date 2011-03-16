@@ -402,6 +402,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\input\GlobalInputManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\gui\GUIConstruction.cpp"
 				>
 			</File>
@@ -1309,7 +1313,7 @@
 				Name="sdl"
 				>
 				<File
-					RelativePath=".\src\sdl\JoystickManager.cpp"
+					RelativePath=".\src\input\JoystickManager.cpp"
 					>
 				</File>
 				<File
@@ -1561,6 +1565,10 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\GameWorld.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\input\GlobalInputManager.h"
 				>
 			</File>
 			<File
@@ -2327,7 +2335,7 @@
 				Name="sdl"
 				>
 				<File
-					RelativePath=".\src\sdl\JoystickManager.h"
+					RelativePath=".\src\input\JoystickManager.h"
 					>
 				</File>
 				<File

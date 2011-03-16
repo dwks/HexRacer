@@ -54,8 +54,7 @@ void GameLoop::setGuiPointers(boost::shared_ptr<GUI::GUISystem> gui,
 void GameLoop::handleEvent(SDL_Event *event) {
     viewport->checkForDebugCameraEvents(event);
     
-    inputManager->handleEvent(event);
-    
+    //inputManager->handleEvent(event);
     guiInputManager->handleEvent(event);
 }
 

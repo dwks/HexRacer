@@ -220,6 +220,9 @@ void SDLMainLoop::run() {
     accelControl = boost::shared_ptr<Timing::AccelControl>(
         new Timing::AccelControl());
     accelControl->setPauseSkipDirectly(lastTime);
+
+	inputManager = boost::shared_ptr<Input::GlobalInputManager>(
+        new Input::GlobalInputManager());
     
     while(!quit) {
         handleEvents();
@@ -261,6 +264,7 @@ void SDLMainLoop::handleEvents() {
         }
         
         loop->handleEvent(&event);
+		inputManager->getInputMapper()->handleEvent(&event);
     }
 }
 

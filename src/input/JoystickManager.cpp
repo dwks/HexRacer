@@ -7,19 +7,22 @@ using namespace std;
 #include "log/Logger.h"
 
 namespace Project {
-namespace SDL {
+namespace Input {
 
 JoystickManager::JoystickManager() {
     joystick = NULL;
 }
 
 JoystickManager::~JoystickManager() {
-    if(joystick) {
-        SDL_JoystickClose(joystick);
-    }
+    close();
 }
 
-bool JoystickManager::open() {
+bool JoystickManager::open(int joystick_id) {
+
+	joystick = SDL_JoystickOpen(joystick_id);
+	return hasJoystick();
+
+	/*
 
     if (SDL_NumJoysticks() > 0) {
         LOG2(SDL, INPUT, "Found " << SDL_NumJoysticks() << " joysticks, "
@@ -32,10 +35,19 @@ bool JoystickManager::open() {
         LOG2(SDL, INPUT, "No joystick found");
 		return false;
     }
+	*/
 
 }
 
-double JoystickManager::getNormalizedAxisValue(int axis, double deadzone) {
+bool JoystickManager::close() {
+	if (!hasJoystick())
+		return false;
+	else
+		SDL_JoystickClose(joystick);
+	joystick = NULL;
+	return true;
+}
+double JoystickManager::getNormalizedAxisValue(int axis, double deadzone) const {
     if (joystick == NULL) return 0.0;
     
     int value = SDL_JoystickGetAxis(joystick, axis);
@@ -48,9 +60,16 @@ double JoystickManager::getNormalizedAxisValue(int axis, double deadzone) {
     return (std::fabs(normalized) < deadzone) ? 0.0 : normalized;
 }
 
-bool JoystickManager::getButtonDown(int button) {
+bool JoystickManager::getButtonDown(int button) const {
 	return (joystick != NULL && SDL_JoystickGetButton(joystick, button) != 0);
 }
 
-}  // namespace SDL
+int JoystickManager::getNumButtons() const {
+	if (!hasJoystick())
+		return 0;
+	else
+		return SDL_JoystickNumButtons(joystick);
+}
+
+}  // namespace Input
 }  // namespace Project
