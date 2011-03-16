@@ -104,7 +104,9 @@ void MapLoader::load(HRMap *map, Misc::ProgressTracker* progressTracker, Render:
 
 	if (paintManager) {
 		paintManager->setMap(map, progressTracker);
-		//map->clearPaint();
+		LOG(WORLD, "Freeing paint info...");
+		map->clearPaint();
+		LOG(WORLD, "Paint info freed.");
 	}
 }
 

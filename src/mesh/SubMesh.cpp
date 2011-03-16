@@ -3,6 +3,7 @@
 #include "misc/StdVectorFunctions.h"
 #include "shader/ShaderManager.h"
 #include "log/Logger.h"
+#include <map>
 using namespace std;
 using namespace Project;
 using namespace OpenGL;
@@ -38,7 +39,12 @@ namespace Mesh {
 	}
 
 
-	SubMesh::SubMesh(vector< MeshTriangle* > _triangles, OpenGL::Material* _material, bool cullable) {
+	SubMesh::SubMesh(const vector< MeshTriangle* >& _triangles, OpenGL::Material* _material, bool cullable) {
+
+		std::map<MeshTriangle*, bool> tri_map;
+		for (unsigned int i = 0; i < _triangles.size(); i++) {
+			tri_map[_triangles[i]] = true;
+		}
 
 		material = _material;
 		getRenderProperties()->setMaterial(material);
@@ -48,9 +54,10 @@ namespace Mesh {
 		displayList = 0;
 
 		//Generate Triangle Fans
-		while (!_triangles.empty()) {
+		while (!tri_map.empty()) {
 
-			MeshTriangle* triangle = _triangles[_triangles.size()-1];
+			std::map<MeshTriangle*, bool>::iterator it = tri_map.begin();
+			MeshTriangle* triangle = (*it).first;
 
 			short center_index;
 			MeshVertex* fan_center = NULL;
@@ -69,7 +76,7 @@ namespace Mesh {
 			fan_vertices.push_back(triangle->getMeshVertex((center_index+2)%3));
 			//Delete the first triangle
 			delete(triangle);
-			_triangles.resize(_triangles.size()-1);
+			tri_map.erase(it);
 
 			bool vertex_added = true;
 			//Set the rest of the fan vertices
@@ -86,7 +93,7 @@ namespace Mesh {
 					if (next_vert) {
 						fan_vertices.push_back(next_vert);
 						delete(fan_triangle);
-						Misc::vectorRemoveOneElement(_triangles, fan_triangle);
+						tri_map.erase(fan_triangle);
 						vertex_added = true;
 					}
 
@@ -100,6 +107,7 @@ namespace Mesh {
 
 		if (cullable)
 			generateTriangleFanTree();
+
 	}
 
 	void SubMesh::generateTriangleFanTree() {

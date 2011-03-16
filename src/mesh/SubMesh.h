@@ -44,7 +44,7 @@ public:
 
 	SubMesh();
 	~SubMesh();
-	SubMesh(vector< MeshTriangle* > _triangles, OpenGL::Material* _material = NULL, bool cullable = false);
+	SubMesh(const vector< MeshTriangle* >& _triangles, OpenGL::Material* _material = NULL, bool cullable = false);
 
 	void renderGeometry(const Shader::ShaderParamSetter& setter, const Math::BoundingObject* bounding_object, const Render::RenderSettings& settings);
 	void appendTriangles(std::vector<Math::Triangle3D>& vec) const;
