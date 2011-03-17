@@ -23,14 +23,23 @@
 namespace Project {
 namespace GUI {
 
+void SettingsProxy::handleSwitchToScreen(Event::SwitchToScreen *event) {
+    if(checkingJoystick) {
+        setCheckingForJoystick(false);
+    }
+}
+
+SettingsProxy::SettingsProxy(Widget::WidgetBase *settings)
+    : settings(settings), checkingJoystick(false) {
+    
+    METHOD_OBSERVER(&SettingsProxy::handleSwitchToScreen);
+}
+
 void SettingsProxy::visit(Widget::RepaintEvent *event) {
     if(checkingJoystick) {
         if(Input::GlobalInputManager::getInstance()->findJoystick()) {
-            checkingJoystick = false;
             LOG(GUI, "Found joystick!");
-            
-            dynamic_cast<Widget::ButtonWidget *>(settings->getChild("joyselect"))
-                ->getText()->setText("Select joystick");
+            setCheckingForJoystick(false);
         }
     }
 }
@@ -62,13 +71,16 @@ void SettingsProxy::visit(Widget::WidgetActivateEvent *event) {
             event->getDown() ? "1" : "0");
     }
     else if(name == "joyselect") {
-        Input::GlobalInputManager::getInstance()->startFindJoystick();
+        if(dynamic_cast<Widget::ButtonWidget *>(settings->getChild("joyselect"))
+            ->getText()->getData() == "Select joystick") {
         
-        dynamic_cast<Widget::ButtonWidget *>(settings->getChild("joyselect"))
-            ->getText()->setText("Press any button on your joystick...");
-        
-        LOG(GUI, "Checking for joystick...");
-        checkingJoystick = true;
+            LOG(GUI, "Checking for joystick...");
+            setCheckingForJoystick(true);
+        }
+        else {
+            LOG(GUI, "Cancel joystick checking");
+            setCheckingForJoystick(false);
+        }
     }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");
@@ -112,6 +124,23 @@ void SettingsProxy::visit(Widget::WidgetSelectedEvent *event) {
     else {
         LOG2(GUI, WARNING, "No action for selecting \"" << name << "\"");
     }
+}
+
+void SettingsProxy::setCheckingForJoystick(bool yes) {
+    if(yes) {
+        Input::GlobalInputManager::getInstance()->startFindJoystick();
+        
+        dynamic_cast<Widget::ButtonWidget *>(settings->getChild("joyselect"))
+            ->getText()->setText("Press any button on your joystick...");
+    }
+    else {
+        Input::GlobalInputManager::getInstance()->cancelFindJoystick();
+        
+        dynamic_cast<Widget::ButtonWidget *>(settings->getChild("joyselect"))
+            ->getText()->setText("Select joystick");
+    }
+    
+    checkingJoystick = yes;
 }
 
 }  // namespace GUI
