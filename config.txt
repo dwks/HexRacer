@@ -86,7 +86,7 @@ game.enablepathing = 1
 game.warp.falloff.countdown            = 1000
 game.warp.upsidedown.countdown         = 2000
 game.warp.helprequest.countdown        = 2500
-game.warp.stillvelocity                = 0.05
+game.warp.stillvelocity                = 5.0
 
 ########
 ### Rendering settings
