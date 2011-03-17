@@ -12,6 +12,8 @@ class FocusEvent;
 class WidgetModifiedEvent;
 class WidgetSelectedEvent;
 class RepaintEvent;
+class MenuMoveEvent;
+class MenuSelectedEvent;
 
 class EventVisitor {
 public:
@@ -25,6 +27,8 @@ public:
     virtual void visit(WidgetModifiedEvent *event) = 0;
     virtual void visit(WidgetSelectedEvent *event) = 0;
     virtual void visit(RepaintEvent *event) = 0;
+	virtual void visit(MenuMoveEvent *event) = 0;
+	virtual void visit(MenuSelectedEvent *event) = 0;
 };
 
 }  // namespace Widget

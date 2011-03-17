@@ -17,7 +17,7 @@ public:
 	MenuMoveEvent()
 		: xDir(XNONE), yDir(YNONE) {}
 
-	virtual void accept(EventVisitor &visitor) {}
+	virtual void accept(EventVisitor &visitor) { visitor.visit(this); }
     virtual event_type_t getType() const { return EVENT_MENU_MOVE; }
 };
 

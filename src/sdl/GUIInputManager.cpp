@@ -4,6 +4,7 @@
 #include "widget/MouseButtonEvent.h"
 #include "widget/KeyEvent.h"
 #include "widget/MenuMoveEvent.h"
+#include "widget/MenuSelectedEvent.h"
 #include "input/GlobalInputManager.h"
 
 namespace Project {
@@ -80,6 +81,14 @@ void GUIInputManager::generateMenuEvents() {
 
 	if (move_event->xDir != Widget::MenuMoveEvent::XNONE || move_event->yDir != Widget::MenuMoveEvent::YNONE) {
 		gui->handleEvent(move_event);
+	}
+
+	if (mapper->getDigitalTriggered(Input::INPUT_D_MENU_CONFIRM)) {
+		gui->handleEvent(new Widget::MenuSelectedEvent(Widget::MenuSelectedEvent::CONFIRM));
+	}
+
+	if (mapper->getDigitalTriggered(Input::INPUT_D_MENU_BACK)) {
+		gui->handleEvent(new Widget::MenuSelectedEvent(Widget::MenuSelectedEvent::BACK));
 	}
 
 }

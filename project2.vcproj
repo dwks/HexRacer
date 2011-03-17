@@ -586,6 +586,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\MenuSelectedEvent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mesh\MeshGroup.cpp"
 				>
 			</File>
@@ -1745,6 +1749,10 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\MenuMoveEvent.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\MenuSelectedEvent.h"
 				>
 			</File>
 			<File

@@ -1,6 +1,7 @@
 #include "SDL.h"  // for SDL_GetTicks()
 
 #include "widget/RepaintEvent.h"
+#include "timing/AccelControl.h"
 
 #include "event/EventSystem.h"
 #include "GameLoop.h"
@@ -59,6 +60,10 @@ void GameLoop::handleEvent(SDL_Event *event) {
 }
 
 void GameLoop::miscellaneous() {
+
+	if (Timing::AccelControl::getInstance()->getPaused())
+		guiInputManager->generateMenuEvents();
+
     gameWorld->checkNetwork();
     
     paintSubsystem->doStep(SDL_GetTicks());
