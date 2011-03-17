@@ -27,7 +27,6 @@
 
 #include "mesh/MeshGroup.h"
 #include "mesh/MeshLoader.h"
-#include "map/MapLoader.h"
 #include "map/PathTracker.h"
 #include "map/PathingUpdater.h"
 
@@ -193,7 +192,8 @@ void ServerMain::init() {
 	paintManager = boost::shared_ptr<Paint::PaintManager>(
         new Paint::PaintManager(false));
     
-    Map::MapLoader().load(map.get(), NULL, NULL, paintManager.get());
+	mapLoader = boost::shared_ptr<Map::MapLoader>(new Map::MapLoader());
+	mapLoader.load(map.get(), NULL, NULL, paintManager.get());
     basicWorld->constructAfterConnect(map.get());
     
     paintSubsystem = boost::shared_ptr<Paint::PaintSubsystem>(

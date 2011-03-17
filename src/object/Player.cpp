@@ -36,6 +36,7 @@ Player::Player(int id, const Math::Point &origin, const Math::Point &direction) 
 Player::~Player() {
     delete physical;
     delete renderable;
+	delete tracker;
 }
 
 Physics::PhysicalPlayer *Player::getPhysicalObject() {

@@ -18,23 +18,27 @@ namespace Render {
 void RenderablePlayer::initialize(int id) {
     this->wheelRotationDegrees = 0;
 
-	//Note: All these things need a place to be deleted!
-
 	drawScale = GET_SETTING("render.vehicle.scale", 2.0);
 	Math::Matrix scale_matrix = Math::Matrix::getScalingMatrix(drawScale);
 	//tireScaleMatrix =  Math::Matrix::getScalingMatrix(GET_SETTING("render.tire.scale", 2.5));
    
 	Mesh::MeshGroup* chassis_mesh_group = Mesh::MeshLoader::getInstance()->getModelByName(VEHICLE_CHASSIS_MODEL_NAME);
-	chassisMesh = new RenderParent(chassis_mesh_group);
+	chassisMesh = boost::shared_ptr<RenderParent>(
+		new RenderParent(chassis_mesh_group)
+		);
 	chassisMesh->getRenderProperties()->setTransformation(scale_matrix);
 
-	tireMesh = new RenderParent(Mesh::MeshLoader::getInstance()->getModelByName(VEHICLE_WHEEL_MODEL_NAME));
+	tireMesh = boost::shared_ptr<RenderParent>(
+		new RenderParent(Mesh::MeshLoader::getInstance()->getModelByName(VEHICLE_WHEEL_MODEL_NAME))
+		);
 
-	materialTint = new OpenGL::Material("matTint");
+	materialTint = boost::shared_ptr<OpenGL::Material>(
+		new OpenGL::Material("matTint")
+		);
 	materialTint->setDiffuse(OpenGL::Color::WHITE);
 	materialTint->setSpecular(OpenGL::Color::WHITE);
 	materialTint->setAmbient(OpenGL::Color::WHITE);
-	getRenderProperties()->setMaterialTint(materialTint);
+	getRenderProperties()->setMaterialTint(materialTint.get());
 
 	//Set the radius of the bounding sphere for camera culling
 	boundingSphere.setRadius(chassis_mesh_group->getRadiusFromOrigin()*drawScale);

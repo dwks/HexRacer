@@ -9,7 +9,6 @@
 #include "math/Geometry.h"
 #include "math/BoundingBox3D.h"
 
-#include "map/MapLoader.h"
 #include "map/MapOptions.h"
 
 #include "hud/LapProgressBar.h"
@@ -29,6 +28,12 @@ GameRenderer::~GameRenderer() {
         dynamic_cast<Widget::CompositeWidget *>(gui->getScreen("running"))
             ->removeChild(fpsRate->getWidget()->getName());
     }
+
+	if (renderer->getRenderSettings()->getBloomEnabled())
+		clearBloom();
+
+	if (renderer->getRenderSettings()->getShadowMappingEnabled())
+		clearShadowMap();
 }
 
 void GameRenderer::construct(OpenGL::Camera *camera)
@@ -85,7 +90,8 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     paintManager = boost::shared_ptr<Paint::PaintManager>(
         new Paint::PaintManager(true));
 
-	Map::MapLoader().load(map.get(), SDL::MenuLoop::getLoadingProgressTracker(), mapRenderable.get(), paintManager.get());
+	mapLoader = boost::shared_ptr<Map::MapLoader>(new Map::MapLoader());
+	mapLoader->load(map.get(), SDL::MenuLoop::getLoadingProgressTracker(), mapRenderable.get(), paintManager.get());
 
 	shadowProperties = NULL;
 	shadowCamera = NULL;
@@ -679,6 +685,21 @@ void GameRenderer::applyBloomBuffer() {
 
 }
 
+void GameRenderer::clearBloom() {
+	glDeleteTextures(1, &bloomColorTexture);
+	glDeleteTextures(1, &bloomDepthTexture);
+	glDeleteTextures(1, &bloomBlurTexture);
+	glDeleteFramebuffers(1, &bloomBlurFBO);
+	glDeleteFramebuffers(1, &bloomFBO);
+
+	delete bloomRenderable;
+	bloomRenderable = NULL;
+	delete bloomScene->getRenderProperties()->getMaterial();
+	delete bloomScene;
+	bloomScene = NULL;
+	delete bloomBackground;
+	bloomBackground = NULL;
+}
 void GameRenderer::drawQuad() {
 
 	glBegin(GL_QUADS);
@@ -947,5 +968,11 @@ void GameRenderer::renderToShadowMap(Render::RenderableObject& renderable) {
 
 }
 
+void GameRenderer::clearShadowMap() {
+	glDeleteTextures(1, &shadowDepthTexture);
+	glDeleteFramebuffers(1, &shadowFBO);
+	delete shadowCamera;
+	delete shadowProperties;
+}
 }  // namespace SDL
 }  // namespace Project

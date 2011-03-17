@@ -17,6 +17,7 @@
 #include "timing/AccelControl.h"
 
 #include "map/HRMap.h"
+#include "map/MapLoader.h"
 #include "map/RaceManager.h"
 
 #include "mesh/MeshLoader.h"
@@ -58,6 +59,7 @@ private:
     boost::shared_ptr<World::BasicWorld> basicWorld;
     boost::shared_ptr<Mesh::MeshLoader> meshLoader;
     boost::shared_ptr<Map::HRMap> map;
+	boost::shared_ptr<Map::MapLoader> mapLoader;
     
     boost::shared_ptr<Paint::PaintManager> paintManager;
     boost::shared_ptr<Paint::PaintSubsystem> paintSubsystem;

@@ -9,7 +9,7 @@ namespace Input {
 	GlobalInputManager::GlobalInputManager() {
 		instance = this;
 		joystick = new JoystickManager();
-		openFirstJoystick();
+		//openFirstJoystick();
 		inputMapper = new InputMapper();
 
 		setInputMappings(XB360_WINDOWS);

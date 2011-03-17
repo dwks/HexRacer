@@ -17,6 +17,7 @@
 #include "paint/PaintManager.h"
 
 #include "map/HRMap.h"
+#include "map/MapLoader.h"
 #include "map/RaceManager.h"
 
 #include "hud/HUDRenderer.h"
@@ -70,6 +71,7 @@ private:
     boost::shared_ptr<Paint::PaintManager> paintManager;
     
     boost::shared_ptr<Map::HRMap> map;
+	boost::shared_ptr<Map::MapLoader> mapLoader;
 	boost::shared_ptr<HUD::HUDRenderer> hudRenderer;
     boost::shared_ptr<HUD::Minimap> minimap;
 	boost::shared_ptr<HUD::Speedometer> speedometer;
@@ -101,11 +103,14 @@ private:
 	void textureProjection();
 	void bloomBlurPass();
 	void applyBloomBuffer();
+	void clearBloom();
+
 	void drawQuad();
 
 	void initShadowMap();
 	void updateShadowCamera(const Math::Point& light_position, OpenGL::Camera* camera);
 	void renderToShadowMap(Render::RenderableObject& renderable);
+	void clearShadowMap();
 
 };
 

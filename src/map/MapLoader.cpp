@@ -12,16 +12,11 @@
 namespace Project {
 namespace Map {
 
+MapLoader::~MapLoader() {
+	unload();
+}
+
 void MapLoader::load(HRMap *map, Misc::ProgressTracker* progressTracker, Render::RenderList *mapRenderable, Paint::PaintManager* paintManager) {
-    //Instantiate the map
-    /*map = new Map::HRMap();
-    std::string mapName = GET_SETTING("map", "data/testtrack.hrm");
-    if(map->loadMapFile(mapName)) {
-        LOG(WORLD, "Loaded map file " << mapName);
-    }
-    else {
-        LOG(WORLD, "Unable to load map " << mapName);
-    }*/
 
 	if (progressTracker) {
 		progressTracker->setCurrentStage("Loading map collision...");
@@ -116,13 +111,6 @@ void MapLoader::unload() {
 	}
 	meshTints.clear();
 }
-
-/*
-void MapLoader::setCurrentStep(int current_step) {
-	if (mapLoadTracker)
-		mapLoadTracker->setCurrentStep(nonPaintProgress+(current_step/totalPaintSteps)*paintProgress);
-}
-*/
 
 }  // namespace Map
 }  // namespace Project
