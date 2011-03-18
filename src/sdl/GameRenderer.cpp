@@ -316,16 +316,7 @@ void GameRenderer::setGUI(boost::shared_ptr<GUI::GUISystem> gui) {
         fpsRate = boost::shared_ptr<FPSRateMonitor>(new FPSRateMonitor());
         gui->getScreen("running")->addChild(fpsRate->getWidget());
     }
-    
-#if 0
-    percentageComplete = new Widget::TextWidget(
-        "percentageComplete", OpenGL::Color::WHITE, "0%",
-        Widget::NormalTextLayout::ALIGN_HCENTRE | Widget::NormalTextLayout::ALIGN_VCENTRE);
-    percentageComplete->updateLayout(Widget::WidgetRect(0.0, 0.9, 0.1, 0.05));
-    /*percentageComplete = new Widget::ButtonWidget("percentageComplete",
-        "0%", Widget::WidgetRect(0.0, 0.1, 0.1, 0.05));*/
-    gui->getScreen("running")->addChild(percentageComplete);
-#endif
+
 }
 
 void GameRenderer::renderWorld(Object::World *world) {

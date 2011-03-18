@@ -9,8 +9,8 @@ using namespace std;
 namespace Project {
 namespace Mesh {
 
-	MeshGroup::MeshGroup(string _name, vector<SubMesh*> _meshes, vector<MeshVertex*> _vertices,
-		std::vector<Triangle3D> collision_mask) {
+	MeshGroup::MeshGroup(const string& _name, const vector<SubMesh*>& _meshes, const vector<MeshVertex*>& _vertices,
+		const std::vector<Triangle3D>& collision_mask) {
 
 		this->name = _name;
 	

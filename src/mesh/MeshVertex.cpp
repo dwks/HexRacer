@@ -6,7 +6,7 @@ using namespace Math;
 namespace Project {
 namespace Mesh {
 
-	MeshVertex::MeshVertex(Point position, Point normal, Point tangent, Point bitangent,
+	MeshVertex::MeshVertex(const Point& position, const Point& normal, const Point& tangent, const Point& bitangent,
 		float texCoordU, float texCoordV)
 		: Vertex3D(position) {
 		this->normal = normal;

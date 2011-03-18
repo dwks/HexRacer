@@ -8,8 +8,7 @@ using namespace Project;
 using namespace Math;
 
 BSPTree::BSPTree(int split_count)
-{
-	list = SpatialList(false);
+	: list(true) {
 	splitCount = split_count;
 	leaf = true;
 	subtreeSize = 0;

@@ -15,9 +15,9 @@ class MeshVertex
 	: public Project::Math::Vertex3D {
 private:
 
-	Project::Math::Point normal;
-	Project::Math::Point tangent;
-	Project::Math::Point bitangent;
+	Math::Point normal;
+	Math::Point tangent;
+	Math::Point bitangent;
 	float texCoordU;
 	float texCoordV;
 
@@ -25,12 +25,12 @@ private:
 
 public:
 
-	MeshVertex(Project::Math::Point position, Project::Math::Point normal, Project::Math::Point tangent, Project::Math::Point bitangent,
+	MeshVertex(const Math::Point& position, const Math::Point& normal, const Math::Point& tangent, const Math::Point& bitangent,
 		float texCoordU, float texCoordV);
 
-	const Project::Math::Point& getNormal() const { return normal; }
-	const Project::Math::Point& getTangent() const { return tangent; }
-	const Project::Math::Point& getBitangent() const { return bitangent; }
+	const Math::Point& getNormal() const { return normal; }
+	const Math::Point& getTangent() const { return tangent; }
+	const Math::Point& getBitangent() const { return bitangent; }
 	float getTexCoordU() const { return texCoordU; }
 	float getTexCoordV() const { return texCoordV; }
 

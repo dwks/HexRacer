@@ -78,7 +78,6 @@ private:
 	boost::shared_ptr<HUD::PlacingList> placingList;
     
     boost::shared_ptr<GUI::GUISystem> gui;
-    Widget::TextWidget *percentageComplete;
     boost::shared_ptr<FPSRateMonitor> fpsRate;
 
 public:

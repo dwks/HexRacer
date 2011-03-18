@@ -32,7 +32,7 @@ namespace Map {
 
 	HRMap::~HRMap() {
 		clear();
-		delete(cubeMapFile);
+		delete cubeMapFile;
 	}
 
 	bool HRMap::loadMapFile(string _filename, Misc::ProgressTracker* progress_tracker) {

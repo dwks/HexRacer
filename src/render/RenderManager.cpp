@@ -53,9 +53,9 @@ namespace Render {
 	}
 
 	RenderManager::~RenderManager() {
-		delete(settings);
-		delete(shaderManager);
-		delete(lightManager);
+		delete settings;
+		delete shaderManager;
+		delete lightManager;
 	}
 
 	void RenderManager::setRenderProperties(RenderProperties* properties) {

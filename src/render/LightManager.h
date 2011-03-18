@@ -30,6 +30,7 @@ private:
 
 public:
 	LightManager(int max_active_lights = 8);
+	~LightManager();
 
 	void addLight(OpenGL::Light* light, bool high_priorty = false, bool dynamic = true);
 	void drawActiveLightSpheres(bool show_influence_radius = false);

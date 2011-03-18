@@ -27,8 +27,8 @@ private:
 
 public:
 
-	MeshGroup(std::string _name, std::vector<SubMesh*> _meshes, std::vector<MeshVertex*> _vertices,
-		std::vector<Math::Triangle3D> collison_mask = std::vector<Math::Triangle3D>());
+	MeshGroup(const std::string& _name, const std::vector<SubMesh*>& _meshes, const std::vector<MeshVertex*>& _vertices,
+		const std::vector<Math::Triangle3D>& collison_mask = std::vector<Math::Triangle3D>());
 	~MeshGroup();
 	std::string getName() { return name; }
 	void subRender(Render::RenderManager* manager);

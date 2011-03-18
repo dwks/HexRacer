@@ -59,11 +59,11 @@ public:
 	Camera(CameraType camera_type = PERSPECTIVE);
 	~Camera(void);
 
-	void setPosition(Point pos);
-	void translate(Point translation);
-	void setLookPosition(Point pos);
-	void setLookDirection(Point dir);
-	void setUpDirection(Point dir);
+	void setPosition(const Point& pos);
+	void translate(const Point& translation);
+	void setLookPosition(const Point& pos);
+	void setLookDirection(const Point& dir);
+	void setUpDirection(const Point& dir);
 	void setAspect(double aspect);
 	void setFieldOfViewDegrees(double fov);
 	void setNearPlane(double near);
@@ -84,7 +84,7 @@ public:
 	double getFarPlane() const { return farPlane; }
 	double getOrthoHeight() const { return orthoHeight; }
 	double getOrthoWidth() const { return orthoHeight*aspect; }
-	Point cameraToWorld(Point p) const;
+	Point cameraToWorld(const Point& p) const;
 	Point cameraToWorld(double x, double y, double z = 1.0) const;
 	Ray cameraRay(double x, double y) const;
 
