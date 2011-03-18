@@ -294,6 +294,9 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	/*Properties*************************************************************/
 
 	objectPropertiesBar = new QToolBar(this);
+	objectPropertiesBar->addWidget(new QLabel("Object Properties", objectPropertiesBar));
+	objectPropertiesBar->setMinimumWidth(170);
+	objectPropertiesBar->setMinimumHeight(120);
 
 	//Position
 	positionPropertyFrame = new QFrame(this);
@@ -309,6 +312,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	positionYBox->setRange(-range, range);
 	positionYBox->setDecimals(decimals);
 	positionYBox->setSingleStep(single_step);
+	
 	positionZBox = new QDoubleSpinBox(positionPropertyFrame);
 	positionZBox->setRange(-range, range);
 	positionZBox->setDecimals(decimals);
@@ -322,7 +326,8 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	connect(mapEditor, SIGNAL(selectedPositionYChanged(double)), positionYBox, SLOT(setValue(double)));
 	connect(mapEditor, SIGNAL(selectedPositionZChanged(double)), positionZBox, SLOT(setValue(double)));
 
-	QGridLayout* position_layout = new QGridLayout(positionPropertyFrame);
+	QGridLayout* position_layout = new QGridLayout(this);
+
 	position_layout->addWidget(new QLabel("Position", positionPropertyFrame), 0, 0);
 	position_layout->addWidget(new QLabel("X", positionPropertyFrame), 1, 0);
 	position_layout->addWidget(positionXBox, 1, 1);
@@ -332,6 +337,11 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	position_layout->addWidget(positionZBox, 3, 1);
 
 	positionPropertyFrame->setLayout(position_layout);
+
+	QObjectList children = positionPropertyFrame->children();
+	for (int i = 0; i < children.size(); i++) {
+		if (dynamic_cast<QWidget*>(children[i])) objectPropertyWidgets.append((QWidget*)children[i]);
+	}
 
 	//Rotation
 	rotationPropertyFrame = new QFrame(this);
@@ -360,7 +370,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	connect(mapEditor, SIGNAL(selectedRotationPitchChanged(double)), rotationPitchBox, SLOT(setValue(double)));
 	connect(mapEditor, SIGNAL(selectedRotationRollChanged(double)), rotationRollBox, SLOT(setValue(double)));
 
-	QGridLayout* rotation_layout = new QGridLayout(rotationPropertyFrame);
+	QGridLayout* rotation_layout = new QGridLayout(this);
 	rotation_layout->addWidget(new QLabel("Rotation", rotationPropertyFrame), 0, 0);
 	rotation_layout->addWidget(new QLabel("Yaw", rotationPropertyFrame), 1, 0);
 	rotation_layout->addWidget(rotationYawBox, 1, 1);
@@ -370,6 +380,11 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	rotation_layout->addWidget(rotationRollBox, 3, 1);
 
 	rotationPropertyFrame->setLayout(rotation_layout);
+
+	children = rotationPropertyFrame->children();
+	for (int i = 0; i < children.size(); i++) {
+		if (dynamic_cast<QWidget*>(children[i])) objectPropertyWidgets.append((QWidget*)children[i]);
+	}
 
 	//Scale
 	scalePropertyFrame = new QFrame(this);
@@ -385,16 +400,22 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	connect(scaleBox, SIGNAL(valueChanged(double)), mapEditor, SLOT(setSelectedScale(double)));
 	connect(mapEditor, SIGNAL(selectedScaleChanged(double)), scaleBox, SLOT(setValue(double)));
 
-	QGridLayout* scale_layout = new QGridLayout(scalePropertyFrame);
+	QGridLayout* scale_layout = new QGridLayout(this);
 	scale_layout->addWidget(new QLabel("Scale", scalePropertyFrame), 0, 0);
 	scale_layout->addWidget(scaleBox);
 
 	scalePropertyFrame->setLayout(scale_layout);
 
+	children = scalePropertyFrame->children();
+	for (int i = 0; i < children.size(); i++) {
+		if (dynamic_cast<QWidget*>(children[i])) objectPropertyWidgets.append((QWidget*)children[i]);
+	}
+
+
 	//Colors
 
 	colorPropertyFrame = new QFrame(this);
-	QGridLayout* color_layout = new QGridLayout(colorPropertyFrame);
+	QGridLayout* color_layout = new QGridLayout(this);
 
 	colorPropertyMapper = new QSignalMapper(this);
 	connect(colorPropertyMapper, SIGNAL(mapped(int)), this, SLOT(choosePropertyColor(int)));
@@ -419,33 +440,43 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 
 	colorPropertyFrame->setLayout(color_layout);
 
-	//Lights
-	lightPropertyFrame = new QFrame(this);
-	QGridLayout* light_layout = new QGridLayout(lightPropertyFrame);
+	children = colorPropertyFrame->children();
+	for (int i = 0; i < children.size(); i++) {
+		if (dynamic_cast<QWidget*>(children[i])) objectPropertyWidgets.append((QWidget*)children[i]);
+	}
+
+	//Attenuation
+	attenuationPropertyFrame = new QFrame(this);
+	QGridLayout* light_layout = new QGridLayout(this);
 
 	range = 1000;
 	single_step = 0.05;
 	decimals = 2;
-	lightStrengthBox = new QDoubleSpinBox(lightPropertyFrame);
+	lightStrengthBox = new QDoubleSpinBox(attenuationPropertyFrame);
 	lightStrengthBox->setRange(1.0, range);
 	lightStrengthBox->setDecimals(decimals);
 	lightStrengthBox->setSingleStep(single_step);
 	connect(lightStrengthBox, SIGNAL(valueChanged(double)), mapEditor, SLOT(setLightStrength(double)));
-	lightAttenuationBox = new QCheckBox(lightPropertyFrame);
+	lightAttenuationBox = new QCheckBox(attenuationPropertyFrame);
 	connect(lightAttenuationBox, SIGNAL(toggled(bool)), mapEditor, SLOT(setLightHasAttenuation(bool)));
 
-	light_layout->addWidget(new QLabel("Light", lightPropertyFrame), 0, 0);
-	light_layout->addWidget(new QLabel("Strength", lightPropertyFrame), 1, 0);
+	light_layout->addWidget(new QLabel("Attenuation", attenuationPropertyFrame), 0, 0);
+	light_layout->addWidget(new QLabel("Strength", attenuationPropertyFrame), 1, 0);
 	light_layout->addWidget(lightStrengthBox, 1, 1);
-	light_layout->addWidget(new QLabel("Has Attenuation", lightPropertyFrame), 2, 0);
+	light_layout->addWidget(new QLabel("Has Attenuation", attenuationPropertyFrame), 2, 0);
 	light_layout->addWidget(lightAttenuationBox, 2, 1);
 
-	lightPropertyFrame->setLayout(light_layout);
+	attenuationPropertyFrame->setLayout(light_layout);
+
+	children = attenuationPropertyFrame->children();
+	for (int i = 0; i < children.size(); i++) {
+		if (dynamic_cast<QWidget*>(children[i])) objectPropertyWidgets.append((QWidget*)children[i]);
+	}
 
 	//Mesh Instances
 
 	meshInstancePropertyFrame = new QFrame(this);
-	QGridLayout* mesh_instance_layout = new QGridLayout(meshInstancePropertyFrame);
+	QGridLayout* mesh_instance_layout = new QGridLayout(this);
 	instanceTypeBox = new QComboBox(meshInstancePropertyFrame);
 	instanceTypeBox->setMinimumContentsLength(15);
 
@@ -459,14 +490,16 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	mesh_instance_layout->addWidget(new QLabel("Mesh Instance Type", meshInstancePropertyFrame), 0, 0);
 	mesh_instance_layout->addWidget(instanceTypeBox, 1, 0);
 
-
-	//
+	children = meshInstancePropertyFrame->children();
+	for (int i = 0; i < children.size(); i++) {
+		if (dynamic_cast<QWidget*>(children[i])) objectPropertyWidgets.append((QWidget*)children[i]);
+	}
 
 	objectPropertiesBar->addWidget(positionPropertyFrame);
 	objectPropertiesBar->addWidget(rotationPropertyFrame);
 	objectPropertiesBar->addWidget(scalePropertyFrame);
 	objectPropertiesBar->addWidget(colorPropertyFrame);
-	objectPropertiesBar->addWidget(lightPropertyFrame);
+	objectPropertiesBar->addWidget(attenuationPropertyFrame);
 	objectPropertiesBar->addWidget(meshInstancePropertyFrame);
 
 	addToolBar(Qt::LeftToolBarArea, objectPropertiesBar);
@@ -628,7 +661,7 @@ void HRMEMainWindow::setSelectedObject(MapObject* selected_object) {
 	rotationPropertyFrame->setEnabled(false);
 	scalePropertyFrame->setEnabled(false);
 	colorPropertyFrame->setEnabled(false);
-	lightPropertyFrame->setEnabled(false);
+	attenuationPropertyFrame->setEnabled(false);
 	meshInstancePropertyFrame->setEnabled(false);
 
 	Light* light;
@@ -640,7 +673,7 @@ void HRMEMainWindow::setSelectedObject(MapObject* selected_object) {
 				light = ((LightObject*)selected_object)->getLight();
 				lightStrengthBox->setValue(light->getStrength());
 				lightAttenuationBox->setChecked(light->getHasAttenuation());
-				lightPropertyFrame->setEnabled(true);
+				attenuationPropertyFrame->setEnabled(true);
 				break;
 
 			case MapObject::MESH_INSTANCE:
@@ -656,6 +689,10 @@ void HRMEMainWindow::setSelectedObject(MapObject* selected_object) {
 		colorPropertyFrame->setEnabled(selected_object->hasColors());
 		rotationPropertyFrame->setEnabled(selected_object->hasRotation());
 		scalePropertyFrame->setEnabled(selected_object->hasScale());
+	}
+
+	for (int i = 0; i < objectPropertyWidgets.size(); i++) {
+		objectPropertyWidgets.at(i)->setVisible(objectPropertyWidgets.at(i)->parentWidget()->isEnabled());
 	}
 }
 

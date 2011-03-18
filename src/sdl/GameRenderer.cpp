@@ -287,7 +287,9 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 
         int draw_height = viewHeight*GET_SETTING("hud.placinglist.drawheight", 0.5);
 		int draw_width = GET_SETTING("hud.placinglist.drawwidth", 400);
-		int entry_height = GET_SETTING("hud.placinglist.entryheight", 0.5);
+		int entry_height = Math::maximum(static_cast<int>(draw_height*GET_SETTING("hud.placinglist.entryheight", 0.5)),
+			static_cast<int>(GET_SETTING("hud.placinglist.minentryheight", 20)));
+		entry_height = Math::minimum(entry_height, GET_SETTING("hud.placinglist.maxentryheight", 20));
 
 		hudRenderer->setupViewport(
 			HUD::HUDRenderer::ALIGN_MIN,

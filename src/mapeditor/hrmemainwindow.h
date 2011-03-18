@@ -57,13 +57,15 @@ private:
 
 	//Properties
 
+	QList<QWidget*> objectPropertyWidgets;
+
 	QFrame* positionPropertyFrame;
 	QFrame* rotationPropertyFrame;
 	QFrame* scalePropertyFrame;
 	QFrame* colorPropertyFrame;
 	QSignalMapper* colorPropertyMapper;
 
-	QFrame* lightPropertyFrame;
+	QFrame* attenuationPropertyFrame;
 	QFrame* meshInstancePropertyFrame;
 	
 	QToolBar* objectPropertiesBar;
