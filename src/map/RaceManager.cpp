@@ -12,6 +12,7 @@ RaceManager::RaceManager(HRMap *_map)
 : map(_map) {
 
 	finishPlane = map->getFinishPlane();
+	numLaps = map->getMapOptions().getNumLaps();
 
 	killPlaneY = 0.0;
 	
@@ -54,15 +55,26 @@ bool RaceManager::inBounds(const Math::Point& position) const {
 }
 
 void RaceManager::updatePlayerRankings(Object::WorldManager* world) {
+
 	playerRankings.clear();
 
 	Object::WorldManager::PlayerIteratorType it
 		= world->getPlayerIterator();
 	while(it.hasNext()) {
-		playerRankings.push_back(it.next());
+		Object::Player* player = it.next();
+
+		if (!player->getPathTracker()->getFinished() && player->getPathTracker()->getNumLaps() >= numLaps) {
+			player->getPathTracker()->setFinished(true);
+		}
+
+		playerRankings.push_back(player);
 	}
 
 	Misc::vectorPointerMergeSort(playerRankings);
+
+	for (unsigned int i = 0; i < playerRankings.size(); i++) {
+		playerRankings[i]->getPathTracker()->setRanking(i);
+	}
 
 }
 }  // namespace Map

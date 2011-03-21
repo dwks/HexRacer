@@ -13,6 +13,7 @@ private:
     HRMap *map;
 	Math::BoundingPlane3D finishPlane;
 	double killPlaneY;
+	int numLaps;
 	std::vector<Object::Player*> playerRankings;
 public:
     RaceManager(HRMap *_map);

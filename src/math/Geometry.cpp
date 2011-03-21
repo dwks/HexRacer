@@ -180,7 +180,7 @@ bool Geometry::sameSideOfLine2D(const Point& line_a, const Point& line_b, const 
 }
 
 bool Geometry::frontOfPlane(const Point& plane_point, const Point& plane_normal, const Point& point) {
-	return ((point-plane_point).dotProduct(plane_normal) >= 0.0f);
+	return ((point-plane_point).dotProduct(plane_normal) >= 0.0);
 }
 
 Point Geometry::triangleNormal(const Point& tri_a, const Point& tri_b, const Point& tri_c) {

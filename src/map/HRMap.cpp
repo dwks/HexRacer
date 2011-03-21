@@ -241,7 +241,8 @@ namespace Map {
 
 		out_file << "#Paint Cells\n";
 
-		Misc::vectorMergeSort(paintCellInfo, 0, paintCellInfo.size()-1);
+		if (!Misc::vectorIsSorted(paintCellInfo))
+			Misc::vectorMergeSort(paintCellInfo, 0, paintCellInfo.size()-1);
 
 		unsigned int i = 0;
 		while (i < paintCellInfo.size()) {
