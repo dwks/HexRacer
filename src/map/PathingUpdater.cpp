@@ -17,6 +17,8 @@ PathingUpdater::PathingUpdater(
     this->worldManager = worldManager;
     this->raceManager = raceManager;
     this->playerManager = playerManager;
+
+	EMIT_EVENT(new Event::PlayerProgressEvent(0, 0.0, raceManager->getNumLapsToWin()));
     
     warpDetector = new WarpDetector(raceManager.get());
 }
@@ -67,7 +69,10 @@ void PathingUpdater::update() {
                 if(playerManager->getPlayer() == player) {
                     EMIT_EVENT(new Event::PlayerProgressEvent(
                         player->getPathTracker()->getNumLaps(),
-                        player->getPathTracker()->getLapProgress()));
+                        player->getPathTracker()->getLapProgress(),
+						raceManager->getNumLapsToWin()
+						)
+						);
                 }
             }
         }
