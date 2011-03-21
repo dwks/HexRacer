@@ -58,6 +58,11 @@ void PathingUpdater::update() {
                     LOG(WORLD, "Player: " << player->getID()
                         << " has finished lap "
                         << player->getPathTracker()->getNumLaps());
+
+				if (!player->getPathTracker()->getFinished()
+					&& player->getPathTracker()->getNumLaps() >= raceManager->getNumLapsToWin()) {
+						player->getPathTracker()->setFinished(true);
+				}
                 
                 if(playerManager->getPlayer() == player) {
                     EMIT_EVENT(new Event::PlayerProgressEvent(

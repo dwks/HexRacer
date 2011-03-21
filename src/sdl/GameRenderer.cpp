@@ -80,10 +80,9 @@ void GameRenderer::construct(OpenGL::Camera *camera)
 
     minimap = boost::shared_ptr<HUD::Minimap>(new HUD::Minimap());
     minimap->setMapInfo(map.get());
-
 	speedometer = boost::shared_ptr<HUD::Speedometer>(new HUD::Speedometer());
-
 	placingList = boost::shared_ptr<HUD::PlacingList>(new HUD::PlacingList());
+	playerPlacingText = boost::shared_ptr<HUD::PlayerPlacingText>(new HUD::PlayerPlacingText());
     
     renderer->setCubeMap(map->getCubeMap());
     
@@ -287,7 +286,7 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 
         int draw_height = viewHeight*GET_SETTING("hud.placinglist.drawheight", 0.5);
 		int draw_width = GET_SETTING("hud.placinglist.drawwidth", 400);
-		int entry_height = Math::maximum(static_cast<int>(draw_height*GET_SETTING("hud.placinglist.entryheight", 0.5)),
+		int entry_height = Math::maximum(static_cast<int>(viewHeight*GET_SETTING("hud.placinglist.entryheight", 0.5)),
 			static_cast<int>(GET_SETTING("hud.placinglist.minentryheight", 20)));
 		entry_height = Math::minimum(entry_height, GET_SETTING("hud.placinglist.maxentryheight", 20));
 
@@ -305,6 +304,22 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 		placingList->render(raceManager);
     }
 
+	//-Player Placing Text ----------------------------------------------------------------------------
+    if (GET_SETTING("hud.playerplacingtext.enable", true)) {
+
+        int draw_height = viewHeight*GET_SETTING("hud.playerplacingtext.drawheight", 0.2);
+
+		hudRenderer->setupViewport(
+			HUD::HUDRenderer::ALIGN_MIN,
+			HUD::HUDRenderer::ALIGN_MIN,
+			draw_height,
+			draw_height,
+			10,
+			0);
+	
+		playerPlacingText->setPlacing(player->getPathTracker()->getRanking());
+		playerPlacingText->render();
+    }
 
 	hudRenderer->renderingStateReset();
 	hudRenderer->resetViewport();

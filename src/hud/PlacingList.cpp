@@ -52,8 +52,17 @@ namespace HUD {
 			OpenGL::Color::glColor(Render::ColorConstants::playerColor(players[i]->getTeamID()));
 			OpenGL::GeometryDrawing::drawHexagon(Math::Vertex2D(x_offset+hex_radius, draw_y), hex_radius);
 
-			//Render the player's name
 			OpenGL::Color::glColor(OpenGL::Color::WHITE);
+
+			//Draw an outline if the player has finished
+			if (players[i]->getPathTracker()->getFinished()) {
+				glLineWidth(2.0f);
+				OpenGL::GeometryDrawing::drawHexagon(Math::Vertex2D(x_offset+hex_radius, draw_y), hex_radius, true);
+				glLineWidth(1.0f);
+			}
+
+			//Render the player's name
+			
 			glEnable(GL_TEXTURE_2D);
 
 			entry.clear();

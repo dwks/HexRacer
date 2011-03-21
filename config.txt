@@ -151,11 +151,14 @@ hud.lapprogress.enable = 0
 hud.lapprogress.drawheight = 0.75
 
 hud.placinglist.enable = 1
-hud.placinglist.drawheight = 0.8
+hud.placinglist.drawheight = 0.6
 hud.placinglist.drawwidth = 400
-hud.placinglist.entryheight = 0.1
+hud.placinglist.entryheight = 0.05
 hud.placinglist.minentryheight = 18
 hud.placinglist.maxentryheight = 60
+
+hud.playerplacingtext.enable = 1
+hud.playerplacingtext.drawheight = 0.2
 
 ########
 ### Camera settings

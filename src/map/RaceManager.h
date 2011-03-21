@@ -25,6 +25,8 @@ public:
 	void updatePlayerRankings(Object::WorldManager* world);
 	const std::vector<Object::Player*>& getPlayerRankings() const { return playerRankings; }
 
+	int getNumLapsToWin() const { return numLaps; }
+
 	bool inBounds(const Math::Point& position) const;
 };
 

@@ -61,13 +61,7 @@ void RaceManager::updatePlayerRankings(Object::WorldManager* world) {
 	Object::WorldManager::PlayerIteratorType it
 		= world->getPlayerIterator();
 	while(it.hasNext()) {
-		Object::Player* player = it.next();
-
-		if (!player->getPathTracker()->getFinished() && player->getPathTracker()->getNumLaps() >= numLaps) {
-			player->getPathTracker()->setFinished(true);
-		}
-
-		playerRankings.push_back(player);
+		playerRankings.push_back(it.next());
 	}
 
 	Misc::vectorPointerMergeSort(playerRankings);

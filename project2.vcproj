@@ -750,6 +750,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\hud\PlayerPlacingText.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\PlayerProgressEvent.cpp"
 				>
 			</File>
@@ -1917,6 +1921,10 @@
 			</File>
 			<File
 				RelativePath=".\src\world\PlayerManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\hud\PlayerPlacingText.h"
 				>
 			</File>
 			<File
