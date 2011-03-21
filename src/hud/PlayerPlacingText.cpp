@@ -24,7 +24,7 @@ namespace HUD {
 				std::stringstream stream;
 				stream << (placing+1);
 				switch ((placing+1) % 10) {
-					case 0: case 4: case 5: case 6: case 8: case 9:
+					case 0: case 4: case 5: case 6: case 7: case 8: case 9:
 						stream << "th"; break;
 					case 1: stream << "st"; break;
 					case 2: stream << "nd"; break;
