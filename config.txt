@@ -103,7 +103,7 @@ render.showfps = 1
 render.bloom.enable = 0
 render.bloom.width = 640
 render.bloom.height = 480
-render.bloom.farplane = 200.0
+render.bloom.farplane = 300.0
 render.bloom.blurpasses = 6
 
 render.shadow.enable = 0
@@ -118,8 +118,8 @@ render.playerglow.constant = -0.80
 ########
 ### Rendering frustrum settings
 render.camera.nearplane = 0.1
-render.camera.farplane = 200.0
-render.camera.paintthreshhold = 0.35
+render.camera.farplane = 300.0
+render.camera.paintthreshhold = 0.25
 render.camera.fieldofview = 60.0
 render.camera.fovboost = 65.0
 render.camera.fovslow = 60.0
