@@ -12,18 +12,17 @@ namespace AI {
 
 void AIManager::physicsTickHandler(Event::PhysicsTick *event) {
     for(int ai = 0; ai < static_cast<int>(driverList.size()); ai ++) {
+        int id = driverList[ai]->getPlayer()->getID();
         const World::PlayerIntention &intention = driverList[ai]->getAction();
         
-        Object::Player *player = playerManager->getPlayer(ai);
+        Object::Player *player = playerManager->getPlayer(id);
         bool identical = (intention == player->getIntention());
         if(!identical) {
             bool equal = (player->getIntention() == intention);
             player->setIntention(intention);
             
             if(!equal) {
-                EMIT_EVENT(new Event::ChangeOfIntention(
-                    ai,
-                    intention));
+                EMIT_EVENT(new Event::ChangeOfIntention(id, intention));
             }
         }
     }
@@ -37,8 +36,8 @@ AIManager::AIManager(Map::RaceManager *raceManager,
     METHOD_OBSERVER(&AIManager::physicsTickHandler);
 }
 
-void AIManager::createAIs(int count) {
-    for(int ai = 0; ai < count; ai ++) {
+void AIManager::createAIs(int startAt, int count) {
+    for(int ai = startAt; ai < startAt + count; ai ++) {
         Math::Point location = raceManager->startingPointForPlayer(ai);
         Math::Point direction = raceManager->startingPlayerDirection();
         

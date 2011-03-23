@@ -140,6 +140,7 @@ void SDLMainLoop::useLoopBase(LoopBase *loop) {
 
 void SDLMainLoop::useMenuLoop() {
     delete this->loop;  // delete the other menu, whatever it is
+    gameLoop = NULL;
     
     menuLoop->getGUI()->popScreen("main");
     this->loop = menuLoop;

@@ -11,6 +11,9 @@ namespace Project {
 namespace AI {
 
 WeightedDriver::WeightedDriver(Object::Player *player) : Driver(player) {
+    LOG(WORLD, "Player " << player->getID()
+        << " is controlled by a WeightedDriver");
+    
     sittingStill = false;
     sittingStillSince = 0;
 

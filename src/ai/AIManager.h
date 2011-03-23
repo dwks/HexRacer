@@ -30,7 +30,7 @@ public:
     AIManager(Map::RaceManager *raceManager, Map::PathManager *pathManager,
         World::PlayerManager *playerManager);
     
-    void createAIs(int count);
+    void createAIs(int startAt, int count);
 };
 
 }  // namespace AI

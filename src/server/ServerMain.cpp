@@ -253,7 +253,7 @@ void ServerMain::initAI() {
             basicWorld->getPlayerManager()));
     
     int aiCount = GET_SETTING("server.aicount", 0);
-    aiManager->createAIs(aiCount);
+    aiManager->createAIs(clientCount, aiCount);
     clientCount += aiCount;
 }
 
