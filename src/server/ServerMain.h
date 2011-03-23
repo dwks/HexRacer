@@ -84,6 +84,12 @@ public:
 private:
     void init();
     void initAI();
+    
+    void handleNewConnections();
+    void handleDisconnections();
+    void handleIncomingPackets();
+    void updateClients();
+    unsigned long doDelay(unsigned long lastTime);
 };
 
 }  // namespace Server

@@ -220,96 +220,113 @@ void ServerMain::run() {
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
     quit = false;
     while(!quit) {
-        for(;;) {
-            Connection::Socket *socket = server->checkForConnections();
-            if(!socket) break;
-            
-            Network::PacketSerializer packetSerializer;
-            Network::Packet *packet = new Network::HandshakePacket(
-                clientCount, GET_SETTING("map", "data/testtrack.hrm"),
-                Misc::Sleeper::getTimeMilliseconds());
-            
-            Network::StringSerializer stringSerializer(socket);
-            stringSerializer.sendString(
-                packetSerializer.packetToString(packet));
-            delete packet;
-            
-            Math::Point location = basicWorld->getRaceManager()
-                ->startingPointForPlayer(clientCount);
-            Math::Point direction = basicWorld->getRaceManager()
-                ->startingPlayerDirection();
-            
-            clients->addClient(socket);
-            Object::Player *player = new Object::Player(
-                clientCount, location, direction);
-			player->setPathTracker(new Map::PathTracker(
-                *basicWorld->getPathManager()));
-            //worldManager->addPlayer(player);
-            
-            Event::EntireWorld *entireWorld = new Event::EntireWorld(
-                getWorldManager()->getWorld(),
-                getWorldManager()->getPlayerList());
-            packet = new Network::EventPacket(entireWorld);
-            stringSerializer.sendString(
-                packetSerializer.packetToString(packet));
-            delete entireWorld;
-            delete packet;
-            
-            EMIT_EVENT(new Event::CreateObject(player));
-            
-            clientCount ++;
-        }
+        handleNewConnections();
+        handleDisconnections();
         
-        int disconnected;
-        while((disconnected = clients->nextDisconnectedClient()) >= 0) {
-            LOG2(NETWORK, CONNECT,
-                "Client " << disconnected << " has disconnected");
-        }
-        
-        {
-            Network::Packet *packet;
-            while((packet = clients->nextPacket(&whichSocket))) {
-                /*LOG(NETWORK, "Packet received from "
-                    << whichSocket << ": " << packet);*/
-                
-                packet->accept(visitor);
-                delete packet;
-            }
-        }
+        handleIncomingPackets();
         
         paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
         
         basicWorld->doPhysics();
         basicWorld->doAI();
         
-        static int loops = 0;
-        if(++loops == 5) {
-            loops = 0;
-            
-            Event::UpdateWorld *update
-                = new Event::UpdateWorld(
-                    Misc::Sleeper::getTimeMilliseconds(),
-                    getWorldManager());
-            Network::Packet *packet = new Network::EventPacket(update);
-            clients->sendPacket(packet);
-            delete packet;
-            delete update;
-        }
+        updateClients();
         
-        {
-            unsigned long currentTime = Misc::Sleeper::getTimeMilliseconds();
-            unsigned long elapsed = currentTime - lastTime;
-            long tosleep = 10 - elapsed;
-            if(tosleep > 0) {
-                Misc::Sleeper::sleep(tosleep);
-            }
-            
-            //while(lastTime < currentTime) lastTime += 10;
-            while(lastTime < currentTime + tosleep) lastTime += 10;
-        }
+        lastTime = doDelay(lastTime);
         
         accelControl->clearPauseSkip();
     }
+}
+
+void ServerMain::handleNewConnections() {
+    for(;;) {
+        Connection::Socket *socket = server->checkForConnections();
+        if(!socket) break;
+        
+        Network::PacketSerializer packetSerializer;
+        Network::Packet *packet = new Network::HandshakePacket(
+            clientCount, GET_SETTING("map", "data/testtrack.hrm"),
+            Misc::Sleeper::getTimeMilliseconds());
+        
+        Network::StringSerializer stringSerializer(socket);
+        stringSerializer.sendString(
+            packetSerializer.packetToString(packet));
+        delete packet;
+        
+        Math::Point location = basicWorld->getRaceManager()
+            ->startingPointForPlayer(clientCount);
+        Math::Point direction = basicWorld->getRaceManager()
+            ->startingPlayerDirection();
+        
+        clients->addClient(socket);
+        Object::Player *player = new Object::Player(
+            clientCount, location, direction);
+        player->setPathTracker(new Map::PathTracker(
+            *basicWorld->getPathManager()));
+        //worldManager->addPlayer(player);
+        
+        Event::EntireWorld *entireWorld = new Event::EntireWorld(
+            getWorldManager()->getWorld(),
+            getWorldManager()->getPlayerList());
+        packet = new Network::EventPacket(entireWorld);
+        stringSerializer.sendString(
+            packetSerializer.packetToString(packet));
+        delete entireWorld;
+        delete packet;
+        
+        EMIT_EVENT(new Event::CreateObject(player));
+        
+        clientCount ++;
+    }
+}
+
+void ServerMain::handleDisconnections() {
+    int disconnected;
+    while((disconnected = clients->nextDisconnectedClient()) >= 0) {
+        LOG2(NETWORK, CONNECT,
+            "Client " << disconnected << " has disconnected");
+    }
+}
+
+void ServerMain::handleIncomingPackets() {
+    Network::Packet *packet;
+    while((packet = clients->nextPacket(&whichSocket))) {
+        /*LOG(NETWORK, "Packet received from "
+            << whichSocket << ": " << packet);*/
+        
+        packet->accept(visitor);
+        delete packet;
+    }
+}
+
+void ServerMain::updateClients() {
+    static int loops = 0;
+    if(++loops == 5) {
+        loops = 0;
+        
+        Event::UpdateWorld *update
+            = new Event::UpdateWorld(
+                Misc::Sleeper::getTimeMilliseconds(),
+                getWorldManager());
+        Network::Packet *packet = new Network::EventPacket(update);
+        clients->sendPacket(packet);
+        delete packet;
+        delete update;
+    }
+}
+
+unsigned long ServerMain::doDelay(unsigned long lastTime) {
+    unsigned long currentTime = Misc::Sleeper::getTimeMilliseconds();
+    unsigned long elapsed = currentTime - lastTime;
+    long tosleep = 10 - elapsed;
+    if(tosleep > 0) {
+        Misc::Sleeper::sleep(tosleep);
+    }
+    
+    //while(lastTime < currentTime) lastTime += 10;
+    while(lastTime < currentTime + tosleep) lastTime += 10;
+    
+    return lastTime;
 }
 
 }  // namespace Server
