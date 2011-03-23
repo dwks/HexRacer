@@ -21,10 +21,15 @@
 #include "event/UpdateObject.h"
 #include "event/UpdateWorld.h"
 #include "event/EntireWorld.h"
+#include "event/GameStageChanged.h"
+#include "event/SetupClientSettings.h"
+#include "event/SetupPlayerSettings.h"
+#include "event/SetupChat.h"
 
 #include "object/Player.h"
 #include "world/PlayerIntention.h"
 #include "physics/WarpTracker.h"
+#include "world/WorldSetup.h"
 
 #include "PacketSerializer.h"
 #include "PointSerializer.h"
@@ -51,10 +56,16 @@ std::string PacketSerializer::packetToString(Packet *packet) {
     out.register_type<Event::UpdateObject>();
     out.register_type<Event::UpdateWorld>();
     out.register_type<Event::EntireWorld>();
+    out.register_type<Event::GameStageChanged>();
+    out.register_type<Event::SetupClientSettings>();
+    out.register_type<Event::SetupPlayerSettings>();
+    out.register_type<Event::SetupChat>();
     
     out.register_type<Object::Player>();
     out.register_type<World::PlayerIntention>();
     out.register_type<Physics::WarpTracker>();
+    out.register_type<World::WorldSetup::PlayerSettings>();
+    out.register_type<World::WorldSetup::ClientSettings>();
     
     try {
         out << packet;
@@ -87,10 +98,16 @@ Packet *PacketSerializer::stringToPacket(const std::string &string) {
     in.register_type<Event::UpdateObject>();
     in.register_type<Event::UpdateWorld>();
     in.register_type<Event::EntireWorld>();
+    in.register_type<Event::GameStageChanged>();
+    in.register_type<Event::SetupClientSettings>();
+    in.register_type<Event::SetupPlayerSettings>();
+    in.register_type<Event::SetupChat>();
     
     in.register_type<Object::Player>();
     in.register_type<World::PlayerIntention>();
     in.register_type<Physics::WarpTracker>();
+    in.register_type<World::WorldSetup::PlayerSettings>();
+    in.register_type<World::WorldSetup::ClientSettings>();
     
     Packet *packet;
     try {

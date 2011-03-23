@@ -28,6 +28,8 @@ bool GameWorld::doConnect(const std::string &host, unsigned short port) {
         return false;
     }
     
+    network->waitForHandshake();
+    
     isConnectedToNetwork = true;
     
     return true;

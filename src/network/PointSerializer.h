@@ -5,6 +5,7 @@
 
 #include "math/Point.h"
 #include "math/Matrix.h"
+#include "opengl/Color.h"
 
 namespace boost {
 namespace serialization {
@@ -56,10 +57,31 @@ void load(Archive &ar, Project::Math::Matrix &matrix, const unsigned version) {
     matrix = Project::Math::Matrix(data);
 }
 
+template <typename Archive>
+void save(Archive &ar, const Project::OpenGL::Color &color,
+    const unsigned version) {
+    
+    float r = color.redf();
+    float g = color.greenf();
+    float b = color.bluef();
+    float a = color.alphaf();
+    
+    ar << r << g << b << a;
+}
+
+template <typename Archive>
+void load(Archive &ar, Project::OpenGL::Color &color, const unsigned version) {
+    float r, g, b, a;
+    ar >> r >> g >> b >> a;
+    
+    color = Project::OpenGL::Color(r, g, b, a);
+}
+
 }  // namespace serialization
 }  // namespace boost
 
 BOOST_SERIALIZATION_SPLIT_FREE(Project::Math::Point)
 BOOST_SERIALIZATION_SPLIT_FREE(Project::Math::Matrix)
+BOOST_SERIALIZATION_SPLIT_FREE(Project::OpenGL::Color)
 
 #endif

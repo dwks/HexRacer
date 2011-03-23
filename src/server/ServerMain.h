@@ -3,6 +3,8 @@
 
 #include "boost/smart_ptr.hpp"
 
+#include "world/WorldSetup.h"
+
 #include "paint/PaintManager.h"
 #include "paint/PaintSubsystem.h"
 
@@ -54,6 +56,8 @@ private:
     bool quit;
     int clientCount;
     int whichSocket;
+    boost::shared_ptr<World::WorldSetup> worldSetup;
+    bool loadedMap;
     
     boost::shared_ptr<Timing::AccelControl> accelControl;
     boost::shared_ptr<World::BasicWorld> basicWorld;
@@ -82,8 +86,12 @@ public:
     Object::WorldManager *getWorldManager()
         { return basicWorld->getWorldManager(); }
 private:
-    void init();
+    void initBasics();
+    
+    void startGame();
+    void initMap();
     void initAI();
+    void sendWorldToPlayers();
     
     void handleNewConnections();
     void handleDisconnections();

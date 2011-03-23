@@ -6,16 +6,48 @@
 #include "widget/EditWidget.h"
 #include "widget/ListWidget.h"
 
-#include "event/SwitchToScreen.h"
 #include "event/EventSystem.h"
+#include "event/SwitchToScreen.h"
 
 #include "map/MapSettings.h"
 
 #include "settings/SettingsManager.h"
+#include "misc/StreamAsString.h"
 #include "log/Logger.h"
 
 namespace Project {
 namespace GUI {
+
+void LobbyProxy::handleSetupChat(Event::SetupChat *event) {
+    static int chatCount = 0;
+    
+    int id = event->getClient();
+    std::string name = event->getName();
+    std::string message = event->getMessage();
+    
+    Widget::TextWidget *item = new Widget::TextWidget(
+        Misc::StreamAsString() << "chat" << ++chatCount,
+        Misc::StreamAsString() << name << ": " << message,
+        Widget::NormalTextLayout::ALIGN_LEFT,
+        Widget::WidgetRect(0.0, 0.0, 0.8, 0.03));
+    
+    item->setColor(worldSetup->getPlayerSettings(id)->getColor());
+    
+    Widget::ListWidget *chat = dynamic_cast<Widget::ListWidget *>(
+        this->lobby->getChild("chat"));
+    if(chat) {
+        chat->addChild(item);
+    }
+    else {
+        LOG2(GUI, ERROR, "Can't find chat widget to add message to");
+    }
+}
+
+LobbyProxy::LobbyProxy(Widget::WidgetBase *lobby)
+    : lobby(lobby), worldSetup(0) {
+    
+    METHOD_OBSERVER(&LobbyProxy::handleSetupChat);
+}
 
 void LobbyProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();
@@ -50,6 +82,10 @@ void LobbyProxy::visit(Widget::WidgetModifiedEvent *event) {
     else if(name == "chat") {
         LOG(NETWORK, "Chat: " << data);
         event->getWidget()->setData("");
+        
+        int id = worldSetup->getClientID();
+        std::string name = worldSetup->getPlayerSettings(id)->getName();
+        EMIT_EVENT(new Event::SetupChat(id, name, data));
     }
     else {
         LOG2(GUI, WARNING, "No action for modifying \"" << name << "\"");

@@ -158,7 +158,10 @@ ServerMain::ServerMain() : clientCount(0), visitor(this) {
 #endif
 }
 
-void ServerMain::init() {
+void ServerMain::initBasics() {
+    worldSetup = boost::shared_ptr<World::WorldSetup>(new World::WorldSetup());
+    loadedMap = false;
+    
     accelControl = boost::shared_ptr<Timing::AccelControl>(
         new Timing::AccelControl());
     
@@ -174,6 +177,18 @@ void ServerMain::init() {
     // this must execute before MapLoader loads the map
     meshLoader = boost::shared_ptr<Mesh::MeshLoader>(new Mesh::MeshLoader());
     
+    ADD_OBSERVER(new ServerObserver(this));
+}
+
+void ServerMain::startGame() {
+    initMap();
+    initAI();
+    loadedMap = true;
+    
+    sendWorldToPlayers();
+}
+
+void ServerMain::initMap() {
     //Instantiate the map
     map = boost::shared_ptr<Map::HRMap>(new Map::HRMap());
     if (map->loadMapFile(GET_SETTING("map", "maps/testtrack.hrm"))) {
@@ -182,8 +197,6 @@ void ServerMain::init() {
     else {
         LOG(WORLD, "Unable to load map " << GET_SETTING("map", "data/testtrack.hrm"));
     }
-    
-    ADD_OBSERVER(new ServerObserver(this));
     
     basicWorld = boost::shared_ptr<World::BasicWorld>(new World::BasicWorld());
     basicWorld->constructBeforeConnect();
@@ -214,8 +227,8 @@ void ServerMain::initAI() {
 }
 
 void ServerMain::run() {
-    init();
-    initAI();
+    initBasics();
+    //startGame();  // !!! hack
     
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
     quit = false;
@@ -225,16 +238,50 @@ void ServerMain::run() {
         
         handleIncomingPackets();
         
-        paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
-        
-        basicWorld->doPhysics();
-        basicWorld->doAI();
-        
-        updateClients();
+        if(loadedMap) {
+            paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
+            
+            basicWorld->doPhysics();
+            basicWorld->doAI();
+            
+            updateClients();
+        }
+        else {
+            if(worldSetup->everyoneReadyToStart()) {
+                startGame();
+            }
+        }
         
         lastTime = doDelay(lastTime);
         
         accelControl->clearPauseSkip();
+    }
+}
+
+void ServerMain::sendWorldToPlayers() {
+    for(int client = 0; client < clients->getSocketCount(); client ++) {
+        if(!clients->socketExists(client)) continue;
+        
+        Math::Point location = basicWorld->getRaceManager()
+            ->startingPointForPlayer(client);
+        Math::Point direction = basicWorld->getRaceManager()
+            ->startingPlayerDirection();
+        
+        Object::Player *player = new Object::Player(
+            client, location, direction);
+        player->setPathTracker(new Map::PathTracker(
+            *basicWorld->getPathManager()));
+        //worldManager->addPlayer(player);
+        
+        Event::EntireWorld *entireWorld = new Event::EntireWorld(
+            getWorldManager()->getWorld(),
+            getWorldManager()->getPlayerList());
+        Network::Packet *packet = new Network::EventPacket(entireWorld);
+        clients->sendPacketOnly(packet, client);
+        delete entireWorld;
+        delete packet;
+        
+        EMIT_EVENT(new Event::CreateObject(player));
     }
 }
 
@@ -243,9 +290,12 @@ void ServerMain::handleNewConnections() {
         Connection::Socket *socket = server->checkForConnections();
         if(!socket) break;
         
+        int client = clientCount;
+        clientCount ++;
+        
         Network::PacketSerializer packetSerializer;
         Network::Packet *packet = new Network::HandshakePacket(
-            clientCount, GET_SETTING("map", "data/testtrack.hrm"),
+            client, GET_SETTING("map", "data/testtrack.hrm"),
             Misc::Sleeper::getTimeMilliseconds());
         
         Network::StringSerializer stringSerializer(socket);
@@ -253,30 +303,7 @@ void ServerMain::handleNewConnections() {
             packetSerializer.packetToString(packet));
         delete packet;
         
-        Math::Point location = basicWorld->getRaceManager()
-            ->startingPointForPlayer(clientCount);
-        Math::Point direction = basicWorld->getRaceManager()
-            ->startingPlayerDirection();
-        
         clients->addClient(socket);
-        Object::Player *player = new Object::Player(
-            clientCount, location, direction);
-        player->setPathTracker(new Map::PathTracker(
-            *basicWorld->getPathManager()));
-        //worldManager->addPlayer(player);
-        
-        Event::EntireWorld *entireWorld = new Event::EntireWorld(
-            getWorldManager()->getWorld(),
-            getWorldManager()->getPlayerList());
-        packet = new Network::EventPacket(entireWorld);
-        stringSerializer.sendString(
-            packetSerializer.packetToString(packet));
-        delete entireWorld;
-        delete packet;
-        
-        EMIT_EVENT(new Event::CreateObject(player));
-        
-        clientCount ++;
     }
 }
 

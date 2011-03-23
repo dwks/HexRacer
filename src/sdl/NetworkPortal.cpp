@@ -108,9 +108,7 @@ void NetworkPortal::disconnectFrom() {
     portal = NULL;
 }
 
-void NetworkPortal::waitForWorld(Object::World *&world,
-    Object::PlayerList *&playerList) {
-    
+void NetworkPortal::waitForHandshake() {
     LOG2(NETWORK, CONNECT, "Waiting for HandshakePacket . . .");
     
     for(;;) {
@@ -138,6 +136,11 @@ void NetworkPortal::waitForWorld(Object::World *&world,
     }
     
     LOG2(NETWORK, CONNECT, "Got HandshakePacket with ID " << id);
+}
+
+void NetworkPortal::waitForWorld(Object::World *&world,
+    Object::PlayerList *&playerList) {
+    
     LOG2(NETWORK, CONNECT, "Waiting for EntireWorld . . .");
     
     for(;;) {

@@ -4,14 +4,22 @@
 #include "widget/EventProxy.h"
 #include "widget/WidgetBase.h"
 
+#include "event/Enabler.h"
+#include "event/SetupChat.h"
+
+#include "world/WorldSetup.h"
+
 namespace Project {
 namespace GUI {
 
-class LobbyProxy : public Widget::EventProxy {
+class LobbyProxy : public Widget::EventProxy, public Event::Enabler {
+protected:
+    void handleSetupChat(Event::SetupChat *event);
 private:
     Widget::WidgetBase *lobby;
+    World::WorldSetup *worldSetup;
 public:
-    LobbyProxy(Widget::WidgetBase *lobby) : lobby(lobby) {}
+    LobbyProxy(Widget::WidgetBase *lobby);
     
     virtual void visit(Widget::WidgetActivateEvent *event);
     virtual void visit(Widget::WidgetModifiedEvent *event);
