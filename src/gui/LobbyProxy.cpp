@@ -37,7 +37,8 @@ void LobbyProxy::handleSetupChat(Event::SetupChat *event) {
         Misc::StreamAsString() << name << ": " << message,
         Widget::NormalTextLayout::ALIGN_LEFT,
         Widget::WidgetRect(0.0, 0.0, 0.8, 0.03),
-        worldSetup->getPlayerSettings(id)->getColor());
+        static_cast<OpenGL::Color::ColorPreset>(
+            worldSetup->getPlayerSettings(id)->getColor()));
     
     Widget::ListWidget *chat = dynamic_cast<Widget::ListWidget *>(
         this->lobby->getChild("chatlist"));
@@ -59,6 +60,13 @@ void LobbyProxy::handleReplaceWorldSetup(Event::ReplaceWorldSetup *event) {
     int id = worldSetup->getClientID();
     *worldSetup = *event->getWorldSetup();
     worldSetup->setClientID(id);
+    
+    World::WorldSetup::PlayerSettings *settings
+        = worldSetup->getPlayerSettings(id);
+    if(settings) {
+        dynamic_cast<Widget::EditWidget *>(lobby->getChild("playername"))
+            ->setData(settings->getName());
+    }
 }
 
 LobbyProxy::LobbyProxy(Widget::WidgetBase *lobby) : lobby(lobby) {
@@ -134,6 +142,7 @@ void LobbyProxy::visit(Widget::WidgetModifiedEvent *event) {
     else if(name == "chat") {
         LOG(NETWORK, "Chat: " << data);
         event->getWidget()->setData("");
+        event->getWidget()->saveOldText();
         
         int id = worldSetup->getClientID();
         std::string name = worldSetup->getPlayerSettings(id)->getName();

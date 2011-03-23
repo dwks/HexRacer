@@ -40,7 +40,7 @@ public:
     private:
         int id;
         std::string name;
-        OpenGL::Color color;
+        int color;
     public:
         PlayerSettings() : id(-1), color(OpenGL::Color::RED) {}
         
@@ -50,8 +50,8 @@ public:
         void setName(const std::string &name) { this->name = name; }
         const std::string &getName() const { return name; }
         
-        void setColor(OpenGL::Color color) { this->color = color; }
-        OpenGL::Color getColor() const { return color; }
+        void setColor(int color) { this->color = color; }
+        int getColor() const { return color; }
     };
     
     class ClientSettings {

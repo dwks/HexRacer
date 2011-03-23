@@ -1,4 +1,5 @@
 #include "WorldSetup.h"
+#include "object/Player.h"
 
 namespace Project {
 namespace World {
@@ -8,6 +9,8 @@ WorldSetup WorldSetup::instance;  // singleton instance
 void WorldSetup::addPlayerSettings(int id) {
     playerSettings[id] = PlayerSettings();
     playerSettings[id].setID(id);
+    
+    playerSettings[id].setName(Object::Player::getDefaultPlayerName(id));
 }
 
 void WorldSetup::addClientSettings(int id) {

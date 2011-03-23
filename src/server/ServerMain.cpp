@@ -308,8 +308,17 @@ void ServerMain::sendWorldToPlayers() {
         Math::Point direction = basicWorld->getRaceManager()
             ->startingPlayerDirection();
         
+        World::WorldSetup::PlayerSettings *settings
+            = World::WorldSetup::getInstance()->getPlayerSettings(client);
+        
         Object::Player *player = new Object::Player(
             client, location, direction);
+        if(settings) {
+            player->setPlayerName(settings->getName());
+            player->setTeamID(
+                static_cast<OpenGL::Color::ColorPreset>(settings->getColor()));
+        }
+        
         player->setPathTracker(new Map::PathTracker(
             *basicWorld->getPathManager()));
         

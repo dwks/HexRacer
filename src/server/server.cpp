@@ -1,3 +1,6 @@
+#include <cstdlib>
+#include <ctime>
+
 #include "ServerMain.h"
 #include "log/LogOpener.h"
 #include "settings/ProgramSettings.h"
@@ -6,6 +9,8 @@
 #include "config.h"
 
 int main(int argc, char *argv[]) {
+    std::srand(std::time(0));
+    
     Project::Log::LogOpener::openLogs();
     Project::Settings::ProgramSettings programSettings(false);
     Project::Settings::SettingsManager settings(CONFIG_FILE);
