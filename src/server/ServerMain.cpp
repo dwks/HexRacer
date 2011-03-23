@@ -206,6 +206,12 @@ void ServerMain::initBasics() {
     meshLoader = boost::shared_ptr<Mesh::MeshLoader>(new Mesh::MeshLoader());
     
     ADD_OBSERVER(new ServerObserver(this));
+    
+    int aiCount = GET_SETTING("server.aicount", 0);
+    for(int ai = 0; ai < aiCount; ai ++) {
+        World::WorldSetup::getInstance()->addPlayerSettings(ai);
+    }
+    clientCount += aiCount;
 }
 
 void ServerMain::startGame() {
@@ -253,7 +259,7 @@ void ServerMain::initAI() {
             basicWorld->getPlayerManager()));
     
     int aiCount = GET_SETTING("server.aicount", 0);
-    aiManager->createAIs(clientCount, aiCount);
+    aiManager->createAIs(0, aiCount);
     clientCount += aiCount;
 }
 
@@ -300,7 +306,11 @@ void ServerMain::sendWorldToPlayers() {
         delete packet;
     }
     
-    for(int client = 0; client < clients->getSocketCount(); client ++) {
+    int aiCount = GET_SETTING("server.aicount", 0);
+    
+    for(int client = aiCount; client < aiCount + clients->getSocketCount();
+        client ++) {
+        
         if(!clients->socketExists(client)) continue;
         
         Math::Point location = basicWorld->getRaceManager()
@@ -309,7 +319,8 @@ void ServerMain::sendWorldToPlayers() {
             ->startingPlayerDirection();
         
         World::WorldSetup::PlayerSettings *settings
-            = World::WorldSetup::getInstance()->getPlayerSettings(client);
+            = World::WorldSetup::getInstance()->getPlayerSettings(
+                client);
         
         Object::Player *player = new Object::Player(
             client, location, direction);
