@@ -17,6 +17,7 @@
 #include "event/ChangeOfIntention.h"
 #include "event/EntireWorld.h"
 #include "event/SetupChat.h"
+#include "event/SetupPlayerSettings.h"
 
 #include "world/WorldSetup.h"
 
@@ -46,7 +47,6 @@ void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
     case Event::EventType::WARP_ONTO_TRACK:
     case Event::EventType::PAUSE_GAME:
     case Event::EventType::SETUP_CLIENT_SETTINGS:
-    case Event::EventType::SETUP_PLAYER_SETTINGS:
     {
         send(event);
         break;
@@ -58,6 +58,14 @@ void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
         
         // propagate messages that this client initiated
         if(setupChat->getJustSpoken()) {
+            send(event);
+        }
+        break;
+    }
+    case Event::EventType::SETUP_PLAYER_SETTINGS: {
+        Event::SetupPlayerSettings *setupPlayerSettings
+            = dynamic_cast<Event::SetupPlayerSettings *>(event);
+        if(setupPlayerSettings->getJustReplaced()) {
             send(event);
         }
         break;

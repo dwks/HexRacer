@@ -316,6 +316,8 @@ void GUIConstruction::constructLobby() {
     getWidget("lobby/playername")->addEventProxy(proxy);
     getWidget("lobby/playerlist")->addEventProxy(proxy);
     
+    getWidget("lobby/colourlist")->addEventProxy(proxy);
+    
     getWidget("lobby/chatlist")->addEventProxy(proxy);
     getWidget("lobby/chat")->addEventProxy(proxy);
     
@@ -466,9 +468,8 @@ void GUIConstruction::addListItem(Widget::ListWidget *list,
     
     Widget::TextWidget *item = new Widget::TextWidget(name, text,
         Widget::NormalTextLayout::ALIGN_LEFT,
-        Widget::WidgetRect(0.0, 0.0, 0.8, 0.04));
-    
-    item->setColor(color);
+        Widget::WidgetRect(0.0, 0.0, 0.8, 0.04),
+        color);
     
     list->addChild(item);
 }

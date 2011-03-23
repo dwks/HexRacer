@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "LobbyProxy.h"
 
 #include "widget/WidgetActivateEvent.h"
@@ -34,9 +36,8 @@ void LobbyProxy::handleSetupChat(Event::SetupChat *event) {
         Misc::StreamAsString() << "chat" << ++chatCount,
         Misc::StreamAsString() << name << ": " << message,
         Widget::NormalTextLayout::ALIGN_LEFT,
-        Widget::WidgetRect(0.0, 0.0, 0.8, 0.03));
-    
-    item->setColor(worldSetup->getPlayerSettings(id)->getColor());
+        Widget::WidgetRect(0.0, 0.0, 0.8, 0.03),
+        worldSetup->getPlayerSettings(id)->getColor());
     
     Widget::ListWidget *chat = dynamic_cast<Widget::ListWidget *>(
         this->lobby->getChild("chatlist"));
@@ -46,6 +47,10 @@ void LobbyProxy::handleSetupChat(Event::SetupChat *event) {
     else {
         LOG2(GUI, ERROR, "Can't find chat widget to add message to");
     }
+}
+
+void LobbyProxy::handleSetupPlayerSettings(Event::SetupPlayerSettings *event) {
+    worldSetup->replacePlayerSettings(event->getPlayerSettings());
 }
 
 void LobbyProxy::handleReplaceWorldSetup(Event::ReplaceWorldSetup *event) {
@@ -60,6 +65,7 @@ LobbyProxy::LobbyProxy(Widget::WidgetBase *lobby) : lobby(lobby) {
     worldSetup = World::WorldSetup::getInstance();
     
     METHOD_OBSERVER(&LobbyProxy::handleSetupChat);
+    METHOD_OBSERVER(&LobbyProxy::handleSetupPlayerSettings);
     METHOD_OBSERVER(&LobbyProxy::handleReplaceWorldSetup);
 }
 
@@ -146,7 +152,23 @@ void LobbyProxy::visit(Widget::WidgetSelectedEvent *event) {
         // NYI
     }
     else if(name == "colourlist") {
-        // NYI
+        LOG(GUI, "Choosing colour " << select);
+        
+        std::istringstream sstream(event->getSelected()->getName());
+        int col;
+        sstream >> col;
+        
+        int id = worldSetup->getClientID();
+        World::WorldSetup::PlayerSettings *settings
+            = worldSetup->getPlayerSettings(id);
+        if(settings) {
+            settings->setColor(static_cast<OpenGL::Color::ColorPreset>(col));
+            
+            EMIT_EVENT(new Event::SetupPlayerSettings(*settings));
+        }
+        else {
+            LOG2(GUI, WARNING, "Can't set colour");
+        }
     }
     else {
         LOG2(GUI, WARNING, "No action for modifying \"" << name << "\"");

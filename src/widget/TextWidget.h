@@ -24,7 +24,8 @@ public:
     TextWidget(const std::string &name, OpenGL::Color color,
         const std::string &data, unsigned align);
     TextWidget(const std::string &name, const std::string &data,
-        unsigned align, const WidgetRect &bounds);
+        unsigned align, const WidgetRect &bounds,
+        OpenGL::Color color = OpenGL::Color::WHITE);
     ~TextWidget();
     
     void render();

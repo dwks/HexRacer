@@ -18,13 +18,16 @@ private:
     }
 private:
     World::WorldSetup::PlayerSettings playerSettings;
+    bool justReplaced;
 public:
-    SetupPlayerSettings() {}
+    SetupPlayerSettings() : justReplaced(false) {}
     SetupPlayerSettings(World::WorldSetup::PlayerSettings playerSettings)
-        : playerSettings(playerSettings) {}
+        : playerSettings(playerSettings), justReplaced(true) {}
     
     virtual World::WorldSetup::PlayerSettings getPlayerSettings() const
         { return playerSettings; }
+    
+    virtual bool getJustReplaced() const { return justReplaced; }
     
     virtual EventType::type_t getType() const
         { return EventType::SETUP_PLAYER_SETTINGS; }

@@ -28,10 +28,10 @@ TextWidget::TextWidget(const std::string &name, OpenGL::Color color,
 }
 
 TextWidget::TextWidget(const std::string &name, const std::string &data,
-    unsigned align, const WidgetRect &bounds)
+    unsigned align, const WidgetRect &bounds, OpenGL::Color color)
     : AbstractWidget(name) {
     
-    this->color = OpenGL::Color::WHITE;
+    this->color = color;
     this->data = data;
     this->align = align;
     
