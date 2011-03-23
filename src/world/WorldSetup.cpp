@@ -3,6 +3,18 @@
 namespace Project {
 namespace World {
 
+WorldSetup WorldSetup::instance;  // singleton instance
+
+void WorldSetup::addPlayerSettings(int id) {
+    playerSettings[id] = PlayerSettings();
+    playerSettings[id].setID(id);
+}
+
+void WorldSetup::addClientSettings(int id) {
+    clientSettings[id] = ClientSettings();
+    clientSettings[id].setID(id);
+}
+
 WorldSetup::PlayerSettings *WorldSetup::getPlayerSettings(int id) {
     PlayerSettingsList::iterator found = playerSettings.find(id);
     if(found == playerSettings.end()) return NULL;

@@ -20,6 +20,11 @@
 #include "event/UpdateObject.h"
 #include "event/UpdateWorld.h"
 #include "event/EntireWorld.h"
+#include "event/SetupChat.h"
+#include "event/SetupPlayerSettings.h"
+#include "event/SetupClientSettings.h"
+#include "event/ReplaceWorldSetup.h"
+#include "event/GameStageChanged.h"
 
 #include "event/EventSystem.h"
 
@@ -116,6 +121,30 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         
         break;
     }
+    case Event::EventType::SETUP_CHAT: {
+        Event::SetupChat *setupChat
+            = dynamic_cast<Event::SetupChat *>(event);
+        
+        LOG(NETWORK, "Chat from " << setupChat->getClient() << ". "
+            << setupChat->getName() << ": " << setupChat->getMessage());
+        break;
+    }
+    case Event::EventType::SETUP_PLAYER_SETTINGS: {
+        Event::SetupPlayerSettings *setupPlayerSettings
+            = dynamic_cast<Event::SetupPlayerSettings *>(event);
+        
+        World::WorldSetup::getInstance()->replacePlayerSettings(
+            setupPlayerSettings->getPlayerSettings());
+        break;
+    }
+    case Event::EventType::SETUP_CLIENT_SETTINGS: {
+        Event::SetupClientSettings *setupClientSettings
+            = dynamic_cast<Event::SetupClientSettings *>(event);
+        
+        World::WorldSetup::getInstance()->replaceClientSettings(
+            setupClientSettings->getClientSettings());
+        break;
+    }
     default:
         LOG2(NETWORK, WARNING,
             "Don't know how to handle events of type " << event->getType());
@@ -159,7 +188,6 @@ ServerMain::ServerMain() : clientCount(0), visitor(this) {
 }
 
 void ServerMain::initBasics() {
-    worldSetup = boost::shared_ptr<World::WorldSetup>(new World::WorldSetup());
     loadedMap = false;
     
     accelControl = boost::shared_ptr<Timing::AccelControl>(
@@ -184,6 +212,9 @@ void ServerMain::startGame() {
     initMap();
     initAI();
     loadedMap = true;
+    
+    EMIT_EVENT(new Event::GameStageChanged(
+        Project::World::WorldSetup::DOING_COUNTDOWN));
     
     sendWorldToPlayers();
 }
@@ -247,7 +278,7 @@ void ServerMain::run() {
             updateClients();
         }
         else {
-            if(worldSetup->everyoneReadyToStart()) {
+            if(World::WorldSetup::getInstance()->everyoneReadyToStart()) {
                 startGame();
             }
         }
@@ -298,12 +329,25 @@ void ServerMain::handleNewConnections() {
             client, GET_SETTING("map", "data/testtrack.hrm"),
             Misc::Sleeper::getTimeMilliseconds());
         
+        // !!! can use clients->sendPacketOnly() ?
         Network::StringSerializer stringSerializer(socket);
         stringSerializer.sendString(
             packetSerializer.packetToString(packet));
         delete packet;
         
         clients->addClient(socket);
+        
+        World::WorldSetup::getInstance()->addClientSettings(client);
+        World::WorldSetup::getInstance()->addPlayerSettings(client);
+        
+        Event::EventBase *event = new Event::ReplaceWorldSetup(
+            World::WorldSetup::getInstance());
+        packet = new Network::EventPacket(event);
+        //clients->sendPacketOnly(packet, client);
+        stringSerializer.sendString(
+            packetSerializer.packetToString(packet));
+        delete packet;
+        delete event;
     }
 }
 

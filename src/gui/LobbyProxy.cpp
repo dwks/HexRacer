@@ -8,6 +8,8 @@
 
 #include "event/EventSystem.h"
 #include "event/SwitchToScreen.h"
+#include "event/SetupPlayerSettings.h"
+#include "event/SetupClientSettings.h"
 
 #include "map/MapSettings.h"
 
@@ -43,10 +45,19 @@ void LobbyProxy::handleSetupChat(Event::SetupChat *event) {
     }
 }
 
-LobbyProxy::LobbyProxy(Widget::WidgetBase *lobby)
-    : lobby(lobby), worldSetup(0) {
+void LobbyProxy::handleReplaceWorldSetup(Event::ReplaceWorldSetup *event) {
+    LOG(NETWORK, "ReplaceWorldSetup received");
+    
+    int id = worldSetup->getClientID();
+    *worldSetup = *event->getWorldSetup();
+    worldSetup->setClientID(id);
+}
+
+LobbyProxy::LobbyProxy(Widget::WidgetBase *lobby) : lobby(lobby) {
+    worldSetup = World::WorldSetup::getInstance();
     
     METHOD_OBSERVER(&LobbyProxy::handleSetupChat);
+    METHOD_OBSERVER(&LobbyProxy::handleReplaceWorldSetup);
 }
 
 void LobbyProxy::visit(Widget::WidgetActivateEvent *event) {
@@ -56,6 +67,7 @@ void LobbyProxy::visit(Widget::WidgetActivateEvent *event) {
         EMIT_EVENT(new Event::SwitchToScreen("-main"));
     }
     else if(name == "start") {
+#if 0
         std::string map = Map::MapSettings::getInstance()->getMapFile();
         if(map != "") {
             LOG(GUI, "Using map \"" << map << "\"");
@@ -66,6 +78,16 @@ void LobbyProxy::visit(Widget::WidgetActivateEvent *event) {
         else {
             LOG2(GUI, WARNING, "No map selected!");
         }
+#else
+        int id = worldSetup->getClientID();
+        World::WorldSetup::ClientSettings *settings
+            = worldSetup->getClientSettings(id);
+        if(settings) {
+            settings->setReadyToStart(!settings->isReadyToStart());
+            
+            EMIT_EVENT(new Event::SetupClientSettings(*settings));
+        }
+#endif
     }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");

@@ -6,6 +6,7 @@
 
 #include "event/Enabler.h"
 #include "event/SetupChat.h"
+#include "event/ReplaceWorldSetup.h"
 
 #include "world/WorldSetup.h"
 
@@ -15,6 +16,7 @@ namespace GUI {
 class LobbyProxy : public Widget::EventProxy, public Event::Enabler {
 protected:
     void handleSetupChat(Event::SetupChat *event);
+    void handleReplaceWorldSetup(Event::ReplaceWorldSetup *event);
 private:
     Widget::WidgetBase *lobby;
     World::WorldSetup *worldSetup;

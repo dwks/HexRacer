@@ -38,12 +38,20 @@ void LoadingProxy::initialize(Event::SwitchToScreen *event) {
     lastRepaint = NULL;
 }
 
+void LoadingProxy::gameStateChanged(Event::GameStageChanged *event) {
+    if(event->getStage() == World::WorldSetup::DOING_COUNTDOWN) {
+        EMIT_EVENT(new Event::StartingGame(
+            Event::StartingGame::LOADING_MAP));
+    }
+}
+
 LoadingProxy::LoadingProxy(Widget::WidgetBase *loading,
     Widget::WidgetBase *host) : loading(loading), host(host) {
     
     lastRepaint = NULL;
     
     METHOD_OBSERVER(&LoadingProxy::initialize);
+    METHOD_OBSERVER(&LoadingProxy::gameStateChanged);
 }
 
 void LoadingProxy::visit(Widget::RepaintEvent *event) {

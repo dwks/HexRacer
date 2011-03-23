@@ -229,6 +229,10 @@ void SDLMainLoop::run() {
         
         loop->miscellaneous();
         
+        // very ugly hack to allow the game lobby to use the half-initialized
+        // GameLoop, to check for network events
+        if(loop == menuLoop && gameLoop) gameLoop->checkNetwork();
+        
         doRender();
         
         {

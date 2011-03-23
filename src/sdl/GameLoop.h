@@ -48,6 +48,8 @@ public:
     virtual void postRender();
     
     virtual void setProjection(const Point2D &size);
+    
+    virtual void checkNetwork() { gameWorld->checkNetwork(); }
 };
 
 }  // namespace SDL

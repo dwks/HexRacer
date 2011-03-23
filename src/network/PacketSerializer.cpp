@@ -25,6 +25,7 @@
 #include "event/SetupClientSettings.h"
 #include "event/SetupPlayerSettings.h"
 #include "event/SetupChat.h"
+#include "event/ReplaceWorldSetup.h"
 
 #include "object/Player.h"
 #include "world/PlayerIntention.h"
@@ -60,6 +61,7 @@ std::string PacketSerializer::packetToString(Packet *packet) {
     out.register_type<Event::SetupClientSettings>();
     out.register_type<Event::SetupPlayerSettings>();
     out.register_type<Event::SetupChat>();
+    out.register_type<Event::ReplaceWorldSetup>();
     
     out.register_type<Object::Player>();
     out.register_type<World::PlayerIntention>();
@@ -102,6 +104,7 @@ Packet *PacketSerializer::stringToPacket(const std::string &string) {
     in.register_type<Event::SetupClientSettings>();
     in.register_type<Event::SetupPlayerSettings>();
     in.register_type<Event::SetupChat>();
+    in.register_type<Event::ReplaceWorldSetup>();
     
     in.register_type<Object::Player>();
     in.register_type<World::PlayerIntention>();

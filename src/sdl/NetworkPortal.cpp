@@ -17,6 +17,8 @@
 #include "event/ChangeOfIntention.h"
 #include "event/EntireWorld.h"
 
+#include "world/WorldSetup.h"
+
 #include "history/PingTimeMeasurer.h"
 #include "misc/Sleeper.h"
 
@@ -42,6 +44,7 @@ void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
     }
     case Event::EventType::WARP_ONTO_TRACK:
     case Event::EventType::PAUSE_GAME:
+    case Event::EventType::SETUP_CLIENT_SETTINGS:
     {
         send(event);
         break;
@@ -118,6 +121,7 @@ void NetworkPortal::waitForHandshake() {
                 = dynamic_cast<Network::HandshakePacket *>(packet);
             
             id = handshake->getClientID();
+            World::WorldSetup::getInstance()->setClientID(id);
             
             Settings::SettingsManager::getInstance()->set(
                 "map", handshake->getMap());

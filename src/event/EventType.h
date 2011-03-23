@@ -42,6 +42,7 @@ public:
         SETUP_PLAYER_SETTINGS,
         SETUP_CLIENT_SETTINGS,
         SETUP_CHAT,
+        REPLACE_WORLD_SETUP,
         TYPES
     };
 };
