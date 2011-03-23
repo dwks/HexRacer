@@ -23,14 +23,18 @@ private:
     int client;
     std::string name;
     std::string message;
+    bool justSpoken;
 public:
-    SetupChat() : client(-1) {}
-    SetupChat(int client, const std::string &name, const std::string &message)
-        : client(client), name(name), message(message) {}
+    SetupChat() : client(-1), justSpoken(false) {}
+    SetupChat(int client, const std::string &name, const std::string &message,
+        bool justSpoken = false)
+        : client(client), name(name), message(message),
+        justSpoken(justSpoken) {}
     
     int getClient() const { return client; }
     const std::string &getName() const { return name; }
     const std::string &getMessage() const { return message; }
+    bool getJustSpoken() const { return justSpoken; }
     
     virtual EventType::type_t getType() const
         { return EventType::SETUP_CHAT; }

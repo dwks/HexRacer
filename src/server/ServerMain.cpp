@@ -290,6 +290,16 @@ void ServerMain::run() {
 }
 
 void ServerMain::sendWorldToPlayers() {
+    {
+        Event::EntireWorld *entireWorld = new Event::EntireWorld(
+            getWorldManager()->getWorld(),
+            getWorldManager()->getPlayerList());
+        Network::Packet *packet = new Network::EventPacket(entireWorld);
+        clients->sendPacket(packet);
+        delete entireWorld;
+        delete packet;
+    }
+    
     for(int client = 0; client < clients->getSocketCount(); client ++) {
         if(!clients->socketExists(client)) continue;
         
@@ -302,15 +312,6 @@ void ServerMain::sendWorldToPlayers() {
             client, location, direction);
         player->setPathTracker(new Map::PathTracker(
             *basicWorld->getPathManager()));
-        //worldManager->addPlayer(player);
-        
-        Event::EntireWorld *entireWorld = new Event::EntireWorld(
-            getWorldManager()->getWorld(),
-            getWorldManager()->getPlayerList());
-        Network::Packet *packet = new Network::EventPacket(entireWorld);
-        clients->sendPacketOnly(packet, client);
-        delete entireWorld;
-        delete packet;
         
         EMIT_EVENT(new Event::CreateObject(player));
     }
@@ -344,8 +345,10 @@ void ServerMain::handleNewConnections() {
             World::WorldSetup::getInstance());
         packet = new Network::EventPacket(event);
         //clients->sendPacketOnly(packet, client);
+        // send to new client specially, then to everyone else
         stringSerializer.sendString(
             packetSerializer.packetToString(packet));
+        clients->sendPacketExcept(packet, client);
         delete packet;
         delete event;
     }

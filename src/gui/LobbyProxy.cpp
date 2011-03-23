@@ -21,6 +21,9 @@ namespace Project {
 namespace GUI {
 
 void LobbyProxy::handleSetupChat(Event::SetupChat *event) {
+    // wait until the message comes back from the server
+    if(event->getJustSpoken()) return;
+    
     static int chatCount = 0;
     
     int id = event->getClient();
@@ -36,7 +39,7 @@ void LobbyProxy::handleSetupChat(Event::SetupChat *event) {
     item->setColor(worldSetup->getPlayerSettings(id)->getColor());
     
     Widget::ListWidget *chat = dynamic_cast<Widget::ListWidget *>(
-        this->lobby->getChild("chat"));
+        this->lobby->getChild("chatlist"));
     if(chat) {
         chat->addChild(item);
     }
@@ -85,6 +88,17 @@ void LobbyProxy::visit(Widget::WidgetActivateEvent *event) {
         if(settings) {
             settings->setReadyToStart(!settings->isReadyToStart());
             
+            Widget::ButtonWidget *start =
+                dynamic_cast<Widget::ButtonWidget *>(event->getWidget());
+            if(start) {
+                if(settings->isReadyToStart()) {
+                    start->getText()->setText("No, I'm not ready...");
+                }
+                else {
+                    start->getText()->setText("Ready now, really!");
+                }
+            }
+            
             EMIT_EVENT(new Event::SetupClientSettings(*settings));
         }
 #endif
@@ -107,7 +121,7 @@ void LobbyProxy::visit(Widget::WidgetModifiedEvent *event) {
         
         int id = worldSetup->getClientID();
         std::string name = worldSetup->getPlayerSettings(id)->getName();
-        EMIT_EVENT(new Event::SetupChat(id, name, data));
+        EMIT_EVENT(new Event::SetupChat(id, name, data, true));
     }
     else {
         LOG2(GUI, WARNING, "No action for modifying \"" << name << "\"");

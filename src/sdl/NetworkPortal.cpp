@@ -16,6 +16,7 @@
 #include "event/PacketReceived.h"
 #include "event/ChangeOfIntention.h"
 #include "event/EntireWorld.h"
+#include "event/SetupChat.h"
 
 #include "world/WorldSetup.h"
 
@@ -51,6 +52,15 @@ void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
     }
     case Event::EventType::PACKET_RECEIVED:
         break;
+    case Event::EventType::SETUP_CHAT: {
+        Event::SetupChat *setupChat = dynamic_cast<Event::SetupChat *>(event);
+        
+        // propagate messages that this client initiated
+        if(setupChat->getJustSpoken()) {
+            send(event);
+        }
+        break;
+    }
     default:
         /*LOG2(NETWORK, PACKET, "EventPropagator: Not propagating "
             << typeid(*event).name());*/
