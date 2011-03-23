@@ -11,6 +11,7 @@ void WorldSetup::addPlayerSettings(int id) {
     playerSettings[id].setID(id);
     
     playerSettings[id].setName(Object::Player::getDefaultPlayerName(id));
+    playerSettings[id].setColor((id / 2) % 16);
 }
 
 void WorldSetup::addClientSettings(int id) {
