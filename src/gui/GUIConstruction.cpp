@@ -309,7 +309,7 @@ void GUIConstruction::constructLobby() {
     lobby->addChild(new Widget::ButtonWidget("start",
         "Ready to start!", Widget::WidgetRect(0.5, 0.9, 0.4, 0.08)));
     
-    setShortcut(getWidget("connect/cancel"), SDLK_ESCAPE);
+    setShortcut(getWidget("lobby/cancel"), SDLK_ESCAPE);
     
     boost::shared_ptr<Widget::EventProxy> proxy(new LobbyProxy(lobby));
     getWidget("lobby/ipaddress")->addEventProxy(proxy);

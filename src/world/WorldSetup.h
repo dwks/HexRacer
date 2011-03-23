@@ -47,7 +47,10 @@ public:
         void setID(int id) { this->id = id; }
         int getID() const { return id; }
         
+        void setName(const std::string &name) { this->name = name; }
         const std::string &getName() const { return name; }
+        
+        void setColor(OpenGL::Color color) { this->color = color; }
         OpenGL::Color getColor() const { return color; }
     };
     

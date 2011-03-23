@@ -113,7 +113,17 @@ void LobbyProxy::visit(Widget::WidgetModifiedEvent *event) {
     std::string data = event->getWidget()->getData();
     
     if(name == "playername") {
-        LOG2(GUI, WARNING, "Setting player name to \"" << data << "\" -- NYI");
+        int id = worldSetup->getClientID();
+        World::WorldSetup::PlayerSettings *settings
+            = worldSetup->getPlayerSettings(id);
+        if(settings) {
+            settings->setName(data);
+            
+            EMIT_EVENT(new Event::SetupPlayerSettings(*settings));
+        }
+        else {
+            LOG2(GUI, WARNING, "Can't set player name to \"" << data << "\"");
+        }
     }
     else if(name == "chat") {
         LOG(NETWORK, "Chat: " << data);

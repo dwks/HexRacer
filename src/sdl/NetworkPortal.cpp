@@ -46,6 +46,7 @@ void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
     case Event::EventType::WARP_ONTO_TRACK:
     case Event::EventType::PAUSE_GAME:
     case Event::EventType::SETUP_CLIENT_SETTINGS:
+    case Event::EventType::SETUP_PLAYER_SETTINGS:
     {
         send(event);
         break;
