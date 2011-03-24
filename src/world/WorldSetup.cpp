@@ -46,5 +46,15 @@ bool WorldSetup::everyoneReadyToStart() const {
     return true;
 }
 
+void WorldSetup::getAllPlayerIDs(std::vector<int> &list) {
+    list.clear();
+    
+    for(PlayerSettingsList::const_iterator i = playerSettings.begin();
+        i != playerSettings.end(); ++ i) {
+        
+        list.push_back((*i).first);
+    }
+}
+
 }  // namespace World
 }  // namespace Project

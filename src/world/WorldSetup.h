@@ -2,6 +2,7 @@
 #define PROJECT_WORLD__WORLD_SETUP_H
 
 #include <map>
+#include <vector>
 #include <string>
 
 #include "boost/serialization/access.hpp"
@@ -120,6 +121,8 @@ public:
     int getClientID() const { return clientID; }
     
     void setClientID(int id) { clientID = id; }
+    
+    void getAllPlayerIDs(std::vector<int> &list);
 };
 
 }  // namespace World
