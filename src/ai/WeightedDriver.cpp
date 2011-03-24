@@ -13,12 +13,15 @@ namespace AI {
 WeightedDriver::WeightedDriver(Object::Player *player) : Driver(player) {
     LOG(WORLD, "Player " << player->getID()
         << " is controlled by a WeightedDriver");
+
+	paintManager = NULL;
     
     sittingStill = false;
     sittingStillSince = 0;
+	paintSwitchTime = 0;
 
     intention.setAccel(1.0);
-    intention.setPaint(true);
+    //intention.setPaint(true);
 }
 
 const World::PlayerIntention &WeightedDriver::getAction() {
@@ -55,7 +58,7 @@ const World::PlayerIntention &WeightedDriver::getAction() {
 	double facingAngle = Math::Geometry::vectorTo2DAngle(playerFacing, Math::Y_AXIS);
 
 	double ccwAngle = std::fabs(beelineAngle-facingAngle);
-	double cwAngle = Math::minimum(beelineAngle, facingAngle)+((PI*2.0)-Math::maximum(beelineAngle, facingAngle));
+	double cwAngle = std::fabs(Math::minimum(beelineAngle, facingAngle)+((PI*2.0)-Math::maximum(beelineAngle, facingAngle)));
 	double offAngle = Math::minimum(ccwAngle, cwAngle);
 
 	/*
@@ -84,6 +87,7 @@ const World::PlayerIntention &WeightedDriver::getAction() {
 	intention.setAccel(Math::bound(1.0-(offAngle/PI*2.0), 0.25, 1.0));
     
     detectSittingStill();
+	detectPaintAhead();
     
     return intention;
 }
@@ -114,6 +118,71 @@ void WeightedDriver::detectSittingStill() {
         }
     }
     else sittingStill = false;
+}
+
+void WeightedDriver::detectPaintAhead() {
+
+	if (!paintManager)
+		return;
+	
+	Math::Point paintQueryPoint = 
+		getPlayer()->getPosition()+getPlayer()->getPhysicalObject()->getLinearVelocity()*GET_SETTING("ai.paintlookahead", 2.0);
+	
+	double paintScore = paintManager->weightedCellsInRadius(paintQueryPoint, PAINTING_RADIUS, getPlayer()->getTeamID());
+
+	bool considering_change = false;
+	bool change_to_paint = false;
+	bool change_to_erase = false;
+
+	double paintThresh = GET_SETTING("ai.stoppaintingthreshhold", 1.2);
+	double eraseThresh =  GET_SETTING("ai.starterasingthreshhold", 0.9);
+
+	if (!intention.getPaint() && !intention.getErase()) {
+		//Not painting or erasing: Change to painting
+		if (paintScore > eraseThresh && paintScore < paintThresh) {
+			considering_change = true;
+			change_to_paint = true;
+		}
+	}
+	
+	if (!considering_change && !intention.getErase()) {
+		//Not erasing: Change to erasing
+		if (paintScore <= eraseThresh) {
+			considering_change = true;
+			change_to_erase = true;
+		}
+	}
+	else if (!considering_change && intention.getPaint() ) {
+		//Is painting: Change to not painting
+		considering_change = (paintScore >= paintThresh);
+	}
+
+	unsigned long now = Misc::Sleeper::getTimeMilliseconds();
+
+	if (considering_change) {
+
+		if (paintSwitchTime + GET_SETTING("ai.paintswitchdelay", 500) < now) {
+
+			if (change_to_paint) {
+				intention.setPaint(true);
+				intention.setErase(false);
+			}
+			else if (change_to_erase) {
+				intention.setPaint(false);
+				intention.setErase(true);
+			}
+			else {
+				intention.setPaint(false);
+				intention.setErase(false);
+			}
+			
+			paintSwitchTime = now;
+		}
+
+	}
+	else
+		paintSwitchTime = now;
+
 }
 
 }  // namespace AI

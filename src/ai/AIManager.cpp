@@ -31,9 +31,10 @@ void AIManager::physicsTickHandler(Event::PhysicsTick *event) {
 }
 
 AIManager::AIManager(Map::RaceManager *raceManager,
-    Map::PathManager *pathManager, World::PlayerManager *playerManager)
+    Map::PathManager *pathManager, World::PlayerManager *playerManager,
+	Paint::PaintManager* paintManager)
     : raceManager(raceManager), pathManager(pathManager),
-    playerManager(playerManager) {
+    playerManager(playerManager), paintManager(paintManager) {
     
     METHOD_OBSERVER(&AIManager::physicsTickHandler);
 }
@@ -54,8 +55,10 @@ void AIManager::createAIs(int startAt, int count) {
         
         player->setPathTracker(new Map::PathTracker(*pathManager));
         
+		WeightedDriver* new_driver = new WeightedDriver(player);
+		new_driver->setPaintManager(paintManager);
         boost::shared_ptr<Driver> driver
-            = boost::shared_ptr<Driver>(new WeightedDriver(player));
+            = boost::shared_ptr<Driver>(new_driver);
         driverList.push_back(driver);
         
         EMIT_EVENT(new Event::CreateObject(player));

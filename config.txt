@@ -213,8 +213,12 @@ network.serverport = 1820
 server.aicount     = 4
 
 ai.resettimer = 5000
-ai.pathanglefactor = 2.0;
-ai.pathdistancefactor = 1.0;
+ai.pathanglefactor = 4.0
+ai.pathdistancefactor = 1.0
+ai.paintlookahead = 0.5
+ai.stoppaintingthreshhold = 0.25
+ai.starterasingthreshhold = -0.2
+ai.paintswitchdelay = 400
 
 ########
 include guiconfig.txt

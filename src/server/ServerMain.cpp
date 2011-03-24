@@ -256,7 +256,8 @@ void ServerMain::initAI() {
         new AI::AIManager(
             basicWorld->getRaceManager(),
             basicWorld->getPathManager(),
-            basicWorld->getPlayerManager()));
+            basicWorld->getPlayerManager(),
+			paintManager.get()));
     
     int aiCount = GET_SETTING("server.aicount", 0);
     aiManager->createAIs(0, aiCount);
