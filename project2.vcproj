@@ -1066,6 +1066,10 @@
 				RelativePath=".\src\object\WorldManager.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\src\world\WorldSetup.cpp"
+				>
+			</File>
 			<Filter
 				Name="connection"
 				>
@@ -2262,6 +2266,10 @@
 			</File>
 			<File
 				RelativePath=".\src\object\WorldManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\WorldSetup.h"
 				>
 			</File>
 			<Filter

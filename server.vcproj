@@ -351,6 +351,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\GameStageChanged.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Geometry.cpp"
 				>
 			</File>
@@ -862,6 +866,10 @@
 				RelativePath=".\src\object\WorldManager.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\src\world\WorldSetup.cpp"
+				>
+			</File>
 			<Filter
 				Name="connection"
 				>
@@ -1090,6 +1098,10 @@
 			</File>
 			<File
 				RelativePath=".\src\log\FileStream.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\GameStageChanged.h"
 				>
 			</File>
 			<File
@@ -1622,6 +1634,10 @@
 			</File>
 			<File
 				RelativePath=".\src\object\WorldManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\WorldSetup.h"
 				>
 			</File>
 			<Filter

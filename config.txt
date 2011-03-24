@@ -212,6 +212,10 @@ network.serverport = 1820
 ### AI and server settings
 server.aicount     = 4
 
+ai.resettimer = 5000
+ai.pathanglefactor = 2.0;
+ai.pathdistancefactor = 1.0;
+
 ########
 include guiconfig.txt
 

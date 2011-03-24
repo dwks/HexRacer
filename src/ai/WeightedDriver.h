@@ -2,6 +2,7 @@
 #define PROJECT_AI__WEIGHTED_DRIVER_H
 
 #include "Driver.h"
+#include "map/PathNode.h"
 
 namespace Project {
 namespace AI {
@@ -11,6 +12,7 @@ private:
     bool sittingStill;
     unsigned long sittingStillSince;
     World::PlayerIntention intention;
+	const Map::PathNode* nearestPathNode;
 public:
     WeightedDriver(Object::Player *player);
     
