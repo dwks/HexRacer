@@ -36,12 +36,18 @@
 #include "PointSerializer.h"
 #include "log/Logger.h"
 
+//#define BINARY_SERIALIZATION
+
 namespace Project {
 namespace Network {
 
 std::string PacketSerializer::packetToString(Packet *packet) {
     std::ostringstream stream;
-	boost::archive::binary_oarchive out(stream);
+#ifdef BINARY_SERIALIZATION
+    boost::archive::binary_oarchive out(stream);
+#else
+    boost::archive::text_oarchive out(stream);
+#endif
     
     out.register_type<HandshakePacket>();
     out.register_type<EventPacket>();
@@ -84,7 +90,11 @@ Packet *PacketSerializer::stringToPacket(const std::string &string) {
     //LOG(NETWORK, "Parsing packet from \"" << string << "\"");
     
     std::istringstream stream(string);
-	boost::archive::binary_iarchive in(stream);
+#ifdef BINARY_SERIALIZATION
+    boost::archive::binary_iarchive in(stream);
+#else
+    boost::archive::text_iarchive in(stream);
+#endif
     
     in.register_type<HandshakePacket>();
     in.register_type<EventPacket>();
