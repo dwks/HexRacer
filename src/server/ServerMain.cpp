@@ -311,7 +311,7 @@ void ServerMain::sendWorldToPlayers() {
     for(int client = aiCount; client < aiCount + clients->getSocketCount();
         client ++) {
         
-        if(!clients->socketExists(client)) continue;
+        if(!clients->socketExists(client - aiCount)) continue;
         
         Math::Point location = basicWorld->getRaceManager()
             ->startingPointForPlayer(client);

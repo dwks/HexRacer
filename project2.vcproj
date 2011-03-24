@@ -871,6 +871,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\SetupChat.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetupClientSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetupPlayerSettings.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\shader\ShaderAttributeLocation.cpp"
 				>
 			</File>
@@ -924,6 +936,10 @@
 			</File>
 			<File
 				RelativePath=".\src\hud\Speedometer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\StartingGame.cpp"
 				>
 			</File>
 			<File
@@ -2057,6 +2073,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\SetupChat.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetupClientSettings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetupPlayerSettings.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\shader\ShaderAttributeLocation.h"
 				>
 			</File>
@@ -2114,6 +2142,10 @@
 			</File>
 			<File
 				RelativePath=".\src\hud\Speedometer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\StartingGame.h"
 				>
 			</File>
 			<File
