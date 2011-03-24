@@ -21,17 +21,21 @@ private:
     void save(Archive &ar, const unsigned version) const {
         ar & boost::serialization::base_object<AbstractObject>(*this);
         ar & physical;
+        ar & name & teamID;
     }
     
     template <typename Archive>
     void load(Archive &ar, const unsigned version) {
         ar & boost::serialization::base_object<AbstractObject>(*this);
         ar & physical;
+        ar & name & teamID;
         initialize();
     }
     
     BOOST_SERIALIZATION_SPLIT_MEMBER()
 private:
+    std::string name;
+    int teamID;
     Physics::PhysicalPlayer *physical;
     Render::RenderablePlayer *renderable;
     Math::Point suspension[4];
@@ -92,8 +96,12 @@ public:
 	Event::TogglePainting::PaintType getPaintType() const { return paintType; }
 	void setPaintType(Event::TogglePainting::PaintType paint_type) { paintType = paint_type; }
 
-	int getTeamID() const { return (getID()/2 % 8); }
-	std::string getPlayerName() const;
+    void setTeamID(int id) { teamID = id; }
+	int getTeamID() const { return teamID; }
+	
+	void setPlayerName(const std::string &newName) { name = newName; }
+	std::string getPlayerName() const { return name; }
+	static std::string getDefaultPlayerName(int id);
 
 	bool operator < (const Player& other) const;
     

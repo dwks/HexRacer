@@ -37,7 +37,8 @@ void LobbyProxy::handleSetupChat(Event::SetupChat *event) {
         Misc::StreamAsString() << name << ": " << message,
         Widget::NormalTextLayout::ALIGN_LEFT,
         Widget::WidgetRect(0.0, 0.0, 0.8, 0.03),
-        worldSetup->getPlayerSettings(id)->getColor());
+        static_cast<OpenGL::Color::ColorPreset>(
+            worldSetup->getPlayerSettings(id)->getColor()));
     
     Widget::ListWidget *chat = dynamic_cast<Widget::ListWidget *>(
         this->lobby->getChild("chatlist"));
@@ -59,6 +60,41 @@ void LobbyProxy::handleReplaceWorldSetup(Event::ReplaceWorldSetup *event) {
     int id = worldSetup->getClientID();
     *worldSetup = *event->getWorldSetup();
     worldSetup->setClientID(id);
+    
+    World::WorldSetup::PlayerSettings *settings
+        = worldSetup->getPlayerSettings(id);
+    if(settings) {
+        dynamic_cast<Widget::EditWidget *>(lobby->getChild("playername"))
+            ->setData(settings->getName());
+    }
+    
+    Widget::ListWidget *playerList = dynamic_cast<Widget::ListWidget *>(
+        lobby->getChild("playerlist"));
+    
+    if(playerList) {
+        playerList->removeAllChildren();
+        
+        std::vector<int> ids;
+        worldSetup->getAllPlayerIDs(ids);
+        for(std::vector<int>::iterator i = ids.begin(); i != ids.end(); ++ i) {
+            int id = *i;
+            
+            World::WorldSetup::PlayerSettings *settings
+                = worldSetup->getPlayerSettings(id);
+            
+            std::string name = settings->getName();
+            
+            static int playerItemCount = 0;
+            Widget::TextWidget *item = new Widget::TextWidget(
+                Misc::StreamAsString() << "playeritem" << ++playerItemCount,
+                Misc::StreamAsString() << name,
+                Widget::NormalTextLayout::ALIGN_LEFT,
+                Widget::WidgetRect(0.0, 0.0, 0.8, 0.03),
+                static_cast<OpenGL::Color::ColorPreset>(
+                    worldSetup->getPlayerSettings(id)->getColor()));
+            playerList->addChild(item);
+        }
+    }
 }
 
 LobbyProxy::LobbyProxy(Widget::WidgetBase *lobby) : lobby(lobby) {
@@ -134,6 +170,7 @@ void LobbyProxy::visit(Widget::WidgetModifiedEvent *event) {
     else if(name == "chat") {
         LOG(NETWORK, "Chat: " << data);
         event->getWidget()->setData("");
+        event->getWidget()->saveOldText();
         
         int id = worldSetup->getClientID();
         std::string name = worldSetup->getPlayerSettings(id)->getName();

@@ -123,6 +123,26 @@ void ListWidget::addChild(boost::shared_ptr<WidgetBase> widget) {
     CompositeWidget::addChild(widget);
 }
 
+void ListWidget::removeAllChildren() {
+    IteratorType it = getIterator();
+    while(it.hasNext()) {
+        WidgetBase *child = it.next();
+        
+        removeChild(child->getName());
+        it = getIterator();
+    }
+    
+    totalHeight = 0.0;
+    if(verticalBar) {
+        verticalBar->setEverything(
+            0.0, viewArea.getHeight(), viewArea.getHeight());
+    }
+    if(horizontalBar) {
+        horizontalBar->setEverything(
+            0.0, viewArea.getWidth(), viewArea.getWidth());
+    }
+}
+
 void ListWidget::repositionChildren() {
     double xPos = viewArea.getCorner().getX();
     double yPos = viewArea.getCorner().getY();

@@ -7,6 +7,8 @@
 #include "event/CreateObject.h"
 #include "event/EventSystem.h"
 
+#include "world/WorldSetup.h"
+
 namespace Project {
 namespace AI {
 
@@ -41,7 +43,15 @@ void AIManager::createAIs(int startAt, int count) {
         Math::Point location = raceManager->startingPointForPlayer(ai);
         Math::Point direction = raceManager->startingPlayerDirection();
         
+        World::WorldSetup::PlayerSettings *settings
+            = World::WorldSetup::getInstance()->getPlayerSettings(ai);
+        
         Object::Player *player = new Object::Player(ai, location, direction);
+        if(settings) {
+            player->setPlayerName(settings->getName());
+            player->setTeamID(settings->getID());
+        }
+        
         player->setPathTracker(new Map::PathTracker(*pathManager));
         
         boost::shared_ptr<Driver> driver

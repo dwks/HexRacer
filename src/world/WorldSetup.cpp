@@ -1,4 +1,5 @@
 #include "WorldSetup.h"
+#include "object/Player.h"
 
 namespace Project {
 namespace World {
@@ -8,6 +9,9 @@ WorldSetup WorldSetup::instance;  // singleton instance
 void WorldSetup::addPlayerSettings(int id) {
     playerSettings[id] = PlayerSettings();
     playerSettings[id].setID(id);
+    
+    playerSettings[id].setName(Object::Player::getDefaultPlayerName(id));
+    playerSettings[id].setColor((id / 2) % 16);
 }
 
 void WorldSetup::addClientSettings(int id) {
@@ -40,6 +44,16 @@ bool WorldSetup::everyoneReadyToStart() const {
     }
     
     return true;
+}
+
+void WorldSetup::getAllPlayerIDs(std::vector<int> &list) {
+    list.clear();
+    
+    for(PlayerSettingsList::const_iterator i = playerSettings.begin();
+        i != playerSettings.end(); ++ i) {
+        
+        list.push_back((*i).first);
+    }
 }
 
 }  // namespace World

@@ -34,6 +34,8 @@ public:
     */
     virtual void addChild(boost::shared_ptr<WidgetBase> widget);
     
+    void removeAllChildren();
+    
     void render(WidgetVisitor &renderer);
     
     virtual void accept(WidgetVisitor &visitor) { visitor.visit(this); }
