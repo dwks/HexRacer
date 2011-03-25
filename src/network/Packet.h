@@ -11,7 +11,7 @@ namespace Project {
 namespace Network {
 
 /** Abstract base class for all packets. Every subclass of Packet must be
-    serializable using Boost.Serialization.
+serializable using Boost.Serialization.
 */
 class Packet {
 private:

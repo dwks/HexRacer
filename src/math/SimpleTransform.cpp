@@ -106,12 +106,12 @@ namespace Math {
 
 		OpenGL::MathWrapper::glTranslate(translation);
 		//Yaw
-		glRotatef(radiansToDegrees(rotationRadians.getX()), 0.0f, 1.0f, 0.0f);
+		glRotated(radiansToDegrees(rotationRadians.getX()), 0.0, 1.0, 0.0);
 		//Pitch
-		glRotatef(radiansToDegrees(rotationRadians.getY()), 1.0f, 0.0f, 0.0f);
+		glRotated(radiansToDegrees(rotationRadians.getY()), 1.0, 0.0, 0.0);
 		//Roll
-		glRotatef(radiansToDegrees(rotationRadians.getZ()), 0.0f, 0.0f, 1.0f);
-		glScalef(scale, scale, scale);
+		glRotated(radiansToDegrees(rotationRadians.getZ()), 0.0, 0.0, 1.0);
+		glScaled(scale, scale, scale);
 
 	}
 

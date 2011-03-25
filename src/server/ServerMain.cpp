@@ -345,17 +345,23 @@ void ServerMain::handleNewConnections() {
         
         int client = clientCount;
         clientCount ++;
-        
+
         Network::PacketSerializer packetSerializer;
         Network::Packet *packet = new Network::HandshakePacket(
             client, GET_SETTING("map", "data/testtrack.hrm"),
             Misc::Sleeper::getTimeMilliseconds());
+
+		LOG2(NETWORK, CONNECT, "Serializing handshake packet");
         
         // !!! can use clients->sendPacketOnly() ?
         Network::StringSerializer stringSerializer(socket);
-        stringSerializer.sendString(
-            packetSerializer.packetToString(packet));
+		std::string packetString = packetSerializer.packetToString(packet);
+
+		LOG2(NETWORK, CONNECT, "Sending handshake packet");
+        stringSerializer.sendString(packetString);
         delete packet;
+
+		LOG2(NETWORK, CONNECT, "Handshake packet sent");
         
         clients->addClient(socket);
         

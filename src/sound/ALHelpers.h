@@ -5,7 +5,11 @@
 #include "math/Point.h"
 #ifdef HAVE_OPENAL
 
+#ifndef WIN32
 #include "AL/al.h"
+#else
+#include "al.h"
+#endif
 #include <boost/concept_check.hpp>
 #include <string>
 

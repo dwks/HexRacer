@@ -56,3 +56,7 @@ mem*
 # local configuration
 localconfig.txt
 mapeditorconfig.txt
+
+# libraries
+/include
+/lib

@@ -265,7 +265,7 @@ void GeometryDrawing::drawBoundingSphere(const Math::BoundingSphere& object, boo
 	if (wireframe)
 		gluQuadricDrawStyle(quad, GLU_LINE);
 	glPushMatrix();
-	glTranslatef(object.getPosition().getX(), object.getPosition().getY(), object.getPosition().getZ());
+	glTranslated(object.getPosition().getX(), object.getPosition().getY(), object.getPosition().getZ());
 	gluSphere(quad, object.getRadius(), 12, 12);
 	glPopMatrix();
 	gluDeleteQuadric(quad);

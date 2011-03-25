@@ -2,8 +2,13 @@
 
 #ifdef HAVE_OPENAL
 
+#ifndef WIN32
 #include "AL/al.h"
 #include "AL/alut.h"
+#else
+#include "al.h"
+#include "alut.h"
+#endif
 
 #include "log/Logger.h"
 

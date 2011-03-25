@@ -84,7 +84,7 @@ const World::PlayerIntention &WeightedDriver::getAction() {
     //double beelineAngle = playerRight.dotProduct(beelineDirection);
     
     intention.setTurn(turnSign * distanceOff * angleFactor * 0.5);
-	intention.setAccel(Math::bound(1.0-(offAngle/PI*2.0), 0.25, 1.0));
+	intention.setAccel(Math::bound(1.0-(offAngle/PI*2.0), 0.0, 1.0));
     
     detectSittingStill();
 	detectPaintAhead();
