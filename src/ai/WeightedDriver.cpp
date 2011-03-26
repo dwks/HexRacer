@@ -127,8 +127,15 @@ void WeightedDriver::detectPaintAhead() {
 	if (!paintManager)
 		return;
 
-	Math::Point paintQueryPoint = 
-		getPlayer()->getPosition()+getPlayer()->getPhysicalObject()->getLinearVelocity()*GET_SETTING("ai.paintlookahead", 2.0);
+	Math::Point headingDir = getPlayer()->getPhysicalObject()->getLinearVelocity()*GET_SETTING("ai.paintlookahead", 2.0);
+	double dist = headingDir.length();
+	double minLookAhead = GET_SETTING("ai.minlookahead", 2.0);
+	if (dist < minLookAhead) {
+		headingDir /= dist;
+		headingDir *= minLookAhead;
+	}
+
+	Math::Point paintQueryPoint = getPlayer()->getPosition()+headingDir;
 	
 	double paintScore = paintManager->weightedCellsInRadius(paintQueryPoint, PAINTING_RADIUS, getPlayer()->getTeamID());
 
