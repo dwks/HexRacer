@@ -54,6 +54,7 @@ void AIManager::createAIs(int startAt, int count) {
         }
         
         player->setPathTracker(new Map::PathTracker(*pathManager));
+		player->setRaceFinishIgnore(true);
         
 		WeightedDriver* new_driver = new WeightedDriver(player);
 		new_driver->setPaintManager(paintManager);

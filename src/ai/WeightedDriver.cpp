@@ -34,7 +34,8 @@ const World::PlayerIntention &WeightedDriver::getAction() {
     // find the next node
     int random = player->getID() % current->getNextNodes().size();
     next = current->getNextNodes()[random];
-	next2 = next->getNextNodes()[0];
+	random = player->getID() % next->getNextNodes().size();
+	next2 = next->getNextNodes()[random];
     
     // calculate various vectors
     Math::Point playerFacing = player->getPhysicalObject()->getFrontDirection();
@@ -68,7 +69,8 @@ const World::PlayerIntention &WeightedDriver::getAction() {
 		turnSign =-1.0;
 	*/
 
-	double angleFactor = 1.0+offAngle/PI*GET_SETTING("ai.pathanglefactor", 1.0);
+	double offAngleFactor = offAngle/PI;
+	double angleFactor = 1.0+(offAngleFactor*offAngleFactor)*GET_SETTING("ai.pathanglefactor", 1.0);
     
 	/*
     Math::Point intersection = Math::Geometry::intersectLine3D(
@@ -84,7 +86,7 @@ const World::PlayerIntention &WeightedDriver::getAction() {
     //double beelineAngle = playerRight.dotProduct(beelineDirection);
     
     intention.setTurn(turnSign * distanceOff * angleFactor * 0.5);
-	intention.setAccel(Math::bound(1.0-(offAngle/PI*2.0), 0.0, 1.0));
+	intention.setAccel(Math::bound(1.0-(offAngle/(PI*2.0)), -0.5, 1.0));
     
     detectSittingStill();
 	detectPaintAhead();
@@ -124,7 +126,7 @@ void WeightedDriver::detectPaintAhead() {
 
 	if (!paintManager)
 		return;
-	
+
 	Math::Point paintQueryPoint = 
 		getPlayer()->getPosition()+getPlayer()->getPhysicalObject()->getLinearVelocity()*GET_SETTING("ai.paintlookahead", 2.0);
 	
@@ -137,8 +139,8 @@ void WeightedDriver::detectPaintAhead() {
 	double paintThresh = GET_SETTING("ai.stoppaintingthreshhold", 1.2);
 	double eraseThresh =  GET_SETTING("ai.starterasingthreshhold", 0.9);
 
-	if (!intention.getPaint() && !intention.getErase()) {
-		//Not painting or erasing: Change to painting
+	if (!intention.getPaint()) {
+		//Not painting: Change to painting
 		if (paintScore > eraseThresh && paintScore < paintThresh) {
 			considering_change = true;
 			change_to_paint = true;
@@ -152,7 +154,8 @@ void WeightedDriver::detectPaintAhead() {
 			change_to_erase = true;
 		}
 	}
-	else if (!considering_change && intention.getPaint() ) {
+	
+	if (!considering_change && intention.getPaint() ) {
 		//Is painting: Change to not painting
 		considering_change = (paintScore >= paintThresh);
 	}

@@ -14,14 +14,14 @@
 namespace Project {
 namespace Object {
 
-Player::Player() : AbstractObject(-1), teamID(-1) {
+Player::Player() : AbstractObject(-1), teamID(-1), raceFinishIgnore(false) {
     physical = NULL;
     renderable = NULL;
 	tracker = NULL;
 }
 
 Player::Player(int id, const Math::Point &origin, const Math::Point &direction)
-    : AbstractObject(id), teamID(-1) {
+    : AbstractObject(id), teamID(-1), raceFinishIgnore(false) {
     
     Physics::PhysicsWorld *world = Physics::PhysicsWorld::getInstance();
     

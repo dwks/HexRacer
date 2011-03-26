@@ -42,7 +42,10 @@ namespace Project {
 namespace Network {
 
 std::string PacketSerializer::packetToString(Packet *packet) {
+	//LOG(NETWORK, "Sending packet from \"" << packet << "\"");
+
     std::ostringstream stream;
+
 #ifdef BINARY_SERIALIZATION
     boost::archive::binary_oarchive out(stream);
 #else

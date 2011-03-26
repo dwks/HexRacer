@@ -69,6 +69,8 @@ physics.driving.airangulardrag    = 0.2
 physics.driving.sidewaysdrag      = 20.0
 physics.driving.airsidewaysdrag   = 0.0
 
+game.timing.maxloops = 3
+
 game.paint.colorbenefit      = 1.0
 game.paint.colorpenalty      = -0.25
 game.paint.boostinfluence    = 0.75
@@ -78,6 +80,8 @@ game.paint.boostmax          = 1.5
 game.paint.paintingboost     = 0.8
 game.paint.erasingboost      = 0.8
 game.paint.maxboostincrease  = 0.02
+
+game.race.maxlaps = 1
 
 game.enablepathing = 1
 
@@ -213,11 +217,11 @@ network.serverport = 1820
 server.aicount     = 4
 
 ai.resettimer = 5000
-ai.pathanglefactor = 4.0
-ai.pathdistancefactor = 1.0
-ai.paintlookahead = 0.5
-ai.stoppaintingthreshhold = 0.25
-ai.starterasingthreshhold = -0.2
+ai.pathanglefactor = 1.5
+ai.pathdistancefactor = 2.0
+ai.paintlookahead = 0.1
+ai.stoppaintingthreshhold = 0.10
+ai.starterasingthreshhold = -0.075
 ai.paintswitchdelay = 400
 
 ########

@@ -57,7 +57,7 @@ void PhysicsWorld::stepWorld(unsigned long milliseconds) {
     if ( dynamicsWorld ) {
         // allow at most some number of physics timesteps (at 60 FPS)
         dynamicsWorld->stepSimulation ( milliseconds / 1000.0,
-            GET_SETTING( "physics.maxtimesteps", 5 ) );
+            GET_SETTING( "physics.maxtimesteps", 5 ));
                 
         //This code detects collisions
         //This is directly from a wiki tutorial found at

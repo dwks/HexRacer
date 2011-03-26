@@ -4,6 +4,7 @@
 #include "HRMap.h"
 #include "object/WorldManager.h"
 #include "object/Player.h"
+#include "map/RaceResults.h"
 
 namespace Project {
 namespace Map {
@@ -24,6 +25,8 @@ public:
 	double getKillPlaneY() const { return killPlaneY; }
 	void updatePlayerRankings(Object::WorldManager* world);
 	const std::vector<Object::Player*>& getPlayerRankings() const { return playerRankings; }
+	bool getRaceFinished(Object::WorldManager* world) const;
+	RaceResults getRaceResults() const;
 
 	int getNumLapsToWin() const { return numLaps; }
 

@@ -36,6 +36,7 @@ private:
 private:
     std::string name;
     int teamID;
+	bool raceFinishIgnore;
     Physics::PhysicalPlayer *physical;
     Render::RenderablePlayer *renderable;
     Math::Point suspension[4];
@@ -102,6 +103,9 @@ public:
 	void setPlayerName(const std::string &newName) { name = newName; }
 	std::string getPlayerName() const { return name; }
 	static std::string getDefaultPlayerName(int id);
+
+	void setRaceFinishIgnore(bool ignore) { raceFinishIgnore = ignore; }
+	bool getRaceFinishIgnore() const { return raceFinishIgnore;  }
 
 	bool operator < (const Player& other) const;
     

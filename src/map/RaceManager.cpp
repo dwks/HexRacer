@@ -12,7 +12,7 @@ RaceManager::RaceManager(HRMap *_map)
 : map(_map) {
 
 	finishPlane = map->getFinishPlane();
-	numLaps = map->getMapOptions().getNumLaps();
+	numLaps = Math::minimum(GET_SETTING("game.race.maxlaps", 1000), map->getMapOptions().getNumLaps());
 
 	killPlaneY = 0.0;
 	
@@ -71,5 +71,24 @@ void RaceManager::updatePlayerRankings(Object::WorldManager* world) {
 	}
 
 }
+bool RaceManager::getRaceFinished(Object::WorldManager* world) const {
+
+	bool finished = true;
+
+	Object::WorldManager::PlayerIteratorType it
+		= world->getPlayerIterator();
+	while(it.hasNext()) {
+		Object::Player* player = it.next();
+		finished = finished && (player->getRaceFinishIgnore() || player->getPathTracker()->getFinished());
+	}
+
+	return finished;
+
+}
+
+RaceResults RaceManager::getRaceResults() const {
+	return RaceResults(getPlayerRankings());
+}
+
 }  // namespace Map
 }  // namespace Project

@@ -67,5 +67,14 @@ void BasicWorld::doAI() {
     pathingUpdater->update();
 }
 
+void BasicWorld::checkRaceProgress() {
+
+	if (raceManager->getRaceFinished(worldManager.get())) {
+		Map::RaceResults results = raceManager->getRaceResults();
+		//end race? !!!
+	}
+
+}
+
 }  // namespace World
 }  // namespace Project

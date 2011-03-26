@@ -1,5 +1,6 @@
 #include "TimedSubsystem.h"
 #include "AccelControl.h"
+#include "settings/SettingsManager.h"
 
 #include "log/Logger.h"
 
@@ -34,7 +35,7 @@ void TimedSubsystem::doStep(unsigned long currentTime) {
         timeTakenSoFar = tickTime;
     }
     
-    int maxLoops = 3;
+    int maxLoops = GET_SETTING("game.timing.maxloops", 3);
     while(timeTakenSoFar >= tickTime && -- maxLoops) {
         lastTime += tickTime;
         timeTakenSoFar -= tickTime;

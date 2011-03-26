@@ -138,7 +138,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
-				LinkIncremental="1"
+				LinkIncremental="0"
 				AdditionalLibraryDirectories="lib"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="MSVCRTD"
@@ -641,6 +641,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\RaceManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\RaceResults.cpp"
 				>
 			</File>
 			<File
@@ -1395,6 +1399,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\RaceManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\RaceResults.h"
 				>
 			</File>
 			<File

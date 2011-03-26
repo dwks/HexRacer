@@ -116,6 +116,22 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         
         int id = changeOfIntention->getPlayer();
         Object::Player *player = main->getWorldManager()->getPlayer(id);
+
+		if(changeOfIntention->getIntention().getPaint()) {
+            EMIT_EVENT(new Event::TogglePainting(
+                changeOfIntention->getPlayer(),
+                Event::TogglePainting::PAINTING));
+        }
+        else if(changeOfIntention->getIntention().getErase()) {
+            EMIT_EVENT(new Event::TogglePainting(
+               changeOfIntention->getPlayer(),
+                Event::TogglePainting::ERASING));
+        }
+        else {
+            EMIT_EVENT(new Event::TogglePainting(
+                changeOfIntention->getPlayer(),
+                Event::TogglePainting::NOTHING));
+        }
         
         player->setIntention(changeOfIntention->getIntention());
         
@@ -281,6 +297,7 @@ void ServerMain::run() {
             
             basicWorld->doPhysics();
             basicWorld->doAI();
+			basicWorld->checkRaceProgress();
             
             updateClients();
         }
@@ -352,6 +369,7 @@ void ServerMain::handleNewConnections() {
             Misc::Sleeper::getTimeMilliseconds());
 
 		LOG2(NETWORK, CONNECT, "Serializing handshake packet");
+		LOG2(NETWORK, CONNECT, packet);
         
         // !!! can use clients->sendPacketOnly() ?
         Network::StringSerializer stringSerializer(socket);
