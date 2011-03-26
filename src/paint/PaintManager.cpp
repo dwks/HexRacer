@@ -114,6 +114,9 @@ namespace Paint {
 			fade_planes,
 			2);
 
+		coloredCellAlpha = GET_SETTING("render.paint.coloredalpha", 1.0f);
+		neutralCellAlpha = GET_SETTING("render.paint.neutralalpha", 0.4f);
+
 		if (!settings.getRedrawMode()) {
 			redrawBuffer.clear();
 			if (bounding_object)
@@ -296,11 +299,13 @@ namespace Paint {
 
 		OpenGL::Color cell_color;
 
-		if (cell->playerColor >= 0)
+		if (cell->playerColor >= 0) {
 			cell_color = ColorConstants::playerColor(cell->playerColor);
+			cell_color.setAlphaf(coloredCellAlpha);
+		}
 		else {
 			cell_color = OpenGL::Color::WHITE;
-			cell_color.setAlphaf(0.4f);
+			cell_color.setAlphaf(neutralCellAlpha);
 		}
 
 		OpenGL::Color::glColor(cell_color);
