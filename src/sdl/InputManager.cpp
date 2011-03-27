@@ -11,6 +11,7 @@
 #include "event/SetDebugCamera.h"
 #include "event/PaintEvent.h"
 #include "event/PauseGame.h"
+#include "event/ModifyCamera.h"
 
 #include "settings/SettingsManager.h"
 #include "timing/AccelControl.h"
@@ -73,6 +74,8 @@ void InputManager::doPausedChecks() {
 	inputMapper->update(Input::INPUT_D_PHYSICS_DEBUG);
 	inputMapper->update(Input::INPUT_D_PATH_DEBUG);
 	inputMapper->update(Input::INPUT_D_CAMERA_DEBUG);
+    inputMapper->update(Input::INPUT_D_CAMERA_SWITCH_FOCUS);
+    inputMapper->update(Input::INPUT_D_CAMERA_SWITCH_FOCUS_INV);
 	inputMapper->update(Input::INPUT_D_TOGGLE_PAUSED);
 	inputMapper->update(Input::INPUT_A_CAMERA_X_SPEED);
 	inputMapper->update(Input::INPUT_A_CAMERA_Z_SPEED);
@@ -108,6 +111,14 @@ void InputManager::doPausedChecks() {
         //static bool debug = false;
         debugCamera = !debugCamera;
         EMIT_EVENT(new Event::SetDebugCamera(debugCamera));
+    }
+    if (inputMapper->getDigitalTriggered(Input::INPUT_D_CAMERA_SWITCH_FOCUS)) {
+        EMIT_EVENT(new Event::ModifyCamera(
+            Event::ModifyCamera::FOCUS_PLAYER, 1.0));
+    }
+    if (inputMapper->getDigitalTriggered(Input::INPUT_D_CAMERA_SWITCH_FOCUS_INV)) {
+        EMIT_EVENT(new Event::ModifyCamera(
+            Event::ModifyCamera::FOCUS_PLAYER, -1.0));
     }
 
 	if (inputMapper->getDigitalTriggered(Input::INPUT_D_TOGGLE_PAUSED)) {

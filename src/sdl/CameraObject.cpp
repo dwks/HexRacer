@@ -14,28 +14,37 @@ namespace SDL {
         setDebugCamera(event->getOn());
     }
     
+    void CameraObject::modifyCameraHandler(Event::ModifyCamera *event) {
+        switch(event->getModification()) {
+        case Event::ModifyCamera::FOCUS_PLAYER:
+            if(event->getValue() < 0.0) {
+                player --;
+                if(!playerManager->getPlayer(player)) {
+                    player = 0;
+                    while(playerManager->getPlayer(player)) player ++;
+                    player --;
+                }
+            }
+            else {
+                player ++;
+                if(!playerManager->getPlayer(player)) player = 0;
+            }
+            break;
+        }
+    }
+    
     CameraObject::CameraObject(){
         LOG2(CAMERA, INIT, "Camera Object has been initialized\n");
         
         camera = new OpenGL::Camera();
         debugCamera = false;
+        player = -1;
         
         loadSettings();
         
         METHOD_OBSERVER(&CameraObject::physicsTickHandler);
         METHOD_OBSERVER(&CameraObject::setDebugCameraHandler);
-    }
-    
-    CameraObject::CameraObject(World::PlayerManager *_playerManager){
-        LOG2(CAMERA, INIT, "Camera Object has been initialized\n");
-        
-        playerManager = _playerManager;
-        camera = new OpenGL::Camera();
-        
-        loadSettings();
-        
-        METHOD_OBSERVER(&CameraObject::physicsTickHandler);
-        METHOD_OBSERVER(&CameraObject::setDebugCameraHandler);
+        METHOD_OBSERVER(&CameraObject::modifyCameraHandler);
     }
     
     CameraObject::~CameraObject(){
@@ -65,7 +74,10 @@ namespace SDL {
     }
     
     void CameraObject::setDestinationToPlayer(){
-        Math::Point lookAtPosition  = playerManager->getPlayer()->getPosition();
+        if(player < 0) player = playerManager->getPlayer()->getID();
+        
+        Math::Point lookAtPosition
+            = playerManager->getPlayer(player)->getPosition();
         Math::Point lookAtOffset = Math::Point(0.0,1.0,0.0);
         Math::Point cameraPosition, desiredOrientation;
         double desiredFOV;
@@ -73,10 +85,10 @@ namespace SDL {
         
         lookAtPosition += lookAtOffset;
         
-         if(playerManager->getPlayer()->getSpeedBoost()>1.1){
+         if(playerManager->getPlayer(player)->getSpeedBoost()>1.1){
             desiredFOV = boostFOV;
             desiredOrientation = boostOrientation;
-        } else if(playerManager->getPlayer()->getSpeedBoost()<0.9){
+        } else if(playerManager->getPlayer(player)->getSpeedBoost()<0.9){
             desiredFOV = slowFOV;
             desiredOrientation = slowOrientation;
         } else {
@@ -84,7 +96,7 @@ namespace SDL {
             desiredOrientation = defaultOrientation;
         }
 
-		cameraPosition = playerManager->getPlayer()->getTransformation()
+		cameraPosition = playerManager->getPlayer(player)->getTransformation()
             * Math::Point(desiredOrientation.getX(), 
                 desiredOrientation.getY(),
                 desiredOrientation.getZ()*zOffset

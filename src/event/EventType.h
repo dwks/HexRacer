@@ -45,6 +45,7 @@ public:
         REPLACE_WORLD_SETUP,
         SET_CHECKING_NETWORK,
         RACE_FINISHED,
+        MODIFY_CAMERA,
         TYPES
     };
 };
