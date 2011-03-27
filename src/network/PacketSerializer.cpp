@@ -31,6 +31,7 @@
 #include "world/PlayerIntention.h"
 #include "physics/WarpTracker.h"
 #include "world/WorldSetup.h"
+#include "map/RaceResults.h"
 
 #include "PacketSerializer.h"
 #include "PointSerializer.h"
@@ -77,6 +78,7 @@ std::string PacketSerializer::packetToString(Packet *packet) {
     out.register_type<Physics::WarpTracker>();
     out.register_type<World::WorldSetup::PlayerSettings>();
     out.register_type<World::WorldSetup::ClientSettings>();
+    out.register_type<Map::RaceResults>();
     
     try {
         out << packet;
@@ -124,6 +126,7 @@ Packet *PacketSerializer::stringToPacket(const std::string &string) {
     in.register_type<Physics::WarpTracker>();
     in.register_type<World::WorldSetup::PlayerSettings>();
     in.register_type<World::WorldSetup::ClientSettings>();
+    in.register_type<Map::RaceResults>();
     
     Packet *packet;
     try {

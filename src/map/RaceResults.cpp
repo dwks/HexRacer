@@ -11,7 +11,7 @@ namespace Map {
 
 		for (unsigned int i = 0; i < player_rankings.size(); i++) {
 			int score = calcScore(i);
-			playerPoints[player_rankings[i]] = score;
+			playerPoints[player_rankings[i]->getID()] = score;
 			teamPoints[player_rankings[i]->getTeamID()] += score;
 		}
 
@@ -26,8 +26,9 @@ namespace Map {
 		return teamPoints[team_id];
 	}
 
-	int RaceResults::getPlayerPoints(Object::Player* player) const {
-		std::map<Object::Player*, int>::const_iterator it = playerPoints.find(player);
+	int RaceResults::getPlayerPoints(int player) const {
+		std::map<int, int>::const_iterator it = playerPoints.find(player);
+        
 		if (it == playerPoints.end())
 			return 0;
 		else

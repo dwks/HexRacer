@@ -121,6 +121,9 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
                 EMIT_EVENT(new Event::StartingGame(
                     Event::StartingGame::LOADING_MAP));
             }
+            else if(type == "waiting") {
+                // do nothing while waiting
+            }
             else {
                 LOG(GUI, "Unknown game type \"" << type << "\"");
                 EMIT_EVENT(new Event::SwitchToScreen(""));
@@ -140,6 +143,15 @@ void LoadingProxy::announceFinishedLoading() {
         
         EMIT_EVENT(new Event::SetupClientSettings(*settings));
     }
+    
+    Widget::TextWidget *text = dynamic_cast<Widget::TextWidget *>(
+        loading->getChild("loading"));
+    if(text) {
+        text->setText("Waiting ...");
+    }
+    
+    Map::MapSettings::getInstance()->setGameType("waiting");
+    EMIT_EVENT(new Event::SwitchToScreen("loading"));
 }
 
 }  // namespace GUI

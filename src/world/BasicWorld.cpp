@@ -68,12 +68,11 @@ void BasicWorld::doAI() {
 }
 
 void BasicWorld::checkRaceProgress() {
-
-	if (raceManager->getRaceFinished(worldManager.get())) {
+	if(raceManager->getRaceFinished(worldManager.get())) {
 		Map::RaceResults results = raceManager->getRaceResults();
-		//end race? !!!
+		
+        
 	}
-
 }
 
 }  // namespace World

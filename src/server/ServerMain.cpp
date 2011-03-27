@@ -305,6 +305,9 @@ void ServerMain::run() {
         else {
             if(loadingStarted) {
                 if(World::WorldSetup::getInstance()->everyoneFullyLoaded()) {
+                    EMIT_EVENT(new Event::GameStageChanged(
+                        Project::World::WorldSetup::START_COUNTDOWN));
+                    
                     gameStarted = true;
                 }
             }

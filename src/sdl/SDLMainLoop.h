@@ -12,6 +12,7 @@
 #include "event/StartingGame.h"
 #include "event/TypedObserver.h"
 #include "event/Enabler.h"
+#include "event/GameStageChanged.h"
 
 #include "timing/AccelControl.h"
 #include "input/GlobalInputManager.h"
@@ -39,6 +40,7 @@ protected:
     void changeScreenModeHandler(Event::ChangeScreenMode *event);
     void joinGameHandler(Event::JoinGame *event);
     void startingGameHandler(Event::StartingGame *event);
+    void gameStageChangedHandler(Event::GameStageChanged *event);
 public:
     SDLMainLoop();
     ~SDLMainLoop();

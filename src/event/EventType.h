@@ -44,6 +44,7 @@ public:
         SETUP_CHAT,
         REPLACE_WORLD_SETUP,
         SET_CHECKING_NETWORK,
+        RACE_FINISHED,
         TYPES
     };
 };

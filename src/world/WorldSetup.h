@@ -88,7 +88,7 @@ public:
         FINISHED_LOADING,   // client -> server
         START_COUNTDOWN,    // server -> client
         RUNNING_GAME,       // both server and client
-        FINISHED            // server -> client
+        FINISHED_GAME       // both server and client (server -> client)
     };
 private:
     typedef std::map<int, PlayerSettings> PlayerSettingsList;
