@@ -68,6 +68,7 @@ private:
 	double traction;
     WarpTracker warpTracker;
     bool sliding;
+    Math::Point networkError;
 public:
     PhysicalPlayer() : rigidBody(NULL), onGround(false), speedBoost(1.0),
         traction(1.0), sliding(false) {}
@@ -125,6 +126,9 @@ public:
     virtual void setData(const Math::Matrix &transform,
         const Math::Point &linearVelocity,
         const Math::Point &angularVelocity);
+    
+    const Math::Point &getNetworkError() const { return networkError; }
+    void setNetworkError(const Math::Point &error) { networkError = error; }
     
     WarpTracker *getWarpTracker() { return &warpTracker; }
 };

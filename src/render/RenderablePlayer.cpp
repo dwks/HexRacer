@@ -46,7 +46,6 @@ void RenderablePlayer::initialize(int id) {
 }
 
 
-
 void RenderablePlayer::preRenderUpdate(const Math::Matrix &transformation) {
     getRenderProperties()->setTransformation(transformation);
 }
