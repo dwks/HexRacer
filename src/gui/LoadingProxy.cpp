@@ -72,10 +72,18 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
             std::string type = Map::MapSettings::getInstance()->getGameType();
             
             if(type == "connect") {
-                EMIT_EVENT(new Event::JoinGame(
+                Event::JoinGame *join = new Event::JoinGame(
                     GET_SETTING("network.host", "localhost"),
-                    GET_SETTING("network.port", 1820)));
-                EMIT_EVENT(new Event::SwitchToScreen("lobby"));
+                    GET_SETTING("network.port", 1820));
+                Event::ObserverRegistry::getInstance()
+                    .notifyObservers(join, false);
+                
+                if(join->getSuccess()) {
+                    EMIT_EVENT(new Event::SwitchToScreen("lobby"));
+                }
+                else {
+                    EMIT_EVENT(new Event::SwitchToScreen(""));
+                }
             }
             else if(type == "host") {
                 SDL::SpawnServer spawner;
@@ -120,6 +128,9 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
                 EMIT_EVENT(new Event::JoinGame());
                 EMIT_EVENT(new Event::StartingGame(
                     Event::StartingGame::LOADING_MAP));
+                
+                EMIT_EVENT(new Event::GameStageChanged(
+                    World::WorldSetup::START_COUNTDOWN));
             }
             else if(type == "waiting") {
                 // do nothing while waiting

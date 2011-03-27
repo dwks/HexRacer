@@ -10,10 +10,10 @@ namespace SDL {
 
 void SpawnServer::spawn() {
     Misc::StreamAsString args;
-    args << " \"map = " << GET_SETTING("map", "data/testtrack.hrm") << "\"";
-    args << " \"network.serverport = " << GET_SETTING("network.serverport", "1820") << "\"";
-    args << " \"server.aicount = " << GET_SETTING("server.aicount", "0") << "\"";
-    args << " \"game.race.laps = " << GET_SETTING("game.race.laps", "3") << "\"";
+    args << " \"map=" << GET_SETTING("map", "data/testtrack.hrm") << "\"";
+    args << " network.serverport=" << GET_SETTING("network.serverport", "1820");
+    args << " server.aicount=" << GET_SETTING("server.aicount", "0");
+    args << " game.race.laps=" << GET_SETTING("game.race.laps", "3");
     
     Misc::StreamAsString command;
 #ifdef WIN32

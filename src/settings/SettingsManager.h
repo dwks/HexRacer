@@ -88,6 +88,11 @@ public:
     /** Dumps all the settings for examination to a log file.
     */
     void dump();
+private:
+    std::string::size_type skipSpaces(const std::string &string,
+        std::string::size_type start);
+    std::string::size_type skipNotSpacesOrEquals(const std::string &string,
+        std::string::size_type start);
 };
 
 #define GET_SETTING(key, defaultValue) \
