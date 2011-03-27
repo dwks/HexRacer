@@ -1,7 +1,7 @@
 #ifndef PROJECT_MAP__RACE_RESULTS_H
 #define PROJECT_MAP__RACE_RESULTS_H
 
-#include "config.h"
+#include "Teams.h"
 #include "object/Player.h"
 #include <map>
 
@@ -10,7 +10,7 @@ namespace Map {
 
 class RaceResults {
 private:
-	int teamPoints [MAX_TEAMS];
+	int teamPoints [Teams::MAX_TEAMS];
 	std::map<Object::Player*, int> playerPoints;
 	int winningTeam;
 

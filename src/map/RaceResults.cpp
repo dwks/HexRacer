@@ -5,7 +5,7 @@ namespace Map {
 
 	RaceResults::RaceResults(const std::vector<Object::Player*>& player_rankings) {
 
-		for (int i = 0; i < MAX_TEAMS; i++) {
+		for (int i = 0; i < Map::Teams::MAX_TEAMS; i++) {
 			teamPoints[i] = 0;
 		}
 
@@ -15,7 +15,7 @@ namespace Map {
 			teamPoints[player_rankings[i]->getTeamID()] += score;
 		}
 
-		for (int i = 0; i < MAX_TEAMS; i++) {
+		for (int i = 0; i < Map::Teams::MAX_TEAMS; i++) {
 			if (i == 0 || teamPoints[i] > teamPoints[winningTeam])
 				winningTeam = i;
 		}

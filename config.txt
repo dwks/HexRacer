@@ -220,12 +220,12 @@ network.serverport = 1820
 server.aicount     = 4
 
 ai.resettimer = 5000
-ai.pathlookaheadfactor = 0.25
-ai.minangleoffset = 0.025
+ai.pathlookaheadfactor = 0.75
+ai.minangleoffset = 0.04
 ai.pathanglefactor = 120.0
 ai.pathdistancefactor = 0.1
 ai.minslowdownspeed = 0.0
-ai.angleslowdownfactor = 0.5
+ai.angleslowdownfactor = 0.6
 ai.paintlookahead = 0.2
 ai.minlookahead = 2.5
 ai.stoppaintingthreshhold = 0.10

@@ -3,7 +3,7 @@
 #include "opengl/GeometryDrawing.h"
 #include "render/FontManager.h"
 #include "render/StringTextureCache.h"
-#include "render/ColorConstants.h"
+#include "map/Teams.h"
 #include "misc/StdVectorFunctions.h"
 
 namespace Project {
@@ -49,7 +49,7 @@ namespace HUD {
 			double draw_y = y-y_increment*0.5;
 
 			//Render the player's color
-			OpenGL::Color::glColor(Render::ColorConstants::playerColor(players[i]->getTeamID()));
+			OpenGL::Color::glColor(Map::Teams::teamColor(players[i]->getTeamID()));
 			OpenGL::GeometryDrawing::drawHexagon(Math::Vertex2D(x_offset+hex_radius, draw_y), hex_radius);
 
 			OpenGL::Color::glColor(OpenGL::Color::WHITE);

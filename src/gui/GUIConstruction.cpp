@@ -32,6 +32,7 @@
 
 #include "misc/StreamAsString.h"
 #include "settings/SettingsManager.h"
+#include "map/Teams.h"
 
 namespace Project {
 namespace GUI {
@@ -284,6 +285,10 @@ void GUIConstruction::constructLobby() {
         Widget::WidgetRect(0.05, 0.26, 0.45, 0.2));
     lobby->addChild(colourList);
     
+	for (int i = 0; i < Map::Teams::MAX_TEAMS; i++) {
+		addListItem(colourList, Misc::StreamAsString() << i, Map::Teams::teamName(i), Map::Teams::teamColor(i));
+	}
+	/*
     addListItem(colourList, "0", "red", OpenGL::Color::RED);
     addListItem(colourList, "1", "green", OpenGL::Color::GREEN);
     addListItem(colourList, "2", "blue", OpenGL::Color::BLUE);
@@ -292,6 +297,7 @@ void GUIConstruction::constructLobby() {
     addListItem(colourList, "5", "pink", OpenGL::Color::PINK);
     addListItem(colourList, "6", "teal", OpenGL::Color::TEAL);
     addListItem(colourList, "7", "indigo", OpenGL::Color::INDIGO);
+	*/
     
     lobby->addChild(new Widget::ListWidget("playerlist", true, false,
         Widget::WidgetRect(0.52, 0.1, 0.43, 0.36)));

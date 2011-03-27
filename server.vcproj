@@ -284,10 +284,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ColorConstants.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\connection\ConstructedTCPSocket.cpp"
 				>
 			</File>
@@ -788,6 +784,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\Teams.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\TextureCube.cpp"
 				>
 			</File>
@@ -1035,10 +1035,6 @@
 			</File>
 			<File
 				RelativePath=".\src\opengl\Color.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\ColorConstants.h"
 				>
 			</File>
 			<File
@@ -1559,6 +1555,10 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\Suspension.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\Teams.h"
 				>
 			</File>
 			<File
