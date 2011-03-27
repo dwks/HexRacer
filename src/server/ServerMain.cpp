@@ -204,7 +204,8 @@ ServerMain::ServerMain() : clientCount(0), visitor(this) {
 }
 
 void ServerMain::initBasics() {
-    loadedMap = false;
+    loadingStarted = false;
+    gameStarted = false;
     
     accelControl = boost::shared_ptr<Timing::AccelControl>(
         new Timing::AccelControl());
@@ -233,7 +234,7 @@ void ServerMain::initBasics() {
 void ServerMain::startGame() {
     initMap();
     initAI();
-    loadedMap = true;
+    loadingStarted = true;
     
     EMIT_EVENT(new Event::GameStageChanged(
         Project::World::WorldSetup::START_LOADING));
@@ -292,7 +293,7 @@ void ServerMain::run() {
         
         handleIncomingPackets();
         
-        if(loadedMap) {
+        if(gameStarted) {
             paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
             
             basicWorld->doPhysics();
@@ -302,7 +303,12 @@ void ServerMain::run() {
             updateClients();
         }
         else {
-            if(World::WorldSetup::getInstance()->everyoneReadyToStart()) {
+            if(loadingStarted) {
+                if(World::WorldSetup::getInstance()->everyoneFullyLoaded()) {
+                    gameStarted = true;
+                }
+            }
+            else if(World::WorldSetup::getInstance()->everyoneReadyToStart()) {
                 startGame();
             }
         }

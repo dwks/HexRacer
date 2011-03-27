@@ -122,6 +122,7 @@ public:
     ClientSettings *getClientSettings(int id);
     
     bool everyoneReadyToStart() const;
+    bool everyoneFullyLoaded() const;
     
     /** This only works in the client code, of course.
     */

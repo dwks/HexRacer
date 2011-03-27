@@ -56,7 +56,7 @@ private:
     bool quit;
     int clientCount;
     int whichSocket;
-    bool loadedMap;
+    bool loadingStarted, gameStarted;
     
     boost::shared_ptr<Timing::AccelControl> accelControl;
     boost::shared_ptr<World::BasicWorld> basicWorld;
