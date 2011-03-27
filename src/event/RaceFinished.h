@@ -18,12 +18,12 @@ private:
         ar & results;
     }
 private:
-    Map::RaceResults *results;
+    Map::RaceResults results;
 public:
-    RaceFinished() : results(0) {}
-    RaceFinished(Map::RaceResults *results) : results(results) {}
+    RaceFinished() : results() {}
+    RaceFinished(const Map::RaceResults &results) : results(results) {}
     
-    Map::RaceResults *getResults() const { return results; }
+    Map::RaceResults &getResults() { return results; }
     
     virtual EventType::type_t getType() const
         { return EventType::RACE_FINISHED; }

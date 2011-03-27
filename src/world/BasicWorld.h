@@ -27,7 +27,11 @@ private:
     
     boost::shared_ptr<Map::PathManager> pathManager;
     boost::shared_ptr<Map::PathingUpdater> pathingUpdater;
+    
+    bool alreadyFinished;
 public:
+    BasicWorld() : alreadyFinished(false) {}
+    
     void constructBeforeConnect();
     void constructDuringConnect(Object::World *world,
         Object::PlayerList *playerList, int id);

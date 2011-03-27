@@ -11,6 +11,7 @@ namespace Map {
 
 		for (unsigned int i = 0; i < player_rankings.size(); i++) {
 			int score = calcScore(i);
+            playerRank.push_back(player_rankings[i]->getID());
 			playerPoints[player_rankings[i]->getID()] = score;
 			teamPoints[player_rankings[i]->getTeamID()] += score;
 		}
@@ -38,6 +39,14 @@ namespace Map {
 	int RaceResults::getWinningTeamID() const {
 		return winningTeam;
 	}
+
+    int RaceResults::getPlayerByRank(int rank) const {
+        return playerRank[rank];
+    }
+    
+    int RaceResults::getRanks() const {
+        return static_cast<int>(playerRank.size());
+    }
 
 	int RaceResults::calcScore(unsigned int rank) const {
 		return static_cast<int>((100-rank)+(100/(rank+1)));

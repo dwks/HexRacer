@@ -53,5 +53,15 @@ void CompositeWidget::removeChild(const std::string &name) {
     }
 }
 
+void CompositeWidget::removeAllChildren() {
+    IteratorType it = getIterator();
+    while(it.hasNext()) {
+        WidgetBase *child = it.next();
+        
+        removeChild(child->getName());
+        it = getIterator();
+    }
+}
+
 }  // namespace Widget
 }  // namespace Project

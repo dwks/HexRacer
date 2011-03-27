@@ -76,6 +76,9 @@ void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
         }
         break;
     }
+    case Event::EventType::RACE_FINISHED: {
+        LOG(GLOBAL, "NetworkPortal sees RaceFinished");
+    }
     default:
         /*LOG2(NETWORK, PACKET, "EventPropagator: Not propagating "
             << typeid(*event).name());*/

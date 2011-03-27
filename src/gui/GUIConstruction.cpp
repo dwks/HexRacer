@@ -12,6 +12,7 @@
 
 #include "widget/CentreUponChangeLayout.h"
 #include "widget/SmoothTransitionLayout.h"
+#include "widget/AbsoluteLayout.h"
 
 #include "MapList.h"
 
@@ -29,6 +30,7 @@
 #include "LoadingProxy.h"
 #include "SinglePlayerProxy.h"
 #include "AboutProxy.h"
+#include "FinishedProxy.h"
 
 #include "misc/StreamAsString.h"
 #include "settings/SettingsManager.h"
@@ -49,6 +51,7 @@ Widget::CompositeWidget *GUIConstruction::construct() {
             loading         Loading screen
             running         Displayed while the game is running
             paused          Paused menu
+            finished        Race finished menu
             settings        The settings screen accessible from the main menu
     */
     
@@ -61,6 +64,7 @@ Widget::CompositeWidget *GUIConstruction::construct() {
     constructLoading();  // must happen after host
     constructRunning();
     constructPaused();
+    constructFinished();
     constructSettings();
     constructAbout();
     
@@ -167,6 +171,13 @@ void GUIConstruction::constructHost() {
         GET_SETTING("server.aicount", "0"),
         Widget::WidgetRect(0.5, 0.20, 0.35, 0.08)));
     
+    host->addChild(new Widget::TextWidget("lapcount-label", "Number of laps:",
+        Widget::NormalTextLayout::ALIGN_RIGHT,
+        Widget::WidgetRect(0.1, 0.30, 0.35, 0.08)));
+    host->addChild(new Widget::EditWidget("lapcount",
+        GET_SETTING("game.race.laps", "3"),
+        Widget::WidgetRect(0.5, 0.30, 0.35, 0.08)));
+    
     host->addChild(new Widget::TextWidget("hostport-label", "Host port:",
         Widget::NormalTextLayout::ALIGN_RIGHT,
         Widget::WidgetRect(0.1, 0.60, 0.35, 0.08)));
@@ -191,6 +202,7 @@ void GUIConstruction::constructHost() {
     boost::shared_ptr<Widget::EventProxy> proxy(new HostProxy(host));
     getWidget("host/map")->addEventProxy(proxy);
     getWidget("host/aicount")->addEventProxy(proxy);
+    getWidget("host/lapcount")->addEventProxy(proxy);
     
     getWidget("host/hostport")->addEventProxy(proxy);
     
@@ -378,6 +390,27 @@ void GUIConstruction::constructPaused() {
     getWidget("paused/resume")->addEventProxy(proxy);
     getWidget("paused/settings")->addEventProxy(proxy);
     getWidget("paused/quit")->addEventProxy(proxy);
+}
+
+void GUIConstruction::constructFinished() {
+    Widget::CompositeWidget *finished
+        = new Widget::CompositeWidget("finished");
+    widgets->addChild(finished);
+    
+    Widget::CompositeWidget *ranks = new Widget::CompositeWidget("ranks");
+    ranks->setLayout(new Widget::AbsoluteLayout(Widget::WidgetRect(
+        0.2, 0.1, 0.6, 0.75)));
+    finished->addChild(ranks);
+    
+    finished->addChild(new Widget::ButtonWidget("quit", "Quit",
+        Widget::WidgetRect(0.3, 0.9, 0.4, 0.08)));
+    
+    setShortcut(getWidget("finished/quit"), SDLK_ESCAPE);
+    setShortcut(getWidget("finished/quit"), SDLK_q);
+    
+    boost::shared_ptr<Widget::EventProxy> proxy(new FinishedProxy(finished));
+    getWidget("finished")->addEventProxy(proxy);  // ensure proxy ref count >0
+    getWidget("finished/quit")->addEventProxy(proxy);
 }
 
 void GUIConstruction::constructSettings() {

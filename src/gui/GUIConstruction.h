@@ -22,6 +22,7 @@ private:
     void constructLoading();
     void constructRunning();
     void constructPaused();
+    void constructFinished();
     void constructSettings();
     void constructAbout();
 private:

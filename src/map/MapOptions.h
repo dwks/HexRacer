@@ -5,7 +5,6 @@
 #include <fstream>
 
 #define HRMAP_BGBLOOMENABLE_LABEL "bgBloomEnable"
-#define HRMAP_NUMLAPS_LABEL "numLaps"
 
 namespace Project {
 namespace Map {
@@ -20,9 +19,6 @@ public:
 
 	bool getBGBloomEnable() const { return bgBloomEnable; }
 	void setBGBloomEnable(bool enable) { bgBloomEnable = enable; }
-
-	int getNumLaps() const { return numLaps; }
-	void setNumLaps(int laps);
 
 	bool parseStream(const std::string& keyword, std::ifstream& stream, const std::string& version);
 	void saveToStream(std::ofstream& stream) const;

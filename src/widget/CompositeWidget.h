@@ -38,6 +38,7 @@ public:
     virtual WidgetBase *getChild(const std::string &name);
     
     virtual void removeChild(const std::string &name);
+    virtual void removeAllChildren();
     
     IteratorType getIterator() { return IteratorType(childList); }
     

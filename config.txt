@@ -81,7 +81,8 @@ game.paint.paintingboost     = 0.8
 game.paint.erasingboost      = 0.8
 game.paint.maxboostincrease  = 0.02
 
-game.race.maxlaps = 1
+game.race.maxlaps = 1000
+game.race.laps    = 3
 
 game.enablepathing = 1
 

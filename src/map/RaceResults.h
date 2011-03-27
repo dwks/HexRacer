@@ -2,9 +2,11 @@
 #define PROJECT_MAP__RACE_RESULTS_H
 
 #include <map>
+#include <vector>
 
 #include "boost/serialization/access.hpp"
 #include "boost/serialization/map.hpp"
+#include "boost/serialization/vector.hpp"
 
 #include "object/Player.h"
 #include "config.h"
@@ -19,11 +21,13 @@ private:
     template <typename Archive>
     void serialize(Archive &ar, const unsigned version) {
         ar & teamPoints;
+        ar & playerRank;
         ar & playerPoints;
         ar & winningTeam;
     }
 private:
 	int teamPoints [MAX_TEAMS];
+    std::vector<int> playerRank;
 	std::map<int, int> playerPoints;
 	int winningTeam;
 
@@ -34,6 +38,8 @@ public:
 	int getTeamPoints(int team_id) const;
 	int getPlayerPoints(int player) const;
 	int getWinningTeamID() const;
+    int getPlayerByRank(int rank) const;
+    int getRanks() const;
 };
 
 }  // namespace Map
