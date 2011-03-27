@@ -23,6 +23,8 @@ public:
     virtual void close();
 protected:
     virtual tcp::socket &getSocket() { return socket; }
+private:
+    void reportError(boost::system::error_code &error);
 };
 
 }  // namespace Connection

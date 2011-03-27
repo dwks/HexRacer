@@ -17,7 +17,6 @@
 #endif
 #include "object/WorldManager.h"
 #include "world/PlayerManager.h"
-#include <boost/concept_check.hpp>
 
 namespace Project {
 namespace Sound {

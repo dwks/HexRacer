@@ -6,6 +6,14 @@
 // enables some Boost-specific (but more portable) code
 #define HAVE_BOOST
 
+#ifdef HAVE_BOOST
+    #define HAVE_BOOST_FILESYSTEM
+#endif
+
+#ifdef HAVE_BOOST
+    #define HAVE_BOOST_SYSTEM
+#endif
+
 // enables sound
 #define HAVE_OPENAL
 
