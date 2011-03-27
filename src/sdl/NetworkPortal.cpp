@@ -27,6 +27,12 @@
 namespace Project {
 namespace SDL {
 
+void NetworkPortal::handleSetCheckingNetwork(
+    Event::SetCheckingNetwork *event) {
+    
+    this->checking = event->getChecking();
+}
+
 void NetworkPortal::PacketSender::observe(Event::SendPacket *packet) {
     if(portal->getPortal() == NULL) return;
     
@@ -94,9 +100,11 @@ void NetworkPortal::EventPropagator::send(Event::EventBase *event) {
 NetworkPortal::NetworkPortal() {
     portal = NULL;
     id = -1;
+    checking = true;
     
     ADD_OBSERVER(new PacketSender(this));
     ADD_OBSERVER(new EventPropagator(this));
+    METHOD_OBSERVER(&NetworkPortal::handleSetCheckingNetwork);
 }
 
 NetworkPortal::~NetworkPortal() {
@@ -191,7 +199,7 @@ void NetworkPortal::waitForWorld(Object::World *&world,
 void NetworkPortal::checkNetwork() {
     if(!portal) return;
     
-    for(;;) {
+    while(checking) {
         Network::Packet *packet = portal->nextPacket();
         if(!packet) break;
         

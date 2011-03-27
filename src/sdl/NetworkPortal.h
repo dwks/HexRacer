@@ -8,6 +8,7 @@
 #include "event/TypedObserver.h"
 #include "event/MultiObserver.h"
 #include "event/Enabler.h"
+#include "event/SetCheckingNetwork.h"
 
 #include "object/World.h"
 #include "object/PlayerList.h"
@@ -16,9 +17,12 @@ namespace Project {
 namespace SDL {
 
 class NetworkPortal : public Event::Enabler {
+protected:
+    void handleSetCheckingNetwork(Event::SetCheckingNetwork *event);
 private:
     Network::SinglePortal *portal;
     int id;
+    bool checking;
 private:
     class PacketSender : public Event::TypedObserver<Event::SendPacket> {
     private:

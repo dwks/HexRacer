@@ -4,6 +4,8 @@
 #include "event/ObserverRegistry.h"
 #include "event/JoinGame.h"
 #include "event/StartingGame.h"
+#include "event/SetCheckingNetwork.h"
+#include "event/SetupClientSettings.h"
 
 #include "widget/ImageWidget.h"
 #include "widget/TextWidget.h"
@@ -39,9 +41,17 @@ void LoadingProxy::initialize(Event::SwitchToScreen *event) {
 }
 
 void LoadingProxy::gameStateChanged(Event::GameStageChanged *event) {
-    if(event->getStage() == World::WorldSetup::DOING_COUNTDOWN) {
+    if(event->getStage() == World::WorldSetup::START_LOADING) {
+#if 0
         EMIT_EVENT(new Event::StartingGame(
             Event::StartingGame::LOADING_MAP));
+#else
+        EMIT_EVENT(new Event::SetCheckingNetwork(false));
+        
+        lastRepaint = NULL;
+        Map::MapSettings::getInstance()->setGameType("loadingworld");
+        EMIT_EVENT(new Event::SwitchToScreen("loading"));
+#endif
     }
 }
 
@@ -98,9 +108,13 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
                     << joinGameEvent.getHost()
                     << ":" << joinGameEvent.getPort());
             }
-            else if(type == "starting") {
+            else if(type == "loadingworld") {
+                EMIT_EVENT(new Event::SetCheckingNetwork(true));
+                
                 EMIT_EVENT(new Event::StartingGame(
                     Event::StartingGame::LOADING_MAP));
+                
+                announceFinishedLoading();
             }
             else if(type == "singleplayer") {
                 EMIT_EVENT(new Event::JoinGame());
@@ -112,6 +126,19 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
                 EMIT_EVENT(new Event::SwitchToScreen(""));
             }
         }
+    }
+}
+
+void LoadingProxy::announceFinishedLoading() {
+    World::WorldSetup *worldSetup = World::WorldSetup::getInstance();
+    
+    int id = worldSetup->getClientID();
+    World::WorldSetup::ClientSettings *settings
+        = worldSetup->getClientSettings(id);
+    if(settings) {
+        settings->setFullyLoaded(true);
+        
+        EMIT_EVENT(new Event::SetupClientSettings(*settings));
     }
 }
 

@@ -236,7 +236,7 @@ void ServerMain::startGame() {
     loadedMap = true;
     
     EMIT_EVENT(new Event::GameStageChanged(
-        Project::World::WorldSetup::DOING_COUNTDOWN));
+        Project::World::WorldSetup::START_LOADING));
     
     sendWorldToPlayers();
 }

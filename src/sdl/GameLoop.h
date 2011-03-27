@@ -39,6 +39,8 @@ public:
     
     virtual void construct();
     
+    boost::shared_ptr<GameWorld> getGameWorld() { return gameWorld; }
+    
     void setGuiPointers(boost::shared_ptr<GUI::GUISystem> gui,
         boost::shared_ptr<GUIInputManager> guiInputManager);
     
