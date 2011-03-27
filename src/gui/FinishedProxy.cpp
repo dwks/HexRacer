@@ -25,7 +25,9 @@ void FinishedProxy::handleRaceFinished(Event::RaceFinished *event) {
     EMIT_EVENT(new Event::SwitchToScreen("finished"));
 }
 
-FinishedProxy::FinishedProxy(Widget::WidgetBase *finished) {
+FinishedProxy::FinishedProxy(Widget::WidgetBase *finished)
+    : finished(finished) {
+    
     METHOD_OBSERVER(&FinishedProxy::handleRaceFinished);
 }
 
