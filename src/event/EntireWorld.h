@@ -17,17 +17,20 @@ private:
         ar & boost::serialization::base_object<EventBase>(*this);
         ar & world;
         ar & playerList;
+        ar & laps;
     }
 private:
     Object::World *world;
     Object::PlayerList *playerList;
+    int laps;
 public:
-    EntireWorld() : world(0) {}
-    EntireWorld(Object::World *world, Object::PlayerList *playerList)
-        : world(world), playerList(playerList) {}
+    EntireWorld() : world(0), playerList(0), laps(0) {}
+    EntireWorld(Object::World *world, Object::PlayerList *playerList, int laps)
+        : world(world), playerList(playerList), laps(laps) {}
     
     Object::World *getWorld() { return world; }
     Object::PlayerList *getPlayerList() { return playerList; }
+    int getLaps() const { return laps; }
     
     virtual EventType::type_t getType() const
         { return EventType::ENTIRE_WORLD; }

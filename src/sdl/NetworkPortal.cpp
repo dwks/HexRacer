@@ -187,8 +187,13 @@ void NetworkPortal::waitForWorld(Object::World *&world,
             
             world = entireWorld->getWorld();
             playerList = entireWorld->getPlayerList();
+            int laps = entireWorld->getLaps();
             delete entireWorld;
             delete packet;
+            
+            Settings::SettingsManager::getInstance()->set(
+                "game.race.laps",
+                Misc::StreamAsString() << laps);
             
             break;
         }

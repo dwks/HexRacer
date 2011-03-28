@@ -326,7 +326,8 @@ void ServerMain::sendWorldToPlayers() {
     {
         Event::EntireWorld *entireWorld = new Event::EntireWorld(
             getWorldManager()->getWorld(),
-            getWorldManager()->getPlayerList());
+            getWorldManager()->getPlayerList(),
+            GET_SETTING("game.race.laps", 3));
         Network::Packet *packet = new Network::EventPacket(entireWorld);
         clients->sendPacket(packet);
         delete entireWorld;
