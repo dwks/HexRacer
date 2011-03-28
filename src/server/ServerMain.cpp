@@ -30,6 +30,8 @@
 
 #include "physics/PhysicsFactory.h"
 
+#include "world/TimeElapsed.h"
+
 #include "mesh/MeshGroup.h"
 #include "mesh/MeshLoader.h"
 #include "map/PathTracker.h"
@@ -309,6 +311,8 @@ void ServerMain::run() {
                         Project::World::WorldSetup::START_COUNTDOWN));
                     
                     gameStarted = true;
+                    World::TimeElapsed::getInstance().setStartTime(
+                        Misc::Sleeper::getTimeMilliseconds());
                 }
             }
             else if(World::WorldSetup::getInstance()->everyoneReadyToStart()) {

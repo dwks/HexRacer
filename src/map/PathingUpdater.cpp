@@ -5,6 +5,10 @@
 
 #include "event/EventSystem.h"
 #include "event/PlayerProgressEvent.h"
+#include "PlayerTimes.h"
+
+#include "map/PlayerTimes.h"
+#include "misc/Sleeper.h"
 
 namespace Project {
 namespace Map {
@@ -63,7 +67,12 @@ void PathingUpdater::update() {
 
 				if (!player->getPathTracker()->getFinished()
 					&& player->getPathTracker()->getNumLaps() >= raceManager->getNumLapsToWin()) {
-						player->getPathTracker()->setFinished(true);
+                    
+                    player->getPathTracker()->setFinished(true);
+                    
+                    Map::PlayerTimes::getInstance().setFinished(
+                        player->getID(),
+                        Misc::Sleeper::getTimeMilliseconds());
 				}
                 
                 if(playerManager->getPlayer() == player) {
