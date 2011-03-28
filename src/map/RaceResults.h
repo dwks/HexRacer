@@ -31,14 +31,17 @@ private:
 
     std::vector<int> playerRank;
 	std::map<int, int> playerPoints;
+	std::map<int, int> playerBonus;
     std::vector<int> teamRank;
 
-	int calcScore(unsigned int rank) const;
+	int calcScore(unsigned long finish_time) const;
+	int calcBonus(unsigned int rank, unsigned long total_time) const;
 public:
     RaceResults() {}
-	RaceResults(const std::vector<Object::Player*>& player_rankings);
+	RaceResults(const std::vector<Object::Player*>& player_rankings, unsigned long total_time);
 	int getTeamPoints(int team_id) const;
 	int getPlayerPoints(int player) const;
+	int getPlayerBonus(int player) const;
     
     int getPlayerByRank(int rank) const;
     int getRanks() const;

@@ -1,20 +1,43 @@
 #include <set>
 
 #include "RaceResults.h"
+#include "PlayerTimes.h"
 
 namespace Project {
 namespace Map {
 
-	RaceResults::RaceResults(const std::vector<Object::Player*>& player_rankings) {
+	RaceResults::RaceResults(const std::vector<Object::Player*>& player_rankings, unsigned long total_time) {
+
+		LOG(WORLD, "Calculating race results. Total Time: " << total_time);
 
 		for (int i = 0; i < Map::Teams::MAX_TEAMS; i++) {
 			teamPoints[i] = 0;
 		}
+
+		int total_laps = player_rankings[0]->getPathTracker()->getNumLaps();
         
+		playerRank.resize(player_rankings.size());
 		for (unsigned int i = 0; i < player_rankings.size(); i++) {
-			int score = calcScore(i);
-            playerRank.push_back(player_rankings[i]->getID());
+
+			unsigned long finish_time;
+
+			if (player_rankings[i]->getPathTracker()->getFinished()) {
+				finish_time = PlayerTimes::getInstance().getFinishTime(player_rankings[i]->getID());
+			}
+			else {
+				float total_progress = static_cast<float>(total_laps);
+				float progress = player_rankings[i]->getPathTracker()->getRaceProgress()/total_progress;
+				LOG(WORLD, "Player " << i << " progress: " << progress);
+				finish_time = (int) ((float)total_time/progress);
+			}
+			int bonus = calcBonus(i, total_time);
+			int score = calcScore(finish_time)-bonus;
+
+			LOG(WORLD, "Player " << i << " score: " << score << " bonus: " << bonus << " finish time: " << finish_time);
+
+			playerRank[player_rankings.size()-1-i] = player_rankings[i]->getID();
 			playerPoints[player_rankings[i]->getID()] = score;
+			playerBonus[player_rankings[i]->getID()] = bonus;
 			teamPoints[player_rankings[i]->getTeamID()] += score;
 		}
         
@@ -55,6 +78,15 @@ namespace Map {
 			return (*it).second;
 	}
 
+	int RaceResults::getPlayerBonus(int player) const {
+		std::map<int, int>::const_iterator it = playerBonus.find(player);
+        
+		if (it == playerBonus.end())
+			return 0;
+		else
+			return (*it).second;
+	}
+
     int RaceResults::getPlayerByRank(int rank) const {
         return playerRank[rank];
     }
@@ -71,8 +103,14 @@ namespace Map {
         return teamRank.size();
     }
 
-	int RaceResults::calcScore(unsigned int rank) const {
-		return static_cast<int>((100-rank)+(100/(rank+1)));
+	int RaceResults::calcScore(unsigned long finish_time) const {
+		return static_cast<int>(finish_time);
+	}
+
+	int RaceResults::calcBonus(unsigned int rank, unsigned long total_time) const {
+		//return static_cast<int>((total_time/60)/(rank+1));
+		//return static_cast<int>(5000/(rank+1));
+		return 0;
 	}
 
 }  // namespace Map

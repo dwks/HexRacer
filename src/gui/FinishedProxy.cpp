@@ -26,8 +26,8 @@ void FinishedProxy::handleRaceFinished(Event::RaceFinished *event) {
         finished->getChild("teams"));
     teams->removeAllChildren();
     
-    Widget::WidgetRect scoreArea(0.25, 0.45, 0.5, 0.4);
-    Widget::WidgetRect teamArea(0.25, 0.05, 0.5, 0.35);
+    Widget::WidgetRect scoreArea(0.1, 0.45, 0.8, 0.4);
+    Widget::WidgetRect teamArea(0.1, 0.05, 0.8, 0.35);
     
     Map::RaceResults results = event->getResults();
     for(int r = 0; r < results.getRanks() && r < 10; r ++) {
@@ -52,7 +52,7 @@ void FinishedProxy::handleRaceFinished(Event::RaceFinished *event) {
                 Map::Teams::teamColor(player->getTeamID())));
         ranks->addChild(
             new Widget::TextWidget(Misc::StreamAsString() << "score" << r,
-                Misc::StreamAsString() << score,
+                Misc::StreamAsString() << (score / 1000.0) << " secs",
                 Widget::NormalTextLayout::ALIGN_RIGHT,
                 textRect));
     }
@@ -77,7 +77,7 @@ void FinishedProxy::handleRaceFinished(Event::RaceFinished *event) {
                 Map::Teams::teamColor(team)));
         ranks->addChild(
             new Widget::TextWidget(Misc::StreamAsString() << "team" << r,
-                Misc::StreamAsString() << score,
+                Misc::StreamAsString() << (score / 1000.0) << " secs",
                 Widget::NormalTextLayout::ALIGN_RIGHT,
                 textRect));
     }

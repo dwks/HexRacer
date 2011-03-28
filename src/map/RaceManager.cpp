@@ -1,7 +1,7 @@
 #include "RaceManager.h"
 #include "log/Logger.h"
 #include "misc/StdVectorFunctions.h"
-
+#include "world/TimeElapsed.h"
 #include "settings/SettingsManager.h"
 #include "config.h"
 
@@ -89,7 +89,7 @@ bool RaceManager::getRaceFinished(Object::WorldManager* world) const {
 }
 
 RaceResults RaceManager::getRaceResults() const {
-	return RaceResults(getPlayerRankings());
+	return RaceResults(getPlayerRankings(), World::TimeElapsed::getInstance().getGameTime());
 }
 
 }  // namespace Map
