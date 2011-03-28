@@ -47,11 +47,9 @@ void PhysicalPlayer::constructRigidBody(const Math::Point &position) {
     rigidBody = Physics::PhysicsFactory
         ::createRigidBox(0.4,0.2,1.04,position,2.0);
     
-    /*btTransform transform = btTransform::getIdentity();
-    transform.setOrigin(Converter::toVector(Math::Point(0.0, +1.0, 0.0)));
-    rigidBody->setCenterOfMassTransform(transform);*/
-    
     PhysicsWorld::getInstance()->registerRigidBody(rigidBody);
+
+	updatePhysicalInfo();
 }
 
 void PhysicalPlayer::constructRigidBody(const Math::Matrix &transformation) {
@@ -59,6 +57,8 @@ void PhysicalPlayer::constructRigidBody(const Math::Matrix &transformation) {
     
     rigidBody->setWorldTransform(
         Converter::toTransform(transformation));
+
+	updatePhysicalInfo();
 }
 
 Math::Point PhysicalPlayer::getOrigin() const {
@@ -72,6 +72,8 @@ Math::Matrix PhysicalPlayer::getTransformation() const {
     
     return Converter::toMatrix(trans);
 }
+
+/*
 
 Math::Point PhysicalPlayer::getLinearVelocity() const {
     rigidBody->activate();  // !!! hack to prevent sleeping
@@ -97,6 +99,8 @@ Math::Point PhysicalPlayer::getUpDirection() const {
     // 4D vector (don't want translation included)
     return getTransformation() * Math::Point(0.0, +1.0, 0.0, 0.0);
 }
+
+*/
 
 void PhysicalPlayer::applyAcceleration(double acceleration) {
     if(!onGround) return;
@@ -125,6 +129,8 @@ void PhysicalPlayer::applyAcceleration(double acceleration) {
 	else {
 		applyForce(orientation * brakeConstant * acceleration * traction);
 	}
+
+	updatePhysicalInfo();
 }
 
 void PhysicalPlayer::applyTurning(double amount) {
@@ -181,15 +187,19 @@ void PhysicalPlayer::applyTurning(double amount) {
     
     // twist the car in response to a sharp turn
     //applyTorque(getFrontDirection() * leanConstant * turning_factor * amount);
+
+	updatePhysicalInfo();
 }
 
 void PhysicalPlayer::doJump() {
     Math::Point upwards = Math::Point(0.0, 1.0, 0.0);
     applyForce(upwards * 50.0f);
+	updatePhysicalInfo();
 }
 
 void PhysicalPlayer::applyForce(const Math::Point &force) {
     rigidBody->applyCentralForce(Converter::toVector(force));
+	updatePhysicalInfo();
 }
 
 void PhysicalPlayer::applyForce(const Math::Point &movement,
@@ -202,6 +212,7 @@ void PhysicalPlayer::applyForce(const Math::Point &movement,
 
 void PhysicalPlayer::applyTorque(const Math::Point &torque) {
     rigidBody->applyTorque(Converter::toVector(torque));
+	updatePhysicalInfo();
 }
 
 void PhysicalPlayer::setData(const Math::Matrix &transform,
@@ -220,6 +231,24 @@ void PhysicalPlayer::setData(const Math::Matrix &transform,
     Math::Point newOrigin = getOrigin();
     
     networkError += originalOrigin - newOrigin;
+
+	updatePhysicalInfo();
+}
+
+void PhysicalPlayer::updatePhysicalInfo() {
+
+	//btTransform trans = rigidBody->getWorldTransform();
+	Math::Matrix matrix_trans = getTransformation();
+    
+	//origin = Converter::toPoint(trans.getOrigin());
+	linearVelocity = Converter::toPoint(rigidBody->getLinearVelocity());
+	angularVelocity = Converter::toPoint(rigidBody->getAngularVelocity());
+	frontDirection = matrix_trans * Math::Point(0.0, 0.0, +1.0, 0.0);
+	rightDirection = matrix_trans * Math::Point(+1.0, 0.0, 0.0, 0.0);
+	upDirection = matrix_trans * Math::Point(0.0, +1.0, 0.0, 0.0);
+
+	linearSpeed = linearVelocity.length();
+	angularSpeed = angularVelocity.length();
 }
 
 }  // namespace Physics

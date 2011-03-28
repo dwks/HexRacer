@@ -34,6 +34,10 @@ public:
 	struct HexIndex {
 		int uIndex;
 		int vIndex;
+
+		bool operator < (const HexIndex& other) const {
+			return uIndex < other.uIndex || (uIndex == other.uIndex && vIndex < other.vIndex);
+		}
 	};
 
 	struct HexPosition {

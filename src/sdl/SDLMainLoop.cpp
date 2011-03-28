@@ -172,7 +172,7 @@ void SDLMainLoop::initSDL() {
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    
+
     SDL_WM_SetCaption("HexRacer", NULL);
     
     int width = GET_SETTING("display.width", 0);

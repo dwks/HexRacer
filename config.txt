@@ -129,6 +129,9 @@ render.camera.fieldofview = 60.0
 render.camera.fovboost = 65.0
 render.camera.fovslow = 60.0
 
+render.paint.coloredalpha = 1.0
+render.paint.neutralalpha = 0.4
+
 # for AI debugging
 render.drawpathnodes = 0
 render.drawlightspheres = 1
@@ -226,8 +229,12 @@ network.serverport = 1820
 server.aicount     = 4
 
 ai.resettimer = 5000
-ai.pathanglefactor = 1.5
-ai.pathdistancefactor = 2.0
+ai.pathlookaheadfactor = 0.75
+ai.minangleoffset = 0.04
+ai.pathanglefactor = 120.0
+ai.pathdistancefactor = 0.1
+ai.minslowdownspeed = 0.0
+ai.angleslowdownfactor = 0.6
 ai.paintlookahead = 0.2
 ai.minlookahead = 2.5
 ai.stoppaintingthreshhold = 0.10

@@ -2,7 +2,7 @@
 #include "opengl/MathWrapper.h"
 #include "math/BoundingSphere.h"
 #include "math/BoundingCircle.h"
-#include "render/ColorConstants.h"
+#include "map/Teams.h"
 #include "event/EventSystem.h"
 
 using namespace Project;
@@ -114,6 +114,9 @@ namespace Paint {
 			fade_planes,
 			2);
 
+		coloredCellAlpha = GET_SETTING("render.paint.coloredalpha", 1.0f);
+		neutralCellAlpha = GET_SETTING("render.paint.neutralalpha", 0.4f);
+
 		if (!settings.getRedrawMode()) {
 			redrawBuffer.clear();
 			if (bounding_object)
@@ -147,7 +150,7 @@ namespace Paint {
 					PaintCell* cell = paintGrid.getPaintCell(u, v);
 					while (cell != NULL) {
 						if (cell->playerColor >= 0) {
-							OpenGL::Color::glColor(ColorConstants::playerColor(cell->playerColor), alpha);
+							OpenGL::Color::glColor(Map::Teams::teamColor(cell->playerColor), alpha);
 							OpenGL::MathWrapper::glVertex(cell->position);
 						}
 						cell = cell->nextCell;
@@ -296,11 +299,13 @@ namespace Paint {
 
 		OpenGL::Color cell_color;
 
-		if (cell->playerColor >= 0)
-			cell_color = ColorConstants::playerColor(cell->playerColor);
+		if (cell->playerColor >= 0) {
+			cell_color = Map::Teams::teamColor(cell->playerColor);
+			cell_color.setAlphaf(coloredCellAlpha);
+		}
 		else {
 			cell_color = OpenGL::Color::WHITE;
-			cell_color.setAlphaf(0.4f);
+			cell_color.setAlphaf(neutralCellAlpha);
 		}
 
 		OpenGL::Color::glColor(cell_color);

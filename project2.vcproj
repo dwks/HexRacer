@@ -298,10 +298,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ColorConstants.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\widget\CompositeEventProxy.cpp"
 				>
 			</File>
@@ -978,6 +974,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\Teams.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\TextureCube.cpp"
 				>
 			</File>
@@ -1493,10 +1493,6 @@
 			</File>
 			<File
 				RelativePath=".\src\sound\CollisionSound.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\ColorConstants.h"
 				>
 			</File>
 			<File
@@ -2193,6 +2189,10 @@
 			</File>
 			<File
 				RelativePath=".\src\event\SwitchToScreen.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\Teams.h"
 				>
 			</File>
 			<File

@@ -43,6 +43,9 @@ private:
 	GLuint targetList;
 	bool enableRendering;
 
+	float coloredCellAlpha;
+	float neutralCellAlpha;
+
 	Math::HexGrid hexGrid;
 	PaintGrid paintGrid;
 	Map::HRMap* _map;

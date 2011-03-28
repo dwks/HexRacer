@@ -1,7 +1,6 @@
 #include "RenderablePlayer.h"
 
 #include "shader/ShaderParamVector4.h"
-#include "ColorConstants.h"
 
 #include "math/BoundingBox3D.h"
 #include "math/Values.h"

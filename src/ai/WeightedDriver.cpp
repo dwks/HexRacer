@@ -27,33 +27,51 @@ WeightedDriver::WeightedDriver(Object::Player *player) : Driver(player) {
 const World::PlayerIntention &WeightedDriver::getAction() {
     Object::Player *player = getPlayer();
     const Map::PathNode *current = player->getPathTracker()->getCurrentNode();
-    
+
     Map::PathNode *next;
 	Map::PathNode *next2;
+	Map::PathNode *previous;
     
     // find the next node
-    int random = player->getID() % current->getNextNodes().size();
+	if (current->getProgress() < player->getPathTracker()->getLapProgress()) {
+		int random = player->getID() % current->getNextNodes().size();
+		current = current->getNextNodes()[random];
+	}
+
+	previous = current->getPreviousNodes()[0];
+
+	int random = player->getID() % current->getNextNodes().size();
     next = current->getNextNodes()[random];
 	random = player->getID() % next->getNextNodes().size();
-	next2 = next->getNextNodes()[random];
+    next2 = next->getNextNodes()[random];
+	
     
     // calculate various vectors
     Math::Point playerFacing = player->getPhysicalObject()->getFrontDirection();
     Math::Point playerRight = player->getPhysicalObject()->getRightDirection();
-    
-    Math::Point pathDirection = next->getPosition() - current->getPosition();
 
+	Math::Point playerPos = player->getPosition();
+
+	double playerSpeed = player->getPhysicalObject()->getLinearSpeed();
+    
 	double beeline_u = 1.0-Math::bound(
-		player->getPosition().distance(next->getPosition())/20.0,
+		playerPos.distance(current->getPosition())*GET_SETTING("ai.pathlookaheadfactor", 0.1),
 		0.0, 1.0);
+
 	Math::Point beelinePoint = next->getPosition()*(1.0-beeline_u)+next2->getPosition()*beeline_u;
-	Math::Point beelineDirection = (beelinePoint-player->getPosition()).normalized();
-    pathDirection.normalize();
+	Math::Point beelineDirection = (beelinePoint-playerPos).normalized();
+
+	Math::Point pathDirection = (current->getPosition() - previous->getPosition()).normalized() * 0.5
+		+ (next->getPosition() - current->getPosition()).normalized() * 0.5;
+	pathDirection.normalize();
     
     // compute error due to being far away from this path edge
-    double turnSign = -Math::sign(playerRight.dotProduct(pathDirection));
+    double pathTurnSign = -Math::sign(playerRight.dotProduct(pathDirection));
 
-	//double turnSign;
+	double distanceOff = player->getPathTracker()->getProgressPosition().distance(playerPos);
+	distanceOff *= GET_SETTING("ai.pathdistancefactor", 1.0);
+
+	double angleTurnSign = -Math::sign(playerRight.dotProduct(beelineDirection));
 
 	double beelineAngle = Math::Geometry::vectorTo2DAngle(beelineDirection, Math::Y_AXIS);
 	double facingAngle = Math::Geometry::vectorTo2DAngle(playerFacing, Math::Y_AXIS);
@@ -62,31 +80,28 @@ const World::PlayerIntention &WeightedDriver::getAction() {
 	double cwAngle = std::fabs(Math::minimum(beelineAngle, facingAngle)+((PI*2.0)-Math::maximum(beelineAngle, facingAngle)));
 	double offAngle = Math::minimum(ccwAngle, cwAngle);
 
-	/*
-	if (cwAngle > ccwAngle)
-		turnSign = 1.0;
-	else
-		turnSign =-1.0;
-	*/
+	double offAngleFactor = (offAngle/PI) - GET_SETTING("ai.minangleoffset", 0.1);
+	double angleFactor;
 
-	double offAngleFactor = offAngle/PI;
-	double angleFactor = 1.0+(offAngleFactor*offAngleFactor)*GET_SETTING("ai.pathanglefactor", 1.0);
+	if (offAngleFactor < 0.0) {
+		offAngleFactor = 0.0;
+		angleFactor = 0.0;
+	}
+	else
+		angleFactor = offAngleFactor*GET_SETTING("ai.pathanglefactor", 1.0);
     
-	/*
-    Math::Point intersection = Math::Geometry::intersectLine3D(
-        current->getPosition(),
-        next->getPosition(),
-        player->getPosition());
-		*/
-    
-	double distanceOff = (player->getPathTracker()->getProgressPosition() - player->getPosition()).length();
-	distanceOff *= GET_SETTING("ai.pathdistancefactor", 1.0);
     
     // compute error due to facing in the wrong direction
     //double beelineAngle = playerRight.dotProduct(beelineDirection);
+
+	double slowDownFactor = playerSpeed-GET_SETTING("ai.minslowdownspeed", 10.0);
+	if (slowDownFactor < 0.0)
+		slowDownFactor = 0.0;
+	else
+		slowDownFactor *= GET_SETTING("ai.angleslowdownfactor", 1.0);
     
-    intention.setTurn(turnSign * distanceOff * angleFactor * 0.5);
-	intention.setAccel(Math::bound(1.0-(offAngle/(PI*2.0)), -0.5, 1.0));
+	intention.setTurn(Math::bound((pathTurnSign * distanceOff) + (angleTurnSign * angleFactor), -1.0, 1.0));
+	intention.setAccel(Math::bound(2.0-(offAngleFactor*slowDownFactor), -1.0, 1.0));
     
     detectSittingStill();
 	detectPaintAhead();
@@ -104,7 +119,7 @@ void WeightedDriver::detectSittingStill() {
 	nearestPathNode = player->getPathTracker()->getCurrentNode();
 
 	if (nearestPathNode != NULL && nearestPathNode == last_pathnode
-		&& player->getPhysicalObject()->getLinearVelocity().lengthSquared() < 4.0) {
+		&& player->getPhysicalObject()->getLinearSpeed() < 4.0) {
         unsigned long now = Misc::Sleeper::getTimeMilliseconds();
         
         if(!sittingStill) {
@@ -127,9 +142,12 @@ void WeightedDriver::detectPaintAhead() {
 	if (!paintManager)
 		return;
 
-	Math::Point headingDir = getPlayer()->getPhysicalObject()->getLinearVelocity()*GET_SETTING("ai.paintlookahead", 2.0);
-	double dist = headingDir.length();
+	double paintLookAhead = GET_SETTING("ai.paintlookahead", 2.0);
 	double minLookAhead = GET_SETTING("ai.minlookahead", 2.0);
+
+	Math::Point headingDir = getPlayer()->getPhysicalObject()->getLinearVelocity()*paintLookAhead;
+	double dist = getPlayer()->getPhysicalObject()->getLinearSpeed()*headingDir.length();
+
 	if (dist < minLookAhead) {
 		headingDir /= dist;
 		headingDir *= minLookAhead;

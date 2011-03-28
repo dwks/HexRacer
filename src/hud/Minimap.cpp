@@ -1,6 +1,6 @@
 #include "Minimap.h"
 #include "opengl/TextureLoading.h"
-#include "render/ColorConstants.h"
+#include "map/Teams.h"
 #include "shader/ShaderProgram.h"
 #include "opengl/Color.h"
 #include "opengl/GeometryDrawing.h"
@@ -133,7 +133,7 @@ namespace HUD {
 				Math::Point v3 = player_pos-player_right_dir*player_width
 					-player_dir*player_length;
 				
-				OpenGL::Color player_color = Render::ColorConstants::playerColor(player->getTeamID());
+				OpenGL::Color player_color = Map::Teams::teamColor(player->getTeamID());
 
 				OpenGL::Color::glColor(player_color);
 				glBegin(GL_TRIANGLES);

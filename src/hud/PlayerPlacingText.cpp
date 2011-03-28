@@ -23,12 +23,20 @@ namespace HUD {
 			
 				std::stringstream stream;
 				stream << (placing+1);
-				switch ((placing+1) % 10) {
-					case 0: case 4: case 5: case 6: case 7: case 8: case 9:
-						stream << "th"; break;
-					case 1: stream << "st"; break;
-					case 2: stream << "nd"; break;
-					case 3: stream << "rd"; break;
+
+				if (placing >= 9 && placing <= 19) {
+					stream << "th";
+				}
+				else {
+
+					switch ((placing+1) % 10) {
+						case 0: case 4: case 5: case 6: case 7: case 8: case 9:
+							stream << "th"; break;
+						case 1: stream << "st"; break;
+						case 2: stream << "nd"; break;
+						case 3: stream << "rd"; break;
+					}
+
 				}
 
 				placingString = stream.str();

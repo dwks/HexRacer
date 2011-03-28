@@ -1,6 +1,7 @@
 #ifndef PROJECT_MAP__RACE_RESULTS_H
 #define PROJECT_MAP__RACE_RESULTS_H
 
+#include "Teams.h"
 #include <map>
 #include <vector>
 
@@ -26,7 +27,8 @@ private:
         ar & winningTeam;
     }
 private:
-	int teamPoints [MAX_TEAMS];
+	int teamPoints [Teams::MAX_TEAMS];
+
     std::vector<int> playerRank;
 	std::map<int, int> playerPoints;
 	int winningTeam;

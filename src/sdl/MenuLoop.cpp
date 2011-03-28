@@ -31,6 +31,7 @@ void MenuLoop::construct() {
 
 void MenuLoop::handleEvent(SDL_Event *event) {
     guiInputManager->handleEvent(event);
+	menuBackground->handleEvent(event);
 }
 
 void MenuLoop::render() {
