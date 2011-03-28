@@ -6,6 +6,9 @@
 
 #include "event/Enabler.h"
 #include "event/RaceFinished.h"
+#include "event/BasicWorldConstructed.h"
+
+#include "world/PlayerManager.h"
 
 namespace Project {
 namespace GUI {
@@ -13,8 +16,10 @@ namespace GUI {
 class FinishedProxy : public Widget::EventProxy, public Event::Enabler {
 protected:
     void handleRaceFinished(Event::RaceFinished *event);
+    void handleBasicWorldConstructed(Event::BasicWorldConstructed *event);
 private:
     Widget::WidgetBase *finished;
+    World::PlayerManager *playerManager;
 public:
     FinishedProxy(Widget::WidgetBase *finished);
     

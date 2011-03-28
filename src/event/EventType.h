@@ -46,6 +46,7 @@ public:
         SET_CHECKING_NETWORK,
         RACE_FINISHED,
         MODIFY_CAMERA,
+        BASIC_WORLD_CONSTRUCTED,
         TYPES
     };
 };

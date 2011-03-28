@@ -6,6 +6,7 @@
 #include "settings/ProgramSettings.h"
 
 #include "event/EventSystem.h"
+#include "event/BasicWorldConstructed.h"
 
 #include "timing/AccelControl.h"
 
@@ -98,6 +99,8 @@ void GameWorld::constructAfterConnect(Map::HRMap *map) {
         soundSystem->initialize(getWorldManager(),getPlayerManager());
     }
 #endif
+    
+    EMIT_EVENT(new Event::BasicWorldConstructed(basicWorld.get()));
 }
 
 void GameWorld::checkNetwork() {
