@@ -1,12 +1,10 @@
 #ifndef PROJECT_MAP__MAP_FILE_H
 #define PROJECT_MAP__MAP_FILE_H
 
-#include "mesh/MeshLoader.h"
-#include "render/RenderList.h"
+//#include "mesh/MeshLoader.h"
 #include "opengl/TextureCube.h"
 #include "opengl/CubeMapFile.h"
-#include "opengl/Light.h"
-#include "mesh/TransformedMesh.h"
+//#include "opengl/Light.h"
 #include "mesh/MeshGroup.h"
 #include "paint/PaintCell.h"
 #include "paint/PaintCellInfo.h"
@@ -14,26 +12,19 @@
 #include "math/HexGrid.h"
 #include "math/HexHeightMap.h"
 #include "misc/ProgressTracker.h"
-#include "PathNode.h"
-#include "MeshInstance.h"
 #include "MapOptions.h"
+#include "HRMapObjects.h"
 #include <string>
 #include <vector>
 
 #define HRMAP_NUM_MESHES 5
-#define HRMAP_VERSION "0.2.0"
+#define HRMAP_VERSION "0.2.1"
 #define HRMAP_VERSION_LABEL "version"
-#define HRMAP_PROPMESH_LABEL "propMesh"
-#define HRMAP_LIGHT_LABEL "light"
-#define HRMAP_PATHNODE_LABEL "pathNode"
-#define HRMAP_STARTPOINT_LABEL "startPoint"
-#define HRMAP_MESHINSTANCE_LABEL "meshInstance"
 #define HRMAP_FINISHPLANE_LABEL "finishPlane"
 #define HRMAP_MAP2DFILE_LABEL "map2DFile"
 #define HRMAP_MAP2DCENTER_LABEL "map2DCenter"
 #define HRMAP_MAP2DWIDTH_LABEL "map2DWidth"
 #define HRMAP_MAP2DHEIGHT_LABEL "map2DHeight"
-#define HRMAP_PAINTCELL_LABEL "paintCell"
 #define HRMAP_HEXGRID_LABEL "hexGrid"
 #define HRMAP_PAINTHEIGHTMAP_LABEL "paintHeightMap"
 
@@ -46,20 +37,15 @@ private:
 	Mesh::MeshGroup* mapMesh[HRMAP_NUM_MESHES];
 	std::string mapMeshFile[HRMAP_NUM_MESHES];
 
-	Render::RenderList* trackRenderable;
 	std::string version;
 	std::string filename;
 	OpenGL::CubeMapFile* cubeMapFile;
 	OpenGL::TextureCube* cubeMap;
-	std::vector<OpenGL::Light*> lights;
-	std::vector<PathNode*> pathNodes;
-	std::vector<Math::Vertex3D*> startPoints;
-	std::vector<MeshInstance*> meshInstances;
+
 	Math::BoundingPlane3D finishPlane;
 	Math::BoundingBox3D mapBoundingBox;
 
-	std::vector<std::string> propMeshNames;
-	std::vector<std::string> propMeshFilenames;
+	HRMapObjects mapObjects;
 
 	std::string map2DFile;
 	Math::Point map2DCenter;
@@ -83,7 +69,6 @@ public:
 	bool loadMapFile(std::string _filename, Misc::ProgressTracker* progress_tracker = NULL);
 	bool saveMapFile(std::string _filename, Misc::ProgressTracker* progress_tracker = NULL);
 	Mesh::MeshGroup* getMapMesh(MeshType type) const { return mapMesh[static_cast<int>(type)]; }
-	Render::RenderList* getTrackRenderable() const { return trackRenderable; }
 	OpenGL::TextureCube* getCubeMap();
 	const OpenGL::CubeMapFile* getCubeMapFile() const { return cubeMapFile; }
 	void setCubeMapFile(const OpenGL::CubeMapFile& file);
@@ -111,31 +96,9 @@ public:
 	void setMap2DWidth(double width) { map2DWidth = width; }
 	void setMap2DHeight(double height) { map2DHeight = height; }
 
-	bool addPropMesh(std::string name, std::string filename);
-	bool removePropMesh(int index);
-	std::vector<std::string> getPropMeshNames() { return propMeshNames; }
-	std::string getPropMeshName(int index);
+	HRMapObjects& getMapObjects() { return mapObjects; }
 
-	const std::vector<OpenGL::Light*>& getLights() const { return lights; }
-	void addLight(OpenGL::Light* light);
-	void removeLight(OpenGL::Light* light);
-	void clearLights();
-
-	const std::vector<PathNode*>& getPathNodes() const { return pathNodes; }
-	void addPathNode(PathNode* node);
-	void removePathNode(PathNode* node);
-	void clearPathNodes();
-
-	const std::vector<Math::Vertex3D*>& getStartPoints() const { return startPoints; }
-	void addStartPoint(Math::Vertex3D* point);
-	void removeStartPoint(Math::Vertex3D* point);
-	void clearStartPoints();
 	Math::BoundingPlane3D& getFinishPlane() { return finishPlane; }
-
-	const std::vector<MeshInstance*> getMeshInstances() const { return meshInstances; }
-	bool addMeshInstance(MeshInstance* mesh);
-	void removeMeshInstance(MeshInstance* mesh);
-	void clearMeshInstances();
 
 	Math::BoundingBox3D getMapBoundingBox() const { return mapBoundingBox; }
 
@@ -155,6 +118,9 @@ private:
 	void clearCollisionTree();
 	void updateDimensions();
 	void updateHexGrid();
+	
+	void loadHeightMap(std::ifstream& stream, Math::HexHeightMap& height_map, Misc::ProgressTracker* progress_tracker = NULL);
+	void saveHeightMap(std::ofstream& stream, Math::HexHeightMap& height_map, Misc::ProgressTracker* progress_tracker = NULL);
 
 };
 

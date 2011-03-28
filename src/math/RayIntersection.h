@@ -20,7 +20,7 @@ public:
 		t = _t;
 	}
 
-	bool operator < (const RayIntersection i) const {
+	bool operator < (const RayIntersection& i) const {
 		return (t < i.t);
 	}
 	

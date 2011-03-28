@@ -41,6 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="src;include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_WIN32_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,6 +63,8 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="lib"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -115,10 +118,11 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				AdditionalIncludeDirectories="src;include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_WIN32_WINDOWS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -134,7 +138,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
-				LinkIncremental="1"
+				LinkIncremental="0"
+				AdditionalLibraryDirectories="lib"
+				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames="MSVCRTD"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -277,10 +284,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ColorConstants.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\connection\ConstructedTCPSocket.cpp"
 				>
 			</File>
@@ -349,6 +352,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\GameStageChanged.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Geometry.cpp"
 				>
 			</File>
@@ -374,6 +381,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\HRMap.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\HRMapObjects.cpp"
 				>
 			</File>
 			<File
@@ -629,6 +640,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\RaceResults.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Ray.cpp"
 				>
 			</File>
@@ -769,6 +784,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\Teams.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\TextureCube.cpp"
 				>
 			</File>
@@ -854,6 +873,10 @@
 			</File>
 			<File
 				RelativePath=".\src\object\WorldManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\WorldSetup.cpp"
 				>
 			</File>
 			<Filter
@@ -1015,10 +1038,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\render\ColorConstants.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\connection\ConstructedTCPSocket.h"
 				>
 			</File>
@@ -1087,6 +1106,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\GameStageChanged.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Geometry.h"
 				>
 			</File>
@@ -1112,6 +1135,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\HRMap.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\HRMapObjects.h"
 				>
 			</File>
 			<File
@@ -1371,6 +1398,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\RaceResults.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\Ray.h"
 				>
 			</File>
@@ -1527,6 +1558,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\Teams.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\TextureCube.h"
 				>
 			</File>
@@ -1612,6 +1647,10 @@
 			</File>
 			<File
 				RelativePath=".\src\object\WorldManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\WorldSetup.h"
 				>
 			</File>
 			<Filter

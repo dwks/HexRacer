@@ -62,6 +62,8 @@ MapEditorWidget::MapEditorWidget(QWidget *parent, const QGLWidget * shareWidget,
 
 	cameraMovedSinceClick = false;
 
+	loading = false;
+
 	collisionTree = NULL;
 }
 
@@ -138,6 +140,9 @@ void MapEditorWidget::resizeGL(int w, int h) {
 
 void MapEditorWidget::paintGL() {
 
+	if (loading)
+		return;
+
 	camera->glProjection();
 
 	glMatrixMode(GL_MODELVIEW);
@@ -156,6 +161,7 @@ void MapEditorWidget::paintGL() {
 		//Activate all lights visible to the camera
 		lightManager->activateIntersectingLights(*camera->getFrustrum());
 		glEnable(GL_LIGHTING);
+		renderer->getRenderSettings()->setAllowDisplayLists(true);
 	}
 
 	renderer->setCubeMap(map->getCubeMap());
@@ -165,7 +171,7 @@ void MapEditorWidget::paintGL() {
 
 	if (!advancedRendering) {
 		renderer->setRenderProperties(normalRenderProperties);
-		//rootRenderable.getRenderProperties()->setShaderOverride(true);
+		renderer->getRenderSettings()->setAllowDisplayLists(false);
 	}
 
 	for (int i = 0; i < HRMap::NUM_MESHES; i++) {
@@ -185,25 +191,14 @@ void MapEditorWidget::paintGL() {
 	if (map->getCubeMap())
 		background->render(renderer);
 
+	renderer->getRenderSettings()->setAllowDisplayLists(false);
+
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
 
 	//Draw Paint
 	if (showPaint) {
 		Color::glColor(Color::YELLOW);
-		/*
-		const vector<PaintCell*>& paint_cells = map->getPaintCells();
-		for (unsigned int i = 0; i < paint_cells.size(); i++) {
-			PaintCell* cell = paint_cells[i];
-			glBegin(GL_TRIANGLE_FAN);
-			OpenGL::MathWrapper::glVertex(cell->center);
-			for (int j = 0; j < Paint::PaintCell::CELL_VERTICES; j++) {
-				OpenGL::MathWrapper::glVertex(*cell->vertex[j]);
-			}
-			OpenGL::MathWrapper::glVertex(*cell->vertex[0]);
-			glEnd();
-		}
-		*/
 		if (paintList > 0)
 			glCallList(paintList);
 	}
@@ -358,6 +353,9 @@ void MapEditorWidget::mouseClicked(Qt::MouseButton button, Point click_position,
 
 void MapEditorWidget::mouseDragged(Qt::MouseButton button, Point current_position, Point click_position, Point previous_position, Qt::KeyboardModifiers modifiers) {
 
+	if (loading)
+		return;
+
 	Point delta = current_position-previous_position;
 
 	if (button == MAP_EDITOR_MAIN_BUTTON) {
@@ -430,6 +428,10 @@ void MapEditorWidget::mouseDragged(Qt::MouseButton button, Point current_positio
 }
 
 void MapEditorWidget::mouseReleased(Qt::MouseButton button, Point release_position, Point click_position, Qt::KeyboardModifiers modifiers) {
+	
+	if (loading)
+		return;
+	
 	bool moved = cameraMovedSinceClick || (release_position.distanceSquared(click_position) >= MAP_EDITOR_NO_DRAG_CLICK_THRESHHOLD);
 
 	if (button == MAP_EDITOR_EDIT_BUTTON) {
@@ -566,21 +568,27 @@ void MapEditorWidget::newMap() {
 		mapObjectsChanged(static_cast<MapObject::ObjectType>(i));
 	}
 	mapCollisionChanged();
+	propMeshesChanged(map->getMapObjects().getPropMeshNames());
 	updateGL();
 }
 
 void MapEditorWidget::loadMap(string filename) {
 
+	loading = true;
+
 	progressBar.open();
 	map->loadMapFile(filename, &progressBar);
 	progressBar.close();
+
+	loading = false;
 
 	for (int i = 0; i < MapObject::NUM_OBJECT_TYPES; i++) {
 		MapObject::ObjectType type = static_cast<MapObject::ObjectType>(i);
 		mapObjectsChanged(type);
 	}
+
 	mapCollisionChanged();
-	propMeshesChanged(map->getPropMeshNames());
+	propMeshesChanged(map->getMapObjects().getPropMeshNames());
 	regenPaintList();
 	updateGL();
 }
@@ -615,26 +623,26 @@ void MapEditorWidget::mapObjectsChanged(MapObject::ObjectType type) {
 
 	if (type == MapObject::LIGHT) {
 		lightManager->clear();
-		const vector<Light*>& lights = map->getLights();
+		const vector<Light*>& lights = map->getMapObjects().getLights();
 		for (unsigned int i = 0; i < lights.size(); i++) {
 			lightManager->addLight(lights[i], false, true);
 			mapObjects[type_index].append(new LightObject(lights[i]));
 		}
 	}
 	else if (type == MapObject::PATH_NODE) {
-		const vector<PathNode*>& nodes = map->getPathNodes();
+		const vector<PathNode*>& nodes = map->getMapObjects().getPathNodes();
 		for (unsigned int i = 0; i < nodes.size(); i++) {
 			mapObjects[type_index].append(new PathNodeObject(nodes[i]));
 		}
 	}
 	else if (type == MapObject::START_POINT) {
-		const vector<Vertex3D*>& points = map->getStartPoints();
+		const vector<Vertex3D*>& points = map->getMapObjects().getStartPoints();
 		for (unsigned int i = 0; i < points.size(); i++) {
 			mapObjects[type_index].append(new StartPointObject(points[i]));
 		}
 	}
 	else if (type == MapObject::MESH_INSTANCE) {
-		const vector<MeshInstance*>& meshes = map->getMeshInstances();
+		const vector<MeshInstance*>& meshes = map->getMapObjects().getMeshInstances();
 		for (unsigned int i = 0; i < meshes.size(); i++) {
 			if (meshes[i]->getMeshGroup()) {
 				TransformedMesh* transformed_mesh = new TransformedMesh(meshes[i]->getMeshGroup(), meshes[i]->getTransformation());
@@ -660,26 +668,26 @@ void MapEditorWidget::addLight(Point position) {
 		new_light->setStrength(20.0f);
 
 	lightManager->addLight(new_light);
-	map->addLight(new_light);
+	map->getMapObjects().addLight(new_light);
 
 	mapObjects[static_cast<int>(MapObject::LIGHT)].append(new LightObject(new_light));
 }
 
 void MapEditorWidget::addPathNode(Point position) {
 	PathNode* new_node = new PathNode(position);
-	map->addPathNode(new_node);
+	map->getMapObjects().addPathNode(new_node);
 	mapObjects[static_cast<int>(MapObject::PATH_NODE)].append(new PathNodeObject(new_node));
 }
 void MapEditorWidget::addStartPoint(Point position) {
 	Vertex3D* new_point = new PathNode(position);
-	map->addStartPoint(new_point);
+	map->getMapObjects().addStartPoint(new_point);
 	mapObjects[static_cast<int>(MapObject::START_POINT)].append(new StartPointObject(new_point));
 }
 void MapEditorWidget::addMeshInstance(Point position) {
 
 	if (propMeshIndex >= 0) {
 
-		MeshInstance* instance = new MeshInstance(map->getPropMeshName(propMeshIndex), SimpleTransform(position));
+		MeshInstance* instance = new MeshInstance(map->getMapObjects().getPropMeshName(propMeshIndex), SimpleTransform(position));
 
 		if (selectedObject && editObjectType == MapObject::MESH_INSTANCE) {
 			MeshInstance* copy_instance = ((MeshInstanceObject*)selectedObject)->getMeshInstance();
@@ -692,7 +700,7 @@ void MapEditorWidget::addMeshInstance(Point position) {
 			instance->setAmbientTint(copy_instance->getAmbientTint());
 		}
 
-		if (instance->getMeshGroup() && map->addMeshInstance(instance)) {
+		if (instance->getMeshGroup() && map->getMapObjects().addMeshInstance(instance)) {
 			TransformedMesh* transformed_mesh = new TransformedMesh(instance->getMeshGroup(), instance->getTransformation());
 			mapObjects[static_cast<int>(MapObject::MESH_INSTANCE)].append(new MeshInstanceObject(instance, transformed_mesh));
 		}
@@ -793,7 +801,7 @@ void MapEditorWidget::generatePaint() {
 
 void MapEditorWidget::generatePathProgress() {
 
-	const vector<PathNode*>& path_nodes = map->getPathNodes();
+	const vector<PathNode*>& path_nodes = map->getMapObjects().getPathNodes();
 	if (path_nodes.empty())
 		return;
 
@@ -962,6 +970,9 @@ MapObject* MapEditorWidget::getClickedObject(double u, double v, bool rerender) 
 }
 void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buffer) {
 
+	if (loading)
+		return;
+
 	int type_index = static_cast<int>(type);
 
 	switch (type) {
@@ -1052,9 +1063,6 @@ void MapEditorWidget::renderObjects(MapObject::ObjectType type, bool object_buff
 			for (int i = 0; i < mapObjects[type_index].size(); i++) {
 
 				QList<MapObject*> v = mapObjects[type_index];
-				if (v.size() > 3) {
-					int b = 5;
-				}
 
 				if (object_buffer) {
 					objectBufferProperties->setColor(glBufferIndexColor(i));
@@ -1154,16 +1162,16 @@ void MapEditorWidget::deleteSelected() {
 
 		switch (editObjectType) {
 			case MapObject::LIGHT:
-				map->removeLight(((LightObject*)selectedObject)->getLight());
+				map->getMapObjects().removeLight(((LightObject*)selectedObject)->getLight());
 				break;
 			case MapObject::PATH_NODE:
-				map->removePathNode(((PathNodeObject*)selectedObject)->getNode());
+				map->getMapObjects().removePathNode(((PathNodeObject*)selectedObject)->getNode());
 				break;
 			case MapObject::START_POINT:
-				map->removeStartPoint(((StartPointObject*)selectedObject)->getStartPoint());
+				map->getMapObjects().removeStartPoint(((StartPointObject*)selectedObject)->getStartPoint());
 				break;
 			case MapObject::MESH_INSTANCE:
-				map->removeMeshInstance(((MeshInstanceObject*)selectedObject)->getMeshInstance());
+				map->getMapObjects().removeMeshInstance(((MeshInstanceObject*)selectedObject)->getMeshInstance());
 				break;
 			default:
 				return;
@@ -1178,16 +1186,16 @@ void MapEditorWidget::deleteAll() {
 
 		switch (editObjectType) {
 			case MapObject::LIGHT:
-				map->clearLights();
+				map->getMapObjects().clearLights();
 				break;
 			case MapObject::PATH_NODE:
-				map->clearPathNodes();
+				map->getMapObjects().clearPathNodes();
 				break;
 			case MapObject::START_POINT:
-				map->clearStartPoints();
+				map->getMapObjects().clearStartPoints();
 				break;
 			case MapObject::MESH_INSTANCE:
-				map->clearMeshInstances();
+				map->getMapObjects().clearMeshInstances();
 				break;
 			default:
 				return;
@@ -1314,14 +1322,14 @@ void MapEditorWidget::setPropMeshIndex(int index) {
 }
 
 void MapEditorWidget::addPropMesh(string name, string filename) {
-	if (map->addPropMesh(name, filename)) {
+	if (map->getMapObjects().addPropMesh(name, filename)) {
 		propMeshAdded(name);
 	}
 }
 void MapEditorWidget::removePropMesh() {
-	if (map->removePropMesh(propMeshIndex)) {
+	if (map->getMapObjects().removePropMesh(propMeshIndex)) {
 		mapObjectsChanged(MapObject::MESH_INSTANCE);
-		propMeshesChanged(map->getPropMeshNames());
+		propMeshesChanged(map->getMapObjects().getPropMeshNames());
 		updateGL();
 	}
 }

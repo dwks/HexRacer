@@ -11,7 +11,7 @@ enum Axis {X_AXIS, Y_AXIS, Z_AXIS};
 /** Represents a four-dimensional affine point.
 */
 class Point {
-protected:
+private:
     double xp, yp, zp, wp;
 public:
     Point() : xp(0.0), yp(0.0), zp(0.0), wp(0.0) {}
@@ -60,6 +60,8 @@ public:
         same direction as this had originally.
     */
     void normalize();
+
+	void postNormalize();
     
     /** Applies a cap to restrict this Point such that the absolute values of
         the components are not greater than those in @a restriction.

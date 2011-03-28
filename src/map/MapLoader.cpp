@@ -1,5 +1,6 @@
 #include "MapLoader.h"
 #include "HRMap.h"
+#include "mesh/TransformedMesh.h"
 
 #include "physics/PhysicsWorld.h"
 #include "physics/PhysicsFactory.h"
@@ -11,28 +12,22 @@
 namespace Project {
 namespace Map {
 
-void MapLoader::load(HRMap *map, Misc::ProgressTracker* progressTracker, Render::RenderList *mapRenderable, Paint::PaintManager* paintManager) {
-    //Instantiate the map
-    /*map = new Map::HRMap();
-    std::string mapName = GET_SETTING("map", "data/testtrack.hrm");
-    if(map->loadMapFile(mapName)) {
-        LOG(WORLD, "Loaded map file " << mapName);
-    }
-    else {
-        LOG(WORLD, "Unable to load map " << mapName);
-    }*/
+MapLoader::~MapLoader() {
+	unload();
+}
 
-	mapLoadTracker = progressTracker;
+void MapLoader::load(HRMap *map, Misc::ProgressTracker* progressTracker, Render::RenderList *mapRenderable, Paint::PaintManager* paintManager) {
+
 	if (progressTracker) {
 		progressTracker->setCurrentStage("Loading map collision...");
-		progressTracker->setTotalSteps(nonPaintProgress+paintProgress);
+		progressTracker->setTotalSteps(Map::HRMap::NUM_MESHES);
 	}
     
     //Process map meshes
     for (int i = 0; i < Map::HRMap::NUM_MESHES; i++) {
 
 		if (progressTracker)
-			progressTracker->setCurrentStep( (i/Map::HRMap::NUM_MESHES)*nonPaintProgress/2 );
+			progressTracker->setCurrentStep(i);
 
         HRMap::MeshType type = static_cast<Map::HRMap::MeshType>(i);
         if (map->getMapMesh(type)) {
@@ -44,9 +39,11 @@ void MapLoader::load(HRMap *map, Misc::ProgressTracker* progressTracker, Render:
 
             //Add solid meshes to the physics
             if (HRMap::meshIsSolid(type)) {
+				std::vector<Math::Triangle3D> triangles;
+				map->getMapMesh(type)->appendTriangles(triangles);
+
                 Physics::PhysicsWorld::getInstance()->registerRigidBody(
-                    Physics::PhysicsFactory::createRigidTriMesh(
-                        map->getMapMesh(type)->getTriangles()));
+                    Physics::PhysicsFactory::createRigidTriMesh(triangles));
             }
 
         }
@@ -54,11 +51,17 @@ void MapLoader::load(HRMap *map, Misc::ProgressTracker* progressTracker, Render:
     }
     
     //Process mesh instances
-    std::vector<Map::MeshInstance*> instances = map->getMeshInstances();
-    for (unsigned i = 0; i < instances.size(); i++) {
+    std::vector<Map::MeshInstance*> instances = map->getMapObjects().getMeshInstances();
+
+	if (progressTracker) {
+		progressTracker->setCurrentStage("Processing mesh instances...");
+		progressTracker->setTotalSteps(static_cast<int>(instances.size()));
+	}
+
+    for (unsigned int i = 0; i < instances.size(); i++) {
 
 		if (progressTracker)
-			progressTracker->setCurrentStep( (i/instances.size())*(nonPaintProgress * 1.5)/2 );
+			progressTracker->setCurrentStep(static_cast<int>(i));
         
         Mesh::TransformedMesh* transformed_mesh = new Mesh::TransformedMesh(
             instances[i]->getMeshGroup(), instances[i]->getTransformation());
@@ -84,19 +87,22 @@ void MapLoader::load(HRMap *map, Misc::ProgressTracker* progressTracker, Render:
         
         //If the instance is solid static, add it to the physics
         if (instances[i]->getType() == Map::MeshInstance::SOLID_STATIC) {
+
+			std::vector<Math::Triangle3D> triangles;
+			transformed_mesh->appendTransformedTriangles(triangles);
+
             Physics::PhysicsWorld::getInstance()->registerRigidBody(
-                Physics::PhysicsFactory::createRigidTriMesh(
-                    transformed_mesh->getTransformedTriangles()));
+                Physics::PhysicsFactory::createRigidTriMesh(triangles));
         }
     }
 
 
 	if (paintManager) {
-		paintManager->setMap(map, this);
+		paintManager->setMap(map, progressTracker);
+		LOG(WORLD, "Freeing paint info...");
 		map->clearPaint();
+		LOG(WORLD, "Paint info freed.");
 	}
-
-	mapLoadTracker = NULL;
 }
 
 void MapLoader::unload() {
@@ -104,11 +110,6 @@ void MapLoader::unload() {
 		delete meshTints[i];
 	}
 	meshTints.clear();
-}
-
-void MapLoader::setCurrentStep(int current_step) {
-	if (mapLoadTracker)
-		mapLoadTracker->setCurrentStep(nonPaintProgress+(current_step/totalPaintSteps)*paintProgress);
 }
 
 }  // namespace Map

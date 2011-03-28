@@ -51,6 +51,13 @@ void BoxWidget::render() {
             dimensions.getY() * 0.3);
     }
     
+    if(cornerSize.getX() > 0.05) {
+        cornerSize *= 0.05 / cornerSize.getX();
+    }
+    if(cornerSize.getY() > 0.05) {
+        cornerSize *= 0.05 / cornerSize.getY();
+    }
+    
     WidgetPoint ur = corner.plusX(dimensions.getX() - cornerSize.getX());
     WidgetPoint ll = corner.plusY(dimensions.getY() - cornerSize.getY());
     WidgetPoint lr = corner + dimensions - cornerSize;

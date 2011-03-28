@@ -9,6 +9,7 @@ namespace Shader {
 
 	ShaderParamSetter::ShaderParamSetter() {
 		shaderProgram = NULL;
+		shaderIndex =-1;
 		hasNormalMap = false;
 	}
 
@@ -167,6 +168,9 @@ namespace Shader {
 			hasNormalMap && shaderProgram &&
 			standardAttributeLocations[static_cast<int>(ShaderManager::AV3_TANGENT)] >= 0 &&
 			standardAttributeLocations[static_cast<int>(ShaderManager::AV3_BITANGENT)] >= 0 );
+	}
+	bool ShaderParamSetter::shaderIndexActive(int index) const {
+		return (index == shaderIndex || (index < 0 && shaderProgram == NULL));
 	}
 }  // namespace Render
 }  // namespace Project

@@ -68,6 +68,16 @@ private:
 	double traction;
     WarpTracker warpTracker;
     bool sliding;
+
+	double linearSpeed;
+	double angularSpeed;
+	Math::Point origin;
+	Math::Point frontDirection;
+	Math::Point rightDirection;
+	Math::Point upDirection;
+	Math::Point linearVelocity;
+	Math::Point angularVelocity;
+
 public:
     PhysicalPlayer() : rigidBody(NULL), onGround(false), speedBoost(1.0),
         traction(1.0), sliding(false) {}
@@ -95,14 +105,17 @@ public:
     void constructRigidBody(const Math::Point &position);
     void constructRigidBody(const Math::Matrix &transformation);
     
-    virtual Math::Point getOrigin() const;
     virtual Math::Matrix getTransformation() const;
-    virtual Math::Point getLinearVelocity() const;
-    virtual Math::Point getAngularVelocity() const;
+	virtual Math::Point getOrigin() const;// { return origin; }
+	virtual Math::Point getLinearVelocity() const { return linearVelocity; }
+	virtual Math::Point getAngularVelocity() const { return angularVelocity; }
     
-    virtual Math::Point getFrontDirection() const;
-    virtual Math::Point getRightDirection() const;
-    virtual Math::Point getUpDirection() const;
+	virtual Math::Point getFrontDirection() const { return frontDirection; }
+	virtual Math::Point getRightDirection() const { return rightDirection; }
+	virtual Math::Point getUpDirection() const { return upDirection; }
+
+	virtual double getLinearSpeed() const { return linearSpeed; }
+	virtual double getAngularSpeed() const { return angularSpeed; }
     
     /** Applies acceleration in the range [-1.0,+1.0], where +1.0 is full
         throttle forwards and -1.0 is backwards.
@@ -127,6 +140,9 @@ public:
         const Math::Point &angularVelocity);
     
     WarpTracker *getWarpTracker() { return &warpTracker; }
+
+	void updatePhysicalInfo();
+
 };
 
 }  // namespace Physics

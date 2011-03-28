@@ -19,6 +19,7 @@ private:
 	int shadowMapHeight;
 
 	bool redrawMode;
+	bool allowDisplayLists;
 	bool applyToShadowMatrix;
 
 public:
@@ -31,20 +32,24 @@ public:
 	RenderSettings();
 
 	//Config file set constants
-	short getGraphicsQuality() { return graphicsQuality; }
-	short getMaxLights();
-	bool getBloomEnabled() { return bloomLighting; }
-	int getBloomWidth() { return bloomWidth; }
-	int getBloomHeight() { return bloomHeight; }
-	bool getShadowMappingEnabled() { return shadowMapping; }
-	int getShadowMapWidth() { return shadowMapWidth; }
-	int getShadowMapHeight() { return shadowMapHeight; }
+	short getGraphicsQuality() const { return graphicsQuality; }
+	short getMaxLights() const;
+	bool getBloomEnabled() const { return bloomLighting; }
+	int getBloomWidth() const { return bloomWidth; }
+	int getBloomHeight() const { return bloomHeight; }
+	bool getShadowMappingEnabled() const { return shadowMapping; }
+	int getShadowMapWidth() const { return shadowMapWidth; }
+	int getShadowMapHeight() const { return shadowMapHeight; }
 
 	//Rendering modes changeable before rendering
 	void setRedrawMode(bool redraw) { redrawMode = redraw; }
 	bool getRedrawMode() const { return redrawMode; }
+
 	void setApplyToShadowMatrix(bool apply) { applyToShadowMatrix = apply; }
 	bool getApplyToShadowMatrix() const { return applyToShadowMatrix; }
+
+	bool getAllowDisplayLists() const { return allowDisplayLists; }
+	void setAllowDisplayLists(bool allow) { allowDisplayLists = allow; }
 	
 };
 

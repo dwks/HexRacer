@@ -1,3 +1,5 @@
+#include <cstdlib>
+
 #include "Player.h"
 
 #include "physics/PhysicsWorld.h"
@@ -7,18 +9,20 @@
 #include "settings/SettingsManager.h"
 
 #include "shader/ShaderParamVector4.h"
-#include "render/ColorConstants.h"
+#include "map/Teams.h"
 
 namespace Project {
 namespace Object {
 
-Player::Player() : AbstractObject(-1) {
+Player::Player() : AbstractObject(-1), teamID(-1), raceFinishIgnore(false) {
     physical = NULL;
     renderable = NULL;
 	tracker = NULL;
 }
 
-Player::Player(int id, const Math::Point &origin, const Math::Point &direction) : AbstractObject(id) {
+Player::Player(int id, const Math::Point &origin, const Math::Point &direction)
+    : AbstractObject(id), teamID(-1), raceFinishIgnore(false) {
+    
     Physics::PhysicsWorld *world = Physics::PhysicsWorld::getInstance();
     
     if(world) {
@@ -36,6 +40,7 @@ Player::Player(int id, const Math::Point &origin, const Math::Point &direction) 
 Player::~Player() {
     delete physical;
     delete renderable;
+	delete tracker;
 }
 
 Physics::PhysicalPlayer *Player::getPhysicalObject() {
@@ -88,12 +93,40 @@ void Player::preRender() {
 	float glow_scale = (float) Math::maximum(
 		GET_SETTING("render.playerglow.min", 0.6),
 		getSpeedBoost()*GET_SETTING("render.playerglow.factor", 1.25f)+GET_SETTING("render.playerglow.constant", 0.0f));
-	OpenGL::Color trim_color = Render::ColorConstants::playerColor(getID())*glow_scale;
+	OpenGL::Color trim_color = Map::Teams::teamColor(getTeamID())*glow_scale;
 
     //LOG(OPENGL, "Player id: " << getID() << ", player is " << trim_color);
     
 	renderable->setGlowColor(trim_color);
 
+}
+
+bool Player::operator < (const Player& other) const {
+	return (*tracker < *other.getPathTracker());
+}
+
+std::string Player::getDefaultPlayerName(int id) {
+    const char *nameList[] = {
+		"Jake Gorb",
+		"Chufmoney",
+		"Phoenix",
+		"Edgeworth",
+		"Toblerone",
+		"Homeslice",
+		"St. Juib",
+		"Rasputin",
+		"The Sauce",
+		"Rainbow-BRITE",
+		"Pogs",
+		"Creamsicle",
+		"Fresh Prance",
+		"Carabeener",
+		"Three Sheets",
+		"Speak-N-Spell"
+	};
+    std::size_t size = sizeof(nameList) / sizeof(*nameList);
+    
+    return nameList[std::rand() % size];
 }
 
 }  // namespace Object

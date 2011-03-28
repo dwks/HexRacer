@@ -22,8 +22,8 @@ ScrollbarWidget::ScrollbarWidget(const std::string &name, bool vertical,
     bar = new BoxWidget("scrollbar-bar", "corners/in/normal");
     slider = new BoxWidget("scrollbar-slider");
     
-    less->setLayout(new AbsoluteLayout(bounds));
-    more->setLayout(new AbsoluteLayout(bounds));
+    less->updateLayout(bounds);
+    more->updateLayout(bounds);
     bar->setLayout(new AbsoluteLayout(bounds));
     slider->setLayout(new AbsoluteLayout(bounds));
     

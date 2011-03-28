@@ -25,7 +25,7 @@ public:
 	void subRender(Render::RenderManager* manager) { meshGroup->render(manager); }
 	MeshGroup* getMeshGroup() const { return meshGroup; }
 	Math::BoundingSphere getBoundingSphere() const { return transformedSphere; }
-	vector<Math::Triangle3D> getTransformedTriangles() const;
+	void appendTransformedTriangles(std::vector<Math::Triangle3D>& vec) const;
 
 };
 

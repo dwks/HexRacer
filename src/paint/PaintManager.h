@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "math/HexGrid.h"
+#include "math/HexHeightMap.h"
 #include "PaintCell.h"
 #include "PaintGrid.h"
 #include "PaintCellInfo.h"
@@ -40,6 +41,10 @@ private:
 	float fadePlaneNear;
 	float fadePlaneFar;
 	GLuint targetList;
+	bool enableRendering;
+
+	float coloredCellAlpha;
+	float neutralCellAlpha;
 
 	Math::HexGrid hexGrid;
 	PaintGrid paintGrid;
@@ -63,7 +68,7 @@ public:
 		int index;
 	};
 
-	PaintManager();
+	PaintManager(bool enable_rendering = true);
 	~PaintManager();
 
 	void setMap(Map::HRMap* map, Misc::ProgressTracker* progress_tracker = NULL);
@@ -78,9 +83,9 @@ public:
 	}
 
 
-	void colorCellByIndex(const Math::HexGrid::HexIndex& index, int new_color, bool force_color = false);
+	void colorCellByIndex(const Math::HexHeightMap::LayeredHexIndex& index, int new_color, bool force_color = false);
 
-	void colorCellsInRadius(Math::Point centroid, double radius, int new_color, bool force_color = false, vector<Math::HexGrid::HexIndex>* changedIndices = NULL);
+	void colorCellsInRadius(Math::Point centroid, double radius, int new_color, bool force_color = false, vector<Math::HexHeightMap::LayeredHexIndex>* changedIndices = NULL);
 
 	void renderEraseEffect(Math::Point centroid, double radius);
 

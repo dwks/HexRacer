@@ -26,6 +26,7 @@ private:
         Math::Point axis;
         double minLength, restLength, stretchLength;
         Displacement lastDisplacement;
+		unsigned long lastUpdateTime;
     public:
         Spring(Math::Point suspensionPoint, Math::Point axis)
             : suspensionPoint(suspensionPoint), axis(axis) {}
@@ -63,10 +64,10 @@ public:
 	static double calculateDownFactor(const Math::Point& axis);
 
 private:
-    void applySuspension();
+    void applySuspension(double forceScale);
     
-    void calculateSuspensionForPlayer(Object::Player *player);
-    void applyDragForce(Object::Player *player);
+    void calculateSuspensionForPlayer(Object::Player *player, double forceScale);
+    void applyDragForce(Object::Player *player, double forceScale);
 	
 };
 

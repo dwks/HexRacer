@@ -66,7 +66,7 @@ void PaintSubsystem::doAction(unsigned long currentTime) {
             EMIT_EVENT(new Event::PaintEvent(
                 worldManager->getPlayer(id)->getPosition(),
                 PAINTING_RADIUS,
-                id));
+				worldManager->getPlayer(id)->getTeamID()));
             break;
         default:
         case Event::TogglePainting::NOTHING:
@@ -92,7 +92,7 @@ void PaintSubsystem::calculateBoostSpeeds() {
             double factor = paintManager->weightedCellsInRadius(
                 player->getPosition(),
                 PAINTING_RADIUS,
-                player->getID());
+                player->getTeamID());
 
 			factor *= GET_SETTING("game.paint.boostweightfactor", 2.0);
 			factor += 1.0;

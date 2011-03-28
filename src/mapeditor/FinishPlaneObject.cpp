@@ -1,9 +1,15 @@
 #include "FinishPlaneObject.h"
 #include "MapEditorConstants.h"
+#include "math/Geometry.h"
 
 FinishPlaneObject::FinishPlaneObject(HRMap* _map)
 	: map(_map) {
-	setRotation(0.0, YAW);
+
+	Point plane_normal = _map->getFinishPlane().getNormal();
+
+	Math::Point longitude_vector = Point::point2D(plane_normal, Y_AXIS);
+	setRotation(Geometry::vectorTo2DAngle(longitude_vector, Y_AXIS)-(PI*0.5), YAW);
+	setRotation(asin(plane_normal.getY()), PITCH);
 }
 
 BoundingBox3D FinishPlaneObject::getBoundingBox() const {

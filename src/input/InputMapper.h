@@ -7,7 +7,7 @@
 #include "SDL_events.h"
 #include "SDL_keysym.h"
 
-#include "sdl/JoystickManager.h"
+#include "JoystickManager.h"
 
 #include <vector>
 
@@ -56,7 +56,7 @@ public:
 		@param invert True if the button should be up to register as being pressed
 		@param event_id The id of the event
 	*/
-	void addButtonToDigitalMapping(int button, SDL::JoystickManager* joystick, bool invert, DigitalInputEvent event_id);
+	void addButtonToDigitalMapping(int button, JoystickManager* joystick, bool invert, DigitalInputEvent event_id);
     
 	/** Map a joystick button to an analog input event
 		@param button The index of the button
@@ -66,7 +66,7 @@ public:
 		@param off_value The value sent to the analog state when the button is not pressed
 		@param on_value The value sent to the analog state when the button is pressed
 	*/
-	void addButtonToAnalogMapping(int button, SDL::JoystickManager* joystick, bool invert, AnalogInputEvent event_id,
+	void addButtonToAnalogMapping(int button, JoystickManager* joystick, bool invert, AnalogInputEvent event_id,
 		double off_value = 0.0, double on_value = 1.0);
 
 	/** Map a joystick axis to a digital input event (Event registers as true when axis is within a range)
@@ -77,7 +77,7 @@ public:
 		@param deadzone The deadzone of the axis
 		@param event_id The id of the event
 	*/
-	void addAxisToDigitalMapping(int axis, SDL::JoystickManager* joystick,
+	void addAxisToDigitalMapping(int axis, JoystickManager* joystick,
 		double start_value, double end_value, double deadzone, DigitalInputEvent event_id);
 
 	/** Map a joystick axis to a analog input event
@@ -90,7 +90,7 @@ public:
 		@param off_value The value sent to the analog state corresponding to 0%
 		@param on_value The value sent to the analog state corresponding to 100%
 	*/
-	void addAxisToAnalogMapping(int axis, SDL::JoystickManager* joystick,
+	void addAxisToAnalogMapping(int axis, JoystickManager* joystick,
 		double start_value, double end_value, double deadzone, AnalogInputEvent event_id,
 		double off_value, double on_value);
 

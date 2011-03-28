@@ -34,6 +34,15 @@ namespace Misc {
 		return *iterator;
 	}
 
+	template <typename Type>
+	static Type listRemoveAt(const std::list<Type>& list, int element) {
+		typename std::list<Type>::const_iterator iterator = list.begin();
+		for (int i = 0; i < element; i++)
+			++iterator;
+
+		list.erase(iterator);
+	}
+
 }  // namespace Misc
 }  // namespace Project
 

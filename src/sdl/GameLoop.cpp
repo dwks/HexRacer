@@ -1,6 +1,7 @@
 #include "SDL.h"  // for SDL_GetTicks()
 
 #include "widget/RepaintEvent.h"
+#include "timing/AccelControl.h"
 
 #include "event/EventSystem.h"
 #include "GameLoop.h"
@@ -12,6 +13,10 @@ bool GameLoop::tryConnect(const std::string &host, unsigned short port) {
     gameWorld = boost::shared_ptr<GameWorld>(new GameWorld());
     
     return gameWorld->tryConnect(host, port);
+}
+
+void GameLoop::resumeConnect() {
+    gameWorld->resumeConnect();
 }
 
 void GameLoop::construct() {
@@ -50,12 +55,15 @@ void GameLoop::setGuiPointers(boost::shared_ptr<GUI::GUISystem> gui,
 void GameLoop::handleEvent(SDL_Event *event) {
     viewport->checkForDebugCameraEvents(event);
     
-    inputManager->handleEvent(event);
-    
+    //inputManager->handleEvent(event);
     guiInputManager->handleEvent(event);
 }
 
 void GameLoop::miscellaneous() {
+
+	if (Timing::AccelControl::getInstance()->getPaused())
+		guiInputManager->generateMenuEvents();
+
     gameWorld->checkNetwork();
     
     paintSubsystem->doStep(SDL_GetTicks());
@@ -87,7 +95,8 @@ void GameLoop::render() {
     gameRenderer->renderHUD(
         gameWorld->getWorldManager(),
         gameWorld->getWorldManager()->getPlayer(
-            gameWorld->getClientData()->getPlayerID()));
+            gameWorld->getClientData()->getPlayerID()),
+			gameWorld->getRaceManager());
 
     gui->render();
 }

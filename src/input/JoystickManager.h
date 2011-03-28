@@ -4,7 +4,7 @@
 #include "SDL_joystick.h"
 
 namespace Project {
-namespace SDL {
+namespace Input {
 
 /** Opens and reads from a joystick, if the user has one.
 */
@@ -15,18 +15,21 @@ public:
     JoystickManager();
     ~JoystickManager();
     
-    bool open();
-	bool hasJoystick() { return joystick != NULL; }
+    bool open(int joystick_id);
+	bool close();
+	bool hasJoystick() const { return joystick != NULL; }
     
     /** Returns the value of the joystick axis @a axis, normalized to the range
         [-1.0, 1.0]. This value will be 0.0 if the joystick was not detected.
     */
-    double getNormalizedAxisValue(int axis, double deadzone = 0.0);
-
-	bool getButtonDown(int button);
+    double getNormalizedAxisValue(int axis, double deadzone = 0.0) const;
+    int getNumAxes() const;
+    
+	bool getButtonDown(int button) const;
+	int getNumButtons() const;
 };
 
-}  // namespace SDL
+}  // namespace Input
 }  // namespace Project
 
 #endif

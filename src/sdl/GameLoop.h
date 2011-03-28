@@ -14,6 +14,8 @@
 #include "gui/GUISystem.h"
 #include "GUIInputManager.h"
 
+#include "input/GlobalInputManager.h"
+
 #include "paint/PaintSubsystem.h"
 #include "InputManager.h"
 
@@ -33,6 +35,7 @@ private:
     boost::shared_ptr<GUIInputManager> guiInputManager;
 public:
     virtual bool tryConnect(const std::string &host, unsigned short port);
+    virtual void resumeConnect();
     
     virtual void construct();
     
@@ -45,6 +48,8 @@ public:
     virtual void postRender();
     
     virtual void setProjection(const Point2D &size);
+    
+    virtual void checkNetwork() { gameWorld->checkNetwork(); }
 };
 
 }  // namespace SDL

@@ -119,14 +119,14 @@ int Suspension::wheelsOnGround(int playerID) {
 }
 
 void Suspension::doAction(unsigned long currentTime) {
-    applySuspension();
+	applySuspension(1.0);
 }
 
 void Suspension::setData(Object::WorldManager *worldManager) {
     this->worldManager = worldManager;
 }
 
-void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
+void Suspension::calculateSuspensionForPlayer(Object::Player *player, double forceScale) {
 
 	double front_sep = GET_SETTING("physics.wheel.frontsep", 0.4);
 	double front_z = GET_SETTING("physics.wheel.frontz", 0.68);
@@ -174,7 +174,7 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
         Displacement displacement = spring.doRaycast();
         double forceFactor = spring.calculateForceFactor(displacement);
 		
-        player->applyForce(axis * forceFactor * downFactor, forcePoint);
+        player->applyForce(axis * forceFactor * downFactor * forceScale, forcePoint);
         
         // record displacement for next time
         player->getPhysicalObject()->setSpring(wheel, displacement);
@@ -187,7 +187,7 @@ void Suspension::calculateSuspensionForPlayer(Object::Player *player) {
     }
 }
 
-void Suspension::applySuspension() {
+void Suspension::applySuspension(double forceScale) {
     if(!GET_SETTING("physics.driving.enablesuspension", 0)) {
         return;
     }
@@ -197,12 +197,12 @@ void Suspension::applySuspension() {
     while(it.hasNext()) {
         Object::Player *player = it.next();
         
-        applyDragForce(player);
-        calculateSuspensionForPlayer(player);
+        applyDragForce(player, forceScale);
+        calculateSuspensionForPlayer(player, forceScale);
     }
 }
 
-void Suspension::applyDragForce(Object::Player *player) {
+void Suspension::applyDragForce(Object::Player *player, double forceScale) {
     Physics::PhysicalPlayer *physicalPlayer = player->getPhysicalObject();
     Math::Point linearVelocity = physicalPlayer->getLinearVelocity();
     Math::Point angularVelocity = physicalPlayer->getAngularVelocity();
@@ -225,8 +225,8 @@ void Suspension::applyDragForce(Object::Player *player) {
     Math::Point linearDrag = -linear * linearVelocity;
     Math::Point angularDrag = -angular * angularVelocity;
     
-    physicalPlayer->applyForce(linearDrag);
-    physicalPlayer->applyTorque(angularDrag);
+    physicalPlayer->applyForce(linearDrag * forceScale);
+    physicalPlayer->applyTorque(angularDrag * forceScale);
     
     // sideways drag (prevent slipping)
     
@@ -250,7 +250,7 @@ void Suspension::applyDragForce(Object::Player *player) {
         sidewaysDrag *= GET_SETTING("physics.slipstate.sidewaysfactor", 1.0);
     }
     
-    physicalPlayer->applyForce(sidewaysDrag);
+    physicalPlayer->applyForce(sidewaysDrag*forceScale);
 }
 
 double Suspension::calculateDownFactor(const Math::Point& axis) {

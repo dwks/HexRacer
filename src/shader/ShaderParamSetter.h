@@ -45,7 +45,7 @@ public:
 
 	void setHasNormalMap(bool has) { hasNormalMap = has; }
 	bool getHasTangentSpace() const;
-	bool shaderIndexActive(int index) const { return (shaderIndex == index && index >= 0); }
+	bool shaderIndexActive(int index) const;
 
 };
 

@@ -146,12 +146,14 @@ namespace Math {
 
 
 
-	struct HexGrid::HexIndexRange HexGrid::queryIndexRange(const BoundingObject2D& obj) const {
+
+
+	struct HexGrid::HexIndexRange HexGrid::hexIndexRange(const BoundingObject2D& obj) const {
 		HexIndexRange range;
-		range.minUIndex = static_cast<int>( (obj.minU()-hexRadius-(minU+oddRowOffset))/hexUDivision );
-		range.maxUIndex = static_cast<int>( std::ceil( (obj.maxU()+hexRadius-minU)/hexUDivision ) );
-		range.minVIndex = static_cast<int>( (obj.minV()-hexHalfHeight-minV)/hexHalfHeight );
-		range.maxVIndex = static_cast<int>( std::ceil( (obj.maxV()+hexHalfHeight-minV)/hexHalfHeight ) );
+		range.minUIndex = static_cast<int>( std::ceil( (obj.minU()-hexRadius-minU+oddRowOffset)/hexUDivision ) );
+		range.maxUIndex = static_cast<int>( (obj.maxU()+hexRadius-minU)/hexUDivision );
+		range.minVIndex = static_cast<int>( std::ceil((obj.minV()-hexHalfHeight-minV)/hexHalfHeight ) );
+		range.maxVIndex = static_cast<int>( (obj.maxV()+hexHalfHeight-minV)/hexHalfHeight );
 		return range;
 	}
 

@@ -10,16 +10,21 @@
 #include "render/LightManager.h"
 #include "render/RenderList.h"
 #include "render/BackgroundRenderable.h"
+#include "render/StringTextureCache.h"
 
 #include "FPSRateMonitor.h"
 
 #include "paint/PaintManager.h"
 
 #include "map/HRMap.h"
+#include "map/MapLoader.h"
+#include "map/RaceManager.h"
 
 #include "hud/HUDRenderer.h"
 #include "hud/Minimap.h"
 #include "hud/Speedometer.h"
+#include "hud/PlacingList.h"
+#include "hud/PlayerPlacingText.h"
 
 #include "gui/GUISystem.h"
 #include "widget/TextWidget.h"
@@ -61,16 +66,20 @@ private:
     Render::LightManager *lightManager;  // not allocated here
     boost::shared_ptr<Render::RenderList> mapRenderable;
     boost::shared_ptr<Render::BackgroundRenderable> background;
+
+	boost::shared_ptr<Render::StringTextureCache> stringTextureCache;
     
     boost::shared_ptr<Paint::PaintManager> paintManager;
     
     boost::shared_ptr<Map::HRMap> map;
+	boost::shared_ptr<Map::MapLoader> mapLoader;
 	boost::shared_ptr<HUD::HUDRenderer> hudRenderer;
     boost::shared_ptr<HUD::Minimap> minimap;
 	boost::shared_ptr<HUD::Speedometer> speedometer;
+	boost::shared_ptr<HUD::PlacingList> placingList;
+	boost::shared_ptr<HUD::PlayerPlacingText> playerPlacingText;
     
     boost::shared_ptr<GUI::GUISystem> gui;
-    Widget::TextWidget *percentageComplete;
     boost::shared_ptr<FPSRateMonitor> fpsRate;
 
 public:
@@ -80,7 +89,7 @@ public:
     void setGUI(boost::shared_ptr<GUI::GUISystem> gui);
     
     void render(OpenGL::Camera *camera, Object::WorldManager *worldManager);
-    void renderHUD(Object::WorldManager *worldManager, Object::Player *player);
+	void renderHUD(Object::WorldManager *worldManager, Object::Player *player, Map::RaceManager *raceManager);
 	void renderDebug(OpenGL::Camera *camera, Object::WorldManager *worldManager, Object::Player *player);
     
     Map::HRMap *getMap() { return map.get(); }
@@ -95,11 +104,14 @@ private:
 	void textureProjection();
 	void bloomBlurPass();
 	void applyBloomBuffer();
+	void clearBloom();
+
 	void drawQuad();
 
 	void initShadowMap();
 	void updateShadowCamera(const Math::Point& light_position, OpenGL::Camera* camera);
 	void renderToShadowMap(Render::RenderableObject& renderable);
+	void clearShadowMap();
 
 };
 

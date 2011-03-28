@@ -21,21 +21,36 @@
 #include "event/UpdateObject.h"
 #include "event/UpdateWorld.h"
 #include "event/EntireWorld.h"
+#include "event/GameStageChanged.h"
+#include "event/SetupClientSettings.h"
+#include "event/SetupPlayerSettings.h"
+#include "event/SetupChat.h"
+#include "event/ReplaceWorldSetup.h"
 
 #include "object/Player.h"
 #include "world/PlayerIntention.h"
 #include "physics/WarpTracker.h"
+#include "world/WorldSetup.h"
 
 #include "PacketSerializer.h"
 #include "PointSerializer.h"
 #include "log/Logger.h"
 
+//#define BINARY_SERIALIZATION
+
 namespace Project {
 namespace Network {
 
 std::string PacketSerializer::packetToString(Packet *packet) {
+	//LOG(NETWORK, "Sending packet from \"" << packet << "\"");
+
     std::ostringstream stream;
+
+#ifdef BINARY_SERIALIZATION
     boost::archive::binary_oarchive out(stream);
+#else
+    boost::archive::text_oarchive out(stream);
+#endif
     
     out.register_type<HandshakePacket>();
     out.register_type<EventPacket>();
@@ -51,10 +66,17 @@ std::string PacketSerializer::packetToString(Packet *packet) {
     out.register_type<Event::UpdateObject>();
     out.register_type<Event::UpdateWorld>();
     out.register_type<Event::EntireWorld>();
+    out.register_type<Event::GameStageChanged>();
+    out.register_type<Event::SetupClientSettings>();
+    out.register_type<Event::SetupPlayerSettings>();
+    out.register_type<Event::SetupChat>();
+    out.register_type<Event::ReplaceWorldSetup>();
     
     out.register_type<Object::Player>();
     out.register_type<World::PlayerIntention>();
     out.register_type<Physics::WarpTracker>();
+    out.register_type<World::WorldSetup::PlayerSettings>();
+    out.register_type<World::WorldSetup::ClientSettings>();
     
     try {
         out << packet;
@@ -71,7 +93,11 @@ Packet *PacketSerializer::stringToPacket(const std::string &string) {
     //LOG(NETWORK, "Parsing packet from \"" << string << "\"");
     
     std::istringstream stream(string);
+#ifdef BINARY_SERIALIZATION
     boost::archive::binary_iarchive in(stream);
+#else
+    boost::archive::text_iarchive in(stream);
+#endif
     
     in.register_type<HandshakePacket>();
     in.register_type<EventPacket>();
@@ -87,10 +113,17 @@ Packet *PacketSerializer::stringToPacket(const std::string &string) {
     in.register_type<Event::UpdateObject>();
     in.register_type<Event::UpdateWorld>();
     in.register_type<Event::EntireWorld>();
+    in.register_type<Event::GameStageChanged>();
+    in.register_type<Event::SetupClientSettings>();
+    in.register_type<Event::SetupPlayerSettings>();
+    in.register_type<Event::SetupChat>();
+    in.register_type<Event::ReplaceWorldSetup>();
     
     in.register_type<Object::Player>();
     in.register_type<World::PlayerIntention>();
     in.register_type<Physics::WarpTracker>();
+    in.register_type<World::WorldSetup::PlayerSettings>();
+    in.register_type<World::WorldSetup::ClientSettings>();
     
     Packet *packet;
     try {

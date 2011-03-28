@@ -17,6 +17,7 @@ public:
     GUIInputManager(boost::shared_ptr<GUI::GUISystem> gui) : gui(gui) {}
     
     void handleEvent(SDL_Event *event);
+	void generateMenuEvents();
 };
 
 }  // namespace SDL

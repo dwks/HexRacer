@@ -1,6 +1,6 @@
 #include "Minimap.h"
 #include "opengl/TextureLoading.h"
-#include "render/ColorConstants.h"
+#include "map/Teams.h"
 #include "shader/ShaderProgram.h"
 #include "opengl/Color.h"
 #include "opengl/GeometryDrawing.h"
@@ -95,14 +95,14 @@ namespace HUD {
 		OpenGL::Color::glColor(OpenGL::Color::WHITE, 0.75);
 		glBegin(GL_QUADS);
 
-		glTexCoord2f(1.0, 1.0);
-		glVertex3f(map2DCenter.getX()-halfMap2DWidth, 0.0f, map2DCenter.getZ()-halfMap2DHeight);
-		glTexCoord2f(0.0, 1.0);
-		glVertex3f(map2DCenter.getX()+halfMap2DWidth, 0.0f, map2DCenter.getZ()-halfMap2DHeight);
-		glTexCoord2f(0.0, 0.0);
-		glVertex3f(map2DCenter.getX()+halfMap2DWidth, 0.0f, map2DCenter.getZ()+halfMap2DHeight);
-		glTexCoord2f(1.0, 0.0);
-		glVertex3f(map2DCenter.getX()-halfMap2DWidth, 0.0f, map2DCenter.getZ()+halfMap2DHeight);
+		glTexCoord2d(1.0, 1.0);
+		glVertex3d(map2DCenter.getX()-halfMap2DWidth, 0.0, map2DCenter.getZ()-halfMap2DHeight);
+		glTexCoord2d(0.0, 1.0);
+		glVertex3d(map2DCenter.getX()+halfMap2DWidth, 0.0, map2DCenter.getZ()-halfMap2DHeight);
+		glTexCoord2d(0.0, 0.0);
+		glVertex3d(map2DCenter.getX()+halfMap2DWidth, 0.0, map2DCenter.getZ()+halfMap2DHeight);
+		glTexCoord2d(1.0, 0.0);
+		glVertex3d(map2DCenter.getX()-halfMap2DWidth, 0.0, map2DCenter.getZ()+halfMap2DHeight);
 
 		glEnd();
 
@@ -133,7 +133,7 @@ namespace HUD {
 				Math::Point v3 = player_pos-player_right_dir*player_width
 					-player_dir*player_length;
 				
-				OpenGL::Color player_color = Render::ColorConstants::playerColor(player->getID());
+				OpenGL::Color player_color = Map::Teams::teamColor(player->getTeamID());
 
 				OpenGL::Color::glColor(player_color);
 				glBegin(GL_TRIANGLES);

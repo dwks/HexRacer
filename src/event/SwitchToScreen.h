@@ -8,6 +8,10 @@ namespace Project {
 namespace Event {
 
 /** Switches to displaying a different GUI screen.
+    
+    Note: if the screen name is "", a screen is popped instead. Also, if the
+    screen name starts with "-", screens are popped until a screen of that name
+    is reached.
 */
 class SwitchToScreen : public EventBase {
 private:

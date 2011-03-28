@@ -69,6 +69,8 @@ physics.driving.airangulardrag    = 0.2
 physics.driving.sidewaysdrag      = 20.0
 physics.driving.airsidewaysdrag   = 0.0
 
+game.timing.maxloops = 3
+
 game.paint.colorbenefit      = 1.0
 game.paint.colorpenalty      = -0.25
 game.paint.boostinfluence    = 0.75
@@ -79,6 +81,8 @@ game.paint.paintingboost     = 0.8
 game.paint.erasingboost      = 0.8
 game.paint.maxboostincrease  = 0.02
 
+game.race.maxlaps = 1
+
 game.enablepathing = 1
 
 # This allows players to be warped back onto the track after
@@ -86,7 +90,7 @@ game.enablepathing = 1
 game.warp.falloff.countdown            = 1000
 game.warp.upsidedown.countdown         = 2000
 game.warp.helprequest.countdown        = 2500
-game.warp.stillvelocity                = 0.05
+game.warp.stillvelocity                = 5.0
 
 ########
 ### Rendering settings
@@ -103,7 +107,7 @@ render.showfps = 1
 render.bloom.enable = 0
 render.bloom.width = 640
 render.bloom.height = 480
-render.bloom.farplane = 200.0
+render.bloom.farplane = 300.0
 render.bloom.blurpasses = 6
 
 render.shadow.enable = 0
@@ -118,11 +122,14 @@ render.playerglow.constant = -0.80
 ########
 ### Rendering frustrum settings
 render.camera.nearplane = 0.1
-render.camera.farplane = 200.0
-render.camera.paintthreshhold = 0.35
+render.camera.farplane = 300.0
+render.camera.paintthreshhold = 0.25
 render.camera.fieldofview = 60.0
 render.camera.fovboost = 65.0
 render.camera.fovslow = 60.0
+
+render.paint.coloredalpha = 1.0
+render.paint.neutralalpha = 0.4
 
 # for AI debugging
 render.drawpathnodes = 0
@@ -149,6 +156,16 @@ hud.speedometer.maxspeed = 30.0
 
 hud.lapprogress.enable = 1
 hud.lapprogress.drawheight = 0.75
+
+hud.placinglist.enable = 1
+hud.placinglist.drawheight = 0.6
+hud.placinglist.drawwidth = 400
+hud.placinglist.entryheight = 0.05
+hud.placinglist.minentryheight = 18
+hud.placinglist.maxentryheight = 60
+
+hud.playerplacingtext.enable = 1
+hud.playerplacingtext.drawheight = 0.2
 
 ########
 ### Camera settings
@@ -201,6 +218,19 @@ network.serverport = 1820
 ########
 ### AI and server settings
 server.aicount     = 4
+
+ai.resettimer = 5000
+ai.pathlookaheadfactor = 0.75
+ai.minangleoffset = 0.04
+ai.pathanglefactor = 120.0
+ai.pathdistancefactor = 0.1
+ai.minslowdownspeed = 0.0
+ai.angleslowdownfactor = 0.6
+ai.paintlookahead = 0.2
+ai.minlookahead = 2.5
+ai.stoppaintingthreshhold = 0.10
+ai.starterasingthreshhold = -0.075
+ai.paintswitchdelay = 400
 
 ########
 include guiconfig.txt

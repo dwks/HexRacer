@@ -17,6 +17,8 @@ PathingUpdater::PathingUpdater(
     this->worldManager = worldManager;
     this->raceManager = raceManager;
     this->playerManager = playerManager;
+
+	EMIT_EVENT(new Event::PlayerProgressEvent(0, 0.0, raceManager->getNumLapsToWin()));
     
     warpDetector = new WarpDetector(raceManager.get());
 }
@@ -58,17 +60,27 @@ void PathingUpdater::update() {
                     LOG(WORLD, "Player: " << player->getID()
                         << " has finished lap "
                         << player->getPathTracker()->getNumLaps());
+
+				if (!player->getPathTracker()->getFinished()
+					&& player->getPathTracker()->getNumLaps() >= raceManager->getNumLapsToWin()) {
+						player->getPathTracker()->setFinished(true);
+				}
                 
                 if(playerManager->getPlayer() == player) {
                     EMIT_EVENT(new Event::PlayerProgressEvent(
                         player->getPathTracker()->getNumLaps(),
-                        player->getPathTracker()->getLapProgress()));
+                        player->getPathTracker()->getLapProgress(),
+						raceManager->getNumLapsToWin()
+						)
+						);
                 }
             }
         }
         
         warpDetector->checkForWarping(player);
     }
+
+	raceManager->updatePlayerRankings(worldManager.get());
 }
 
 }  // namespace Map

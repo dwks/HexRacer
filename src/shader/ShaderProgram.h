@@ -12,15 +12,16 @@ namespace Shader {
 class ShaderProgram {
 public:
 	ShaderProgram(const GLchar *fs, const GLchar *vs);
+	~ShaderProgram();
 
 	void turnShaderOn() const;
 	void turnShaderOff() const;
 	int getUniLoc(const char *name);
 	int getAttrLoc(const char *name);
 
-	GLuint v, f, p;	//Handles for our vertex shader, fragment shader and the program object.
-
 private:
+
+	GLuint v, f, p;	//Handles for our vertex shader, fragment shader and the program object.
 
 	char *textFileRead(const char *fn);	//Methods that read and write shader files.
 	int textFileWrite(const char *fn, const char *s);

@@ -7,6 +7,7 @@
 #include "map/RaceManager.h"
 #include "map/PathManager.h"
 #include "world/PlayerManager.h"
+#include "paint/PaintManager.h"
 
 #include "event/Enabler.h"
 #include "event/PhysicsTick.h"
@@ -26,11 +27,12 @@ private:
     Map::RaceManager *raceManager;
     Map::PathManager *pathManager;
     World::PlayerManager *playerManager;
+	Paint::PaintManager *paintManager;
 public:
     AIManager(Map::RaceManager *raceManager, Map::PathManager *pathManager,
-        World::PlayerManager *playerManager);
+		World::PlayerManager *playerManager, Paint::PaintManager* paintManager);
     
-    void createAIs(int count);
+    void createAIs(int startAt, int count);
 };
 
 }  // namespace AI

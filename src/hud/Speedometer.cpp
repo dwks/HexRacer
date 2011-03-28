@@ -36,7 +36,7 @@ namespace HUD {
 		renderer->enableAlphaMask(alphaMaskTexture);
 
 		//Draw the background
-		OpenGL::Color::glColor(OpenGL::Color::WHITE, 0.35);
+		OpenGL::Color::glColor(OpenGL::Color::WHITE, 0.35f);
 		glBegin(GL_QUADS);
 		glVertex2f(-1.0, -1.0);
 		glVertex2f(1.0, -1.0);
@@ -52,8 +52,8 @@ namespace HUD {
 
 		glVertex2f(0.0f, 0.0f);
 		for (double angle = startAngle; angle > speed_angle; angle -= 0.2)
-			glVertex2f(cos(angle)*2.0, sin(angle)*2.0);
-		glVertex2f(cos(speed_angle)*2.0, sin(speed_angle)*2.0);
+			glVertex2d(cos(angle)*2.0, sin(angle)*2.0);
+		glVertex2d(cos(speed_angle)*2.0, sin(speed_angle)*2.0);
 		glVertex2f(0.0f, 0.0f);
 
 		glEnd();

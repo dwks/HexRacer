@@ -19,6 +19,7 @@ public:
 
 private:
 	QCheckBox* bgBloomBox;
+	QSpinBox* numLapsBox;
 };
 
 #endif // MAPOPTIONSDIALOG_H

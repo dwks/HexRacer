@@ -21,8 +21,14 @@ void RunningProxy::playerProgressHandler(Event::PlayerProgressEvent *event) {
     Widget::TextWidget *lapCount
         = dynamic_cast<Widget::TextWidget *>(running->getChild("lapcount"));
     
-    lapCount->setText(Misc::StreamAsString()
-        << "Lap " << (event->getLapCount()+1));
+	if (event->getLapCount()+1 < event->getTotalLaps()) {
+		lapCount->setText(Misc::StreamAsString()
+			<< "Lap " << (event->getLapCount()+1)
+			<< '/' << (event->getTotalLaps())
+			);
+	}
+	else
+		lapCount->setText("Final Lap");
 }
 
 RunningProxy::RunningProxy(Widget::WidgetBase *running) : running(running) {

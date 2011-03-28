@@ -47,10 +47,7 @@ void SimpleTrackball::setSpherePoint(Point point) {
 	point.normalize();
 
 	Math::Point longitude_vector = Point::point2D(point, Y_AXIS);
-
 	setLongitude(Geometry::vectorTo2DAngle(longitude_vector, Y_AXIS));
-
-	//float new_latitude = Geometry::vectorTo2DAngle(Point(longitude_vector.length(), point.getY(), 0.0));
 	float new_latitude = asin(point.getY());
 	setLatitude(new_latitude);
 }

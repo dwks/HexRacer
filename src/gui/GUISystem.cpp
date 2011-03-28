@@ -6,6 +6,8 @@
 #include "widget/KeyEvent.h"
 #include "widget/MouseMoveEvent.h"
 #include "widget/MouseButtonEvent.h"
+#include "widget/MenuMoveEvent.h"
+#include "widget/MenuSelectedEvent.h"
 
 #include "event/EventSystem.h"
 
@@ -29,6 +31,11 @@ void GUISystem::switchToScreenHandler(Event::SwitchToScreen *event) {
     if(event->getScreen().empty()) {
         LOG(GUI, "popping current screen");
         popScreen();
+    }
+    else if(event->getScreen()[0] == '-') {
+        std::string until = event->getScreen().substr(1);
+        LOG(GUI, "popping until screen \"" << until << "\"");
+        popScreen(until);
     }
     else {
         LOG(GUI, "pushing screen \"" << event->getScreen() << "\"");
@@ -72,7 +79,8 @@ void GUISystem::render() {
 }
 
 void GUISystem::handleEvent(Widget::WidgetEvent *event) {
-    if(dynamic_cast<Widget::KeyEvent *>(event)
+
+    if (dynamic_cast<Widget::KeyEvent *>(event)
         && focusManager->getKeyFocus()) {
         
         focusManager->getKeyFocus()->handleEvent(event);
@@ -86,9 +94,9 @@ void GUISystem::handleEvent(Widget::WidgetEvent *event) {
         currentScreen->handleEvent(event);
     }
     
-    if(dynamic_cast<Widget::MouseButtonEvent *>(event)) {
-        Widget::MouseButtonEvent *button
-            = dynamic_cast<Widget::MouseButtonEvent *>(event);
+	Widget::MouseButtonEvent *button = dynamic_cast<Widget::MouseButtonEvent *>(event);
+    if (button) {
+
         if(button->getButton() == Widget::MouseButtonEvent::BUTTON_LEFT
             && !button->getDown()) {
             
@@ -105,6 +113,16 @@ void GUISystem::handleEvent(Widget::WidgetEvent *event) {
             }
         }
     }
+
+	Widget::MenuMoveEvent *move = dynamic_cast<Widget::MenuMoveEvent *>(event);
+	if (move) {
+		LOG(GUI, "Menu move event received. X: " << move->xDir << " Y: " << move->yDir);
+	}
+
+	Widget::MenuSelectedEvent *selected = dynamic_cast<Widget::MenuSelectedEvent *>(event);
+	if (selected) {
+		LOG(GUI, "Menu selected event received: " << selected->type);
+	}
 }
 
 void GUISystem::pushScreen(const std::string &screen) {

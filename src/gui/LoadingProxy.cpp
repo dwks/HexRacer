@@ -3,6 +3,7 @@
 #include "event/EventSystem.h"
 #include "event/ObserverRegistry.h"
 #include "event/JoinGame.h"
+#include "event/StartingGame.h"
 
 #include "widget/ImageWidget.h"
 #include "widget/TextWidget.h"
@@ -37,12 +38,20 @@ void LoadingProxy::initialize(Event::SwitchToScreen *event) {
     lastRepaint = NULL;
 }
 
+void LoadingProxy::gameStateChanged(Event::GameStageChanged *event) {
+    if(event->getStage() == World::WorldSetup::DOING_COUNTDOWN) {
+        EMIT_EVENT(new Event::StartingGame(
+            Event::StartingGame::LOADING_MAP));
+    }
+}
+
 LoadingProxy::LoadingProxy(Widget::WidgetBase *loading,
     Widget::WidgetBase *host) : loading(loading), host(host) {
     
     lastRepaint = NULL;
     
     METHOD_OBSERVER(&LoadingProxy::initialize);
+    METHOD_OBSERVER(&LoadingProxy::gameStateChanged);
 }
 
 void LoadingProxy::visit(Widget::RepaintEvent *event) {
@@ -56,6 +65,7 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
                 EMIT_EVENT(new Event::JoinGame(
                     GET_SETTING("network.host", "localhost"),
                     GET_SETTING("network.port", 1820)));
+                EMIT_EVENT(new Event::SwitchToScreen("lobby"));
             }
             else if(type == "host") {
                 SDL::SpawnServer spawner;
@@ -71,7 +81,10 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
                     Event::ObserverRegistry::getInstance().notifyObservers(
                         &joinGameEvent, false);
                     
-                    if(joinGameEvent.getSuccess()) return;
+                    if(joinGameEvent.getSuccess()) {
+                        EMIT_EVENT(new Event::SwitchToScreen("lobby"));
+                        return;
+                    }
                     
                     Misc::Sleeper::sleep(1000);
                 }
@@ -85,8 +98,14 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
                     << joinGameEvent.getHost()
                     << ":" << joinGameEvent.getPort());
             }
+            else if(type == "starting") {
+                EMIT_EVENT(new Event::StartingGame(
+                    Event::StartingGame::LOADING_MAP));
+            }
             else if(type == "singleplayer") {
                 EMIT_EVENT(new Event::JoinGame());
+                EMIT_EVENT(new Event::StartingGame(
+                    Event::StartingGame::LOADING_MAP));
             }
             else {
                 LOG(GUI, "Unknown game type \"" << type << "\"");

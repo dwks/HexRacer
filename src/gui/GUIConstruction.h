@@ -2,6 +2,7 @@
 #define PROJECT_GUI__GUICONSTRUCTION_H
 
 #include "widget/WidgetBase.h"
+#include "opengl/Color.h"
 
 namespace Project {
 namespace GUI {
@@ -16,11 +17,18 @@ private:
     void constructSelectMap();
     void constructHost();
     void constructConnect();
+    void constructLobby();
     void constructSinglePlayer();
     void constructLoading();
     void constructRunning();
     void constructPaused();
     void constructSettings();
+    void constructAbout();
+private:
+    void addListItem(Widget::ListWidget *list, const std::string &name,
+        const std::string &text, OpenGL::Color color = OpenGL::Color::WHITE);
+    void smoothButtonUntil(const char *name, int start, int duration,
+        const Widget::WidgetRect &destination);
 private:
     Widget::WidgetBase *getWidget(const std::string &path);
     void setShortcut(Widget::WidgetBase *widget, long key);

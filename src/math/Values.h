@@ -49,6 +49,11 @@ Type bound(const Type &value, const Type &min, const Type &max) {
 	return value;
 }
 
+inline int intabs(int i) {
+    return (i < 0 ? -i : i);
+}
+
+int nextPowerOf2(int x);
 
 /** Computes the positive difference between @a i and the greatest multiple of
     @a d which is smaller than @a i

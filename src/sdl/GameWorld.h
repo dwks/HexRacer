@@ -35,6 +35,7 @@ private:
     bool isConnectedToNetwork;
 public:
     bool tryConnect(const std::string &host, unsigned short port);
+    void resumeConnect();
     void constructAfterConnect(Map::HRMap *map);
     
     World::PlayerManager *getPlayerManager()
@@ -42,6 +43,8 @@ public:
     ClientData *getClientData() { return clientData.get(); }
     Object::WorldManager *getWorldManager()
         { return basicWorld->getWorldManager(); }
+	Map::RaceManager *getRaceManager()
+		{ return basicWorld->getRaceManager(); }
     
     void checkNetwork();
     void doPhysics();

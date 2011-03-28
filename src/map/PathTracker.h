@@ -23,6 +23,8 @@ private:
 
 	Math::Point progressPosition;
 	int numLaps;
+	bool finished;
+	int ranking;
 
 public:
 
@@ -37,10 +39,18 @@ public:
 	int getNumLaps() const { return numLaps; }
 	bool readyforNewLap() const { return (progress >= 1.0); }
 
+	bool getFinished() const { return finished; }
+	int getRanking() const { return ranking; }
+
+	void setFinished(bool _finished) { finished = _finished; }
+	void setRanking(int _ranking) { ranking = _ranking; }
+
 	void startNewLap();
 	Math::Point getProgressPosition() const { return progressPosition; }
 	
 	bool atLeastOneNode() const { return manager.getStartNode() != NULL; }
+
+	bool operator < (const PathTracker& other) const;
 
 };
 

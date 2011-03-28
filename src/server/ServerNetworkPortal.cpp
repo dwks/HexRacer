@@ -35,7 +35,12 @@ void ServerNetworkPortal::EventPropagator::observe(Event::EventBase *event) {
         
         break;
     }
-    case Event::EventType::CREATE_OBJECT: {
+    case Event::EventType::CREATE_OBJECT:
+    case Event::EventType::SETUP_CHAT:
+    case Event::EventType::SETUP_PLAYER_SETTINGS:
+    case Event::EventType::GAME_STAGE_CHANGED:
+    case Event::EventType::REPLACE_WORLD_SETUP:
+    {
         Network::Packet *packet = new Network::EventPacket(event);
         portal->getClientManager()->sendPacket(packet);
         delete packet;

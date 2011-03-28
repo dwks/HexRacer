@@ -5,4 +5,4 @@ font      = data/gui/DejaVuSans.ttf
 font.size = 32
 
 # this should have a slash on the end
-gui.theme = data/gui/alienglow/
+gui.theme = data/gui/hexracer/

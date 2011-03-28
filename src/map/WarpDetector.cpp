@@ -25,7 +25,7 @@ void WarpDetector::checkForWarping(Object::Player *player) {
     bool sittingStill = (linearVelocity < stillVelocity);
     
     Math::Point up = player->getPhysicalObject()->getUpDirection();
-    bool upsideDown = (up.dotProduct(Math::Point(0.0, 1.0, 0.0)) < 0);
+    bool upsideDown = (up.dotProduct(Math::Point(0.0, 1.0, 0.0)) <= 0.25);
     
     warpTracker->setSittingStill(sittingStill && upsideDown);
     

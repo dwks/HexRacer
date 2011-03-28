@@ -41,6 +41,8 @@ Player *WorldManager::getPlayer(int id) {
 
 void WorldManager::initForClient(int id, const Math::Point &location, const Math::Point& direction) {
     Object::Player *player = new Object::Player(id, location, direction);
+    player->setPlayerName("The Lone Ranger");
+    player->setTeamID(0);
     addPlayer(player);
 }
 

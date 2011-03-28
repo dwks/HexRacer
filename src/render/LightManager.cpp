@@ -25,6 +25,14 @@ namespace Render {
 		staticLightTree = new BSPTree3D(bounding_box);
 	}
 
+	LightManager::~LightManager() {
+		clear();
+		delete priorityStaticLightTree;
+		delete staticLightTree;
+
+		glDeleteLists(sphereID, 1);
+	}
+
 	void LightManager::addLight(OpenGL::Light* light, bool high_priorty, bool dynamic) {
 
 		LightManagerNode* new_node = new LightManagerNode(light);

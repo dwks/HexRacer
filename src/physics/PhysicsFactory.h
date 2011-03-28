@@ -20,7 +20,7 @@ public:
     static btRigidBody* createRigidStaticPlane(Math::Point planeNormal, Math::Point origin);
     static btRigidBody* createRigidSphere(float radius, Math::Point origin, float mass);
     static btRigidBody* createRigidBox(float width, float height, float depth, Math::Point origin, float mass);
-    static btRigidBody* createRigidTriMesh(std::vector <Math::Triangle3D> tri_array);
+    static btRigidBody* createRigidTriMesh(const std::vector<Math::Triangle3D>& tri_array);
     static btRigidBody* createRigidTriMesh(std::vector <Math::Point> tri_array);
     
 	static PhysicalPlayer *createPhysicalPlayer(const Math::Point &origin, const Math::Point &direction = Math::Point(0.0, 0.0, 1.0));

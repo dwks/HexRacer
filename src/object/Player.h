@@ -8,6 +8,7 @@
 #include "map/PathTracker.h"
 #include "event/TogglePainting.h"
 #include "world/PlayerIntention.h"
+#include <string>
 
 namespace Project {
 namespace Object {
@@ -20,17 +21,22 @@ private:
     void save(Archive &ar, const unsigned version) const {
         ar & boost::serialization::base_object<AbstractObject>(*this);
         ar & physical;
+        ar & name & teamID;
     }
     
     template <typename Archive>
     void load(Archive &ar, const unsigned version) {
         ar & boost::serialization::base_object<AbstractObject>(*this);
         ar & physical;
+        ar & name & teamID;
         initialize();
     }
     
     BOOST_SERIALIZATION_SPLIT_MEMBER()
 private:
+    std::string name;
+    int teamID;
+	bool raceFinishIgnore;
     Physics::PhysicalPlayer *physical;
     Render::RenderablePlayer *renderable;
     Math::Point suspension[4];
@@ -70,6 +76,9 @@ public:
 		{ tracker = _tracker; }
 	Map::PathTracker* getPathTracker()
 		{ return tracker; }
+
+	const Map::PathTracker* getPathTracker() const
+		{ return tracker; }
     
     void applyAcceleration(double acceleration)
         { physical->applyAcceleration(acceleration); }
@@ -87,6 +96,18 @@ public:
 
 	Event::TogglePainting::PaintType getPaintType() const { return paintType; }
 	void setPaintType(Event::TogglePainting::PaintType paint_type) { paintType = paint_type; }
+
+    void setTeamID(int id) { teamID = id; }
+	int getTeamID() const { return teamID; }
+	
+	void setPlayerName(const std::string &newName) { name = newName; }
+	std::string getPlayerName() const { return name; }
+	static std::string getDefaultPlayerName(int id);
+
+	void setRaceFinishIgnore(bool ignore) { raceFinishIgnore = ignore; }
+	bool getRaceFinishIgnore() const { return raceFinishIgnore;  }
+
+	bool operator < (const Player& other) const;
     
     void initialize();
     

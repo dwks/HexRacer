@@ -34,6 +34,10 @@ public:
 	struct HexIndex {
 		int uIndex;
 		int vIndex;
+
+		bool operator < (const HexIndex& other) const {
+			return uIndex < other.uIndex || (uIndex == other.uIndex && vIndex < other.vIndex);
+		}
 	};
 
 	struct HexPosition {
@@ -73,7 +77,7 @@ public:
 	struct HexPosition vertexPosition(const HexIndex& vert_index) const;
 	struct HexPosition vertexPosition(int u_index, int v_index) const;
 
-	struct HexIndexRange queryIndexRange(const BoundingObject2D& obj) const;
+	struct HexIndexRange hexIndexRange(const BoundingObject2D& obj) const;
 
 	bool validRange(HexIndexRange& range) const;
 

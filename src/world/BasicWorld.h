@@ -36,6 +36,7 @@ public:
     
     void doPhysics();
     void doAI();
+	void checkRaceProgress();
     
     Physics::PhysicsWorld *getPhysicsWorld() { return physicsWorld.get(); }
     Object::WorldManager *getWorldManager() { return worldManager.get(); }

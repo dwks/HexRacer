@@ -20,6 +20,11 @@
 #include "event/UpdateObject.h"
 #include "event/UpdateWorld.h"
 #include "event/EntireWorld.h"
+#include "event/SetupChat.h"
+#include "event/SetupPlayerSettings.h"
+#include "event/SetupClientSettings.h"
+#include "event/ReplaceWorldSetup.h"
+#include "event/GameStageChanged.h"
 
 #include "event/EventSystem.h"
 
@@ -27,7 +32,6 @@
 
 #include "mesh/MeshGroup.h"
 #include "mesh/MeshLoader.h"
-#include "map/MapLoader.h"
 #include "map/PathTracker.h"
 #include "map/PathingUpdater.h"
 
@@ -112,9 +116,49 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         
         int id = changeOfIntention->getPlayer();
         Object::Player *player = main->getWorldManager()->getPlayer(id);
+
+		if(changeOfIntention->getIntention().getPaint()) {
+            EMIT_EVENT(new Event::TogglePainting(
+                changeOfIntention->getPlayer(),
+                Event::TogglePainting::PAINTING));
+        }
+        else if(changeOfIntention->getIntention().getErase()) {
+            EMIT_EVENT(new Event::TogglePainting(
+               changeOfIntention->getPlayer(),
+                Event::TogglePainting::ERASING));
+        }
+        else {
+            EMIT_EVENT(new Event::TogglePainting(
+                changeOfIntention->getPlayer(),
+                Event::TogglePainting::NOTHING));
+        }
         
         player->setIntention(changeOfIntention->getIntention());
         
+        break;
+    }
+    case Event::EventType::SETUP_CHAT: {
+        Event::SetupChat *setupChat
+            = dynamic_cast<Event::SetupChat *>(event);
+        
+        LOG(NETWORK, "Chat from " << setupChat->getClient() << ". "
+            << setupChat->getName() << ": " << setupChat->getMessage());
+        break;
+    }
+    case Event::EventType::SETUP_PLAYER_SETTINGS: {
+        Event::SetupPlayerSettings *setupPlayerSettings
+            = dynamic_cast<Event::SetupPlayerSettings *>(event);
+        
+        World::WorldSetup::getInstance()->replacePlayerSettings(
+            setupPlayerSettings->getPlayerSettings());
+        break;
+    }
+    case Event::EventType::SETUP_CLIENT_SETTINGS: {
+        Event::SetupClientSettings *setupClientSettings
+            = dynamic_cast<Event::SetupClientSettings *>(event);
+        
+        World::WorldSetup::getInstance()->replaceClientSettings(
+            setupClientSettings->getClientSettings());
         break;
     }
     default:
@@ -159,7 +203,9 @@ ServerMain::ServerMain() : clientCount(0), visitor(this) {
 #endif
 }
 
-void ServerMain::init() {
+void ServerMain::initBasics() {
+    loadedMap = false;
+    
     accelControl = boost::shared_ptr<Timing::AccelControl>(
         new Timing::AccelControl());
     
@@ -175,6 +221,27 @@ void ServerMain::init() {
     // this must execute before MapLoader loads the map
     meshLoader = boost::shared_ptr<Mesh::MeshLoader>(new Mesh::MeshLoader());
     
+    ADD_OBSERVER(new ServerObserver(this));
+    
+    int aiCount = GET_SETTING("server.aicount", 0);
+    for(int ai = 0; ai < aiCount; ai ++) {
+        World::WorldSetup::getInstance()->addPlayerSettings(ai);
+    }
+    clientCount += aiCount;
+}
+
+void ServerMain::startGame() {
+    initMap();
+    initAI();
+    loadedMap = true;
+    
+    EMIT_EVENT(new Event::GameStageChanged(
+        Project::World::WorldSetup::DOING_COUNTDOWN));
+    
+    sendWorldToPlayers();
+}
+
+void ServerMain::initMap() {
     //Instantiate the map
     map = boost::shared_ptr<Map::HRMap>(new Map::HRMap());
     if (map->loadMapFile(GET_SETTING("map", "maps/testtrack.hrm"))) {
@@ -184,16 +251,15 @@ void ServerMain::init() {
         LOG(WORLD, "Unable to load map " << GET_SETTING("map", "data/testtrack.hrm"));
     }
     
-    ADD_OBSERVER(new ServerObserver(this));
-    
     basicWorld = boost::shared_ptr<World::BasicWorld>(new World::BasicWorld());
     basicWorld->constructBeforeConnect();
     basicWorld->constructSkippingConnect();
 
 	paintManager = boost::shared_ptr<Paint::PaintManager>(
-        new Paint::PaintManager());
+        new Paint::PaintManager(false));
     
-    Map::MapLoader().load(map.get(), NULL, NULL, paintManager.get());
+	mapLoader = boost::shared_ptr<Map::MapLoader>(new Map::MapLoader());
+	mapLoader->load(map.get(), NULL, NULL, paintManager.get());
     basicWorld->constructAfterConnect(map.get());
     
     paintSubsystem = boost::shared_ptr<Paint::PaintSubsystem>(
@@ -206,110 +272,180 @@ void ServerMain::initAI() {
         new AI::AIManager(
             basicWorld->getRaceManager(),
             basicWorld->getPathManager(),
-            basicWorld->getPlayerManager()));
+            basicWorld->getPlayerManager(),
+			paintManager.get()));
     
     int aiCount = GET_SETTING("server.aicount", 0);
-    aiManager->createAIs(aiCount);
+    aiManager->createAIs(0, aiCount);
     clientCount += aiCount;
 }
 
 void ServerMain::run() {
-    init();
-    initAI();
+    initBasics();
+    //startGame();  // !!! hack
     
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
     quit = false;
     while(!quit) {
-        for(;;) {
-            Connection::Socket *socket = server->checkForConnections();
-            if(!socket) break;
-            
-            Network::PacketSerializer packetSerializer;
-            Network::Packet *packet = new Network::HandshakePacket(
-                clientCount, GET_SETTING("map", "data/testtrack.hrm"),
-                Misc::Sleeper::getTimeMilliseconds());
-            
-            Network::StringSerializer stringSerializer(socket);
-            stringSerializer.sendString(
-                packetSerializer.packetToString(packet));
-            delete packet;
-            
-            Math::Point location = basicWorld->getRaceManager()
-                ->startingPointForPlayer(clientCount);
-            Math::Point direction = basicWorld->getRaceManager()
-                ->startingPlayerDirection();
-            
-            clients->addClient(socket);
-            Object::Player *player = new Object::Player(
-                clientCount, location, direction);
-			player->setPathTracker(new Map::PathTracker(
-                *basicWorld->getPathManager()));
-            //worldManager->addPlayer(player);
-            
-            Event::EntireWorld *entireWorld = new Event::EntireWorld(
-                getWorldManager()->getWorld(),
-                getWorldManager()->getPlayerList());
-            packet = new Network::EventPacket(entireWorld);
-            stringSerializer.sendString(
-                packetSerializer.packetToString(packet));
-            delete entireWorld;
-            delete packet;
-            
-            EMIT_EVENT(new Event::CreateObject(player));
-            
-            clientCount ++;
-        }
+        handleNewConnections();
+        handleDisconnections();
         
-        int disconnected;
-        while((disconnected = clients->nextDisconnectedClient()) >= 0) {
-            LOG2(NETWORK, CONNECT,
-                "Client " << disconnected << " has disconnected");
-        }
+        handleIncomingPackets();
         
-        {
-            Network::Packet *packet;
-            while((packet = clients->nextPacket(&whichSocket))) {
-                /*LOG(NETWORK, "Packet received from "
-                    << whichSocket << ": " << packet);*/
-                
-                packet->accept(visitor);
-                delete packet;
+        if(loadedMap) {
+            paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
+            
+            basicWorld->doPhysics();
+            basicWorld->doAI();
+			basicWorld->checkRaceProgress();
+            
+            updateClients();
+        }
+        else {
+            if(World::WorldSetup::getInstance()->everyoneReadyToStart()) {
+                startGame();
             }
         }
         
-        paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
-        
-        basicWorld->doPhysics();
-        basicWorld->doAI();
-        
-        static int loops = 0;
-        if(++loops == 5) {
-            loops = 0;
-            
-            Event::UpdateWorld *update
-                = new Event::UpdateWorld(
-                    Misc::Sleeper::getTimeMilliseconds(),
-                    getWorldManager());
-            Network::Packet *packet = new Network::EventPacket(update);
-            clients->sendPacket(packet);
-            delete packet;
-            delete update;
-        }
-        
-        {
-            unsigned long currentTime = Misc::Sleeper::getTimeMilliseconds();
-            unsigned long elapsed = currentTime - lastTime;
-            long tosleep = 10 - elapsed;
-            if(tosleep > 0) {
-                Misc::Sleeper::sleep(tosleep);
-            }
-            
-            //while(lastTime < currentTime) lastTime += 10;
-            while(lastTime < currentTime + tosleep) lastTime += 10;
-        }
+        lastTime = doDelay(lastTime);
         
         accelControl->clearPauseSkip();
     }
+}
+
+void ServerMain::sendWorldToPlayers() {
+    {
+        Event::EntireWorld *entireWorld = new Event::EntireWorld(
+            getWorldManager()->getWorld(),
+            getWorldManager()->getPlayerList());
+        Network::Packet *packet = new Network::EventPacket(entireWorld);
+        clients->sendPacket(packet);
+        delete entireWorld;
+        delete packet;
+    }
+    
+    int aiCount = GET_SETTING("server.aicount", 0);
+    
+    for(int client = aiCount; client < aiCount + clients->getSocketCount();
+        client ++) {
+        
+        if(!clients->socketExists(client - aiCount)) continue;
+        
+        Math::Point location = basicWorld->getRaceManager()
+            ->startingPointForPlayer(client);
+        Math::Point direction = basicWorld->getRaceManager()
+            ->startingPlayerDirection();
+        
+        World::WorldSetup::PlayerSettings *settings
+            = World::WorldSetup::getInstance()->getPlayerSettings(
+                client);
+        
+        Object::Player *player = new Object::Player(
+            client, location, direction);
+        if(settings) {
+            player->setPlayerName(settings->getName());
+            player->setTeamID(
+                static_cast<OpenGL::Color::ColorPreset>(settings->getColor()));
+        }
+        
+        player->setPathTracker(new Map::PathTracker(
+            *basicWorld->getPathManager()));
+        
+        EMIT_EVENT(new Event::CreateObject(player));
+    }
+}
+
+void ServerMain::handleNewConnections() {
+    for(;;) {
+        Connection::Socket *socket = server->checkForConnections();
+        if(!socket) break;
+        
+        int client = clientCount;
+        clientCount ++;
+
+        Network::PacketSerializer packetSerializer;
+        Network::Packet *packet = new Network::HandshakePacket(
+            client, GET_SETTING("map", "data/testtrack.hrm"),
+            Misc::Sleeper::getTimeMilliseconds());
+
+		LOG2(NETWORK, CONNECT, "Serializing handshake packet");
+		LOG2(NETWORK, CONNECT, packet);
+        
+        // !!! can use clients->sendPacketOnly() ?
+        Network::StringSerializer stringSerializer(socket);
+		std::string packetString = packetSerializer.packetToString(packet);
+
+		LOG2(NETWORK, CONNECT, "Sending handshake packet");
+        stringSerializer.sendString(packetString);
+        delete packet;
+
+		LOG2(NETWORK, CONNECT, "Handshake packet sent");
+        
+        clients->addClient(socket);
+        
+        World::WorldSetup::getInstance()->addClientSettings(client);
+        World::WorldSetup::getInstance()->addPlayerSettings(client);
+        
+        Event::EventBase *event = new Event::ReplaceWorldSetup(
+            World::WorldSetup::getInstance());
+        packet = new Network::EventPacket(event);
+        //clients->sendPacketOnly(packet, client);
+        // send to new client specially, then to everyone else
+        stringSerializer.sendString(
+            packetSerializer.packetToString(packet));
+        clients->sendPacketExcept(packet, client);
+        delete packet;
+        delete event;
+    }
+}
+
+void ServerMain::handleDisconnections() {
+    int disconnected;
+    while((disconnected = clients->nextDisconnectedClient()) >= 0) {
+        LOG2(NETWORK, CONNECT,
+            "Client " << disconnected << " has disconnected");
+    }
+}
+
+void ServerMain::handleIncomingPackets() {
+    Network::Packet *packet;
+    while((packet = clients->nextPacket(&whichSocket))) {
+        /*LOG(NETWORK, "Packet received from "
+            << whichSocket << ": " << packet);*/
+        
+        packet->accept(visitor);
+        delete packet;
+    }
+}
+
+void ServerMain::updateClients() {
+    static int loops = 0;
+    if(++loops == 5) {
+        loops = 0;
+        
+        Event::UpdateWorld *update
+            = new Event::UpdateWorld(
+                Misc::Sleeper::getTimeMilliseconds(),
+                getWorldManager());
+        Network::Packet *packet = new Network::EventPacket(update);
+        clients->sendPacket(packet);
+        delete packet;
+        delete update;
+    }
+}
+
+unsigned long ServerMain::doDelay(unsigned long lastTime) {
+    unsigned long currentTime = Misc::Sleeper::getTimeMilliseconds();
+    unsigned long elapsed = currentTime - lastTime;
+    long tosleep = 10 - elapsed;
+    if(tosleep > 0) {
+        Misc::Sleeper::sleep(tosleep);
+    }
+    
+    //while(lastTime < currentTime) lastTime += 10;
+    while(lastTime < currentTime + tosleep) lastTime += 10;
+    
+    return lastTime;
 }
 
 }  // namespace Server

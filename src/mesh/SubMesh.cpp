@@ -3,6 +3,7 @@
 #include "misc/StdVectorFunctions.h"
 #include "shader/ShaderManager.h"
 #include "log/Logger.h"
+#include <map>
 using namespace std;
 using namespace Project;
 using namespace OpenGL;
@@ -38,21 +39,25 @@ namespace Mesh {
 	}
 
 
-	SubMesh::SubMesh(vector< MeshTriangle* > _triangles, OpenGL::Material* _material, bool cullable) {
+	SubMesh::SubMesh(const vector< MeshTriangle* >& _triangles, OpenGL::Material* _material, bool cullable) {
+
+		std::map<MeshTriangle*, bool> tri_map;
+		for (unsigned int i = 0; i < _triangles.size(); i++) {
+			tri_map[_triangles[i]] = true;
+		}
 
 		material = _material;
 		getRenderProperties()->setMaterial(material);
 
 		triangleFanTree = NULL;
-		for (unsigned int i = 0; i < _triangles.size(); i++)
-			triangles.push_back(Triangle3D(*_triangles[i]));
 
 		displayList = 0;
 
 		//Generate Triangle Fans
-		while (!_triangles.empty()) {
+		while (!tri_map.empty()) {
 
-			MeshTriangle* triangle = _triangles[_triangles.size()-1];
+			std::map<MeshTriangle*, bool>::iterator it = tri_map.begin();
+			MeshTriangle* triangle = (*it).first;
 
 			short center_index;
 			MeshVertex* fan_center = NULL;
@@ -71,7 +76,7 @@ namespace Mesh {
 			fan_vertices.push_back(triangle->getMeshVertex((center_index+2)%3));
 			//Delete the first triangle
 			delete(triangle);
-			Misc::vectorRemoveOneElement(_triangles, triangle);
+			tri_map.erase(it);
 
 			bool vertex_added = true;
 			//Set the rest of the fan vertices
@@ -88,7 +93,7 @@ namespace Mesh {
 					if (next_vert) {
 						fan_vertices.push_back(next_vert);
 						delete(fan_triangle);
-						Misc::vectorRemoveOneElement(_triangles, fan_triangle);
+						tri_map.erase(fan_triangle);
 						vertex_added = true;
 					}
 
@@ -98,10 +103,11 @@ namespace Mesh {
 
 			triangleFans.push_back(new MeshTriangleFan(fan_vertices));
 		}
-		LOG(OPENGL, "Mesh: Generated " << triangleFans.size() << " triangle fans from " << triangles.size() << " triangles.");
+		//LOG(OPENGL, "Mesh: Generated " << triangleFans.size() << " triangle fans from " << triangles.size() << " triangles.");
 
 		if (cullable)
 			generateTriangleFanTree();
+
 	}
 
 	void SubMesh::generateTriangleFanTree() {
@@ -133,18 +139,20 @@ namespace Mesh {
 		int shader_index = getRenderProperties()->getShaderIndex();
 
 		drawingCulled = (bounding_object && triangleFanTree);
-		//useDisplayList = setter.shaderIndexActive(shader_index) || !setter.getHasTangentSpace();
-		useDisplayList = !setter.getHasTangentSpace();
+		
+		genDisplayList = setter.shaderIndexActive(shader_index);
+		useDisplayList = settings.getAllowDisplayLists() && (genDisplayList || !setter.getHasTangentSpace());
+		
 
 		if (!drawingCulled) {
 
 			if (useDisplayList) {
 
-				if (displayList > 0/* && displayListShader == shader_index*/) {
+				if (displayList > 0 && displayListShader == shader_index) {
 					glCallList(displayList);
 					return;
 				}
-				else {
+				else if (genDisplayList) {
 					glDeleteLists(displayList, 1);
 					displayList = glGenLists(1);
 					glNewList(displayList, GL_COMPILE_AND_EXECUTE);
@@ -152,7 +160,7 @@ namespace Mesh {
 						drawTriangleFan(triangleFans[i], setter);
 					}
 					glEndList();
-					//displayListShader = shader_index;
+					displayListShader = shader_index;
 					return;
 				}
 
@@ -182,16 +190,19 @@ namespace Mesh {
 
 	inline void SubMesh::drawTriangleFan(MeshTriangleFan* fan, const Shader::ShaderParamSetter& setter) {
 
+		bool end_list = false;
+
 		if (drawingCulled && useDisplayList) {
-			if (fan->getDisplayList() > 0/* && getRenderProperties()->getShaderIndex() == fan->getShaderIndex()*/) {
+			if (fan->getDisplayList() > 0 && getRenderProperties()->getShaderIndex() == fan->getShaderIndex()) {
 				glCallList(fan->getDisplayList());
 				return;
 			}
-			else {
+			else if (genDisplayList) {
 				glDeleteLists(fan->getDisplayList(), 1);
 				fan->setDisplayList(glGenLists(1));
 				glNewList(fan->getDisplayList(), GL_COMPILE_AND_EXECUTE);
-				//fan->setShaderIndex(getRenderProperties()->getShaderIndex());
+				fan->setShaderIndex(getRenderProperties()->getShaderIndex());
+				end_list = true;
 			}
 		}
 
@@ -215,7 +226,7 @@ namespace Mesh {
 
 		glEnd();
 
-		if (drawingCulled && useDisplayList)
+		if (end_list)
 			glEndList();
 
 	}
@@ -226,5 +237,15 @@ namespace Mesh {
 		redrawBuffer.push_back(fan);
 	}
 
+	void SubMesh::appendTriangles(std::vector<Math::Triangle3D>& vec) const {
+		for (unsigned int i = 0; i < triangleFans.size(); i++) {
+			const std::vector<MeshVertex*>& vertices = triangleFans[i]->getVertices();
+			for (unsigned int j = 1; j < vertices.size()-1; j++) {
+				vec.push_back(Triangle3D(vertices[0]->getPosition(),
+					vertices[j]->getPosition(),
+					vertices[j+1]->getPosition()));
+			}
+		}
+	}
 }  // namespace Mesh
 }  // namespace Project

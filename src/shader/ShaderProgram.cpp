@@ -32,6 +32,9 @@ ShaderProgram::ShaderProgram(const GLchar *fs, const GLchar *vs) {
 	glLinkProgram(p);
 	glUseProgram(p);
 
+	free(vsf);
+	free(fsf);
+
 	int infologLength = 0;
 	int charsWritten  = 0;
 	char *infoLog;
@@ -54,6 +57,15 @@ ShaderProgram::ShaderProgram(const GLchar *fs, const GLchar *vs) {
 	glUseProgram(NULL);
 }
 
+ShaderProgram::~ShaderProgram() {
+
+	glDetachShader(p, f);
+	glDetachShader(p, v);
+	glDeleteProgram(p);
+	glDeleteShader(f);
+	glDeleteShader(v);
+
+}
 void ShaderProgram::turnShaderOn() const{
 	glUseProgram(p);
 }
@@ -62,7 +74,6 @@ void ShaderProgram::turnShaderOff() const{
 	glUseProgram(NULL);
 }
 
-// Code below provided by Wojtek Palubicki in tutorials
 char *ShaderProgram::textFileRead(const char *fn) {
 	FILE *fp;
 	char *content = NULL;
@@ -118,12 +129,6 @@ return -> the location of the variable
 int ShaderProgram::getUniLoc(const char *name) {
 	int loc;
 	loc = glGetUniformLocation(p, name);
-
-	/*
-	if (loc == -1)
-		printf("No such uniform named \"%s\"\n", name);
-	*/
-
 	return loc;
 }
 

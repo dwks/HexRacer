@@ -12,6 +12,8 @@ namespace Map {
 		progress = 0.0;
 		currentNode = manager.getStartNode();
 		numLaps = 0;
+		finished = false;
+		ranking = 0;
 	}
 
 	void PathTracker::update(Math::Point point) {
@@ -98,5 +100,10 @@ namespace Map {
 		return _prog;
 	}
 
+	bool PathTracker::operator < (const PathTracker& other) const {
+		return (
+			(finished && (!other.getFinished() || ranking < other.getRanking()))
+			|| getRaceProgress() > other.getRaceProgress());
+	}
 }  // namespace Map
 }  // namespace Project

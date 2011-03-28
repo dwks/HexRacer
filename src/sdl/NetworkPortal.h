@@ -59,8 +59,12 @@ public:
     */
     void disconnectFrom();
     
-    /** Called immediately after a successful connect. Waits for any necessary
-        packets from the server.
+    /** Waits for a HandshakePacket. Called immediately after successful
+        connect.
+    */
+    void waitForHandshake();
+    
+    /** Waits for any necessary packets from the server at the start of a game.
     */
     void waitForWorld(Object::World *&world, Object::PlayerList *&playerList);
     

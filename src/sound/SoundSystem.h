@@ -10,7 +10,11 @@
 #include "sound/CollisionSound.h"
 #include "sound/ALHelpers.h"
 
+#ifndef WIN32
 #include "AL/al.h"
+#else
+#include "al.h"
+#endif
 #include "object/WorldManager.h"
 #include "world/PlayerManager.h"
 #include <boost/concept_check.hpp>

@@ -31,6 +31,10 @@ void ClientManager::sendPacketExcept(Network::Packet *packet, int exception) {
     }
 }
 
+void ClientManager::sendPacketOnly(Network::Packet *packet, int which) {
+    portal_list[which]->sendPacket(packet);
+}
+
 int ClientManager::nextDisconnectedClient() {
     int x = 0;
     for(portal_list_t::iterator i = portal_list.begin();
@@ -62,6 +66,14 @@ Network::Packet *ClientManager::nextPacket(int *whichSocket) {
     }
     
     return NULL;
+}
+
+bool ClientManager::socketExists(int which) const {
+    return portal_list[which] != NULL;
+}
+
+int ClientManager::getSocketCount() const {
+    return static_cast<int>(portal_list.size());
 }
 
 }  // namespace Server

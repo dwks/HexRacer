@@ -1,5 +1,6 @@
 #include "RaceManager.h"
 #include "log/Logger.h"
+#include "misc/StdVectorFunctions.h"
 
 #include "settings/SettingsManager.h"
 #include "config.h"
@@ -11,11 +12,12 @@ RaceManager::RaceManager(HRMap *_map)
 : map(_map) {
 
 	finishPlane = map->getFinishPlane();
+	numLaps = Math::minimum(GET_SETTING("game.race.maxlaps", 1000), map->getMapOptions().getNumLaps());
 
 	killPlaneY = 0.0;
 	
 	//Find the lowest path node, set the kill plane to that plus an offset
-	const vector<PathNode*>& path_nodes = map->getPathNodes();
+	const vector<PathNode*>& path_nodes = map->getMapObjects().getPathNodes();
 	for (unsigned int i = 0; i < path_nodes.size(); i++) {
 		if (i == 0 || path_nodes[i]->getPosition().getY() < killPlaneY) {
 			killPlaneY = path_nodes[i]->getPosition().getY();
@@ -32,7 +34,7 @@ Math::Point RaceManager::startingPlayerDirection() {
 
 Math::Point RaceManager::startingPointForPlayer(int id) {
 
-    const std::vector<Math::Vertex3D *> &data = map->getStartPoints();
+    const std::vector<Math::Vertex3D *> &data = map->getMapObjects().getStartPoints();
     
     if(data.size() == 0) {
         LOG(GLOBAL, "No starting points in map, placing player "
@@ -50,6 +52,42 @@ Math::Point RaceManager::startingPointForPlayer(int id) {
 
 bool RaceManager::inBounds(const Math::Point& position) const {
 	return (position.getY() > killPlaneY);
+}
+
+void RaceManager::updatePlayerRankings(Object::WorldManager* world) {
+
+	playerRankings.clear();
+
+	Object::WorldManager::PlayerIteratorType it
+		= world->getPlayerIterator();
+	while(it.hasNext()) {
+		playerRankings.push_back(it.next());
+	}
+
+	Misc::vectorPointerMergeSort(playerRankings);
+
+	for (unsigned int i = 0; i < playerRankings.size(); i++) {
+		playerRankings[i]->getPathTracker()->setRanking(i);
+	}
+
+}
+bool RaceManager::getRaceFinished(Object::WorldManager* world) const {
+
+	bool finished = true;
+
+	Object::WorldManager::PlayerIteratorType it
+		= world->getPlayerIterator();
+	while(it.hasNext()) {
+		Object::Player* player = it.next();
+		finished = finished && (player->getRaceFinishIgnore() || player->getPathTracker()->getFinished());
+	}
+
+	return finished;
+
+}
+
+RaceResults RaceManager::getRaceResults() const {
+	return RaceResults(getPlayerRankings());
 }
 
 }  // namespace Map

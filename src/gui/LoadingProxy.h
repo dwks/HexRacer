@@ -6,6 +6,7 @@
 
 #include "event/Enabler.h"
 #include "event/SwitchToScreen.h"
+#include "event/GameStageChanged.h"
 
 namespace Project {
 namespace GUI {
@@ -13,6 +14,7 @@ namespace GUI {
 class LoadingProxy : public Widget::EventProxy, public Event::Enabler {
 protected:
     void initialize(Event::SwitchToScreen *event);
+    void gameStateChanged(Event::GameStageChanged *event);
 private:
     Widget::WidgetBase *loading, *host;
     Widget::WidgetBase *lastRepaint;

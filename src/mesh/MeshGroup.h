@@ -27,12 +27,12 @@ private:
 
 public:
 
-	MeshGroup(std::string _name, std::vector<SubMesh*> _meshes, std::vector<MeshVertex*> _vertices,
-		std::vector<Math::Triangle3D> collison_mask = std::vector<Math::Triangle3D>());
+	MeshGroup(const std::string& _name, const std::vector<SubMesh*>& _meshes, const std::vector<MeshVertex*>& _vertices,
+		const std::vector<Math::Triangle3D>& collison_mask = std::vector<Math::Triangle3D>());
 	~MeshGroup();
 	std::string getName() { return name; }
 	void subRender(Render::RenderManager* manager);
-	std::vector<Math::Triangle3D> getTriangles();
+	void appendTriangles(std::vector<Math::Triangle3D>& vec) const;
 	Math::BoundingBox3D getBoundingBox() { return boundingBox; }
 	double getRadiusFromOrigin() { return radiusFromOrigin; }
 

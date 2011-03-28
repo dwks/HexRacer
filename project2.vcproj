@@ -41,8 +41,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="src;include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_WIN32_WINDOWS"
+				IgnoreStandardIncludePath="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -63,6 +64,8 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib OpenAL32.lib alut.lib"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="lib"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -116,7 +119,9 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				AdditionalIncludeDirectories="src;include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_WIN32_WINDOWS"
+				IgnoreStandardIncludePath="false"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -134,8 +139,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib"
+				AdditionalDependencies="glew32.lib opengl32.lib glu32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib BulletDynamics.lib BulletCollision.lib LinearMath.lib OpenAL32.lib alut.lib"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="lib"
+				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames="MSVCRTD"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -173,6 +181,10 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath=".\src\gui\AboutProxy.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\src\widget\AbsoluteLayout.cpp"
 				>
@@ -242,6 +254,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ButtonWidgetLayout.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\Camera.cpp"
 				>
 			</File>
@@ -279,10 +295,6 @@
 			</File>
 			<File
 				RelativePath=".\src\sound\CollisionSound.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\ColorConstants.cpp"
 				>
 			</File>
 			<File
@@ -394,6 +406,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\input\GlobalInputManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\gui\GUIConstruction.cpp"
 				>
 			</File>
@@ -423,6 +439,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\HRMap.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\HRMapObjects.cpp"
 				>
 			</File>
 			<File
@@ -514,6 +534,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\LobbyProxy.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\LoopBase.cpp"
 				>
 			</File>
@@ -559,6 +583,14 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\MenuLoop.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\MenuMoveEvent.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\MenuSelectedEvent.cpp"
 				>
 			</File>
 			<File
@@ -710,11 +742,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\hud\PlacingList.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\world\PlayerIntention.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\world\PlayerManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\hud\PlayerPlacingText.cpp"
 				>
 			</File>
 			<File
@@ -730,7 +770,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\misc\ProgressLogger.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\RaceManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\RaceResults.cpp"
 				>
 			</File>
 			<File
@@ -830,6 +878,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\SetupChat.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetupClientSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetupPlayerSettings.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\shader\ShaderAttributeLocation.cpp"
 				>
 			</File>
@@ -870,6 +930,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\SmoothTransitionLayout.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sound\SoundSystem.cpp"
 				>
 			</File>
@@ -882,7 +946,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\StartingGame.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\ai\StraightDriver.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\StringTexture.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\StringTextureCache.cpp"
 				>
 			</File>
 			<File
@@ -898,11 +974,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\Teams.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\TextureCube.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\opengl\TextureLoading.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TextureObjectChain.cpp"
 				>
 			</File>
 			<File
@@ -1007,6 +1091,10 @@
 			</File>
 			<File
 				RelativePath=".\src\object\WorldManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\WorldSetup.cpp"
 				>
 			</File>
 			<Filter
@@ -1269,7 +1357,7 @@
 				Name="sdl"
 				>
 				<File
-					RelativePath=".\src\sdl\JoystickManager.cpp"
+					RelativePath=".\src\input\JoystickManager.cpp"
 					>
 				</File>
 				<File
@@ -1291,6 +1379,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\src\gui\AboutProxy.h"
+				>
+			</File>
 			<File
 				RelativePath=".\src\widget\AbsoluteLayout.h"
 				>
@@ -1360,6 +1452,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ButtonWidgetLayout.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\Camera.h"
 				>
 			</File>
@@ -1397,10 +1493,6 @@
 			</File>
 			<File
 				RelativePath=".\src\sound\CollisionSound.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\render\ColorConstants.h"
 				>
 			</File>
 			<File
@@ -1516,6 +1608,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\input\GlobalInputManager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\gui\GUIConstruction.h"
 				>
 			</File>
@@ -1545,6 +1641,10 @@
 			</File>
 			<File
 				RelativePath=".\src\map\HRMap.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\HRMapObjects.h"
 				>
 			</File>
 			<File
@@ -1640,6 +1740,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\gui\LobbyProxy.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sdl\LoopBase.h"
 				>
 			</File>
@@ -1673,6 +1777,14 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\MenuLoop.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\MenuMoveEvent.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\MenuSelectedEvent.h"
 				>
 			</File>
 			<File
@@ -1828,11 +1940,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\hud\PlacingList.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\world\PlayerIntention.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\world\PlayerManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\hud\PlayerPlacingText.h"
 				>
 			</File>
 			<File
@@ -1848,11 +1968,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\misc\ProgressLogger.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\ProgressTracker.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\map\RaceManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\map\RaceResults.h"
 				>
 			</File>
 			<File
@@ -1956,6 +2084,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\SetupChat.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetupClientSettings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetupPlayerSettings.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\shader\ShaderAttributeLocation.h"
 				>
 			</File>
@@ -1996,6 +2136,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\SmoothTransitionLayout.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\sound\SoundSystem.h"
 				>
 			</File>
@@ -2012,6 +2156,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\StartingGame.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\misc\StdListFunctions.h"
 				>
 			</File>
@@ -2021,6 +2169,14 @@
 			</File>
 			<File
 				RelativePath=".\src\ai\StraightDriver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\StringTexture.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\StringTextureCache.h"
 				>
 			</File>
 			<File
@@ -2036,11 +2192,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\Teams.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\opengl\TextureCube.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\opengl\TextureLoading.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TextureObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\render\TextureObjectChain.h"
 				>
 			</File>
 			<File
@@ -2147,6 +2315,10 @@
 				RelativePath=".\src\object\WorldManager.h"
 				>
 			</File>
+			<File
+				RelativePath=".\src\world\WorldSetup.h"
+				>
+			</File>
 			<Filter
 				Name="math"
 				>
@@ -2243,7 +2415,7 @@
 				Name="sdl"
 				>
 				<File
-					RelativePath=".\src\sdl\JoystickManager.h"
+					RelativePath=".\src\input\JoystickManager.h"
 					>
 				</File>
 				<File

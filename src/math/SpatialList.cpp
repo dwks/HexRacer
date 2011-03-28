@@ -14,8 +14,8 @@ SpatialList::SpatialList(bool use_bounding_box) {
 }
 
 SpatialList::~SpatialList(void) {
-	//if (boundingBox)
-	//	delete(boundingBox);
+	if (boundingBox)
+		delete(boundingBox);
 }
 
 bool SpatialList::add(ObjectSpatial* object) {

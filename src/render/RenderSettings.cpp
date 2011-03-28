@@ -19,10 +19,11 @@ namespace Render {
 
 		redrawMode = false;
 		applyToShadowMatrix = false;
+		allowDisplayLists = true;
 
 	}
 
-	short RenderSettings::getMaxLights() {
+	short RenderSettings::getMaxLights() const {
 		switch (getGraphicsQuality()) {
 			case GRAPHICS_HIGH:
 				return 8;

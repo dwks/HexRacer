@@ -9,7 +9,6 @@
 #include "math/Geometry.h"
 #include "math/BoundingBox3D.h"
 
-#include "map/MapLoader.h"
 #include "map/MapOptions.h"
 
 #include "hud/LapProgressBar.h"
@@ -29,6 +28,12 @@ GameRenderer::~GameRenderer() {
         dynamic_cast<Widget::CompositeWidget *>(gui->getScreen("running"))
             ->removeChild(fpsRate->getWidget()->getName());
     }
+
+	if (renderer->getRenderSettings()->getBloomEnabled())
+		clearBloom();
+
+	if (renderer->getRenderSettings()->getShadowMappingEnabled())
+		clearShadowMap();
 }
 
 void GameRenderer::construct(OpenGL::Camera *camera)
@@ -41,6 +46,9 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     lightManager = renderer->getLightManager();
     mapRenderable = boost::shared_ptr<Render::RenderList>(
         new Render::RenderList());
+
+	stringTextureCache = boost::shared_ptr<Render::StringTextureCache>(
+        new Render::StringTextureCache());
     
     renderer->getShaderManager()->loadShadersFile("shaders.txt");
     
@@ -50,7 +58,7 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     
     //Instantiate the map
     map = boost::shared_ptr<Map::HRMap>(new Map::HRMap());
-    if (map->loadMapFile(GET_SETTING("map", "data/testtrack.hrm"))) {
+    if (map->loadMapFile(GET_SETTING("map", "data/testtrack.hrm"), SDL::MenuLoop::getLoadingProgressTracker())) {
         LOG(WORLD, "Loaded Map File " << GET_SETTING("map", "data/testtrack.hrm"));
     }
     else {
@@ -58,7 +66,7 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     }
     
     //Add the map lights to the light manager
-    std::vector<OpenGL::Light*> map_lights = map->getLights();
+    std::vector<OpenGL::Light*> map_lights = map->getMapObjects().getLights();
     for (unsigned i = 0; i < map_lights.size(); i++) {
         lightManager->addLight(map_lights[i], !map_lights[i]->getHasAttenuation(), false);
     }
@@ -72,15 +80,17 @@ void GameRenderer::construct(OpenGL::Camera *camera)
 
     minimap = boost::shared_ptr<HUD::Minimap>(new HUD::Minimap());
     minimap->setMapInfo(map.get());
-
 	speedometer = boost::shared_ptr<HUD::Speedometer>(new HUD::Speedometer());
+	placingList = boost::shared_ptr<HUD::PlacingList>(new HUD::PlacingList());
+	playerPlacingText = boost::shared_ptr<HUD::PlayerPlacingText>(new HUD::PlayerPlacingText());
     
     renderer->setCubeMap(map->getCubeMap());
     
     paintManager = boost::shared_ptr<Paint::PaintManager>(
-        new Paint::PaintManager());
+        new Paint::PaintManager(true));
 
-	Map::MapLoader().load(map.get(), SDL::MenuLoop::getLoadingProgressTracker(), mapRenderable.get(), paintManager.get());
+	mapLoader = boost::shared_ptr<Map::MapLoader>(new Map::MapLoader());
+	mapLoader->load(map.get(), SDL::MenuLoop::getLoadingProgressTracker(), mapRenderable.get(), paintManager.get());
 
 	shadowProperties = NULL;
 	shadowCamera = NULL;
@@ -202,7 +212,7 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldMan
 	renderer->cleanup();
 }
 
-void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player *player) {
+void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player *player, Map::RaceManager *raceManager) {
 
     int viewWidth = SDL_GetVideoSurface()->w;
     int viewHeight = SDL_GetVideoSurface()->h;
@@ -269,11 +279,46 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 		HUD::LapProgressBar bar;
 		bar.setProgress(player->getPathTracker()->getLapProgress());
 		bar.render();
-		/*
-        percentageComplete->setText(Misc::StreamAsString() << std::setprecision(3)
-            << player->getPathTracker()->getLapProgress() * 100 << "%");
-		*/
+    }
 
+	//-Placing List ----------------------------------------------------------------------------
+    if (GET_SETTING("hud.placinglist.enable", true)) {
+
+        int draw_height = viewHeight*GET_SETTING("hud.placinglist.drawheight", 0.5);
+		int draw_width = GET_SETTING("hud.placinglist.drawwidth", 400);
+		int entry_height = Math::maximum(static_cast<int>(viewHeight*GET_SETTING("hud.placinglist.entryheight", 0.5)),
+			static_cast<int>(GET_SETTING("hud.placinglist.minentryheight", 20)));
+		entry_height = Math::minimum(entry_height, GET_SETTING("hud.placinglist.maxentryheight", 20));
+
+		hudRenderer->setupViewport(
+			HUD::HUDRenderer::ALIGN_MIN,
+			HUD::HUDRenderer::ALIGN_MID,
+			draw_width,
+			draw_height,
+			10,
+			0);
+	
+		placingList->setTotalWidth(draw_width);
+		placingList->setTotalHeight(draw_height);
+		placingList->setEntryHeight(entry_height);
+		placingList->render(raceManager);
+    }
+
+	//-Player Placing Text ----------------------------------------------------------------------------
+    if (GET_SETTING("hud.playerplacingtext.enable", true)) {
+
+        int draw_height = viewHeight*GET_SETTING("hud.playerplacingtext.drawheight", 0.2);
+
+		hudRenderer->setupViewport(
+			HUD::HUDRenderer::ALIGN_MIN,
+			HUD::HUDRenderer::ALIGN_MIN,
+			draw_height,
+			draw_height,
+			10,
+			0);
+	
+		playerPlacingText->setPlacing(player->getPathTracker()->getRanking());
+		playerPlacingText->render();
     }
 
 	hudRenderer->renderingStateReset();
@@ -288,16 +333,7 @@ void GameRenderer::setGUI(boost::shared_ptr<GUI::GUISystem> gui) {
         fpsRate = boost::shared_ptr<FPSRateMonitor>(new FPSRateMonitor());
         gui->getScreen("running")->addChild(fpsRate->getWidget());
     }
-    
-#if 0
-    percentageComplete = new Widget::TextWidget(
-        "percentageComplete", OpenGL::Color::WHITE, "0%",
-        Widget::NormalTextLayout::ALIGN_HCENTRE | Widget::NormalTextLayout::ALIGN_VCENTRE);
-    percentageComplete->updateLayout(Widget::WidgetRect(0.0, 0.9, 0.1, 0.05));
-    /*percentageComplete = new Widget::ButtonWidget("percentageComplete",
-        "0%", Widget::WidgetRect(0.0, 0.1, 0.1, 0.05));*/
-    gui->getScreen("running")->addChild(percentageComplete);
-#endif
+
 }
 
 void GameRenderer::renderWorld(Object::World *world) {
@@ -342,7 +378,7 @@ void GameRenderer::renderAIDebug(Object::Player *player) {
 #define MAP_EDITOR_PATHNODE_LINK_START_COLOR OpenGL::Color::WHITE
 #define MAP_EDITOR_PATHNODE_LINK_END_COLOR OpenGL::Color::BLUE
     
-    std::vector<Map::PathNode *> nodeList = map->getPathNodes();
+    std::vector<Map::PathNode *> nodeList = map->getMapObjects().getPathNodes();
     
     for (unsigned int i = 0; i < nodeList.size(); i++) {
         Map::PathNode* node = nodeList[i];
@@ -566,10 +602,14 @@ void GameRenderer::renderToBloomBuffer(Render::RenderableObject& renderable) {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	renderer->getRenderSettings()->setRedrawMode(true);
 	renderable.render(renderer.get());
 	renderer->getRenderSettings()->setRedrawMode(false);
+
+	glDisable(GL_BLEND);
 	
 }
 
@@ -653,6 +693,21 @@ void GameRenderer::applyBloomBuffer() {
 
 }
 
+void GameRenderer::clearBloom() {
+	glDeleteTextures(1, &bloomColorTexture);
+	glDeleteTextures(1, &bloomDepthTexture);
+	glDeleteTextures(1, &bloomBlurTexture);
+	glDeleteFramebuffers(1, &bloomBlurFBO);
+	glDeleteFramebuffers(1, &bloomFBO);
+
+	delete bloomRenderable;
+	bloomRenderable = NULL;
+	delete bloomScene->getRenderProperties()->getMaterial();
+	delete bloomScene;
+	bloomScene = NULL;
+	delete bloomBackground;
+	bloomBackground = NULL;
+}
 void GameRenderer::drawQuad() {
 
 	glBegin(GL_QUADS);
@@ -921,5 +976,11 @@ void GameRenderer::renderToShadowMap(Render::RenderableObject& renderable) {
 
 }
 
+void GameRenderer::clearShadowMap() {
+	glDeleteTextures(1, &shadowDepthTexture);
+	glDeleteFramebuffers(1, &shadowFBO);
+	delete shadowCamera;
+	delete shadowProperties;
+}
 }  // namespace SDL
 }  // namespace Project

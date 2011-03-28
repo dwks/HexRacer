@@ -14,6 +14,14 @@ static void vectorRemoveAtIndex(std::vector<Type>& v, int index) {
 }
 
 template <typename Type>
+static void vectorRemoveAtIndexKeepOrder(std::vector<Type>& v, int index) {
+	for (int i = index; i < static_cast<int>(v.size()-1); i++) {
+		v[i] = v[i+1];
+	}
+	v.resize(v.size()-1);
+}
+
+template <typename Type>
 static bool vectorRemoveOneElement(std::vector<Type>& v, const Type& element) {
 	for (unsigned int i = 0; i < v.size(); i++) {
 		if (v[i] == element) {
@@ -51,7 +59,7 @@ static std::vector<Type> vectorAppended(std::vector<Type>& v1, const std::vector
 }
 
 template <typename Type>
-static int vectorIndexOfFirst(std::vector<Type>& v, const Type& element) {
+static int vectorIndexOfFirst(const std::vector<Type>& v, const Type& element) {
 
 	for (unsigned int i = 0; i < v.size(); i++) {
 		if (v[i] == element) {
@@ -63,6 +71,83 @@ static int vectorIndexOfFirst(std::vector<Type>& v, const Type& element) {
 }
 
 template <typename Type>
+static int vectorIndexOfFirstSorted(const std::vector<Type>& v, const Type& element) {
+
+	int lower_bound = 0;
+	int upper_bound = v.size()-1;
+
+	while (lower_bound <= upper_bound) {
+		int index = (lower_bound+upper_bound)/2;
+		if (v[index] == element)
+			return index;
+		else if (v[index] < element)
+			lower_bound = index+1;
+		else
+			upper_bound = index-1;
+	}
+
+	return -1;
+
+}
+
+template <typename Type>
+static void vectorInsertionSort(std::vector<Type>& v, int start_index = -1, int end_index = -1) {
+
+	if (start_index < 0)
+		start_index = 0;
+	if (end_index < 0)
+		end_index = v.size()-1;
+
+	for (int i = start_index+1; i <= end_index; i++) {
+
+		Type value = v[i];
+		int j = i-1;
+		bool done = false;
+		do {
+
+			if (value < v[j]) {
+				v[j+1] = v[j];
+				j--;
+				done = (j < start_index);
+			}
+			else
+				done = true;
+
+		} while (!done);
+		v[j+1] = value;
+	}
+
+}
+
+template <typename Type>
+static void vectorPointerInsertionSort(std::vector<Type>& v, int start_index = -1, int end_index = -1) {
+
+	if (start_index < 0)
+		start_index = 0;
+	if (end_index < 0)
+		end_index = v.size()-1;
+
+	for (int i = start_index+1; i <= end_index; i++) {
+
+		Type value = v[i];
+		int j = i-1;
+		bool done = false;
+		do {
+
+			if (*value < *v[j]) {
+				v[j+1] = v[j];
+				j--;
+				done = (j < start_index);
+			}
+			else
+				done = true;
+
+		} while (!done);
+		v[j+1] = value;
+	}
+
+}
+template <typename Type>
 static void vectorMergeSort(std::vector<Type>& v, int start_index = -1, int end_index = -1) {
 
 	if (start_index < 0)
@@ -73,16 +158,8 @@ static void vectorMergeSort(std::vector<Type>& v, int start_index = -1, int end_
 	int size = end_index-start_index;
 	size++;
 
-	if (size < 2)
-		return;
-	
-	if (size == 2) {
-		//Trivial sort of a size 2 vector
-		if (v[end_index] < v[start_index]) {
-			Type temp = v[start_index];
-			v[start_index] = v[end_index];
-			v[end_index] = temp;
-		}
+	if (size <= 10) {
+		vectorInsertionSort(v, start_index, end_index);
 		return;
 	}
 
@@ -127,16 +204,8 @@ static void vectorPointerMergeSort(std::vector<Type>& v, int start_index = -1, i
 	int size = end_index-start_index;
 	size++;
 
-	if (size < 2)
-		return;
-	
-	if (size == 2) {
-		//Trivial sort of a size 2 vector
-		if (*v[end_index] < *v[start_index]) {
-			Type temp = v[start_index];
-			v[start_index] = v[end_index];
-			v[end_index] = temp;
-		}
+	if (size <= 10) {
+		vectorPointerInsertionSort(v, start_index, end_index);
 		return;
 	}
 
@@ -170,6 +239,14 @@ static void vectorPointerMergeSort(std::vector<Type>& v, int start_index = -1, i
 
 }
 
+template <typename Type>
+static bool vectorIsSorted(std::vector<Type>& v) {
+	for (unsigned int i = 0; i < v.size()-1; i++) {
+		if (v[i+1] < v[i])
+			return false;
+	}
+	return true;
+}
 }  // namespace Misc
 }  // namespace Project
 

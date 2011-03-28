@@ -15,7 +15,7 @@ namespace Misc {
 		return exists;
 	}
 
-	string DirectoryFunctions::extractFilename(string str, bool include_extension) {
+	string DirectoryFunctions::extractFilename(const string& str, bool include_extension) {
 		std::string::size_type slashpos = str.find_last_of('/');
 		string return_str;
 
@@ -33,12 +33,12 @@ namespace Misc {
 			return return_str.substr(0, dotpos);
 	}
 
-	string DirectoryFunctions::extractDirectory(string str) {
+	string DirectoryFunctions::extractDirectory(const string& str) {
 		return (str.substr(0,
 			maximum<std::string::size_type>(str.find_last_of('/')+1, 0)));
 	}
 
-	string DirectoryFunctions::toRelativeFilename(string base_directory, string full_filename) {
+	string DirectoryFunctions::toRelativeFilename(const string& base_directory, const string& full_filename) {
 		if (full_filename.size() > base_directory.size() &&
 			full_filename.substr(0, base_directory.size()) == base_directory) {
 			return full_filename.substr(base_directory.length(), full_filename.length()-base_directory.length());
@@ -48,8 +48,8 @@ namespace Misc {
 		}
 	}
 
-	string DirectoryFunctions::fromRelativeFilename(string base_directory, string relative_filename) {
-		return base_directory.append(relative_filename);
+	string DirectoryFunctions::fromRelativeFilename(const string& base_directory, const string& relative_filename) {
+		return string(base_directory).append(relative_filename);
 	}
 
 }  // namespace Misc

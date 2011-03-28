@@ -31,26 +31,26 @@ Camera::~Camera(void)
 	//delete(frustrum);
 }
 
-void Camera::setPosition(Point pos) {
+void Camera::setPosition(const Point& pos) {
 	cameraPosition = pos;
 	cameraLookPosition = cameraPosition+cameraLookDirection;
 	updatePosition();
 }
 
-void Camera::translate(Point translation) {
+void Camera::translate(const Point& translation) {
 	setPosition(cameraPosition + translation);
 }
 
-void Camera::setLookPosition(Point pos) {
+void Camera::setLookPosition(const Point& pos) {
 	cameraLookPosition = pos;
 	updateDirections();
 }
 
-void Camera::setLookDirection(Point dir) {
+void Camera::setLookDirection(const Point& dir) {
 	setLookPosition(cameraPosition+dir);
 }
 
-void Camera::setUpDirection(Point dir) {
+void Camera::setUpDirection(const Point& dir) {
 	givenCameraUpDirection = dir.normalized();
 	updateDirections();
 }
@@ -139,7 +139,7 @@ Ray Camera::cameraRay(double x, double y) const {
 	}
 
 }
-Point Camera::cameraToWorld(Point p) const {
+Point Camera::cameraToWorld(const Point& p) const {
 	return cameraToWorld(p.getX(), p.getY(), p.getZ());
 }
 

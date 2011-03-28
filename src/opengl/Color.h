@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iosfwd>
-#include "math/Point.h"
 #include "OpenGL.h"
 
 namespace Project {
@@ -19,12 +18,26 @@ private:
 	static int colorFloatToInt(float f);
 public:
 
-	enum ColorPreset {RED, GREEN, BLUE, WHITE, BLACK, LIGHTGREY, GREY, DARKGREY, YELLOW, ORANGE, PURPLE, INDIGO, VIOLET, PINK, BROWN, TEAL};
+	enum ColorPreset {RED,
+		GREEN,
+		BLUE,
+		WHITE,
+		BLACK,
+		LIGHTGREY,
+		GREY,
+		DARKGREY,
+		YELLOW,
+		ORANGE,
+		PURPLE,
+		INDIGO,
+		VIOLET,
+		PINK,
+		BROWN,
+		TEAL};
 
 	Color(void)
 		: r(0.0f) , g(0.0f) , b(0.0f) , a(0.0f) {}
 	Color(float red, float green, float blue, float alpha = 1.0f);
-	Color(Math::Point p, float alpha = 1.0f);
 	Color(ColorPreset preset);
 	~Color(void) {}
 

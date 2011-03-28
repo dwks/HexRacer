@@ -2,7 +2,7 @@
 #include "opengl/MathWrapper.h"
 #include "math/BoundingSphere.h"
 #include "math/BoundingCircle.h"
-#include "render/ColorConstants.h"
+#include "map/Teams.h"
 #include "event/EventSystem.h"
 
 using namespace Project;
@@ -30,12 +30,15 @@ namespace Paint {
 		*/
     }
     
-	PaintManager::PaintManager() {
+	PaintManager::PaintManager(bool enable_rendering) {
+
 		coloredPaintTree = new BSPTree3D(BoundingBox3D(), TREE_SPLIT_METHOD, TREE_SPLIT_SIZE);
 		getRenderProperties()->setWantsShaderName("paintShader");
 		OpenGL::Material* material = new OpenGL::Material("paintMaterial");
 		material->setShininess(4.0f);
 		getRenderProperties()->setMaterial(material);
+
+		enableRendering = enable_rendering;
 
 		fadePlaneNear = 0.0f;
 		fadePlaneFar = 0.0f;
@@ -47,7 +50,6 @@ namespace Paint {
 	}
 
 	PaintManager::~PaintManager() {
-        //delete(neutralPaintTree);
 		delete(coloredPaintTree);
 		delete(getRenderProperties()->getMaterial());
 		for (unsigned int i = 0; i < paintList.size(); i++) {
@@ -79,16 +81,21 @@ namespace Paint {
 			const PaintCellInfo& cell = cell_info[i];
 
 			PaintCell* new_cell = new PaintCell(cell.centerPoint(map->getPaintHeightMap()));
-			new_cell->displayList = glGenLists(1);
-			glNewList(new_cell->displayList, GL_COMPILE);
-			cell.render(map->getPaintHeightMap());
-			glEndList();
 
-			new_cell->setToObject(cell.getBoundingBox(map->getPaintHeightMap()));
-			if (i == 0)
-				paintBound.setToObject(*new_cell);
-			else
-				paintBound.expandToInclude(*new_cell);
+			if (enableRendering) {
+
+				new_cell->displayList = glGenLists(1);
+				glNewList(new_cell->displayList, GL_COMPILE);
+				cell.render(map->getPaintHeightMap());
+				glEndList();
+
+				new_cell->setToObject(cell.getBoundingBox(map->getPaintHeightMap()));
+				if (i == 0)
+					paintBound.setToObject(*new_cell);
+				else
+					paintBound.expandToInclude(*new_cell);
+
+			}
 
 			paintGrid.addPaintCell(cell.uIndex, cell.vIndex, new_cell);
 			paintList.push_back(new_cell);
@@ -106,6 +113,9 @@ namespace Paint {
 			"fadePlanes",
 			fade_planes,
 			2);
+
+		coloredCellAlpha = GET_SETTING("render.paint.coloredalpha", 1.0f);
+		neutralCellAlpha = GET_SETTING("render.paint.neutralalpha", 0.4f);
 
 		if (!settings.getRedrawMode()) {
 			redrawBuffer.clear();
@@ -131,7 +141,7 @@ namespace Paint {
 		glPointSize(viewportWidth/view_height);
 		glBegin(GL_POINTS);
 
-		HexGrid::HexIndexRange range = hexGrid.queryIndexRange(bounding_object);
+		HexGrid::HexIndexRange range = hexGrid.hexIndexRange(bounding_object);
 
 		if (hexGrid.validRange(range)) {
 			for (int u = range.minUIndex; u <= range.maxUIndex; u++) {
@@ -140,7 +150,7 @@ namespace Paint {
 					PaintCell* cell = paintGrid.getPaintCell(u, v);
 					while (cell != NULL) {
 						if (cell->playerColor >= 0) {
-							OpenGL::Color::glColor(ColorConstants::playerColor(cell->playerColor), alpha);
+							OpenGL::Color::glColor(Map::Teams::teamColor(cell->playerColor), alpha);
 							OpenGL::MathWrapper::glVertex(cell->position);
 						}
 						cell = cell->nextCell;
@@ -155,33 +165,41 @@ namespace Paint {
 
 	}
 
-	void PaintManager::colorCellByIndex(const HexGrid::HexIndex& index, int new_color, bool force_color) {
-		PaintCell* cell = paintGrid.getPaintCell(index);
+	void PaintManager::colorCellByIndex(const HexHeightMap::LayeredHexIndex& index, int new_color, bool force_color) {
+		PaintCell* cell = paintGrid.getPaintCell(index.hexIndex);
+		int layer = index.layerIndex;
+		while (layer > 0 && cell) {
+			cell = cell->nextCell;
+			layer--;
+		}
 		if (cell)
 			colorCell(cell, new_color, force_color);
 	}
 
-	void PaintManager::colorCellsInRadius(Math::Point centroid, double radius, int new_color, bool force_color, vector<HexGrid::HexIndex>* changedIndices) {
+	void PaintManager::colorCellsInRadius(Math::Point centroid, double radius, int new_color, bool force_color, vector<HexHeightMap::LayeredHexIndex>* changedIndices) {
 
 		double radius_squared = radius*radius;
 		BoundingCircle query_circle(centroid, radius, PaintCell::PAINT_AXIS);
-		HexGrid::HexIndexRange range = hexGrid.queryIndexRange(query_circle);
+		HexGrid::HexIndexRange range = hexGrid.hexIndexRange(query_circle);
 
 		if (hexGrid.validRange(range)) {
 			for (int u = range.minUIndex; u <= range.maxUIndex; u++) {
 				for (int v = range.minVIndex; v <= range.maxVIndex; v++) {
 					
 					PaintCell* cell = paintGrid.getPaintCell(u, v);
+					int layer = 0;
 					while (cell != NULL) {
 						if (centroid.distanceSquared(cell->position) <= radius_squared) {
 							if (colorCell(cell, new_color, force_color) && changedIndices) {
-								HexGrid::HexIndex index;
-								index.uIndex = u;
-								index.vIndex = v;
+								HexHeightMap::LayeredHexIndex index;
+								index.hexIndex.uIndex = u;
+								index.hexIndex.vIndex = v;
+								index.layerIndex = layer;
 								changedIndices->push_back(index);
 							}
 						}
 						cell = cell->nextCell;
+						layer++;
 					}
 
 				}
@@ -202,7 +220,7 @@ namespace Paint {
 
 		double radius_squared = radius*radius;
 		BoundingCircle query_circle(centroid, radius, PaintCell::PAINT_AXIS);
-		HexGrid::HexIndexRange range = hexGrid.queryIndexRange(query_circle);
+		HexGrid::HexIndexRange range = hexGrid.hexIndexRange(query_circle);
 
 		if (hexGrid.validRange(range)) {
 			for (int u = range.minUIndex; u <= range.maxUIndex; u++) {
@@ -228,67 +246,20 @@ namespace Paint {
 		}
 
 		return weighted_score*density_factor;
-
-		/*
-		double weighted_score = 0.0;
-        int cell_count = 0;
-        
-		BoundingSphere query_sphere(centroid, radius);
-		vector<ObjectSpatial*> candidate_cells;
-		coloredPaintTree->appendQuery(candidate_cells, query_sphere, SpatialContainer::NEARBY);
-
-		double color_benefit = GET_SETTING("game.paint.colorbenefit", 1.0);
-		double color_penalty = GET_SETTING("game.paint.colorpenalty", 0.0);
-        
-		for (unsigned int i = 0; i < candidate_cells.size(); i++) {
-			PaintCell *cell = static_cast<PaintCell *>(candidate_cells[i]);
-			double dist_squared = cell->center.distanceSquared(centroid);
-            
-			if (dist_squared <= query_sphere.getRadiusSquared()) {
-
-				double dist = sqrt(dist_squared);
-
-                cell_count ++;
-                double colour_factor;
-                
-                if(cell->playerColor == color) {
-                    colour_factor = color_benefit;
-                }
-                else if(cell->playerColor < 0) {
-                    colour_factor = 0.0;
-                    continue;
-                }
-                else {
-                    colour_factor = color_penalty;
-                }
-                
-                double distance_weight = (query_sphere.getRadius() - dist)
-                    / query_sphere.getRadius();
-                
-                weighted_score += colour_factor * distance_weight;
-			}
-		}
-        
-        if(!cell_count) {
-            return 1.0;
-        }
-        else {
-            return 1.0 + weighted_score / cell_count;
-        }
-		*/
-
-		return 1.0;
 	}
 
 	bool PaintManager::colorCell(PaintCell* cell, int new_color, bool force_color) {
+
+		if (cell->playerColor == new_color)
+			return false;
 
 		if (new_color >= 0) {
 			
 			if (cell->playerColor < 0) {
 
 				cell->playerColor = new_color;
-				//neutralPaintTree->remove(cell);
-				coloredPaintTree->add(cell);
+				if (enableRendering)
+					coloredPaintTree->add(cell);
 				return true;
 
 			}
@@ -304,8 +275,8 @@ namespace Paint {
 			if (cell->playerColor >= 0) {
 
 				cell->playerColor = new_color;
-				coloredPaintTree->remove(cell);
-				//neutralPaintTree->add(cell);
+				if (enableRendering)
+					coloredPaintTree->remove(cell);
 				return true;
 
 			}
@@ -328,11 +299,13 @@ namespace Paint {
 
 		OpenGL::Color cell_color;
 
-		if (cell->playerColor >= 0)
-			cell_color = ColorConstants::playerColor(cell->playerColor);
+		if (cell->playerColor >= 0) {
+			cell_color = Map::Teams::teamColor(cell->playerColor);
+			cell_color.setAlphaf(coloredCellAlpha);
+		}
 		else {
 			cell_color = OpenGL::Color::WHITE;
-			cell_color.setAlphaf(0.4f);
+			cell_color.setAlphaf(neutralCellAlpha);
 		}
 
 		OpenGL::Color::glColor(cell_color);
@@ -343,7 +316,7 @@ namespace Paint {
 
 		double radius_squared = radius*radius;
 		BoundingCircle query_circle(centroid, radius, PaintCell::PAINT_AXIS);
-		HexGrid::HexIndexRange range = hexGrid.queryIndexRange(query_circle);
+		HexGrid::HexIndexRange range = hexGrid.hexIndexRange(query_circle);
 
 		if (hexGrid.validRange(range)) {
 			for (int u = range.minUIndex; u <= range.maxUIndex; u++) {

@@ -23,9 +23,13 @@ public:
     
     void sendPacket(Network::Packet *packet);
     void sendPacketExcept(Network::Packet *packet, int exception);
+    void sendPacketOnly(Network::Packet *packet, int which);
     
     int nextDisconnectedClient();
     Network::Packet *nextPacket(int *whichSocket = NULL);
+    
+    bool socketExists(int which) const;
+    int getSocketCount() const;
 };
 
 }  // namespace Server

@@ -110,7 +110,6 @@ namespace Math {
 
 		return p;
 	}
-	
 	Math::Point HexHeightMap::vertexToPoint(const HexHeightMap::LayeredHexIndex& vert_index, Math::Axis axis) const {
 		return vertexToPoint(vert_index.hexIndex.uIndex, vert_index.hexIndex.vIndex, vert_index.layerIndex, axis);
 	}
@@ -126,13 +125,17 @@ namespace Math {
 
 	void HexHeightMap::clear() {
 
-		for (unsigned int i = 0; i < setHexIndices.size(); i++)
+		for (unsigned int i = 0; i < setHexIndices.size(); i++) {
 			delete hexHeight[ setHexIndices[i].uIndex ] [ setHexIndices[i].vIndex ];
+			hexHeight[ setHexIndices[i].uIndex ] [ setHexIndices[i].vIndex ] = NULL;
+		}
 
 		setHexIndices.clear();
 
-		for (unsigned int i = 0; i < setVertexIndices.size(); i++)
+		for (unsigned int i = 0; i < setVertexIndices.size(); i++) {
 			delete vertexHeight[ setVertexIndices[i].uIndex ] [ setVertexIndices[i].vIndex ];
+			vertexHeight[ setVertexIndices[i].uIndex ] [ setVertexIndices[i].vIndex ] = NULL;
+		}
 
 		setVertexIndices.clear();
 

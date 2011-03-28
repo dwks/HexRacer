@@ -29,5 +29,9 @@ double degreesToRadians(double degrees) {
 	return degrees/180.0*PI;
 }
 
+int nextPowerOf2(int x) {
+    return 1 << int(std::ceil((double) std::log((double) x) / std::log((double) 2.0)));
+}
+
 }  // namespace Math
 }  // namespace Project

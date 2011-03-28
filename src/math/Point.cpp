@@ -134,8 +134,8 @@ bool Point::zero() const {
 }
 Point Point::normalized() const {
     double the_length = length();
-    
-    return Point(
+
+	return Point(
         getX() / the_length,
         getY() / the_length,
         getZ() / the_length,
@@ -151,6 +151,22 @@ void Point::normalize() {
     setW(0.0);
 }
 
+void Point::postNormalize() {
+
+	if (getX() == 1.0) {
+		setY(0.0);
+		setZ(0.0);
+	}
+	else if (getY() == 1.0) {
+		setX(0.0);
+		setZ(0.0);
+	}
+	else if (getZ() == 1.0) {
+		setX(0.0);
+		setY(0.0);
+	}
+
+}
 void Point::restrictTo(Math::Point restriction) {
     if(std::fabs(getX()) > restriction.getX()) {
         setX(sign(getX()) * restriction.getX());
@@ -342,12 +358,9 @@ bool Point::operator == (const Point &other) const {
 }
 
 bool Point::operator < (const Point &other) const {
-	return (
-		getX() < other.getX() ||
-		( getX() == other.getX() &&
-		(getY() < other.getY() || (getY() == other.getY() && getZ() < other.getZ()))
-		)
-		);
+	return (getX() < other.getX() || (getX() == other.getX() &&
+				(getY() < other.getY() || (getY() == other.getY() &&
+					(getZ() < other.getZ()) ))));
 }
 double Point::operator [] (int index) const {
     switch(index) {

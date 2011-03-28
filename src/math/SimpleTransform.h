@@ -39,9 +39,9 @@ public:
 	double getRotationRadians(RotationAxis axis) const { return rotationRadians.getCoord(static_cast<Axis>(axis)); }
 	double getRotationDegrees(RotationAxis axis) const { return radiansToDegrees(rotationRadians.getCoord(static_cast<Axis>(axis))); }
 
-	Point getVector() const { return vector; }
+	const Point& getVector() const { return vector; }
 	
-	Matrix getMatrix() const { return matrix; }
+	const Matrix& getMatrix() const { return matrix; }
 
 	void setMinScale(double min_scale);
 

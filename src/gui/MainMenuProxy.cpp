@@ -30,6 +30,9 @@ void MainMenuProxy::visit(Widget::WidgetActivateEvent *event) {
     else if(name == "settings") {
         EMIT_EVENT(new Event::SwitchToScreen("settings"));
     }
+    else if(name == "about") {
+        EMIT_EVENT(new Event::SwitchToScreen("about"));
+    }
     else if(name == "quit") {
         EMIT_EVENT(new Event::QuitEvent());
     }

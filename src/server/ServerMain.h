@@ -3,6 +3,8 @@
 
 #include "boost/smart_ptr.hpp"
 
+#include "world/WorldSetup.h"
+
 #include "paint/PaintManager.h"
 #include "paint/PaintSubsystem.h"
 
@@ -17,7 +19,10 @@
 #include "timing/AccelControl.h"
 
 #include "map/HRMap.h"
+#include "map/MapLoader.h"
 #include "map/RaceManager.h"
+
+#include "mesh/MeshLoader.h"
 
 #include "world/BasicWorld.h"
 #include "ai/AIManager.h"
@@ -51,11 +56,13 @@ private:
     bool quit;
     int clientCount;
     int whichSocket;
+    bool loadedMap;
     
     boost::shared_ptr<Timing::AccelControl> accelControl;
     boost::shared_ptr<World::BasicWorld> basicWorld;
     boost::shared_ptr<Mesh::MeshLoader> meshLoader;
     boost::shared_ptr<Map::HRMap> map;
+	boost::shared_ptr<Map::MapLoader> mapLoader;
     
     boost::shared_ptr<Paint::PaintManager> paintManager;
     boost::shared_ptr<Paint::PaintSubsystem> paintSubsystem;
@@ -78,8 +85,18 @@ public:
     Object::WorldManager *getWorldManager()
         { return basicWorld->getWorldManager(); }
 private:
-    void init();
+    void initBasics();
+    
+    void startGame();
+    void initMap();
     void initAI();
+    void sendWorldToPlayers();
+    
+    void handleNewConnections();
+    void handleDisconnections();
+    void handleIncomingPackets();
+    void updateClients();
+    unsigned long doDelay(unsigned long lastTime);
 };
 
 }  // namespace Server

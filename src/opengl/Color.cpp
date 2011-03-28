@@ -16,12 +16,14 @@ Color::Color(float red, float green, float blue, float alpha) {
 	setAlphaf(alpha);
 }
 
+/*
 Color::Color(Point p, float alpha) {
 	setRedf((float) p.getX());
 	setGreenf((float) p.getY());
 	setBluef((float) p.getZ());
 	setAlphaf(alpha);
 }
+*/
 
 Color Color::colori(int red, int green, int blue, int alpha) {
 	Color c;

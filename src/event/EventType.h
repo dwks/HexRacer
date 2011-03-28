@@ -37,6 +37,12 @@ public:
         SWITCH_TO_SCREEN,
         CHANGE_SCREEN_MODE,
         PLAYER_PROGRESS_EVENT,
+        STARTING_GAME,
+        GAME_STAGE_CHANGED,
+        SETUP_PLAYER_SETTINGS,
+        SETUP_CLIENT_SETTINGS,
+        SETUP_CHAT,
+        REPLACE_WORLD_SETUP,
         TYPES
     };
 };

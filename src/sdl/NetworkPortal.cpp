@@ -16,6 +16,10 @@
 #include "event/PacketReceived.h"
 #include "event/ChangeOfIntention.h"
 #include "event/EntireWorld.h"
+#include "event/SetupChat.h"
+#include "event/SetupPlayerSettings.h"
+
+#include "world/WorldSetup.h"
 
 #include "history/PingTimeMeasurer.h"
 #include "misc/Sleeper.h"
@@ -42,12 +46,30 @@ void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
     }
     case Event::EventType::WARP_ONTO_TRACK:
     case Event::EventType::PAUSE_GAME:
+    case Event::EventType::SETUP_CLIENT_SETTINGS:
     {
         send(event);
         break;
     }
     case Event::EventType::PACKET_RECEIVED:
         break;
+    case Event::EventType::SETUP_CHAT: {
+        Event::SetupChat *setupChat = dynamic_cast<Event::SetupChat *>(event);
+        
+        // propagate messages that this client initiated
+        if(setupChat->getJustSpoken()) {
+            send(event);
+        }
+        break;
+    }
+    case Event::EventType::SETUP_PLAYER_SETTINGS: {
+        Event::SetupPlayerSettings *setupPlayerSettings
+            = dynamic_cast<Event::SetupPlayerSettings *>(event);
+        if(setupPlayerSettings->getJustReplaced()) {
+            send(event);
+        }
+        break;
+    }
     default:
         /*LOG2(NETWORK, PACKET, "EventPropagator: Not propagating "
             << typeid(*event).name());*/
@@ -108,9 +130,7 @@ void NetworkPortal::disconnectFrom() {
     portal = NULL;
 }
 
-void NetworkPortal::waitForWorld(Object::World *&world,
-    Object::PlayerList *&playerList) {
-    
+void NetworkPortal::waitForHandshake() {
     LOG2(NETWORK, CONNECT, "Waiting for HandshakePacket . . .");
     
     for(;;) {
@@ -120,6 +140,7 @@ void NetworkPortal::waitForWorld(Object::World *&world,
                 = dynamic_cast<Network::HandshakePacket *>(packet);
             
             id = handshake->getClientID();
+            World::WorldSetup::getInstance()->setClientID(id);
             
             Settings::SettingsManager::getInstance()->set(
                 "map", handshake->getMap());
@@ -138,6 +159,11 @@ void NetworkPortal::waitForWorld(Object::World *&world,
     }
     
     LOG2(NETWORK, CONNECT, "Got HandshakePacket with ID " << id);
+}
+
+void NetworkPortal::waitForWorld(Object::World *&world,
+    Object::PlayerList *&playerList) {
+    
     LOG2(NETWORK, CONNECT, "Waiting for EntireWorld . . .");
     
     for(;;) {

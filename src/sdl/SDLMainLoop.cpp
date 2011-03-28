@@ -62,9 +62,10 @@ void SDLMainLoop::changeScreenModeHandler(Event::ChangeScreenMode *event) {
 }
 
 void SDLMainLoop::joinGameHandler(Event::JoinGame *event) {
-    GameLoop *loop = new GameLoop();
-    if(!loop->tryConnect(event->getHost(), event->getPort())) {
-        delete loop;
+    gameLoop = new GameLoop();
+    if(!gameLoop->tryConnect(event->getHost(), event->getPort())) {
+        delete gameLoop;
+        gameLoop = NULL;
         
         Widget::TextWidget *error = dynamic_cast<Widget::TextWidget *>(
             menuLoop->getGUI()->getWidget("connect/error"));
@@ -83,20 +84,27 @@ void SDLMainLoop::joinGameHandler(Event::JoinGame *event) {
     else {
         event->setSuccessful();
     }
-    loop->construct();
-    
-    loop->setGuiPointers(
-        menuLoop->getGUI(),
-        menuLoop->getGUIInput());
-    menuLoop->getGUI()->pushScreen("running");
-    
-	// set up camera if necessary
-    loop->setProjection(Point2D(
-        SDL_GetVideoSurface()->w,
-        SDL_GetVideoSurface()->h));
-    
-    //Timing::AccelControl::getInstance()->setPauseSkipDirectly(SDL_GetTicks());
-    useLoopBase(loop);
+}
+
+void SDLMainLoop::startingGameHandler(Event::StartingGame *event) {
+    if(event->getStatus() == Event::StartingGame::LOADING_MAP) {
+        gameLoop->resumeConnect();
+        
+        gameLoop->construct();
+        
+        gameLoop->setGuiPointers(
+            menuLoop->getGUI(),
+            menuLoop->getGUIInput());
+        menuLoop->getGUI()->pushScreen("running");
+        
+        // set up camera if necessary
+        gameLoop->setProjection(Point2D(
+            SDL_GetVideoSurface()->w,
+            SDL_GetVideoSurface()->h));
+        
+        //Timing::AccelControl::getInstance()->setPauseSkipDirectly(SDL_GetTicks());
+        useLoopBase(gameLoop);
+    }
 }
 
 SDLMainLoop::SDLMainLoop() {
@@ -108,11 +116,13 @@ SDLMainLoop::SDLMainLoop() {
     METHOD_OBSERVER(&SDLMainLoop::quitHandler);
     METHOD_OBSERVER(&SDLMainLoop::changeScreenModeHandler);
     METHOD_OBSERVER(&SDLMainLoop::joinGameHandler);
+    METHOD_OBSERVER(&SDLMainLoop::startingGameHandler);
     
     initSDL();
     initOpenGL();
     
     menuLoop = new MenuLoop();
+    gameLoop = NULL;
     loop = menuLoop;
 }
 
@@ -130,6 +140,7 @@ void SDLMainLoop::useLoopBase(LoopBase *loop) {
 
 void SDLMainLoop::useMenuLoop() {
     delete this->loop;  // delete the other menu, whatever it is
+    gameLoop = NULL;
     
     menuLoop->getGUI()->popScreen("main");
     this->loop = menuLoop;
@@ -153,7 +164,7 @@ void SDLMainLoop::initSDL() {
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    
+
     SDL_WM_SetCaption("HexRacer", NULL);
     
     int width = GET_SETTING("display.width", 0);
@@ -210,11 +221,18 @@ void SDLMainLoop::run() {
     accelControl = boost::shared_ptr<Timing::AccelControl>(
         new Timing::AccelControl());
     accelControl->setPauseSkipDirectly(lastTime);
+
+	inputManager = boost::shared_ptr<Input::GlobalInputManager>(
+        new Input::GlobalInputManager());
     
     while(!quit) {
         handleEvents();
         
         loop->miscellaneous();
+        
+        // very ugly hack to allow the game lobby to use the half-initialized
+        // GameLoop, to check for network events
+        if(loop == menuLoop && gameLoop) gameLoop->checkNetwork();
         
         doRender();
         
@@ -251,6 +269,7 @@ void SDLMainLoop::handleEvents() {
         }
         
         loop->handleEvent(&event);
+		inputManager->getInputMapper()->handleEvent(&event);
     }
 }
 

@@ -12,8 +12,8 @@ public:
 	Ray(Point _origin = Point(), Point _direction = Point(0.0, 0.0, 1.0));
 	Ray(Point _origin, Point _direction, double min_t);
 	Ray(Point _origin, Point _direction, double min_t, double max_t);
-	bool insideRange(double t);
-	Point atT(double t);
+	bool insideRange(double t) const;
+	Point atT(double t) const;
 
 	Point origin;
 	Point direction;
