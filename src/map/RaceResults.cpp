@@ -35,7 +35,7 @@ namespace Map {
 
 			LOG(WORLD, "Player " << i << " score: " << score << " bonus: " << bonus << " finish time: " << finish_time);
 
-			playerRank[player_rankings.size()-1-i] = player_rankings[i]->getID();
+			playerRank[i] = player_rankings[i]->getID();
 			playerPoints[player_rankings[i]->getID()] = score;
 			playerBonus[player_rankings[i]->getID()] = bonus;
 			teamPoints[player_rankings[i]->getTeamID()] += score;
