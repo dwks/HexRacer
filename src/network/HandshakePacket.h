@@ -18,7 +18,7 @@ private:
     void serialize(Archive &ar, const unsigned version) {
         ar & boost::serialization::base_object<Packet>(*this);
         ar & clientID;
-        ar & map;
+        //ar & map;
         ar & milliseconds;
     }
 private:

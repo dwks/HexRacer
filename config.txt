@@ -57,8 +57,8 @@ physics.slipstate.centripetalfactor = 0.0
 # Display options for the vehicle wheels
 physics.wheel.diameter = 0.155
 physics.wheel.frontsep = 0.35
-physics.wheel.frontz = 0.65
-physics.wheel.backsep = 0.35
+physics.wheel.frontz = 0.46
+physics.wheel.backsep = 0.36
 physics.wheel.backz = -0.5
 
 # Drag forces (when on the ground and when in the air)
@@ -138,10 +138,11 @@ render.drawlightspheres = 1
 render.drawshadowcamera = 0
 
 # Models
-render.model.vehicle = data/vehicle/vehicle01.obj
+render.model.nonChassis = data/vehicle/carmodel3.obj
+render.model.chassis = data/vehicle/carmodel3chassis.obj
 render.model.tire = data/vehicle/carTires.obj
 
-render.vehicle.scale = 2.0
+render.vehicle.scale = 0.24
 render.tire.scale = 2.5
 
 ########
@@ -155,7 +156,7 @@ hud.speedometer.enable = 1
 hud.speedometer.drawheight = 0.35
 hud.speedometer.maxspeed = 30.0
 
-hud.lapprogress.enable = 0
+hud.lapprogress.enable = 1
 hud.lapprogress.drawheight = 0.75
 
 hud.placinglist.enable = 1
@@ -175,7 +176,7 @@ camera.fovstep = 0.05
 
 camera.followdefault.x = 0.0
 camera.followdefault.y = 2.0
-camera.followdefault.z = -6.0
+camera.followdefault.z = -5.0
 
 #camera.followdefault.x = 0.0
 #camera.followdefault.y = 0.8
@@ -187,11 +188,11 @@ camera.followdefault.z = -6.0
 
 camera.followboost.x = 0.0
 camera.followboost.y = 1.75
-camera.followboost.z = -6.5
+camera.followboost.z = -5.5
 
 camera.followslow.x = 0.0
 camera.followslow.y = 2.25
-camera.followslow.z = -5.5
+camera.followslow.z = -4.5
 
 ########
 ### Sound settings

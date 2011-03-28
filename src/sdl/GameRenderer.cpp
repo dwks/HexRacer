@@ -53,7 +53,8 @@ void GameRenderer::construct(OpenGL::Camera *camera)
     renderer->getShaderManager()->loadShadersFile("shaders.txt");
     
     //Load the vehicle model
-    meshLoader->loadOBJ(VEHICLE_CHASSIS_MODEL_NAME, GET_SETTING("render.model.vehicle", ""));
+    meshLoader->loadOBJ(VEHICLE_CHASSIS_MODEL_NAME, GET_SETTING("render.model.chassis", ""));
+    meshLoader->loadOBJ(VEHICLE_NONCHASSIS_MODEL_NAME, GET_SETTING("render.model.nonChassis", ""));
     meshLoader->loadOBJ(VEHICLE_WHEEL_MODEL_NAME, GET_SETTING("render.model.tire", ""));
     
     //Instantiate the map
