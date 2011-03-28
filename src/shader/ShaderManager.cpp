@@ -120,7 +120,7 @@ namespace Shader {
 	}
 
 	void ShaderManager::disableShader() {
-		glUseProgram(NULL);
+		glUseProgram(0);
 		setter.setShaderProgram(NULL, 0, NULL, NULL);
 		activeShaderIndex = -1;
 	}

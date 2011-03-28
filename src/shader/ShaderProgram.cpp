@@ -54,7 +54,7 @@ ShaderProgram::ShaderProgram(const GLchar *fs, const GLchar *vs) {
 		}
 	}
 
-	glUseProgram(NULL);
+	glUseProgram(0);
 }
 
 ShaderProgram::~ShaderProgram() {
@@ -71,7 +71,7 @@ void ShaderProgram::turnShaderOn() const{
 }
 
 void ShaderProgram::turnShaderOff() const{
-	glUseProgram(NULL);
+	glUseProgram(0);
 }
 
 char *ShaderProgram::textFileRead(const char *fn) {

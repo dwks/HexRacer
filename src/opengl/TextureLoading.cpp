@@ -101,7 +101,7 @@ namespace OpenGL {
 			}
 		}
 
-		glBindTexture(GL_TEXTURE_CUBE_MAP, NULL);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
 		return tex_id;
 	}
