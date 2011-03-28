@@ -156,7 +156,7 @@ hud.speedometer.enable = 1
 hud.speedometer.drawheight = 0.35
 hud.speedometer.maxspeed = 30.0
 
-hud.lapprogress.enable = 1
+hud.lapprogress.enable = 0
 hud.lapprogress.drawheight = 0.75
 
 hud.placinglist.enable = 1
