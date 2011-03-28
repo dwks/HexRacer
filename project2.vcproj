@@ -774,6 +774,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\PlayerTimes.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\settings\ProgramSettings.cpp"
 				>
 			</File>
@@ -1019,6 +1023,10 @@
 			</File>
 			<File
 				RelativePath=".\src\timing\TimedSubsystem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\TimeElapsed.cpp"
 				>
 			</File>
 			<File
@@ -1992,6 +2000,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\map\PlayerTimes.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\settings\ProgramSettings.h"
 				>
 			</File>
@@ -2261,6 +2273,10 @@
 			</File>
 			<File
 				RelativePath=".\src\timing\TimedSubsystem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\world\TimeElapsed.h"
 				>
 			</File>
 			<File

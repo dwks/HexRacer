@@ -31,6 +31,7 @@ void SDLMainLoop::changeScreenModeHandler(Event::ChangeScreenMode *event) {
     int bpp = event->getBPP();
     bool fullscreen = event->getFullscreen();
     
+#ifndef WIN32
     // special case: if just toggling fullscreen, and the operating system
     // supports it, can just call ToggleFullScreen instead of setting the mode
     if(width == GET_SETTING("display.width", 0)
@@ -40,6 +41,7 @@ void SDLMainLoop::changeScreenModeHandler(Event::ChangeScreenMode *event) {
         
         if(SDL_WM_ToggleFullScreen(SDL_GetVideoSurface())) return;
     }
+#endif
     
     Settings::SettingsManager::getInstance()->set(
         "display.width", Misc::StreamAsString() << width);

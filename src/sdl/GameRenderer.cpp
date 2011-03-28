@@ -705,7 +705,7 @@ void GameRenderer::clearBloom() {
 	delete bloomScene->getRenderProperties()->getMaterial();
 	delete bloomScene;
 	bloomScene = NULL;
-	delete bloomBackground;
+	//delete bloomBackground;
 	bloomBackground = NULL;
 }
 void GameRenderer::drawQuad() {

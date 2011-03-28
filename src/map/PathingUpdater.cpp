@@ -5,6 +5,7 @@
 
 #include "event/EventSystem.h"
 #include "event/PlayerProgressEvent.h"
+#include "world/TimeElapsed.h"
 #include "PlayerTimes.h"
 
 #include "map/PlayerTimes.h"
@@ -72,7 +73,7 @@ void PathingUpdater::update() {
                     
                     Map::PlayerTimes::getInstance().setFinished(
                         player->getID(),
-                        Misc::Sleeper::getTimeMilliseconds());
+						World::TimeElapsed::getInstance().getGameTime());
 				}
                 
                 if(playerManager->getPlayer() == player) {
