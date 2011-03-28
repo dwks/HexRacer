@@ -222,6 +222,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\BasicWorldConstructed.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingCircle.cpp"
 				>
 			</File>
@@ -371,6 +375,10 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\EventVisitor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\FinishedProxy.cpp"
 				>
 			</File>
 			<File
@@ -630,6 +638,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\ModifyCamera.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\MotionState.cpp"
 				>
 			</File>
@@ -774,6 +786,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\RaceFinished.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\RaceManager.cpp"
 				>
 			</File>
@@ -859,6 +875,10 @@
 			</File>
 			<File
 				RelativePath=".\src\gui\SelectMapProxy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetCheckingNetwork.cpp"
 				>
 			</File>
 			<File
@@ -1420,6 +1440,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\BasicWorldConstructed.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingCircle.h"
 				>
 			</File>
@@ -1573,6 +1597,10 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\EventVisitor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gui\FinishedProxy.h"
 				>
 			</File>
 			<File
@@ -1824,6 +1852,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\ModifyCamera.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\physics\MotionState.h"
 				>
 			</File>
@@ -1976,6 +2008,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\RaceFinished.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\map\RaceManager.h"
 				>
 			</File>
@@ -2065,6 +2101,10 @@
 			</File>
 			<File
 				RelativePath=".\src\gui\SelectMapProxy.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\event\SetCheckingNetwork.h"
 				>
 			</File>
 			<File
