@@ -303,6 +303,9 @@ void ServerMain::run() {
 			basicWorld->checkRaceProgress();
             
             updateClients();
+            
+            World::TimeElapsed::getInstance().addStartTime(
+                Timing::AccelControl::getInstance()->getPauseSkip());
         }
         else {
             if(loadingStarted) {

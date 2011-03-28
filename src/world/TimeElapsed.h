@@ -12,7 +12,10 @@ public:
 private:
     unsigned long startTime;
 public:
+    TimeElapsed() : startTime(0) {}
+    
     void setStartTime(unsigned long now) { startTime = now; }
+    void addStartTime(unsigned long add) { startTime += add; }
     
     unsigned long getGameTime() const;
 };
