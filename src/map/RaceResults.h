@@ -24,14 +24,14 @@ private:
         ar & teamPoints;
         ar & playerRank;
         ar & playerPoints;
-        ar & winningTeam;
+        ar & teamRank;
     }
 private:
 	int teamPoints [Teams::MAX_TEAMS];
 
     std::vector<int> playerRank;
 	std::map<int, int> playerPoints;
-	int winningTeam;
+    std::vector<int> teamRank;
 
 	int calcScore(unsigned int rank) const;
 public:
@@ -39,9 +39,12 @@ public:
 	RaceResults(const std::vector<Object::Player*>& player_rankings);
 	int getTeamPoints(int team_id) const;
 	int getPlayerPoints(int player) const;
-	int getWinningTeamID() const;
+    
     int getPlayerByRank(int rank) const;
     int getRanks() const;
+    
+    int getTeamByRank(int rank) const;
+    int getTeams() const;
 };
 
 }  // namespace Map

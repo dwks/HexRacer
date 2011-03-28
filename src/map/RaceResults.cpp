@@ -1,3 +1,5 @@
+#include <set>
+
 #include "RaceResults.h"
 
 namespace Project {
@@ -8,19 +10,36 @@ namespace Map {
 		for (int i = 0; i < Map::Teams::MAX_TEAMS; i++) {
 			teamPoints[i] = 0;
 		}
-
+        
 		for (unsigned int i = 0; i < player_rankings.size(); i++) {
 			int score = calcScore(i);
             playerRank.push_back(player_rankings[i]->getID());
 			playerPoints[player_rankings[i]->getID()] = score;
 			teamPoints[player_rankings[i]->getTeamID()] += score;
 		}
-
+        
+        std::set<int> remainingTeams;
+        
 		for (int i = 0; i < Map::Teams::MAX_TEAMS; i++) {
-			if (i == 0 || teamPoints[i] > teamPoints[winningTeam])
-				winningTeam = i;
+			if (teamPoints[i] > 0)
+				remainingTeams.insert(i);
 		}
-
+        
+        while(!remainingTeams.empty()) {
+            int minTeam = *remainingTeams.begin();
+            int minScore = teamPoints[minTeam];
+            for(std::set<int>::iterator i = remainingTeams.begin();
+                i != remainingTeams.end(); ++ i) {
+                
+                if(teamPoints[*i] < minScore) {
+                    minScore = teamPoints[*i];
+                    minTeam = *i;
+                }
+            }
+            
+            teamRank.push_back(minTeam);
+            remainingTeams.erase(minTeam);
+        }
 	}
 
 	int RaceResults::getTeamPoints(int team_id) const {
@@ -36,16 +55,20 @@ namespace Map {
 			return (*it).second;
 	}
 
-	int RaceResults::getWinningTeamID() const {
-		return winningTeam;
-	}
-
     int RaceResults::getPlayerByRank(int rank) const {
         return playerRank[rank];
     }
     
     int RaceResults::getRanks() const {
         return static_cast<int>(playerRank.size());
+    }
+
+    int RaceResults::getTeamByRank(int rank) const {
+        return teamRank[rank];
+    }
+    
+    int RaceResults::getTeams() const {
+        return teamRank.size();
     }
 
 	int RaceResults::calcScore(unsigned int rank) const {

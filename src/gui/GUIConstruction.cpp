@@ -405,8 +405,13 @@ void GUIConstruction::constructFinished() {
     
     Widget::CompositeWidget *ranks = new Widget::CompositeWidget("ranks");
     ranks->setLayout(new Widget::AbsoluteLayout(Widget::WidgetRect(
-        0.2, 0.1, 0.6, 0.75)));
+        0.0, 0.0, 1.0, 1.0)));
     finished->addChild(ranks);
+    
+    Widget::CompositeWidget *teams = new Widget::CompositeWidget("teams");
+    teams->setLayout(new Widget::AbsoluteLayout(Widget::WidgetRect(
+        0.0, 0.0, 1.0, 1.0)));
+    finished->addChild(teams);
     
     finished->addChild(new Widget::ButtonWidget("quit", "Quit",
         Widget::WidgetRect(0.3, 0.9, 0.4, 0.08)));

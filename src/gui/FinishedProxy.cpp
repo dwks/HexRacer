@@ -8,8 +8,9 @@
 #include "event/SwitchToScreen.h"
 #include "event/QuitEvent.h"
 
+#include "map/Teams.h"
+
 #include "misc/StreamAsString.h"
-//#include "settings/SettingsManager.h"
 
 namespace Project {
 namespace GUI {
@@ -21,10 +22,12 @@ void FinishedProxy::handleRaceFinished(Event::RaceFinished *event) {
         finished->getChild("ranks"));
     ranks->removeAllChildren();
     
-    Widget::WidgetRect scoreArea(0.25, 0.1, 0.5, 0.7);
+    Widget::CompositeWidget *teams = dynamic_cast<Widget::CompositeWidget *>(
+        finished->getChild("teams"));
+    teams->removeAllChildren();
     
-    /*Settings::SettingsManager::getInstance()->set(
-        "hud.placinglist.enable", "0");*/
+    Widget::WidgetRect scoreArea(0.25, 0.45, 0.5, 0.4);
+    Widget::WidgetRect teamArea(0.25, 0.05, 0.5, 0.35);
     
     Map::RaceResults results = event->getResults();
     for(int r = 0; r < results.getRanks() && r < 10; r ++) {
@@ -46,9 +49,34 @@ void FinishedProxy::handleRaceFinished(Event::RaceFinished *event) {
                 player->getPlayerName(),
                 Widget::NormalTextLayout::ALIGN_LEFT,
                 textRect,
-                static_cast<OpenGL::Color::ColorPreset>(player->getTeamID())));
+                Map::Teams::teamColor(player->getTeamID())));
         ranks->addChild(
             new Widget::TextWidget(Misc::StreamAsString() << "score" << r,
+                Misc::StreamAsString() << score,
+                Widget::NormalTextLayout::ALIGN_RIGHT,
+                textRect));
+    }
+    
+    for(int r = 0; r < results.getTeams() && r < 5; r ++) {
+        int team = results.getTeamByRank(r);
+        int score = results.getTeamPoints(team);
+        
+        double height = teamArea.getHeight() / 6.0;
+        
+        Widget::WidgetRect textRect(
+            teamArea.getCorner().getX(),
+            teamArea.getCorner().getY() + height * r,
+            teamArea.getWidth(),
+            height);
+        
+        ranks->addChild(
+            new Widget::TextWidget(Misc::StreamAsString() << "rank" << r,
+                Misc::StreamAsString() << "Team " << Map::Teams::teamName(team),
+                Widget::NormalTextLayout::ALIGN_LEFT,
+                textRect,
+                Map::Teams::teamColor(team)));
+        ranks->addChild(
+            new Widget::TextWidget(Misc::StreamAsString() << "team" << r,
                 Misc::StreamAsString() << score,
                 Widget::NormalTextLayout::ALIGN_RIGHT,
                 textRect));
