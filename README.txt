@@ -1,72 +1,57 @@
 README for HexRacer
 ===================
 
-Status of the game
-------------------
-
-Implemented features:
-- While painting or erasing, you have a speed penalty applied.
-- If you are traveling on your own paint, you get an appropriate speed burst.
-  Also the colour of the vehicle's trim changes if you currently have a burst.
-- When you fall off the track (or press 'h') you are warped to the nearest
-  point on the track.
-- The bar on the left shows the percentage you have completed of the track.
-- The minimap shows paint that has been laid down and the track geometry.
-- The speedometer on the lower right shows your current speed.
-
-Possible issues:
-- Shadows were just implemented and may have a few bugs.
-- Most of the GUI is unimplemented, don't be surprised when clicking on
-  buttons results in nothing happening (except maybe debug console output).
-- Networking is still jerky; it works but is not very playable at the moment.
-
-Compatibility note: it's possible that glow mapping and shadows may not work
-on other systems or cause reduced performance, we have not tested it
-extensively. You can disable these by setting
-    render.bloom.enable = 0
-and
-    render.shadow.enable = 0
-in config.txt.
-
-
 Using the game
 --------------
 
-Launch the game by running "sdl". Then click on "Start game" to launch a
-single player game, or "Join game" to attempt to join a server (this defaults
-to a single-player game if no server is running). A server can be run by just
-launching "server"; make sure the port specified in config.txt (1820 by
-default) is not blocked by your firewall.
+Launch the game by running "sdl". You can play a single player game or launch
+a server automatically from the "Host game" screen.
 
 Note: sdl.exe and server.exe are Windows executables,
       sdl and server are Linux ones.
 
-Controls:
-- Drive the car with the arrow keys (add levitation with the space key), or
-  with the two hats on a joystick (which must be plugged in before the game
-  starts).
-- Lay down paint behind the car with 'p'; erase existing paint with 'o'
-  [You can also paint in front of the camera with the right mouse button,
-  and erase with the middle mouse button.]
-- Press ESCAPE (or click the menu button) to get to the game menu, where you
-  can click on the Quit button. Also, the first letter of a button's label is
-  often mapped as its shortcut.
+Keyboard controls:
+- Drive the car with the arrow keys.
+- Lay down paint behind the car with 'p' or 'z'.
+- Erase existing paint with 'o' or 'x'.
+- You can often press the first letter of a button's label to activate it.
+
+Joystick controls:
+- Select the active joystick by clicking "Select joystick" in the Settings menu
+  and press any button on the joystick. The joystick may work without this, but
+  no guarantees.
+- The left stick turns and triggers accelerate and brake.
+- The A button toggles painting, B toggles erasing.
+- The menus cannot yet be controlled by the joystick, use the mouse instead.
 
 Debug controls:
+- Switch the camera to follow other players with '[' and ']'.
 - Toggle the debug camera by pressing 'c'.
-- Move the camera with the rightt mouse button and translate it with the keys
-  'w', 'a', 's', and 'd'.
+- Move the debug camera with the right mouse button and translate it with the
+  keys 'w', 'a', 's', and 'd'.
 - Toggle debug drawing with the enter key.
 - Toggle path node painting with the backslash key.
+- The space bar levitates the car.
 
-Settings (can be changed without recompiling in config.txt)
-- The screen resolution can be changed (try 0, 0 for the entire screen)
-  [Note that the game window is also resizable.]
-  
- Changing the Map:
- Change the map by uncommenting (removing the #) the map setting and commenting the others in the config file.
- By default, the map is a very large version of a prototype map we created. The other two
- are smaller versions of it. testtrack2 uses darker lighting, and testtrack3 uses brigter lighting.
+
+Status of the game
+------------------
+
+Almost all game mechanics are implemented.
+- While painting or erasing, you have a speed penalty applied.
+- Traveling on your team's paint gives you an appropriate speed burst.
+- You paint the same colour as your team.
+
+Other new features:
+- There is a game lobby for multiplayer games.
+- The hex list of players on the left shows the order of players in the race.
+  Hexes become tinged with white when players finish.
+- The game actually finishes now and displays players' times, with bonuses for
+  placing first, second, etc.
+- Network jerkiness should be better now.
+- We have a new car model now.
+- Some other animations added to the GUI.
+- AI improved, they actually decide when to paint and erase and speed boost.
 
 
 Compiling the game
@@ -92,9 +77,14 @@ build our game from source.
 Known bugs
 ----------
 
-Our shaders can be set to high quality by setting "render.quality = 3" in
-config.txt; while this generally works, on one of our test Windows systems it
-did not. So this has been disabled. Please feel free to try this.
+On some older systems the shaders do not work correctly, or make the game too
+slow. The setting "render.quality" can be changed in config.txt, or in the
+Settings menu, a lower graphics quality can be set. (The default is "very high"
+quality.)
 
-Joystick axis mapping has been configured for Linux and may not work under
-Windows at this time.
+The server does not exit once a game is finished, and must be terminated
+manually. Also, disconnecting players are not handled (from the lobby);
+currently if a player disconnects the server must be restarted.
+
+The list of players shown in the lobby does not update and is inaccurate for
+AI colours.
