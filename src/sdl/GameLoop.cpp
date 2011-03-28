@@ -92,11 +92,17 @@ void GameLoop::render() {
 
 	gameWorld->render();
     
-    gameRenderer->renderHUD(
-        gameWorld->getWorldManager(),
-        gameWorld->getWorldManager()->getPlayer(
-            gameWorld->getClientData()->getPlayerID()),
-			gameWorld->getRaceManager());
+	if (!gameWorld->getWorldManager()->getPlayer(
+			gameWorld->getClientData()->getPlayerID()
+		)->getPathTracker()->getFinished()) {
+
+		gameRenderer->renderHUD(
+			gameWorld->getWorldManager(),
+			gameWorld->getWorldManager()->getPlayer(
+				gameWorld->getClientData()->getPlayerID()),
+				gameWorld->getRaceManager());
+
+	}
 
     gui->render();
 }

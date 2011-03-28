@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <limits>
+#include <cctype>
 #include <iomanip>
 
 #include "SettingsManager.h"
