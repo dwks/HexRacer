@@ -19,7 +19,7 @@ Keyboard controls:
 Joystick controls:
 - Select the active joystick by clicking "Select joystick" in the Settings menu
   and press any button on the joystick. The joystick may work without this, but
-  no guarantees.
+  no guarantees. Also, the joystick must be plugged in before the game launches.
 - The left stick turns and triggers accelerate and brake.
 - The A button toggles painting, B toggles erasing.
 - The menus cannot yet be controlled by the joystick, use the mouse instead.
