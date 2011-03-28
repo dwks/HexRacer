@@ -21,8 +21,10 @@ private:
     Math::Point origin;
     
 	boost::shared_ptr<RenderParent> chassisMesh;
+        boost::shared_ptr<RenderParent> nonChassisMesh;
     boost::shared_ptr<RenderParent> tireMesh;
 	boost::shared_ptr<OpenGL::Material> materialTint;
+        boost::shared_ptr<OpenGL::Material> chassisTint;
     
     double wheelRotationDegrees; 
     Math::Point suspension[4];

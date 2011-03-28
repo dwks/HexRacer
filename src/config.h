@@ -10,6 +10,7 @@
 #define HAVE_OPENAL
 
 #define VEHICLE_CHASSIS_MODEL_NAME "vehicleChassis"
+#define VEHICLE_NONCHASSIS_MODEL_NAME "vehicleNonChassis"
 #define VEHICLE_WHEEL_MODEL_NAME "vehicleWheel"
 
 #define PAINT_CELL_RADIUS 0.425

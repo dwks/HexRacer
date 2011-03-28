@@ -26,6 +26,12 @@ void RenderablePlayer::initialize(int id) {
 		new RenderParent(chassis_mesh_group)
 		);
 	chassisMesh->getRenderProperties()->setTransformation(scale_matrix);
+        
+        Mesh::MeshGroup* nonChassis_mesh_group = Mesh::MeshLoader::getInstance()->getModelByName(VEHICLE_NONCHASSIS_MODEL_NAME);
+        nonChassisMesh = boost::shared_ptr<RenderParent>(
+                new RenderParent(nonChassis_mesh_group)
+                );
+        nonChassisMesh->getRenderProperties()->setTransformation(scale_matrix);
 
 	tireMesh = boost::shared_ptr<RenderParent>(
 		new RenderParent(Mesh::MeshLoader::getInstance()->getModelByName(VEHICLE_WHEEL_MODEL_NAME))
@@ -38,6 +44,14 @@ void RenderablePlayer::initialize(int id) {
 	materialTint->setSpecular(OpenGL::Color::WHITE);
 	materialTint->setAmbient(OpenGL::Color::WHITE);
 	getRenderProperties()->setMaterialTint(materialTint.get());
+        
+        chassisTint = boost::shared_ptr<OpenGL::Material>(
+                new OpenGL::Material("matTint")
+                );
+        chassisTint->setDiffuse(OpenGL::Color::WHITE);
+        chassisTint->setSpecular(OpenGL::Color::WHITE);
+        chassisTint->setAmbient(OpenGL::Color::WHITE);
+        chassisMesh->getRenderProperties()->setMaterialTint(chassisTint.get());
 
 	//Set the radius of the bounding sphere for camera culling
 	boundingSphere.setRadius(chassis_mesh_group->getRadiusFromOrigin()*drawScale);
@@ -57,6 +71,7 @@ void RenderablePlayer::updatePhysicalData(const Math::Point &origin) {
 void RenderablePlayer::subRender(RenderManager* manager) {
 
     chassisMesh->render(manager);
+    nonChassisMesh->render(manager);
     
     for (int wheel = 0; wheel < 4; wheel ++) {
 
@@ -99,6 +114,8 @@ bool RenderablePlayer::shouldDraw(const Math::BoundingObject& bounding_obj) {
 
 void RenderablePlayer::setGlowColor(OpenGL::Color color) {
 	materialTint->setAmbient(color);
+        chassisTint->setAmbient(color);
+        chassisTint->setDiffuse(color);
 }
 
 }  // namespace Render
