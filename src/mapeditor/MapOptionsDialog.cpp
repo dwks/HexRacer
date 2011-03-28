@@ -12,7 +12,7 @@ MapOptionsDialog::MapOptionsDialog(const MapOptions& options, QWidget *parent)
 
 	numLapsBox = new QSpinBox(this);
 	numLapsBox->setMinimum(1);
-	numLapsBox->setValue(options.getNumLaps());
+	//numLapsBox->setValue(options.getNumLaps());
 
 	QPushButton* okButton = new QPushButton("&Ok", this);
 	QPushButton* cancelButton = new QPushButton("&Cancel", this);
@@ -22,8 +22,8 @@ MapOptionsDialog::MapOptionsDialog(const MapOptions& options, QWidget *parent)
 	QGridLayout* layout = new QGridLayout(this);
 	layout->addWidget(new QLabel(QString("Background Bloom:"), this), 0, 0);
 	layout->addWidget(bgBloomBox, 0, 1);
-	layout->addWidget(new QLabel(QString("Number of Laps:"), this), 1, 0);
-	layout->addWidget(numLapsBox, 1, 1);
+	/*layout->addWidget(new QLabel(QString("Number of Laps:"), this), 1, 0);
+	layout->addWidget(numLapsBox, 1, 1);*/
 	layout->addWidget(okButton, 2, 0);
 	layout->addWidget(cancelButton, 2, 1);
 
@@ -40,6 +40,6 @@ void MapOptionsDialog::showOptionsDialog(MapOptions& options, QWidget *parent) {
 	MapOptionsDialog dialog(options, parent);
 	if (dialog.exec()) {
 		options.setBGBloomEnable(dialog.bgBloomBox->isChecked());
-		options.setNumLaps(dialog.numLapsBox->value());
+		//options.setNumLaps(dialog.numLapsBox->value());
 	}
 }

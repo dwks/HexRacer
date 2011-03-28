@@ -30,6 +30,8 @@
 
 #include "physics/PhysicsFactory.h"
 
+#include "world/TimeElapsed.h"
+
 #include "mesh/MeshGroup.h"
 #include "mesh/MeshLoader.h"
 #include "map/PathTracker.h"
@@ -204,7 +206,8 @@ ServerMain::ServerMain() : clientCount(0), visitor(this) {
 }
 
 void ServerMain::initBasics() {
-    loadedMap = false;
+    loadingStarted = false;
+    gameStarted = false;
     
     accelControl = boost::shared_ptr<Timing::AccelControl>(
         new Timing::AccelControl());
@@ -233,10 +236,10 @@ void ServerMain::initBasics() {
 void ServerMain::startGame() {
     initMap();
     initAI();
-    loadedMap = true;
+    loadingStarted = true;
     
     EMIT_EVENT(new Event::GameStageChanged(
-        Project::World::WorldSetup::DOING_COUNTDOWN));
+        Project::World::WorldSetup::START_LOADING));
     
     sendWorldToPlayers();
 }
@@ -292,7 +295,7 @@ void ServerMain::run() {
         
         handleIncomingPackets();
         
-        if(loadedMap) {
+        if(gameStarted) {
             paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
             
             basicWorld->doPhysics();
@@ -302,7 +305,17 @@ void ServerMain::run() {
             updateClients();
         }
         else {
-            if(World::WorldSetup::getInstance()->everyoneReadyToStart()) {
+            if(loadingStarted) {
+                if(World::WorldSetup::getInstance()->everyoneFullyLoaded()) {
+                    EMIT_EVENT(new Event::GameStageChanged(
+                        Project::World::WorldSetup::START_COUNTDOWN));
+                    
+                    gameStarted = true;
+                    World::TimeElapsed::getInstance().setStartTime(
+                        Misc::Sleeper::getTimeMilliseconds());
+                }
+            }
+            else if(World::WorldSetup::getInstance()->everyoneReadyToStart()) {
                 startGame();
             }
         }
@@ -317,7 +330,8 @@ void ServerMain::sendWorldToPlayers() {
     {
         Event::EntireWorld *entireWorld = new Event::EntireWorld(
             getWorldManager()->getWorld(),
-            getWorldManager()->getPlayerList());
+            getWorldManager()->getPlayerList(),
+            GET_SETTING("game.race.laps", 3));
         Network::Packet *packet = new Network::EventPacket(entireWorld);
         clients->sendPacket(packet);
         delete entireWorld;

@@ -48,6 +48,10 @@ void MenuLoop::postRender() {
 
 void MenuLoop::miscellaneous() {
 	guiInputManager->generateMenuEvents();
+    
+    if(!gameWorld.expired()) {
+        gameWorld.lock()->checkNetwork();
+    }
 }
 
 }  // namespace SDL

@@ -22,6 +22,8 @@ public:
     LoadingProxy(Widget::WidgetBase *loading, Widget::WidgetBase *host);
     
     virtual void visit(Widget::RepaintEvent *event);
+private:
+    void announceFinishedLoading();
 };
 
 }  // namespace GUI

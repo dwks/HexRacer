@@ -2,6 +2,7 @@
 #define PROJECT_SDL__MENU_LOOP_H
 
 #include "boost/smart_ptr/shared_ptr.hpp"
+#include "boost/smart_ptr/weak_ptr.hpp"
 
 #include "LoopBase.h"
 
@@ -11,6 +12,8 @@
 
 #include "misc/ProgressTracker.h"
 #include "map/MapSettings.h"
+
+#include "GameWorld.h"
 
 namespace Project {
 namespace SDL {
@@ -24,6 +27,8 @@ private:
     boost::shared_ptr<Map::MapSettings> mapSettings;
 
 	static Misc::ProgressTracker* loadingProgressTracker;
+    
+    boost::weak_ptr<GameWorld> gameWorld;
 public:
     virtual void construct();
     
@@ -31,6 +36,9 @@ public:
     virtual void miscellaneous();
     virtual void render();
     virtual void postRender();
+    
+    void setGameWorld(boost::shared_ptr<GameWorld> gameWorld)
+        { this->gameWorld = gameWorld; }
     
     boost::shared_ptr<GUI::GUISystem> getGUI() { return gui; }
     boost::shared_ptr<GUIInputManager> getGUIInput()

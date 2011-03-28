@@ -73,7 +73,7 @@ namespace Render {
 			glTexImage2D(GL_TEXTURE_2D, 0, 4, width, height, 0, GL_BGRA, 
 				GL_UNSIGNED_BYTE, second->pixels);
 		    
-			glBindTexture(GL_TEXTURE_2D, NULL);
+			glBindTexture(GL_TEXTURE_2D, 0);
 
 			SDL_FreeSurface(first);
 			SDL_FreeSurface(second);

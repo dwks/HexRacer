@@ -14,6 +14,7 @@
 #include "event/Enabler.h"
 
 #include "event/SetDebugCamera.h"
+#include "event/ModifyCamera.h"
 
 #include "settings/SettingsManager.h"
 #include "settings/ProgramSettings.h"
@@ -26,9 +27,11 @@ class CameraObject : public Event::Enabler {
 protected:
     void physicsTickHandler(Event::PhysicsTick *event);
     void setDebugCameraHandler(Event::SetDebugCamera *event);
+    void modifyCameraHandler(Event::ModifyCamera *event);
+private:
+    int player;
 public:
     CameraObject();
-    CameraObject(World::PlayerManager *_playerManager);
     ~CameraObject();
     
     void setPlayerManager(World::PlayerManager *_playerManager);

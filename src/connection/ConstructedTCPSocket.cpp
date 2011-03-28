@@ -21,9 +21,7 @@ bool ConstructedTCPSocket::open() {
     tcp::resolver::iterator end;
     
     if(error) {
-        LOG2(NETWORK, ERROR, "Error opening socket to "
-            << hostname << ":" << port << ": "
-            << boost::system::system_error(error).what());
+        reportError(error);
         return false;
     }
     
@@ -39,17 +37,25 @@ bool ConstructedTCPSocket::open() {
         endpoint_it ++;
     } while(error && endpoint_it != end);
     
-    if(error) {
-        LOG2(NETWORK, ERROR, "Error opening socket to "
-            << hostname << ":" << port << ": "
-            << boost::system::system_error(error).what());
-    }
+    if(error) reportError(error);
     
     return !error;
 }
 
 void ConstructedTCPSocket::close() {
     socket.close();
+}
+
+void ConstructedTCPSocket::reportError(boost::system::error_code &error) {
+#ifdef HAVE_BOOST_SYSTEM
+    LOG2(NETWORK, ERROR, "Error opening socket to "
+        << hostname << ":" << port << ": "
+        << boost::system::system_error(error).what());
+#else
+    LOG2(NETWORK, ERROR, "Error opening socket to "
+        << hostname << ":" << port << ": "
+        << error);
+#endif
 }
 
 }  // namespace Connection

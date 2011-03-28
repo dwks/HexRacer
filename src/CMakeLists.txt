@@ -118,7 +118,7 @@ set(MAP_EDITOR_SOURCES
 # Boost
 #find_package(Boost)
 find_package(Boost COMPONENTS
-    date_time filesystem serialization system thread REQUIRED)
+    serialization system filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 # OpenGL

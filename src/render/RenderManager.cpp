@@ -383,7 +383,7 @@ namespace Render {
 	void RenderManager::cleanup() const {
 		//Unbind cube map texture
 		glActiveTextureARB(CUBE_MAP_TEXTURE_UNIT);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, NULL);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 		glDisable(GL_TEXTURE_CUBE_MAP);
 
 		glActiveTextureARB(GL_TEXTURE0);

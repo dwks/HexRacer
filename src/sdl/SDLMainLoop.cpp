@@ -75,14 +75,16 @@ void SDLMainLoop::joinGameHandler(Event::JoinGame *event) {
                 << ":" << event->getPort());
         }
         
-        if(menuLoop->getGUI()->getCurrentScreen()->getName() == "loading") {
+        /*if(menuLoop->getGUI()->getCurrentScreen()->getName() == "loading") {
             menuLoop->getGUI()->popScreen();
-        }
+        }*/
         
         return;
     }
     else {
         event->setSuccessful();
+        
+        menuLoop->setGameWorld(gameLoop->getGameWorld());
     }
 }
 
@@ -91,10 +93,15 @@ void SDLMainLoop::startingGameHandler(Event::StartingGame *event) {
         gameLoop->resumeConnect();
         
         gameLoop->construct();
-        
+    }
+}
+
+void SDLMainLoop::gameStageChangedHandler(Event::GameStageChanged *event) {
+    if(event->getStage() == World::WorldSetup::START_COUNTDOWN) {
         gameLoop->setGuiPointers(
             menuLoop->getGUI(),
             menuLoop->getGUIInput());
+        menuLoop->getGUI()->popScreen();
         menuLoop->getGUI()->pushScreen("running");
         
         // set up camera if necessary
@@ -117,6 +124,7 @@ SDLMainLoop::SDLMainLoop() {
     METHOD_OBSERVER(&SDLMainLoop::changeScreenModeHandler);
     METHOD_OBSERVER(&SDLMainLoop::joinGameHandler);
     METHOD_OBSERVER(&SDLMainLoop::startingGameHandler);
+    METHOD_OBSERVER(&SDLMainLoop::gameStageChangedHandler);
     
     initSDL();
     initOpenGL();
@@ -229,10 +237,6 @@ void SDLMainLoop::run() {
         handleEvents();
         
         loop->miscellaneous();
-        
-        // very ugly hack to allow the game lobby to use the half-initialized
-        // GameLoop, to check for network events
-        if(loop == menuLoop && gameLoop) gameLoop->checkNetwork();
         
         doRender();
         

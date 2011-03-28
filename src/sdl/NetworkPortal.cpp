@@ -27,6 +27,12 @@
 namespace Project {
 namespace SDL {
 
+void NetworkPortal::handleSetCheckingNetwork(
+    Event::SetCheckingNetwork *event) {
+    
+    this->checking = event->getChecking();
+}
+
 void NetworkPortal::PacketSender::observe(Event::SendPacket *packet) {
     if(portal->getPortal() == NULL) return;
     
@@ -70,6 +76,9 @@ void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
         }
         break;
     }
+    case Event::EventType::RACE_FINISHED: {
+        LOG(GLOBAL, "NetworkPortal sees RaceFinished");
+    }
     default:
         /*LOG2(NETWORK, PACKET, "EventPropagator: Not propagating "
             << typeid(*event).name());*/
@@ -94,9 +103,11 @@ void NetworkPortal::EventPropagator::send(Event::EventBase *event) {
 NetworkPortal::NetworkPortal() {
     portal = NULL;
     id = -1;
+    checking = true;
     
     ADD_OBSERVER(new PacketSender(this));
     ADD_OBSERVER(new EventPropagator(this));
+    METHOD_OBSERVER(&NetworkPortal::handleSetCheckingNetwork);
 }
 
 NetworkPortal::~NetworkPortal() {
@@ -176,8 +187,13 @@ void NetworkPortal::waitForWorld(Object::World *&world,
             
             world = entireWorld->getWorld();
             playerList = entireWorld->getPlayerList();
+            int laps = entireWorld->getLaps();
             delete entireWorld;
             delete packet;
+            
+            Settings::SettingsManager::getInstance()->set(
+                "game.race.laps",
+                Misc::StreamAsString() << laps);
             
             break;
         }
@@ -191,7 +207,7 @@ void NetworkPortal::waitForWorld(Object::World *&world,
 void NetworkPortal::checkNetwork() {
     if(!portal) return;
     
-    for(;;) {
+    while(checking) {
         Network::Packet *packet = portal->nextPacket();
         if(!packet) break;
         

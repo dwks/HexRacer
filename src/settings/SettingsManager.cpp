@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <limits>
+#include <cctype>
 #include <iomanip>
 
 #include "SettingsManager.h"
@@ -74,41 +75,44 @@ void SettingsManager::parse(std::string line) {
     // skip empty lines
     if(line.length() == 0) return;
     
-    std::stringstream linestream(line);
+    // find key
+    std::string::size_type keyStart = skipSpaces(line, 0);
+    std::string::size_type keyEnd = skipNotSpacesOrEquals(line, keyStart);
     
-    // skip lines with no key (probably just whitespace)
-    std::string key;
-    if(!(linestream >> key)) return;
+    // skip lines with no key (probably just whitespace or empty)
+    if(keyEnd == keyStart) return;
     
+    std::string key = line.substr(keyStart, keyEnd - keyStart);
+    
+    // check for include statements
     if(key == "include") {
-        // skip space after 'include'
-        linestream.get();
-        
-        std::string include;
-        std::getline(linestream, include);
+        // +1: skip space after 'include'
+        std::string include = line.substr(keyEnd + 1);
         load(include.c_str());
         return;
     }
     
+    std::string::size_type equal = skipSpaces(line, keyEnd);
+    
     // if there's no '=', the line is misformatted
-    char equal;
-    if(!(linestream >> equal) || equal != '=') {
+    if(equal >= line.size() || line[equal] != '=') {
         LOG2(GLOBAL, SETTING, "Misformatted line: \"" << line << "\"");
         return;
     }
     
-    // skip space after '=' if there is one
-    if(linestream.peek() == ' ') linestream.get();
+    // skip spaces after '=' if any
+    std::string::size_type value = skipSpaces(line, equal + 1);
     
     // whatever remains is the data
-    std::string data;
-    std::getline(linestream, data);
+    std::string data = line.substr(value);
     
     // record this setting
     set(key, data);
 }
 
 void SettingsManager::set(const std::string &key, const std::string &value) {
+    //LOG(GLOBAL, "Set \"" << key << "\" to \"" << value << "\"\n");
+    
     settingMap[key] = Setting(value);
 }
 
@@ -170,6 +174,28 @@ void SettingsManager::dump() {
         
         LOG2(GLOBAL, SETTING, stream.operator std::string());
     }
+}
+
+std::string::size_type SettingsManager::skipSpaces(const std::string &string,
+    std::string::size_type start) {
+    
+    while(start < string.length() && std::isspace(string[start])) {
+        start ++;
+    }
+    
+    return start;
+}
+
+std::string::size_type SettingsManager::skipNotSpacesOrEquals(
+    const std::string &string, std::string::size_type start) {
+    
+    while(start < string.length()
+        && !std::isspace(string[start]) && string[start] != '=') {
+        
+        start ++;
+    }
+    
+    return start;
 }
 
 }  // namespace Settings

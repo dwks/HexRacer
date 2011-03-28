@@ -64,7 +64,7 @@ void PhysicalPlayer::constructRigidBody(const Math::Matrix &transformation) {
 Math::Point PhysicalPlayer::getOrigin() const {
     btTransform trans = rigidBody->getWorldTransform();
     
-    return Converter::toPoint(trans.getOrigin());
+    return Converter::toPoint(trans.getOrigin()) + networkError;
 }
 
 Math::Matrix PhysicalPlayer::getTransformation() const {
@@ -219,12 +219,18 @@ void PhysicalPlayer::setData(const Math::Matrix &transform,
     const Math::Point &linearVelocity,
     const Math::Point &angularVelocity) {
     
+    Math::Point originalOrigin = getOrigin();
+    
     rigidBody->setWorldTransform(
         Physics::Converter::toTransform(transform));
     rigidBody->setLinearVelocity(
         Physics::Converter::toVector(linearVelocity));
     rigidBody->setAngularVelocity(
         Physics::Converter::toVector(angularVelocity));
+    
+    Math::Point newOrigin = getOrigin();
+    
+    networkError += originalOrigin - newOrigin;
 
 	updatePhysicalInfo();
 }

@@ -4,6 +4,8 @@
 #include "event/ObserverRegistry.h"
 #include "event/JoinGame.h"
 #include "event/StartingGame.h"
+#include "event/SetCheckingNetwork.h"
+#include "event/SetupClientSettings.h"
 
 #include "widget/ImageWidget.h"
 #include "widget/TextWidget.h"
@@ -39,9 +41,17 @@ void LoadingProxy::initialize(Event::SwitchToScreen *event) {
 }
 
 void LoadingProxy::gameStateChanged(Event::GameStageChanged *event) {
-    if(event->getStage() == World::WorldSetup::DOING_COUNTDOWN) {
+    if(event->getStage() == World::WorldSetup::START_LOADING) {
+#if 0
         EMIT_EVENT(new Event::StartingGame(
             Event::StartingGame::LOADING_MAP));
+#else
+        EMIT_EVENT(new Event::SetCheckingNetwork(false));
+        
+        lastRepaint = NULL;
+        Map::MapSettings::getInstance()->setGameType("loadingworld");
+        EMIT_EVENT(new Event::SwitchToScreen("loading"));
+#endif
     }
 }
 
@@ -62,10 +72,18 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
             std::string type = Map::MapSettings::getInstance()->getGameType();
             
             if(type == "connect") {
-                EMIT_EVENT(new Event::JoinGame(
+                Event::JoinGame *join = new Event::JoinGame(
                     GET_SETTING("network.host", "localhost"),
-                    GET_SETTING("network.port", 1820)));
-                EMIT_EVENT(new Event::SwitchToScreen("lobby"));
+                    GET_SETTING("network.port", 1820));
+                Event::ObserverRegistry::getInstance()
+                    .notifyObservers(join, false);
+                
+                if(join->getSuccess()) {
+                    EMIT_EVENT(new Event::SwitchToScreen("lobby"));
+                }
+                else {
+                    EMIT_EVENT(new Event::SwitchToScreen(""));
+                }
             }
             else if(type == "host") {
                 SDL::SpawnServer spawner;
@@ -98,14 +116,24 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
                     << joinGameEvent.getHost()
                     << ":" << joinGameEvent.getPort());
             }
-            else if(type == "starting") {
+            else if(type == "loadingworld") {
+                EMIT_EVENT(new Event::SetCheckingNetwork(true));
+                
                 EMIT_EVENT(new Event::StartingGame(
                     Event::StartingGame::LOADING_MAP));
+                
+                announceFinishedLoading();
             }
             else if(type == "singleplayer") {
                 EMIT_EVENT(new Event::JoinGame());
                 EMIT_EVENT(new Event::StartingGame(
                     Event::StartingGame::LOADING_MAP));
+                
+                EMIT_EVENT(new Event::GameStageChanged(
+                    World::WorldSetup::START_COUNTDOWN));
+            }
+            else if(type == "waiting") {
+                // do nothing while waiting
             }
             else {
                 LOG(GUI, "Unknown game type \"" << type << "\"");
@@ -113,6 +141,28 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
             }
         }
     }
+}
+
+void LoadingProxy::announceFinishedLoading() {
+    World::WorldSetup *worldSetup = World::WorldSetup::getInstance();
+    
+    int id = worldSetup->getClientID();
+    World::WorldSetup::ClientSettings *settings
+        = worldSetup->getClientSettings(id);
+    if(settings) {
+        settings->setFullyLoaded(true);
+        
+        EMIT_EVENT(new Event::SetupClientSettings(*settings));
+    }
+    
+    Widget::TextWidget *text = dynamic_cast<Widget::TextWidget *>(
+        loading->getChild("loading"));
+    if(text) {
+        text->setText("Waiting ...");
+    }
+    
+    Map::MapSettings::getInstance()->setGameType("waiting");
+    EMIT_EVENT(new Event::SwitchToScreen("loading"));
 }
 
 }  // namespace GUI

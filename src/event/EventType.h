@@ -43,6 +43,10 @@ public:
         SETUP_CLIENT_SETTINGS,
         SETUP_CHAT,
         REPLACE_WORLD_SETUP,
+        SET_CHECKING_NETWORK,
+        RACE_FINISHED,
+        MODIFY_CAMERA,
+        BASIC_WORLD_CONSTRUCTED,
         TYPES
     };
 };

@@ -103,7 +103,8 @@ namespace Map {
 	bool PathTracker::operator < (const PathTracker& other) const {
 		return (
 			(finished && (!other.getFinished() || ranking < other.getRanking()))
-			|| getRaceProgress() > other.getRaceProgress());
+			|| (!finished && !other.getFinished() && getRaceProgress() > other.getRaceProgress())
+			);
 	}
 }  // namespace Map
 }  // namespace Project

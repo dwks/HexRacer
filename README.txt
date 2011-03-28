@@ -1,5 +1,5 @@
-README for HexRacers
-====================
+README for HexRacer
+===================
 
 Status of the game
 ------------------
@@ -73,10 +73,16 @@ Compiling the game
 ------------------
 
 Libraries used:
-- Simple DirectMedia Layer (SDL 1.2.14) and SDL_image
-- Bullet (2.77)
-- Boost (1.43)
-- OpenAL [but this is currently disabled in config.h]
+- Simple DirectMedia Layer (SDL 1.2.14), with additional libraries:
+    - SDL_image
+    - SDL_ttf
+- OpenGL and GLU and GLEW
+- Bullet physics (2.77)
+- Boost (1.42+), specifically:
+    - Boost.Serialization, Boost.System, and Boost.Filesystem (require linking)
+    - Boost.SmartPtr and Boost.DateTime (require headers only)
+- OpenAL [can be disabled in config.h]
+- Qt 4 (for the map editor only)
 
 There are two Visual Studio project files that our team has been using to
 compile this code; you may find them a useful starting point if you wish to
@@ -86,7 +92,7 @@ build our game from source.
 Known bugs
 ----------
 
-Our shaders can be set to high quality by setting "render.quality = 2" in
+Our shaders can be set to high quality by setting "render.quality = 3" in
 config.txt; while this generally works, on one of our test Windows systems it
 did not. So this has been disabled. Please feel free to try this.
 

@@ -35,8 +35,8 @@ public:
     bool getPaint() const { return paint; }
     bool getErase() const { return erase; }
     
-    void setAccel(double accel) { this->accel = accel; }
-    void setTurn(double turn) { this->turn = turn; }
+    void setAccel(double accel);
+    void setTurn(double turn);
     void setJump(bool jump) { this->jump = jump; }
     void setReset(bool reset) { this->reset = reset; }
     void setPaint(bool paint) { this->paint = paint; }

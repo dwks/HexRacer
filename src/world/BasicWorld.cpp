@@ -1,9 +1,11 @@
 #include "BasicWorld.h"
 
-#include "log/Logger.h"
 #include "timing/AccelControl.h"
+#include "event/EventSystem.h"
+#include "event/RaceFinished.h"
 
 #include "misc/Sleeper.h"
+#include "log/Logger.h"
 
 namespace Project {
 namespace World {
@@ -68,12 +70,16 @@ void BasicWorld::doAI() {
 }
 
 void BasicWorld::checkRaceProgress() {
-
-	if (raceManager->getRaceFinished(worldManager.get())) {
+    if(alreadyFinished) return;
+    
+	if(raceManager->getRaceFinished(worldManager.get())) {
 		Map::RaceResults results = raceManager->getRaceResults();
-		//end race? !!!
+		
+        LOG(GLOBAL, "server: race finished!");
+        EMIT_EVENT(new Event::RaceFinished(results));
+        
+        alreadyFinished = true;
 	}
-
 }
 
 }  // namespace World

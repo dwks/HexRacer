@@ -78,8 +78,27 @@ void Player::preRender() {
         renderable->initialize(getID());
     }
     
-    AbstractObject::preRender();
+    // deal with exponential backoff interpolation due to network error
+    Math::Point networkError = physical->getNetworkError();
+    if(networkError.length() > 5.0) {
+        networkError = Math::Point();
+        physical->setNetworkError(networkError);
+        
+        renderable->preRenderUpdate(physical->getTransformation());
+    }
+    else {
+        //LOG(NETWORK, "error: " << networkError.length() << "\t" << networkError);
+        
+        networkError *= 0.85;
+        physical->setNetworkError(networkError);
+        
+        Math::Matrix transform = physical->getTransformation();
+        transform = Math::Matrix::getTranslationMatrix(networkError) * transform;
+        
+        renderable->preRenderUpdate(transform);
+    }
     
+    // other properties for rendering
     for(int wheel = 0; wheel < 4; wheel ++) {
         renderable->setSuspension(wheel, getSuspension(wheel));
     }
@@ -87,8 +106,8 @@ void Player::preRender() {
     renderable->setWheelRotation(
         physical->getLinearVelocity().dotProduct(
             physical->getFrontDirection()));
-
-	renderable->updatePhysicalData(physical->getOrigin());
+    
+	renderable->updatePhysicalData(physical->getOrigin() + networkError);
 
 	float glow_scale = (float) Math::maximum(
 		GET_SETTING("render.playerglow.min", 0.6),

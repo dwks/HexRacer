@@ -116,6 +116,8 @@ namespace Input {
 		inputMapper->addKeyToDigitalMapping(SDLK_RETURN, false, Input::INPUT_D_PHYSICS_DEBUG);
 		inputMapper->addKeyToDigitalMapping(SDLK_BACKSLASH, false, Input::INPUT_D_PATH_DEBUG);
 		inputMapper->addKeyToDigitalMapping(SDLK_c, false, Input::INPUT_D_CAMERA_DEBUG);
+        inputMapper->addKeyToDigitalMapping(SDLK_LEFTBRACKET, false, Input::INPUT_D_CAMERA_SWITCH_FOCUS);
+        inputMapper->addKeyToDigitalMapping(SDLK_RIGHTBRACKET, false, Input::INPUT_D_CAMERA_SWITCH_FOCUS_INV);
 		inputMapper->addKeyToDigitalMapping(SDLK_F5, false, Input::INPUT_D_RELOAD_CONFIG);
 
 		inputMapper->addKeyToDigitalMapping(SDLK_p, false, Input::INPUT_D_PAINT);

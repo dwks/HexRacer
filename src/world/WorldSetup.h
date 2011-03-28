@@ -63,25 +63,32 @@ public:
         void serialize(Archive &ar, const unsigned version) {
             ar & id;
             ar & readyToStart;
+            ar & fullyLoaded;
         }
     private:
         int id;
         bool readyToStart;
+        bool fullyLoaded;
     public:
-        ClientSettings() : id(-1), readyToStart(false) {}
+        ClientSettings() : id(-1), readyToStart(false), fullyLoaded(false) {}
         
         void setID(int id) { this->id = id; }
         int getID() const { return id; }
         
         void setReadyToStart(bool yes) { readyToStart = yes; }
         bool isReadyToStart() const { return readyToStart; }
+        
+        void setFullyLoaded(bool yes) { fullyLoaded = yes; }
+        bool isFullyLoaded() const { return fullyLoaded; }
     };
     
     enum GameStage {
-        AT_LOBBY,
-        DOING_COUNTDOWN,
-        RUNNING_GAME,
-        FINISHED
+        AT_LOBBY,           // both server and client
+        START_LOADING,      // server -> client
+        FINISHED_LOADING,   // client -> server
+        START_COUNTDOWN,    // server -> client
+        RUNNING_GAME,       // both server and client
+        FINISHED_GAME       // both server and client (server -> client)
     };
 private:
     typedef std::map<int, PlayerSettings> PlayerSettingsList;
@@ -115,6 +122,7 @@ public:
     ClientSettings *getClientSettings(int id);
     
     bool everyoneReadyToStart() const;
+    bool everyoneFullyLoaded() const;
     
     /** This only works in the client code, of course.
     */

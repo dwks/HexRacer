@@ -24,7 +24,7 @@ namespace Log {
 void LogOpener::openLogs() {
 //#ifdef WIN32
 //    CreateDirectory((LPCWSTR)LOG_DIRECTORY, NULL);
-#if defined(HAVE_BOOST)
+#if defined(HAVE_BOOST_FILESYSTEM)
     boost::filesystem::create_directory(LOG_DIRECTORY);
 #else
     mkdir(LOG_DIRECTORY, 0755);
@@ -36,7 +36,7 @@ void LogOpener::openLogs() {
 
 //#ifdef WIN32
 //        if(GetFileAttributes((LPCWSTR)logfile.c_str()) == 0xFFFFFFFF)
-#if defined(HAVE_BOOST)
+#if defined(HAVE_BOOST_FILESYSTEM)
         if(!boost::filesystem::exists(logfile))
 #else
         if(access(logfile.c_str(), F_OK) != 0)

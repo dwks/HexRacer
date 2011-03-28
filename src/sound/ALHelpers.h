@@ -10,7 +10,6 @@
 #else
 #include "al.h"
 #endif
-#include <boost/concept_check.hpp>
 #include <string>
 
 namespace Project {

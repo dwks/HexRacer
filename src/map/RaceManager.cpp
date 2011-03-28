@@ -12,7 +12,9 @@ RaceManager::RaceManager(HRMap *_map)
 : map(_map) {
 
 	finishPlane = map->getFinishPlane();
-	numLaps = Math::minimum(GET_SETTING("game.race.maxlaps", 1000), map->getMapOptions().getNumLaps());
+	numLaps = Math::minimum(
+        GET_SETTING("game.race.maxlaps", 1000),
+        GET_SETTING("game.race.laps", 3));
 
 	killPlaneY = 0.0;
 	

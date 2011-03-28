@@ -46,6 +46,16 @@ bool WorldSetup::everyoneReadyToStart() const {
     return true;
 }
 
+bool WorldSetup::everyoneFullyLoaded() const {
+    for(ClientSettingsList::const_iterator i = clientSettings.begin();
+        i != clientSettings.end(); ++ i) {
+        
+        if(!(*i).second.isFullyLoaded()) return false;
+    }
+    
+    return true;
+}
+
 void WorldSetup::getAllPlayerIDs(std::vector<int> &list) {
     list.clear();
     

@@ -81,7 +81,8 @@ game.paint.paintingboost     = 0.8
 game.paint.erasingboost      = 0.8
 game.paint.maxboostincrease  = 0.02
 
-game.race.maxlaps = 1
+game.race.maxlaps = 1000
+game.race.laps    = 3
 
 game.enablepathing = 1
 
@@ -176,6 +177,14 @@ camera.fovstep = 0.05
 camera.followdefault.x = 0.0
 camera.followdefault.y = 2.0
 camera.followdefault.z = -5.0
+
+#camera.followdefault.x = 0.0
+#camera.followdefault.y = 0.8
+#camera.followdefault.z = -0.5
+
+#camera.followdefault.x = 0.0
+#camera.followdefault.y = 20.0
+#camera.followdefault.z = -30.0
 
 camera.followboost.x = 0.0
 camera.followboost.y = 1.75

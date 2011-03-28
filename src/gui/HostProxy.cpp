@@ -74,6 +74,20 @@ void HostProxy::visit(Widget::WidgetModifiedEvent *event) {
         Settings::SettingsManager::getInstance()->
             set("server.aicount", Misc::StreamAsString() << aicount);
     }
+    else if(name == "lapcount") {
+        int lapcount;
+        std::istringstream stream(event->getWidget()->getData());
+        if(!(stream >> lapcount) || lapcount < 1 || lapcount >= 1000) {
+            LOG(GUI, "HostProxy: malformed lap count \""
+                << event->getWidget()->getData() << "\"");
+            event->getWidget()->setData(
+                GET_SETTING("game.race.laps", "3"));
+            return;
+        }
+        
+        Settings::SettingsManager::getInstance()->
+            set("game.race.laps", Misc::StreamAsString() << lapcount);
+    }
     else {
         LOG2(GUI, WARNING, "No action for modifying \"" << name << "\"");
     }

@@ -124,13 +124,7 @@ void ListWidget::addChild(boost::shared_ptr<WidgetBase> widget) {
 }
 
 void ListWidget::removeAllChildren() {
-    IteratorType it = getIterator();
-    while(it.hasNext()) {
-        WidgetBase *child = it.next();
-        
-        removeChild(child->getName());
-        it = getIterator();
-    }
+    CompositeWidget::removeAllChildren();
     
     totalHeight = 0.0;
     if(verticalBar) {
