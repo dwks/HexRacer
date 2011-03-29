@@ -17,10 +17,14 @@ std::string Message::asText(bool allData) const {
     Misc::StreamAsString stream;
     
     if(allData) {
-        const char *then = std::ctime(&timestamp);
+        //const char *then = std::ctime(&timestamp);
+		char *then = new char[32];
+		ctime_s(then, 32, &timestamp);
         
         // removing trailing newline
         std::string when = std::string(then).substr(0, std::strlen(then) - 1);
+
+		delete[] then;
         
         stream << "[" << when << "] ";
     }
