@@ -23,8 +23,10 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
+#ifdef WIN32
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev,
     LPSTR lpszCmndline, int nCmdShow) {
 	runGame();
 	return 0;
 }
+#endif
