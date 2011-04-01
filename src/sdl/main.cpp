@@ -5,26 +5,19 @@
 
 #include "config.h"
 
-void runGame() {
-
-	Project::Settings::ProgramSettings programSettings(true);
+#if defined(WIN32) && defined(WIN32_NO_CONSOLE)
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+#else
+int main(int argc, char *argv[]) {
+#endif
+    Project::Log::LogOpener::openLogs();
+    Project::Settings::ProgramSettings programSettings(true);
     Project::Settings::SettingsManager settings(CONFIG_FILE);
     
     Project::SDL::SDLMainLoop *sdlmain = new Project::SDL::SDLMainLoop();
     sdlmain->run();
     delete sdlmain;
-
-}
-
-int main(int argc, char *argv[]) {
-    Project::Log::LogOpener::openLogs();
-	runGame();
+    
     Project::Log::LogOpener::closeLogs();
     return 0;
-}
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev,
-    LPSTR lpszCmndline, int nCmdShow) {
-	runGame();
-	return 0;
 }
