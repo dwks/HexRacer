@@ -23,13 +23,12 @@ std::string Message::asText(bool allData) const {
 #else
         const char *then = std::ctime(&timestamp);
 #endif
-        
+		
         // removing trailing newline
         std::string when = std::string(then).substr(0, std::strlen(then) - 1);
 #ifdef WIN32
 		delete[] then;
 #endif
-        
         stream << "[" << when << "] ";
     }
     
