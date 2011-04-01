@@ -46,7 +46,7 @@ void LogOpener::openLogs() {
         }
     }
     
-#if defined(WIN32) && defined(WIN32_NO_CONSOLE)
+#if !defined(WIN32) || !defined(WIN32_NO_CONSOLE)
     Logger::getInstance().addStream(
         new AliasStream(VerbosityLevel(), std::cout, false));
 #endif
