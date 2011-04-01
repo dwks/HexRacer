@@ -21,6 +21,3 @@ int main(int argc, char *argv[]) {
     Project::Log::LogOpener::closeLogs();
     return 0;
 }
-
-#ifdef WIN32
-#endif
