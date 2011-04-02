@@ -225,6 +225,9 @@ network.host = localhost
 # Network settings for server
 network.serverport = 1820
 
+network.interpolation.warp    = 3.0
+network.interpolation.enable  = 1
+
 ########
 ### AI and server settings
 server.aicount     = 4

@@ -230,7 +230,7 @@ void PhysicalPlayer::setData(const Math::Matrix &transform,
     
     Math::Point newOrigin = getOrigin();
     
-    if(interpolate) {
+    if(interpolate && GET_SETTING("network.interpolation.enable", 1)) {
         networkError += originalOrigin - newOrigin;
     }
     else {

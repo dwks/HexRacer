@@ -80,7 +80,7 @@ void Player::preRender() {
     
     // deal with exponential backoff interpolation due to network error
     Math::Point networkError = physical->getNetworkError();
-    if(networkError.length() > 5.0) {
+    if(networkError.length() > GET_SETTING("network.interpolation.warp", 5.0)) {
         networkError = Math::Point();
         physical->setNetworkError(networkError);
         
