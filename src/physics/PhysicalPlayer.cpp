@@ -217,7 +217,7 @@ void PhysicalPlayer::applyTorque(const Math::Point &torque) {
 
 void PhysicalPlayer::setData(const Math::Matrix &transform,
     const Math::Point &linearVelocity,
-    const Math::Point &angularVelocity) {
+    const Math::Point &angularVelocity, bool interpolate) {
     
     Math::Point originalOrigin = getOrigin();
     
@@ -230,7 +230,12 @@ void PhysicalPlayer::setData(const Math::Matrix &transform,
     
     Math::Point newOrigin = getOrigin();
     
-    networkError += originalOrigin - newOrigin;
+    if(interpolate) {
+        networkError += originalOrigin - newOrigin;
+    }
+    else {
+        networkError = Math::Point(0.0, 0.0, 0.0);
+    }
 
 	updatePhysicalInfo();
 }

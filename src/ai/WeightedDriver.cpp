@@ -19,6 +19,8 @@ WeightedDriver::WeightedDriver(Object::Player *player) : Driver(player) {
     sittingStill = false;
     sittingStillSince = 0;
 	paintSwitchTime = 0;
+    
+    nearestPathNode = NULL;
 
     intention.setAccel(1.0);
     //intention.setPaint(true);

@@ -137,7 +137,7 @@ public:
     
     virtual void setData(const Math::Matrix &transform,
         const Math::Point &linearVelocity,
-        const Math::Point &angularVelocity);
+        const Math::Point &angularVelocity, bool interpolate = true);
     
     const Math::Point &getNetworkError() const { return networkError; }
     void setNetworkError(const Math::Point &error) { networkError = error; }

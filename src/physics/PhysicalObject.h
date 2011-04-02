@@ -24,7 +24,8 @@ public:
     
     virtual void setData(const Math::Matrix &transform,
         const Math::Point &linearVelocity,
-        const Math::Point &angularVelocity) = 0;
+        const Math::Point &angularVelocity,
+        bool interpolate = true) = 0;
 };
 
 }  // namespace Physics
