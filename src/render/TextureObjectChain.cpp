@@ -88,8 +88,8 @@ namespace Render {
 
 	void TextureObjectChain::render(double x, double y, double minor_length) {
 
-		double u;
-		double v;
+		double u = x;
+		double v = y;
 		double major_length;
 		double padding_length;
 		

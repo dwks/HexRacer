@@ -109,10 +109,9 @@ namespace Math {
 				vert.vIndex = v_index-1;
 				break;
 			case 5:
+            default:
 				vert.uIndex = (u_index+even_row)*2;	
 				vert.vIndex = v_index-1;
-				break;
-			default:
 				break;
 
 		}

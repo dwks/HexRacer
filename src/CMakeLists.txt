@@ -1,5 +1,5 @@
 # Enable warnings
-add_definitions(-W -Wall -ansi -pedantic -g)
+add_definitions(-W -Wall -ansi -pedantic -g -O3)
 add_definitions(-Wno-unused-parameter -Wno-long-long)
 add_definitions(-DCMAKE_BUILD)
 

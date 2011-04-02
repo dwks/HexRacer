@@ -799,10 +799,10 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 	shadowFocusFrustrum.push_back(camera->cameraToWorld(1.0, 1.0, far_plane));
 	shadowFocusFrustrum.push_back(camera->cameraToWorld(0.0, 1.0, far_plane));
 
-	double x_angle_min;
-	double y_angle_min;
-	double x_angle_max;
-	double y_angle_max;
+	double x_angle_min = 0.0;
+	double y_angle_min = 0.0;
+	double x_angle_max = 0.0;
+	double y_angle_max = 0.0;
 
 	for (unsigned int i = 0; i < shadowFocusFrustrum.size(); i++) {
 		Math::Point to_vector = shadowFocusFrustrum[i]-shadowCamera->getPosition();
