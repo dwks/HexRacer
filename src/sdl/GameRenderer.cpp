@@ -783,8 +783,7 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 	shadowCamera->setLookPosition(camera->cameraToWorld(0.5, 0.5, far_plane*0.5));
 
 	Math::Point up_dir;
-	if (
-		std::fabs(shadowCamera->getLookDirection().dotProduct(camera->getRightDirection())) >
+	if (std::fabs(shadowCamera->getLookDirection().dotProduct(camera->getRightDirection())) >
 		std::fabs(shadowCamera->getLookDirection().dotProduct(camera->getUpDirection())) ) {
 		shadowCamera->setUpDirection(camera->getRightDirection());
 	}

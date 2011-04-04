@@ -113,8 +113,8 @@ bool RenderablePlayer::shouldDraw(const Math::BoundingObject& bounding_obj) {
 
 void RenderablePlayer::setGlowColor(OpenGL::Color color) {
 	materialTint->setAmbient(color);
-        chassisTint->setAmbient(color);
-        chassisTint->setDiffuse(color);
+    chassisTint->setAmbient(color);
+    chassisTint->setDiffuse(color);
 }
 
 }  // namespace Render
