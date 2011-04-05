@@ -184,7 +184,6 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldMan
 	}
 
 	//Revert Rendering Settings
-	renderer->getRenderSettings()->setApplyToShadowMatrix(false);
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
 
@@ -203,6 +202,8 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldMan
 		bloomScene->setChild(NULL);
 
 	}
+
+	renderer->getRenderSettings()->setApplyToShadowMatrix(false);
 
 	camera->setFarPlane(far_plane);
 	camera->setFrustrumFarPlaneEnabled(false);
