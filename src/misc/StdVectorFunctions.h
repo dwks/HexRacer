@@ -241,6 +241,8 @@ static void vectorPointerMergeSort(std::vector<Type>& v, int start_index = -1, i
 
 template <typename Type>
 static bool vectorIsSorted(std::vector<Type>& v) {
+	if (v.empty())
+		return true;
 	for (unsigned int i = 0; i < v.size()-1; i++) {
 		if (v[i+1] < v[i])
 			return false;

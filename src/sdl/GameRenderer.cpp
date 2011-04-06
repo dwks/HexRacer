@@ -184,7 +184,6 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldMan
 	}
 
 	//Revert Rendering Settings
-	renderer->getRenderSettings()->setApplyToShadowMatrix(false);
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
 
@@ -203,6 +202,8 @@ void GameRenderer::render(OpenGL::Camera *camera, Object::WorldManager *worldMan
 		bloomScene->setChild(NULL);
 
 	}
+
+	renderer->getRenderSettings()->setApplyToShadowMatrix(false);
 
 	camera->setFarPlane(far_plane);
 	camera->setFrustrumFarPlaneEnabled(false);
@@ -783,8 +784,7 @@ void GameRenderer::updateShadowCamera(const Math::Point& light_position, OpenGL:
 	shadowCamera->setLookPosition(camera->cameraToWorld(0.5, 0.5, far_plane*0.5));
 
 	Math::Point up_dir;
-	if (
-		std::fabs(shadowCamera->getLookDirection().dotProduct(camera->getRightDirection())) >
+	if (std::fabs(shadowCamera->getLookDirection().dotProduct(camera->getRightDirection())) >
 		std::fabs(shadowCamera->getLookDirection().dotProduct(camera->getUpDirection())) ) {
 		shadowCamera->setUpDirection(camera->getRightDirection());
 	}
