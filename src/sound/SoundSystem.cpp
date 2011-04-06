@@ -30,7 +30,7 @@ void SoundSystem::physicsCollisionHandler(Event::PhysicsCollision *event){
     collisionSound->playCollision(event->getLocation(),event->getImpulse());
 }
 
-bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerManager *playerManager) {
+bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerManager *playerManager, int type) {
     ALHelpers::initOpenAL();
     
     playerCount = worldManager->getPlayerList()->getPlayerCount();

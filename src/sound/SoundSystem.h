@@ -34,7 +34,7 @@ public:
     SoundSystem();
     ~SoundSystem();
     
-    virtual bool initialize(Object::WorldManager *worldManager, World::PlayerManager *playerManager);
+    virtual bool initialize(Object::WorldManager *worldManager, World::PlayerManager *playerManager, int type);
     
     //virtual void doAction(unsigned long currentTime);
     void doAction();

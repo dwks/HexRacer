@@ -57,7 +57,6 @@ void GUIInputManager::handleEvent(SDL_Event *event) {
 }
 
 void GUIInputManager::generateMenuEvents() {
-
 	Input::InputMapper* mapper = Input::GlobalInputManager::getInstance()->getInputMapper();
 
 	mapper->update(Input::INPUT_D_MENU_LEFT);
