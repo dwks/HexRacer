@@ -27,6 +27,13 @@ void MenuLoop::construct() {
     
     menuBackground = boost::shared_ptr<MenuBackground>(
         new MenuBackground());
+    
+#ifdef HAVE_OPENAL
+    if(GET_SETTING("sound.enable", 0)==1){
+        soundSystem = boost::shared_ptr<Sound::SoundSystem>(new Sound::SoundSystem());
+        soundSystem->initialize();
+    }
+#endif
 }
 
 void MenuLoop::handleEvent(SDL_Event *event) {
@@ -44,6 +51,12 @@ void MenuLoop::postRender() {
     // fire a repaint event to the current screen
     Widget::RepaintEvent repaintEvent(gui->getCurrentScreen());
     gui->handleEvent(&repaintEvent);
+#ifdef HAVE_OPENAL
+        if (GET_SETTING("sound.enable", true)) {
+                soundSystem->doAction();
+        }
+#endif
+
 }
 
 void MenuLoop::miscellaneous() {

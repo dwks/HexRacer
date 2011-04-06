@@ -12,7 +12,7 @@
 
 #include "misc/ProgressTracker.h"
 #include "map/MapSettings.h"
-
+#include "sound/SoundSystem.h"
 #include "GameWorld.h"
 
 namespace Project {
@@ -27,7 +27,9 @@ private:
     boost::shared_ptr<Map::MapSettings> mapSettings;
 
 	static Misc::ProgressTracker* loadingProgressTracker;
-    
+#ifdef HAVE_OPENAL
+    boost::shared_ptr<Sound::SoundSystem> soundSystem;
+#endif
     boost::weak_ptr<GameWorld> gameWorld;
 public:
     virtual void construct();

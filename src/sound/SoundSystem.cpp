@@ -30,9 +30,20 @@ void SoundSystem::physicsCollisionHandler(Event::PhysicsCollision *event){
     collisionSound->playCollision(event->getLocation(),event->getImpulse());
 }
 
-bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerManager *playerManager, int type) {
-    ALHelpers::initOpenAL();
+bool SoundSystem::initialize(){
+    systemType=0;
     
+    ALHelpers::initOpenAL();
+    ALHelpers::setupListener();
+    
+    setupGameMusic();
+    
+    return true;
+}
+
+bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerManager *playerManager) {
+    systemType = 1;
+    ALHelpers::initOpenAL();
     playerCount = worldManager->getPlayerList()->getPlayerCount();
     this->worldManager = worldManager;
     this->playerManager = playerManager;
@@ -43,6 +54,7 @@ bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerMa
     setupGameMusic();
     
     METHOD_OBSERVER(&SoundSystem::physicsCollisionHandler);
+    
     return true;
 }
 
@@ -64,9 +76,13 @@ void SoundSystem::setupEngines(){
 }
 void SoundSystem::setupGameMusic() {
     ALHelpers::setupBuffer(&musicBuffer,1);
-    
+    string file = "";
     //Load the music into the buffer
-    string file = "data/sound/music/GameMusicIntro.wav";
+    if(systemType==0){
+        file = "data/sound/music/MenuMusicIntro.wav";
+    } else if(systemType==1){
+        file = "data/sound/music/GameMusicIntro.wav";
+    }
     ALHelpers::loadFileToBuffer(musicBuffer,file);
     
     //setup the music source
@@ -109,8 +125,14 @@ void SoundSystem::playerCountChanged(int count){
 void SoundSystem::checkMusicIntroComplete(){
     ALint buffersProcessed = 0;
     alGetSourcei(musicSource,AL_BUFFERS_PROCESSED,&buffersProcessed);
+    string file = "";
     if((int)buffersProcessed == 1){
-        string file = "data/sound/music/GameMusicLoop.wav";
+        if(systemType==0){
+            file = "data/sound/music/MenuMusicLoop.wav";
+        } else if(systemType==1){
+            file = "data/sound/music/GameMusicLoop.wav";
+        }
+        
         alSourceUnqueueBuffers(musicSource,1,&musicBuffer);
         ALHelpers::loadFileToBuffer(musicBuffer,file);
         ALHelpers::bindBufferToSource(musicBuffer, musicSource);
@@ -121,15 +143,18 @@ void SoundSystem::checkMusicIntroComplete(){
 
 void SoundSystem::doAction() {
     checkMusicIntroComplete();
-    checkPlayerCount();
     
-    Object::Player *player = playerManager->getPlayer();
-    Math::Point positionPoint = player->getPosition(); 
-    Math::Point velocityPoint = player->getPhysicalObject()->getLinearVelocity();
-    Math::Point orientationPoint = player->getPhysicalObject()->getFrontDirection();
-    ALHelpers::updateListener(positionPoint,velocityPoint,orientationPoint);
-    
-    engineSound->updateEngines(playerManager->getPlayer()->getID());
+    if(systemType==1){
+        checkPlayerCount();
+        
+        Object::Player *player = playerManager->getPlayer();
+        Math::Point positionPoint = player->getPosition(); 
+        Math::Point velocityPoint = player->getPhysicalObject()->getLinearVelocity();
+        Math::Point orientationPoint = player->getPhysicalObject()->getFrontDirection();
+        ALHelpers::updateListener(positionPoint,velocityPoint,orientationPoint);
+        
+        engineSound->updateEngines(playerManager->getPlayer()->getID());
+    }
 }
 
 }  // namespace Sound
