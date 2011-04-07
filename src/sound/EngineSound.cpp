@@ -163,12 +163,13 @@ void EngineSound::changeEnginePitch(Object::Player *player, ALuint source, int t
     Math::Point velocityPoint = player->getPhysicalObject()->getLinearVelocity();
     
     float speed = (float)velocityPoint.length();
+    float speed_percent = speed/30.0;
     
     if(accelerating&&onGround){
-        engineTones[toneIndex] = (float)(min_pitch + (speed/30.0)*(max_pitch-min_pitch));
+        engineTones[toneIndex] = (float)(min_pitch + ((speed_percent)-floor(speed_percent))*(max_pitch-min_pitch));
     }
     if(!accelerating&&onGround){
-        engineTones[toneIndex] = (float)(min_pitch + (speed/30.0)*(max_pitch-min_pitch));
+        engineTones[toneIndex] = (float)(min_pitch + ((speed_percent)-floor(speed_percent))*(max_pitch-min_pitch));
     }
     if(accelerating&&(!onGround||skidding)){
         engineTones[toneIndex] += 0.01;
