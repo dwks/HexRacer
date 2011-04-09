@@ -260,6 +260,8 @@ void ServerMain::initMap() {
 
 	paintManager = boost::shared_ptr<Paint::PaintManager>(
         new Paint::PaintManager(false));
+
+	bonusManager = boost::shared_ptr<Bonus::GlobalBonusManager>(new Bonus::GlobalBonusManager);
     
 	mapLoader = boost::shared_ptr<Map::MapLoader>(new Map::MapLoader());
 	mapLoader->load(map.get(), NULL, NULL, paintManager.get());

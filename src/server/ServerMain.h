@@ -22,6 +22,8 @@
 #include "map/MapLoader.h"
 #include "map/RaceManager.h"
 
+#include "bonus/GlobalBonusManager.h"
+
 #include "mesh/MeshLoader.h"
 
 #include "world/BasicWorld.h"
@@ -66,6 +68,7 @@ private:
     
     boost::shared_ptr<Paint::PaintManager> paintManager;
     boost::shared_ptr<Paint::PaintSubsystem> paintSubsystem;
+	boost::shared_ptr<Bonus::GlobalBonusManager> bonusManager;
     
     ServerVisitor visitor;
     

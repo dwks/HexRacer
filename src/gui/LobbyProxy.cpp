@@ -14,6 +14,7 @@
 #include "event/SetupClientSettings.h"
 
 #include "map/MapSettings.h"
+#include "map/Teams.h"
 
 #include "settings/SettingsManager.h"
 #include "misc/StreamAsString.h"
@@ -37,8 +38,7 @@ void LobbyProxy::handleSetupChat(Event::SetupChat *event) {
         Misc::StreamAsString() << name << ": " << message,
         Widget::NormalTextLayout::ALIGN_LEFT,
         Widget::WidgetRect(0.0, 0.0, 0.8, 0.03),
-        static_cast<OpenGL::Color::ColorPreset>(
-            worldSetup->getPlayerSettings(id)->getColor()));
+		Map::Teams::teamColor(worldSetup->getPlayerSettings(id)->getColor()));
     
     Widget::ListWidget *chat = dynamic_cast<Widget::ListWidget *>(
         this->lobby->getChild("chatlist"));
@@ -90,8 +90,7 @@ void LobbyProxy::handleReplaceWorldSetup(Event::ReplaceWorldSetup *event) {
                 Misc::StreamAsString() << name,
                 Widget::NormalTextLayout::ALIGN_LEFT,
                 Widget::WidgetRect(0.0, 0.0, 0.8, 0.03),
-                static_cast<OpenGL::Color::ColorPreset>(
-                    worldSetup->getPlayerSettings(id)->getColor()));
+				Map::Teams::teamColor(worldSetup->getPlayerSettings(id)->getColor()));
             playerList->addChild(item);
         }
     }
@@ -199,7 +198,7 @@ void LobbyProxy::visit(Widget::WidgetSelectedEvent *event) {
         World::WorldSetup::PlayerSettings *settings
             = worldSetup->getPlayerSettings(id);
         if(settings) {
-            settings->setColor(static_cast<OpenGL::Color::ColorPreset>(col));
+            settings->setColor(col);
             
             EMIT_EVENT(new Event::SetupPlayerSettings(*settings));
         }

@@ -32,6 +32,9 @@ private:
     PaintingType painting;
     Object::WorldManager *worldManager;
     Paint::PaintManager *paintManager;
+
+	void playerPaint(Object::Player* player);
+	void playerErase(Object::Player* player);
 protected:
     void togglePaintingObserver(Event::TogglePainting *toggle);
 public:

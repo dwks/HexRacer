@@ -84,6 +84,7 @@ void GameRenderer::construct(OpenGL::Camera *camera)
 	speedometer = boost::shared_ptr<HUD::Speedometer>(new HUD::Speedometer());
 	placingList = boost::shared_ptr<HUD::PlacingList>(new HUD::PlacingList());
 	playerPlacingText = boost::shared_ptr<HUD::PlayerPlacingText>(new HUD::PlayerPlacingText());
+	bonusMessages = boost::shared_ptr<HUD::BonusMessages>(new HUD::BonusMessages());
     
     renderer->setCubeMap(map->getCubeMap());
     
@@ -322,6 +323,32 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 		playerPlacingText->setPlacing(player->getPathTracker()->getRanking());
 		playerPlacingText->render();
     }
+
+	//-Bonus Messages ----------------------------------------------------------------------------
+    if (GET_SETTING("hud.placinglist.enable", true)) {
+
+        int draw_height = viewHeight*GET_SETTING("hud.bonusmessages.drawheight", 0.5);
+		int draw_width = GET_SETTING("hud.bonusmessages.drawwidth", 400);
+		int entry_height = Math::maximum(static_cast<int>(viewHeight*GET_SETTING("hud.bonusmessages.entryheight", 0.5)),
+			static_cast<int>(GET_SETTING("hud.bonusmessages.minentryheight", 20)));
+		entry_height = Math::minimum(entry_height, GET_SETTING("hud.bonusmessages.maxentryheight", 20));
+
+		hudRenderer->setupViewport(
+			HUD::HUDRenderer::ALIGN_MID,
+			HUD::HUDRenderer::ALIGN_MAX,
+			draw_width,
+			draw_height,
+			10,
+			0);
+	
+		bonusMessages->setTotalWidth(draw_width);
+		bonusMessages->setTotalHeight(draw_height);
+		bonusMessages->setEntryHeight(entry_height);
+		bonusMessages->setWorldManager(worldManager);
+		bonusMessages->render();
+    }
+
+	
 
 	hudRenderer->renderingStateReset();
 	hudRenderer->resetViewport();

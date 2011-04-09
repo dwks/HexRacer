@@ -25,6 +25,7 @@
 #include "hud/Speedometer.h"
 #include "hud/PlacingList.h"
 #include "hud/PlayerPlacingText.h"
+#include "hud/BonusMessages.h"
 
 #include "gui/GUISystem.h"
 #include "widget/TextWidget.h"
@@ -78,6 +79,7 @@ private:
 	boost::shared_ptr<HUD::Speedometer> speedometer;
 	boost::shared_ptr<HUD::PlacingList> placingList;
 	boost::shared_ptr<HUD::PlayerPlacingText> playerPlacingText;
+	boost::shared_ptr<HUD::BonusMessages> bonusMessages;
     
     boost::shared_ptr<GUI::GUISystem> gui;
     boost::shared_ptr<FPSRateMonitor> fpsRate;

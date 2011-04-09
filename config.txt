@@ -94,6 +94,15 @@ game.warp.helprequest.countdown        = 2500
 game.warp.stillvelocity                = 5.0
 
 ########
+### Bonus settings
+
+bonus.paintbonus.cellcountincrement = 1000
+bonus.paintbonus.points = 100
+bonus.erasebonus.cellcountincrement = 500
+bonus.erasebonus.points = 100
+bonus.rankbonus.maxbonus = 1000
+
+########
 ### Rendering settings
 
 # Rendering quality
@@ -168,6 +177,14 @@ hud.placinglist.maxentryheight = 60
 
 hud.playerplacingtext.enable = 1
 hud.playerplacingtext.drawheight = 0.2
+
+hud.bonusmessages.enable = 1
+hud.bonusmessages.drawheight = 0.5
+hud.bonusmessages.drawwidth = 400
+hud.bonusmessages.entryheight = 0.025
+hud.bonusmessages.minentryheight = 12
+hud.bonusmessages.maxentryheight = 40
+hud.bonusmessages.appearduration = 4000
 
 ########
 ### Camera settings

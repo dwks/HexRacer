@@ -226,6 +226,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\BonusEvent.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\bonus\BonusMessageQueue.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\hud\BonusMessages.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingCircle.cpp"
 				>
 			</File>
@@ -411,6 +423,10 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\GameWorld.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\bonus\GlobalBonusManager.cpp"
 				>
 			</File>
 			<File
@@ -758,6 +774,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\bonus\PlayerBonuses.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\world\PlayerIntention.cpp"
 				>
 			</File>
@@ -867,10 +887,6 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\ScrollbarWidget.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\sdl\SDLGame.cpp"
 				>
 			</File>
 			<File
@@ -1452,6 +1468,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\BonusEvent.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\bonus\BonusMessageQueue.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\hud\BonusMessages.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingCircle.h"
 				>
 			</File>
@@ -1641,6 +1669,10 @@
 			</File>
 			<File
 				RelativePath=".\src\sdl\GameWorld.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\bonus\GlobalBonusManager.h"
 				>
 			</File>
 			<File
@@ -1984,6 +2016,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\bonus\PlayerBonuses.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\world\PlayerIntention.h"
 				>
 			</File>
@@ -2101,10 +2137,6 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\ScrollbarWidget.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\sdl\SDLGame.h"
 				>
 			</File>
 			<File

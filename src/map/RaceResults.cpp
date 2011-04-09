@@ -3,6 +3,8 @@
 #include "RaceResults.h"
 #include "PlayerTimes.h"
 
+#include "bonus/GlobalBonusManager.h"
+
 namespace Project {
 namespace Map {
 
@@ -30,7 +32,11 @@ namespace Map {
 				LOG(WORLD, "Player " << i << " progress: " << progress);
 				finish_time = (int) ((float)total_time/progress);
 			}
-			int bonus = calcBonus(i, total_time);
+			int bonus = 0;
+
+			if (Bonus::GlobalBonusManager::getInstance())
+				bonus = Bonus::GlobalBonusManager::getInstance()->getPlayerBonuses(player_rankings[i]->getID()).getTotalBonus();
+
 			int score = calcScore(finish_time)-bonus;
 
 			LOG(WORLD, "Player " << i << " score: " << score << " bonus: " << bonus << " finish time: " << finish_time);
@@ -105,12 +111,6 @@ namespace Map {
 
 	int RaceResults::calcScore(unsigned long finish_time) const {
 		return static_cast<int>(finish_time);
-	}
-
-	int RaceResults::calcBonus(unsigned int rank, unsigned long total_time) const {
-		//return static_cast<int>((total_time/60)/(rank+1));
-		//return static_cast<int>(5000/(rank+1));
-		return 0;
 	}
 
 }  // namespace Map
