@@ -11,6 +11,8 @@
 #include "map/PlayerTimes.h"
 #include "misc/Sleeper.h"
 
+#include "bonus/GlobalBonusManager.h"
+
 namespace Project {
 namespace Map {
 
@@ -74,6 +76,10 @@ void PathingUpdater::update() {
                     Map::PlayerTimes::getInstance().setFinished(
                         player->getID(),
 						World::TimeElapsed::getInstance().getGameTime());
+
+					if (Bonus::GlobalBonusManager::getInstance())
+						Bonus::GlobalBonusManager::getInstance()->getPlayerBonuses(player->getID()).playerFinish(player->getPathTracker()->getRanking());
+
 				}
                 
                 if(playerManager->getPlayer() == player) {

@@ -216,6 +216,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\BonusEvent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingBox2D.cpp"
 				>
 			</File>
@@ -361,6 +365,10 @@
 			</File>
 			<File
 				RelativePath=".\src\opengl\GeometryDrawing.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\bonus\GlobalBonusManager.cpp"
 				>
 			</File>
 			<File
@@ -605,6 +613,10 @@
 			</File>
 			<File
 				RelativePath=".\src\object\Player.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\bonus\PlayerBonuses.cpp"
 				>
 			</File>
 			<File
@@ -978,6 +990,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\event\BonusEvent.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\math\BoundingBox2D.h"
 				>
 			</File>
@@ -1123,6 +1139,10 @@
 			</File>
 			<File
 				RelativePath=".\src\opengl\GeometryDrawing.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\bonus\GlobalBonusManager.h"
 				>
 			</File>
 			<File
@@ -1371,6 +1391,10 @@
 			</File>
 			<File
 				RelativePath=".\src\object\Player.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\bonus\PlayerBonuses.h"
 				>
 			</File>
 			<File

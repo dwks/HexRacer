@@ -9,5 +9,9 @@ maps.2.title   = Lagrange
 maps.2.image   = data/thumbnail/lagrange.png
 
 maps.3         = data/canyon/canyon.hrm
-maps.3.title   = New canyon
+maps.3.title   = New canyon (2)
 maps.3.image   = data/thumbnail/canyon2.png
+
+maps.4         = data/canyon3/canyon3.hrm
+maps.4.title   = Canyon 3
+maps.4.image   = data/thumbnail/canyon3.png

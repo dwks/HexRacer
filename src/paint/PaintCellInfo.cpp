@@ -37,7 +37,7 @@ namespace Paint {
 				return false;
 			
 			bool layer_found = false;
-			int best_layer;
+			int best_layer = 0;
 			double min_height_diff = fabs(height_threshhold);
 
 			int layer = 0;

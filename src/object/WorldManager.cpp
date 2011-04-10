@@ -23,6 +23,8 @@ WorldManager::WorldManager(World *world, PlayerList *playerList)
 WorldManager::~WorldManager() {
     delete world;
     delete playerList;
+    
+    LOG(WORLD, "Destructing WorldManager");
 }
 
 void WorldManager::addPlayer(Player *player) {

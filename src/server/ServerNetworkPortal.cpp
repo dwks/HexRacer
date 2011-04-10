@@ -41,6 +41,7 @@ void ServerNetworkPortal::EventPropagator::observe(Event::EventBase *event) {
     case Event::EventType::GAME_STAGE_CHANGED:
     case Event::EventType::REPLACE_WORLD_SETUP:
     case Event::EventType::RACE_FINISHED:
+	case Event::EventType::PLAYER_BONUS:
     {
         Network::Packet *packet = new Network::EventPacket(event);
         portal->getClientManager()->sendPacket(packet);

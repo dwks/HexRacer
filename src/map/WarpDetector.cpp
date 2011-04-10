@@ -37,7 +37,9 @@ void WarpDetector::checkForWarping(Object::Player *player) {
     // finally emit a warp event if necessary
     if(warpTracker->canReceiveWarp()) {
         EMIT_EVENT(new Event::WarpOntoTrack(player->getID()));
-        warpTracker->clear();
+        
+        // can't use warpTracker, it has been replaced now
+        player->getPhysicalObject()->getWarpTracker()->clear();
     }
 }
 

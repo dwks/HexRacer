@@ -2,6 +2,7 @@
 
 #include "event/PaintEvent.h"
 #include "event/EventSystem.h"
+#include "bonus/GlobalBonusManager.h"
 
 #include "math/Values.h"
 
@@ -57,17 +58,23 @@ void PaintSubsystem::doAction(unsigned long currentTime) {
         
         switch(type) {
         case Event::TogglePainting::ERASING:
+			playerErase(worldManager->getPlayer(id));
+			/*
             EMIT_EVENT(new Event::PaintEvent(
                 worldManager->getPlayer(id)->getPosition(),
                 PAINTING_RADIUS,
                 -1));
+			*/
             break;
         case Event::TogglePainting::PAINTING:
+			playerPaint(worldManager->getPlayer(id));
+			/*
             EMIT_EVENT(new Event::PaintEvent(
                 worldManager->getPlayer(id)->getPosition(),
                 PAINTING_RADIUS,
 				worldManager->getPlayer(id)->getTeamID()));
             break;
+			*/
         default:
         case Event::TogglePainting::NOTHING:
             break;
@@ -116,6 +123,24 @@ void PaintSubsystem::calculateBoostSpeeds() {
 				player->setSpeedBoost(GET_SETTING("game.paint.erasingboost", 0.8));
         }
     }
+}
+
+void PaintSubsystem::playerPaint(Object::Player* player) {
+
+	std::vector<Math::HexHeightMap::LayeredHexIndex> changed_indices;
+	paintManager->colorCellsInRadius(player->getPosition(), PAINTING_RADIUS, player->getTeamID(), false, &changed_indices);
+	if (Bonus::GlobalBonusManager::getInstance())
+		Bonus::GlobalBonusManager::getInstance()->getPlayerBonuses(player->getID()).playerPaint(static_cast<int>(changed_indices.size()));
+
+}
+
+void PaintSubsystem::playerErase(Object::Player* player) {
+
+	std::vector<Math::HexHeightMap::LayeredHexIndex> changed_indices;
+	paintManager->colorCellsInRadius(player->getPosition(), PAINTING_RADIUS, -1, false, &changed_indices);
+	if (Bonus::GlobalBonusManager::getInstance())
+		Bonus::GlobalBonusManager::getInstance()->getPlayerBonuses(player->getID()).playerErase(static_cast<int>(changed_indices.size()));
+
 }
 
 }  // namespace Paint

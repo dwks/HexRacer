@@ -20,6 +20,7 @@ public:
         WORLD,
         GUI,
         WIDGET,
+		BONUS,
         SUBSYSTEMS
     };
 private:

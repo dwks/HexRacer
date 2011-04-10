@@ -43,7 +43,7 @@ namespace Map {
 		}
 
 		//Find the best node pair based on distance from the line between them
-		PathPair best_pair;
+		PathPair best_pair = pairs[0];  // satisfy used uninitialized warning
 		double min_distance_squared = 0.0;
 		for (unsigned int i = 0; i < pairs.size(); i++) {
 

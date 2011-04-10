@@ -117,7 +117,7 @@ void MenuBackground::handleEvent(SDL_Event *event) {
 
 	if (event->type == SDL_MOUSEMOTION) {
 
-		double aspect = Projector::getInstance()->getAspectRatio();
+		//double aspect = Projector::getInstance()->getAspectRatio();
 
 		mousePos = Projector::getInstance()->screenToGL(SDL::Point2D(event->button.x, event->button.y));
 		activate = true;

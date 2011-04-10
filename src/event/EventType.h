@@ -47,6 +47,7 @@ public:
         RACE_FINISHED,
         MODIFY_CAMERA,
         BASIC_WORLD_CONSTRUCTED,
+		PLAYER_BONUS,
         TYPES
     };
 };

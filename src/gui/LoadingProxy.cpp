@@ -115,6 +115,8 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
                     << "Could not connect to server at "
                     << joinGameEvent.getHost()
                     << ":" << joinGameEvent.getPort());
+                
+                EMIT_EVENT(new Event::SwitchToScreen(""));
             }
             else if(type == "loadingworld") {
                 EMIT_EVENT(new Event::SetCheckingNetwork(true));
