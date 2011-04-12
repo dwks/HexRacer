@@ -31,6 +31,9 @@ namespace Map {
 				float progress = player_rankings[i]->getPathTracker()->getRaceProgress()/total_progress;
 				LOG(WORLD, "Player " << i << " progress: " << progress);
 				finish_time = (int) ((float)total_time/progress);
+
+				if (Bonus::GlobalBonusManager::getInstance())
+					Bonus::GlobalBonusManager::getInstance()->getPlayerBonuses(player_rankings[i]->getID()).playerFinish(i);
 			}
 			int bonus = 0;
 

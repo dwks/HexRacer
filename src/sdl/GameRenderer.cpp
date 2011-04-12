@@ -345,6 +345,7 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 		bonusMessages->setTotalHeight(draw_height);
 		bonusMessages->setEntryHeight(entry_height);
 		bonusMessages->setWorldManager(worldManager);
+		bonusMessages->setPlayerID(player->getID());
 		bonusMessages->render();
     }
 
