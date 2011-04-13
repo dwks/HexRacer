@@ -24,6 +24,7 @@ public:
     virtual void visit(Widget::WidgetModifiedEvent *event);
     virtual void visit(Widget::WidgetSelectedEvent *event);
 private:
+    const char *qualityString();
     void setCheckingForJoystick(bool yes);
 };
 

@@ -24,6 +24,7 @@ void ListItemEventProxy::visit(MouseButtonEvent *event) {
             LOG(WIDGET, "Item \"" << text->getName()
                 << "\" selected in \"" << list->getName() << '"');
             
+            list->setLastSelected(text);
             list->handleEvent(&newEvent);
         }
         

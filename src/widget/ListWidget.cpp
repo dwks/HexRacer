@@ -9,6 +9,9 @@
 
 #include "log/Logger.h"
 
+#include "opengl/OpenGL.h"
+#include "widget/WidgetRenderer.h"
+
 namespace Project {
 namespace Widget {
 
@@ -20,6 +23,8 @@ ListWidget::ListWidget(const std::string &name, bool vertical, bool horizontal,
     
     verticalBar = 0;
     horizontalBar = 0;
+    
+    lastSelected = NULL;
     
     WidgetRect boxBounds = bounds;
     
@@ -178,6 +183,32 @@ void ListWidget::render(WidgetVisitor &renderer) {
                 << child->getBoundingRect() << " given " << startY << "," << endY);*/
             
             if(childY >= startY && childY + childHeight <= endY + 1e-8) {
+                if(child == lastSelected) {
+                    WidgetPoint corner = child->getBoundingRect().getCorner();
+                    WidgetPoint dim = child->getBoundingRect().getDimensions();
+                    
+                    dim.setX(viewArea.getWidth());
+                    
+                    WidgetPoint ul = corner;
+                    WidgetPoint ll = corner;
+                    WidgetPoint ur = corner;
+                    WidgetPoint lr = corner + dim;
+                    
+                    ll.addY(dim.getY());
+                    ur.addX(dim.getX());
+                    
+                    glColor3f(0.0f, 0.4f, 0.5f);
+                    
+                    glBegin(GL_QUADS);
+                    WidgetRenderer::glVertex(ul);
+                    WidgetRenderer::glVertex(ur);
+                    WidgetRenderer::glVertex(lr);
+                    WidgetRenderer::glVertex(ll);
+                    glEnd();
+                    
+                    glColor3f(1.0f, 1.0f, 1.0f);
+                }
+                
                 child->accept(renderer);
             }
         }
@@ -185,6 +216,23 @@ void ListWidget::render(WidgetVisitor &renderer) {
     else {
         LOG2(WIDGET, WARNING, "Displaying ListWidget with no vertical"
             " scrollbar is not implemented");
+    }
+}
+
+void ListWidget::setLastSelected(WidgetBase *widget) {
+    this->lastSelected = widget;
+}
+
+void ListWidget::setLastSelected(const std::string &text) {
+    IteratorType it = getIterator();
+    while(it.hasNext()) {
+        TextWidget *widget = dynamic_cast<TextWidget *>(it.next());
+        if(widget) {
+            if(widget->getData() == text) {
+                lastSelected = widget;
+                return;
+            }
+        }
     }
 }
 
