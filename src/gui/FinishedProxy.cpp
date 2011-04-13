@@ -33,6 +33,7 @@ void FinishedProxy::handleRaceFinished(Event::RaceFinished *event) {
     for(int r = 0; r < results.getRanks() && r < 10; r ++) {
         int p = results.getPlayerByRank(r);
         int score = results.getPlayerPoints(p);
+		int bonus = results.getPlayerBonus(p);
         
         double height = scoreArea.getHeight() / 11.0;
         
@@ -51,8 +52,13 @@ void FinishedProxy::handleRaceFinished(Event::RaceFinished *event) {
                 textRect,
                 Map::Teams::teamColor(player->getTeamID())));
         ranks->addChild(
-            new Widget::TextWidget(Misc::StreamAsString() << "score" << r,
-                Misc::StreamAsString() << (score / 1000.0) << " secs",
+            new Widget::TextWidget(Misc::StreamAsString() << "time" << r,
+                Misc::StreamAsString() << ((score+bonus) / 1000.0) << " secs",
+				Widget::NormalTextLayout::ALIGN_HCENTRE,
+                textRect));
+		ranks->addChild(
+            new Widget::TextWidget(Misc::StreamAsString() << "bonus" << r,
+                Misc::StreamAsString() << (bonus / 1000.0) << " secs",
                 Widget::NormalTextLayout::ALIGN_RIGHT,
                 textRect));
     }

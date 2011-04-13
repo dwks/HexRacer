@@ -13,6 +13,7 @@ include_directories(../build)  # for the moc
 
 # List of all source directories, in alphabetical order
 aux_source_directory(ai AI_SOURCES)
+aux_source_directory(bonus BONUS_SOURCES)
 aux_source_directory(connection CONNECTION_SOURCES)
 aux_source_directory(event EVENT_SOURCES)
 aux_source_directory(gui GUI_SOURCES)
@@ -43,6 +44,7 @@ aux_source_directory(world WORLD_SOURCES)
 
 # Source groups, for e.g. Visual Studio
 source_group("ai" FILES ${AI_SOURCES})
+source_group("bonus" FILES ${BONUS_SOURCES})
 source_group("connection" FILES ${CONNECTION_SOURCES})
 source_group("event" FILES ${EVENT_SOURCES})
 source_group("gui" FILES ${GUI_SOURCES})
@@ -90,7 +92,8 @@ set(SOURCES
     ${HANDLER_SOURCES}
     ${MAP_SOURCES}
     ${MESH_SOURCES}
-    ${WORLD_SOURCES})
+    ${WORLD_SOURCES}
+    ${BONUS_SOURCES})
 
 # Sources for the client
 set(SDL_SOURCES

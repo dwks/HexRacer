@@ -1,4 +1,6 @@
 #include "BonusMessages.h"
+#include "event/EventSystem.h"
+#include "render/FontManager.h"
 
 namespace Project {
 namespace HUD {
@@ -7,8 +9,20 @@ namespace HUD {
 		: messageQueue(),
 		entry(Render::TextureObjectChain::HORIZONTAL,
 		Render::TextureObjectChain::MID,
-		Render::TextureObjectChain::MAX) {
+		Render::TextureObjectChain::MIN) {
 
+			playerID =-1;
+			totalBonuses = 0;
+			totalBonusesTexture.setString("Bonus: 0", Render::FontManager::getInstance()->getCurrentFont());
+			METHOD_OBSERVER(&BonusMessages::bonusEventHandler);
+
+	}
+
+	void BonusMessages::bonusEventHandler(Event::BonusEvent* event) {
+		if (event->getPlayerID() == playerID) {
+			totalBonuses += event->getPoints();
+			totalBonusesTexture.setString(Misc::StreamAsString() << "Bonus: " << totalBonuses, Render::FontManager::getInstance()->getCurrentFont());
+		}
 	}
 
 	void BonusMessages::render() {
@@ -19,7 +33,11 @@ namespace HUD {
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		double y = totalHeight-entryHeight;
+		entry.clear();
+		entry.append(&totalBonusesTexture);
+		entry.render(totalWidth*0.5, totalHeight-entryHeight*2.0, entryHeight*2.0);
+
+		double y = totalHeight-entryHeight*3.0;
 
 		const std::list<Bonus::BonusMessageQueue::BonusMessage>& queue = messageQueue.getQueue();
 		std::list<Bonus::BonusMessageQueue::BonusMessage>::const_iterator it = queue.begin();

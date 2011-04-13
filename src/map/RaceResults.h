@@ -24,6 +24,7 @@ private:
         ar & teamPoints;
         ar & playerRank;
         ar & playerPoints;
+		ar & playerBonus;
         ar & teamRank;
     }
 private:

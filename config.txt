@@ -97,10 +97,10 @@ game.warp.stillvelocity                = 5.0
 ### Bonus settings
 
 bonus.paintbonus.cellcountincrement = 1000
-bonus.paintbonus.points = 100
-bonus.erasebonus.cellcountincrement = 500
-bonus.erasebonus.points = 100
-bonus.rankbonus.maxbonus = 1000
+bonus.paintbonus.points = 1000
+bonus.erasebonus.cellcountincrement = 1000
+bonus.erasebonus.points = 2500
+bonus.rankbonus.maxbonus = 10000
 
 ########
 ### Rendering settings
