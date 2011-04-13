@@ -27,13 +27,17 @@ void MenuLoop::construct() {
     
     menuBackground = boost::shared_ptr<MenuBackground>(
         new MenuBackground());
-    
-#ifdef HAVE_OPENAL
+
+    instantiateSound();
+}
+
+void MenuLoop::instantiateSound(){
+ #ifdef HAVE_OPENAL
     if(GET_SETTING("sound.enable", 0)==1){
         soundSystem = boost::shared_ptr<Sound::SoundSystem>(new Sound::SoundSystem());
         soundSystem->initialize();
     }
-#endif
+#endif   
 }
 
 void MenuLoop::handleEvent(SDL_Event *event) {

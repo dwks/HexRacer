@@ -219,7 +219,7 @@ sound.maxbuffers = 16
 sound.engine.playervolume = 0.3
 sound.engine.enemyvolume = 0.75
 sound.engine.attenuation = 0.1
-sound.engine.maxpitch = 3.25
+sound.engine.maxpitch = 3.5
 sound.engine.minpitch = 0.25
 
 sound.music.volume = 0.25
@@ -230,7 +230,7 @@ sound.collision.attenuation = 0.075
 sound.skid.volume = 0.5
 sound.skid.attenuation = 0.1
 sound.skid.maxpitch = 2.25
-sound.skid.minpitch = 0.3
+sound.skid.minpitch = 0.15
 
 ########
 ### Network settings

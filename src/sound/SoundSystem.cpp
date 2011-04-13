@@ -29,7 +29,13 @@ SoundSystem::~SoundSystem() {
 void SoundSystem::physicsCollisionHandler(Event::PhysicsCollision *event){
     collisionSound->playCollision(event->getLocation(),event->getImpulse());
 }
-
+void SoundSystem::playerProgressHandler(Event::PlayerProgressEvent *event){
+    if(event->getLapCount() == event->getTotalLaps()){
+        ALHelpers::playFromSource(fxSources[1]);
+    } else {
+        ALHelpers::playFromSource(fxSources[0]);
+    }
+}
 bool SoundSystem::initialize(){
     systemType=0;
     
@@ -52,8 +58,10 @@ bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerMa
     setupEngines();
     setupCollisions();
     setupGameMusic();
+    setupGameSoundFX();
     
     METHOD_OBSERVER(&SoundSystem::physicsCollisionHandler);
+    METHOD_OBSERVER(&SoundSystem::playerProgressHandler);
     
     return true;
 }
@@ -61,9 +69,40 @@ bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerMa
 void SoundSystem::cleanUp() {
     ALHelpers::destroyBuffer(musicBuffer);
     ALHelpers::destroySource(musicSource);
-    delete engineSound;
-    delete collisionSound;
+    if(systemType==1){
+        delete engineSound;
+        delete collisionSound;
+    }
     ALHelpers::exitOpenAL();
+}
+
+void SoundSystem::setupGameSoundFX()
+{
+    ALHelpers::setupBuffer(fxBuffers, 8);
+    ALHelpers::setupSource(fxSources, 8);
+    
+    //Position of the source sound.
+    ALfloat sourcePosition[] = {0.0, 0.0, 0.0};
+    ALfloat sourceVelocity[] = {0.0, 0.0, 0.0};
+    
+    //Load all the generic soundfx
+    string file[] = {"data/sound/soundfx/lapFinish.wav",
+        "data/sound/soundfx/raceFinish.wav"
+    };
+    
+    for(int i=0;i<2;i++){
+        ALHelpers::loadFileToBuffer(fxBuffers[i],file[i]);
+        
+        //bind a sound source to the buffer data
+        ALHelpers::bindBufferToSource(fxBuffers[i], fxSources[i]);
+
+        alSourcei(fxSources[i], AL_SOURCE_RELATIVE, AL_TRUE);
+        alSourcef(fxSources[i], AL_PITCH, 1.0);
+        alSourcef(fxSources[i], AL_GAIN, 1.0);
+        alSourcei(fxSources[i], AL_LOOPING, AL_FALSE);
+        alSourcefv(fxSources[i], AL_POSITION, sourcePosition);
+        alSourcefv(fxSources[i], AL_VELOCITY, sourceVelocity);
+    }
 }
 
 void SoundSystem::setupCollisions() {
@@ -79,7 +118,7 @@ void SoundSystem::setupGameMusic() {
     string file = "";
     //Load the music into the buffer
     if(systemType==0){
-        file = "data/sound/music/MenuMusicIntro.wav";
+        file = "data/sound/music/MenuMusicLoop.wav";
     } else if(systemType==1){
         file = "data/sound/music/GameMusicIntro.wav";
     }
@@ -104,6 +143,15 @@ void SoundSystem::setupGameMusic() {
     alSourcefv(musicSource, AL_VELOCITY, sourceVelocity);
     
     ALHelpers::playFromSource(musicSource);
+}
+
+void SoundSystem::stopMusic(){
+    alSourcef(musicSource, AL_GAIN, 0.0);
+}
+
+void SoundSystem::playMusic(){
+    ALHelpers::setupListener();
+    alSourcef(musicSource, AL_GAIN, GET_SETTING("sound.music.volume", 0.0));
 }
 
 void SoundSystem::checkPlayerCount(){
@@ -147,11 +195,11 @@ void SoundSystem::doAction() {
     if(systemType==1){
         checkPlayerCount();
         
-        Object::Player *player = playerManager->getPlayer();
+        Object::Player *player = playerManager->getPlayer(); 
         Math::Point positionPoint = player->getPosition(); 
-        Math::Point velocityPoint = player->getPhysicalObject()->getLinearVelocity();
-        Math::Point orientationPoint = player->getPhysicalObject()->getFrontDirection();
-        ALHelpers::updateListener(positionPoint,velocityPoint,orientationPoint);
+        Math::Point velocityPoint = player->getPhysicalObject()->getLinearVelocity(); 
+        Math::Point orientationPoint = player->getPhysicalObject()->getFrontDirection(); 
+        ALHelpers::updateListener(positionPoint,velocityPoint,orientationPoint); 
         
         engineSound->updateEngines(playerManager->getPlayer()->getID());
     }

@@ -92,8 +92,8 @@ void SDLMainLoop::joinGameHandler(Event::JoinGame *event) {
 
 void SDLMainLoop::startingGameHandler(Event::StartingGame *event) {
     if(event->getStatus() == Event::StartingGame::LOADING_MAP) {
+        menuLoop->soundSystem->cleanUp();
         gameLoop->resumeConnect();
-        
         gameLoop->construct();
     }
 }
@@ -154,6 +154,7 @@ void SDLMainLoop::useMenuLoop() {
     
     menuLoop->getGUI()->popScreen("main");
     this->loop = menuLoop;
+    menuLoop->instantiateSound();
 }
 
 bool SDLMainLoop::currentlyUsingMenuLoop() {
