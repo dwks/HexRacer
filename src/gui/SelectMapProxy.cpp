@@ -6,6 +6,7 @@
 
 #include "widget/TextWidget.h"
 #include "widget/ImageWidget.h"
+#include "widget/ListWidget.h"
 
 #include "event/SwitchToScreen.h"
 #include "event/EventSystem.h"
@@ -73,6 +74,8 @@ void SelectMapProxy::useMap(const std::string &file) {
         ->setText(title);
     dynamic_cast<Widget::ImageWidget *>(selectmap->getChild("thumbnail"))
         ->setFilename(thumbnail);
+    dynamic_cast<Widget::ListWidget *>(selectmap->getChild("maplist"))
+        ->setLastSelected(title);
     
     Map::MapSettings::getInstance()->setMapFile(file);
 }

@@ -77,8 +77,8 @@ game.paint.boostinfluence    = 0.75
 game.paint.boostweightfactor = 1.5
 game.paint.boostmin          = 0.5
 game.paint.boostmax          = 1.5
-game.paint.paintingboost     = 0.8
-game.paint.erasingboost      = 0.8
+game.paint.paintingboost     = 0.85
+game.paint.erasingboost      = 0.85
 game.paint.maxboostincrease  = 0.02
 
 game.race.maxlaps = 1000
