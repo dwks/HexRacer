@@ -27,6 +27,19 @@ void SettingsProxy::handleSwitchToScreen(Event::SwitchToScreen *event) {
     if(checkingJoystick) {
         setCheckingForJoystick(false);
     }
+    
+    dynamic_cast<Widget::ListWidget *>(settings->getChild("quality"))
+        ->setLastSelected(qualityString());
+}
+
+const char *SettingsProxy::qualityString() {
+    switch(GET_SETTING("render.quality", 2)) {
+    case 0: return "Very low";
+    case 1: return "Low";
+    case 2: return "Medium";
+    case 3: return "High";
+    }
+    return "";
 }
 
 SettingsProxy::SettingsProxy(Widget::WidgetBase *settings)

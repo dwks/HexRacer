@@ -23,6 +23,7 @@ private:
     ScrollbarWidget *verticalBar, *horizontalBar;
     WidgetRect viewArea;
     double totalHeight, maxWidth;
+    WidgetBase *lastSelected;
 public:
     ListWidget(const std::string &name, bool vertical, bool horizontal,
         const WidgetRect &bounds);
@@ -37,6 +38,9 @@ public:
     virtual void removeAllChildren();
     
     void render(WidgetVisitor &renderer);
+    
+    void setLastSelected(WidgetBase *widget);
+    void setLastSelected(const std::string &text);
     
     virtual void accept(WidgetVisitor &visitor) { visitor.visit(this); }
 protected:

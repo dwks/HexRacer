@@ -141,7 +141,7 @@ void ALHelpers::destroyBuffers(ALuint *buffers, int count) {
     alGetError();
     alDeleteBuffers(count, buffers);
     if(alGetError() != AL_NO_ERROR) {
-        LOG2(AUDIO, INIT, "Error deleting Buffers");
+        //LOG2(AUDIO, INIT, "Error deleting Buffers");
     }
 }
 
@@ -149,7 +149,7 @@ void ALHelpers::destroySources(ALuint *sources, int count) {
     alGetError();
     alDeleteSources(count, sources);
     if(alGetError() != AL_NO_ERROR) {
-        LOG2(AUDIO, INIT, "Error deleting Sources");
+        //LOG2(AUDIO, INIT, "Error deleting Sources");
     }
 }
 void ALHelpers::destroyBuffer(ALuint buffer) {

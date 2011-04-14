@@ -12,7 +12,7 @@
 
 #include "misc/ProgressTracker.h"
 #include "map/MapSettings.h"
-
+#include "sound/SoundSystem.h"
 #include "GameWorld.h"
 
 namespace Project {
@@ -27,7 +27,7 @@ private:
     boost::shared_ptr<Map::MapSettings> mapSettings;
 
 	static Misc::ProgressTracker* loadingProgressTracker;
-    
+
     boost::weak_ptr<GameWorld> gameWorld;
 public:
     virtual void construct();
@@ -37,13 +37,16 @@ public:
     virtual void render();
     virtual void postRender();
     
+    void instantiateSound();
     void setGameWorld(boost::shared_ptr<GameWorld> gameWorld)
         { this->gameWorld = gameWorld; }
     
     boost::shared_ptr<GUI::GUISystem> getGUI() { return gui; }
     boost::shared_ptr<GUIInputManager> getGUIInput()
         { return guiInputManager; }
-
+#ifdef HAVE_OPENAL
+    boost::shared_ptr<Sound::SoundSystem> soundSystem;
+#endif
 	static Misc::ProgressTracker* getLoadingProgressTracker() { return loadingProgressTracker; }
     
     virtual void setProjection(const Point2D &size) {}
