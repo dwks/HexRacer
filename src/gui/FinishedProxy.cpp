@@ -28,46 +28,69 @@ void FinishedProxy::handleRaceFinished(Event::RaceFinished *event) {
     
     Widget::WidgetRect scoreArea(0.1, 0.45, 0.8, 0.4);
     Widget::WidgetRect teamArea(0.1, 0.05, 0.8, 0.35);
+	double height = teamArea.getHeight() / 6.0;
     
     Map::RaceResults results = event->getResults();
-    for(int r = 0; r < results.getRanks() && r < 10; r ++) {
-        int p = results.getPlayerByRank(r);
-        int score = results.getPlayerPoints(p);
-		int bonus = results.getPlayerBonus(p);
-        
-        double height = scoreArea.getHeight() / 11.0;
-        
-        Object::Player *player = playerManager->getPlayer(p);
-        
+    for(int r =-1; r < results.getRanks() && r < 10; r ++) {
+
+
         Widget::WidgetRect textRect(
             scoreArea.getCorner().getX(),
             scoreArea.getCorner().getY() + height * r,
             scoreArea.getWidth(),
             height);
-        
-        ranks->addChild(
-            new Widget::TextWidget(Misc::StreamAsString() << "rank" << r,
-                player->getPlayerName(),
-                Widget::NormalTextLayout::ALIGN_LEFT,
-                textRect,
-                Map::Teams::teamColor(player->getTeamID())));
-        ranks->addChild(
-            new Widget::TextWidget(Misc::StreamAsString() << "time" << r,
-                Misc::StreamAsString() << ((score+bonus) / 1000.0) << " secs",
-				Widget::NormalTextLayout::ALIGN_HCENTRE,
-                textRect));
-		ranks->addChild(
-            new Widget::TextWidget(Misc::StreamAsString() << "bonus" << r,
-                Misc::StreamAsString() << (bonus / 1000.0) << " secs",
-                Widget::NormalTextLayout::ALIGN_RIGHT,
-                textRect));
+
+		if (r == -1) {
+
+			ranks->addChild(
+				new Widget::TextWidget("playerColTitle",
+					"Player",
+					Widget::NormalTextLayout::ALIGN_LEFT,
+					textRect));
+			ranks->addChild(
+				new Widget::TextWidget("timeColTitle",
+					"Time/Bonus",
+					Widget::NormalTextLayout::ALIGN_HCENTRE,
+					textRect));
+			ranks->addChild(
+				new Widget::TextWidget("bonusColTitle",
+					"Final",
+					Widget::NormalTextLayout::ALIGN_RIGHT,
+					textRect));
+
+		}
+		else {
+
+			int p = results.getPlayerByRank(r);
+			int score = results.getPlayerPoints(p);
+			int bonus = results.getPlayerBonus(p);
+	        
+			Object::Player *player = playerManager->getPlayer(p);
+	        
+			ranks->addChild(
+				new Widget::TextWidget(Misc::StreamAsString() << "rank" << r,
+					player->getPlayerName(),
+					Widget::NormalTextLayout::ALIGN_LEFT,
+					textRect,
+					Map::Teams::teamColor(player->getTeamID())));
+			ranks->addChild(
+				new Widget::TextWidget(Misc::StreamAsString() << "time" << r,
+					Misc::StreamAsString() << ((score+bonus) / 1000.0) << '/' << (bonus / 1000.0) << " secs",
+					Widget::NormalTextLayout::ALIGN_HCENTRE,
+					textRect));
+			ranks->addChild(
+				new Widget::TextWidget(Misc::StreamAsString() << "final" << r,
+					Misc::StreamAsString() << '-' << (score / 1000.0) << " secs",
+					Widget::NormalTextLayout::ALIGN_RIGHT,
+					textRect));
+
+		}
+
     }
     
     for(int r = 0; r < results.getTeams() && r < 5; r ++) {
         int team = results.getTeamByRank(r);
         int score = results.getTeamPoints(team);
-        
-        double height = teamArea.getHeight() / 6.0;
         
         Widget::WidgetRect textRect(
             teamArea.getCorner().getX(),
