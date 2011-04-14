@@ -27,6 +27,8 @@ public:
     WorldManager(World *world, PlayerList *playerList);
     ~WorldManager();
     
+    void clearPlayerList();
+    
     World *getWorld() { return world; }
     PlayerList *getPlayerList() { return playerList; }
     

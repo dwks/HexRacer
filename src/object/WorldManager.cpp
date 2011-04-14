@@ -27,6 +27,10 @@ WorldManager::~WorldManager() {
     LOG(WORLD, "Destructing WorldManager");
 }
 
+void WorldManager::clearPlayerList() {
+    //playerList->clear();
+}
+
 void WorldManager::addPlayer(Player *player) {
     if(world->getObject(player->getID())) return;
     

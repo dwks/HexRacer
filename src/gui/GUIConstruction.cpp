@@ -83,7 +83,7 @@ void GUIConstruction::constructMain() {
         Widget::WidgetRect(-0.01, -0.002, 0.01, 0.002)));
     main->addChild(new Widget::ButtonWidget("join", "Join game",
         Widget::WidgetRect(-0.01, 0.4, 0.01, 0.002)));
-    main->addChild(new Widget::ButtonWidget("single", "Single-player",
+    main->addChild(new Widget::ButtonWidget("single", "Practice",
         Widget::WidgetRect(-0.01, 0.8, 0.01, 0.002)));
     
     main->addChild(new Widget::ButtonWidget("settings", "Settings",
