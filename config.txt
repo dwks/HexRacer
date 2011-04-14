@@ -41,8 +41,8 @@ physics.driving.constant.c        = 45.0
 physics.driving.mindownfactor = 0.0
 
 # Turning
-physics.turning.constant = 4.0
-physics.turning.speedfactor = 0.45
+physics.turning.constant = 6.0
+physics.turning.speedfactor = 0.35
 physics.turning.speedthreshhold = 20.0
 physics.turning.fallofffactor = 0.0
 
