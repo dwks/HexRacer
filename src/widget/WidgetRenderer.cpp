@@ -15,6 +15,7 @@
 
 #include "opengl/OpenGL.h"
 #include "opengl/MathWrapper.h"
+#include "sdl/Projector.h"
 
 #include "log/Logger.h"
 
@@ -25,7 +26,8 @@ void WidgetRenderer::begin() {
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();  // save original projection matrix
     glLoadIdentity();
-    gluOrtho2D(0.0, 1.0, 1.0, 0.0);
+    //gluOrtho2D(0.0, 1.0, 1.0, 0.0);
+	SDL::Projector::getInstance()->GUIglOrtho();
     
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();  // save original modelview matrix

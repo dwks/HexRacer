@@ -9,9 +9,11 @@ namespace Render {
 		double z = camera->getFarPlane()*0.99;
 
 		glBegin(GL_TRIANGLES);
+
 		OpenGL::MathWrapper::glVertex( camera->cameraToWorld(-1.0, -4.0, z) );
-		OpenGL::MathWrapper::glVertex( camera->cameraToWorld(-1.0, 4.0, z) );
 		OpenGL::MathWrapper::glVertex( camera->cameraToWorld(4.0, 4.0, z) );
+		OpenGL::MathWrapper::glVertex( camera->cameraToWorld(-1.0, 4.0, z) );
+		
 		glEnd();
 	}
 

@@ -21,11 +21,16 @@ ImageWidget::ImageWidget(const std::string &name, const std::string &filename,
 
 void ImageWidget::setFilename(const std::string &newFilename) {
     this->filename = newFilename;
+
+	int w;
+	int h;
     
-    texture = OpenGL::TextureLoading::loadTexture2D(filename);
+    texture = OpenGL::TextureLoading::loadTexture2D(filename, GL_REPEAT, GL_REPEAT,
+		GL_LINEAR, GL_LINEAR, false, &w, &h);
+
     LOG(WIDGET, "Loading \"" << filename << "\", ID is " << texture);
     
-    dynamic_cast<NormalTextLayout *>(getLayout().get())->setAspectRatio(1.0);
+    dynamic_cast<NormalTextLayout *>(getLayout().get())->setAspectRatio((double)h/(double)w);
     updateLayout();
 }
 

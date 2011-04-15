@@ -15,7 +15,8 @@ public:
 	*/
 	static GLuint loadTexture2D(std::string filename,
 		GLint wrap_s = GL_REPEAT, GLint wrap_t = GL_REPEAT,
-		GLint filter_min = GL_LINEAR_MIPMAP_LINEAR, GLint filter_mag = GL_LINEAR, bool generate_mipmaps = true);
+		GLint filter_min = GL_LINEAR_MIPMAP_LINEAR, GLint filter_mag = GL_LINEAR, bool generate_mipmaps = true,
+		int* width = NULL, int* height = NULL);
 
 	//static void loadSurfaceToTexture(SDLSurface* surface, GLenum target);
 

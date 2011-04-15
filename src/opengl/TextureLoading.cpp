@@ -8,7 +8,8 @@ namespace OpenGL {
 	GLuint TextureLoading::loadTexture2D(std::string filename,
 		GLint wrap_s, GLint wrap_t,
 		GLint filter_min, GLint filter_mag,
-		bool generate_mipmaps) {
+		bool generate_mipmaps,
+		int* width, int* height) {
 
 		SDL_Surface* surface = IMG_Load(filename.c_str());
 		if (surface) {
@@ -37,6 +38,11 @@ namespace OpenGL {
 				image_format,
 				GL_UNSIGNED_BYTE,
 				surface->pixels);
+
+			if (width)
+				*width = surface->w;
+			if (height)
+				*height = surface->h;
 
 			SDL_UnlockSurface(surface);
 

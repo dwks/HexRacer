@@ -44,6 +44,7 @@ public:
 
 	double getAspectRatio() const { return aspect; }
 	void standardGLOrtho(bool y_flip = false) const;
+	void GUIglOrtho() const;
 protected:
     Point2D GLtoScreen(Math::Point point);
     Math::Point getZOfPoint(Point2D point);
