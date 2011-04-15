@@ -124,7 +124,12 @@ void Projector::standardGLOrtho(bool y_flip) const {
 }
 
 void Projector::GUIglOrtho() const {
-	glOrtho(0.5-aspect*0.5, 0.5+aspect*0.5, 1.0, 0.0, -1.0, 1.0);
+    if(aspect > 1.0) {
+        glOrtho(0.5-aspect*0.5, 0.5+aspect*0.5, 1.0, 0.0, -1.0, 1.0);
+    }
+    else {
+        glOrtho(0.0, 1.0, 0.5+1/aspect*0.5, 0.5-1/aspect*0.5, -1.0, 1.0);
+    }
 }
 
 }  // namespace SDL

@@ -10,8 +10,10 @@ namespace Widget {
 class WidgetRenderer : public WidgetVisitor {
 private:
     WidgetPoint screenSize;
+    bool fixAspectRatio;
 public:
-    WidgetRenderer(const WidgetPoint &screenSize) : screenSize(screenSize) {}
+    WidgetRenderer(const WidgetPoint &screenSize, bool fixAspectRatio)
+        : screenSize(screenSize), fixAspectRatio(fixAspectRatio) {}
     
     void begin();
     void end();

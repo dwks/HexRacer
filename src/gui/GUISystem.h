@@ -39,7 +39,7 @@ public:
     
     void construct();
     
-    void render();
+    void render(bool inMenu);
     void handleEvent(Widget::WidgetEvent *event);
     
     /** Pushes one screen onto the screen stack, which will become the current

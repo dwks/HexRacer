@@ -26,8 +26,13 @@ void WidgetRenderer::begin() {
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();  // save original projection matrix
     glLoadIdentity();
-    //gluOrtho2D(0.0, 1.0, 1.0, 0.0);
-	SDL::Projector::getInstance()->GUIglOrtho();
+    
+    /*if(fixAspectRatio) {
+        SDL::Projector::getInstance()->GUIglOrtho();
+    }
+    else*/ {
+        gluOrtho2D(0.0, 1.0, 1.0, 0.0);
+    }
     
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();  // save original modelview matrix

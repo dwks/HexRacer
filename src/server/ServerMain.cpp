@@ -229,6 +229,9 @@ void ServerMain::initBasics() {
     int aiCount = GET_SETTING("server.aicount", 0);
     for(int ai = 0; ai < aiCount; ai ++) {
         World::WorldSetup::getInstance()->addPlayerSettings(ai);
+        World::WorldSetup::PlayerSettings *ps
+            = World::WorldSetup::getInstance()->getPlayerSettings(ai);
+        ps->setName(ps->getName() + " [AI]");
     }
     clientCount += aiCount;
 }

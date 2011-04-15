@@ -31,6 +31,8 @@ public:
     virtual void update();
     virtual void update(const WidgetRect &newBounds);
     
+    boost::shared_ptr<Layout> getNormalLayout() { return normalLayout; }
+    
     /** Pops the profile to use from the profile stack.
     */
     virtual void doTransition(int startDelay);

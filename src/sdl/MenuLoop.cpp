@@ -48,7 +48,7 @@ void MenuLoop::handleEvent(SDL_Event *event) {
 void MenuLoop::render() {
     menuBackground->render();
     
-    gui->render();
+    gui->render(true);
 }
 
 void MenuLoop::postRender() {

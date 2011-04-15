@@ -20,7 +20,7 @@ void ButtonWidgetLayout::update(const WidgetRect &newBounds) {
     
     WidgetRect textBounds = newBounds;
     textBounds.getCorner() += textBounds.getDimensions() * 0.15;
-    textBounds.getDimensions() *= 0.7;
+    textBounds.getDimensions() *= 0.66;
     widget->getText()->updateLayout(textBounds);
     
     this->bounds = newBounds;

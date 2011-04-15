@@ -18,6 +18,7 @@ private:
     double widthFactor, heightFactor;
     unsigned align;
     bool dirty;
+    double lastRenderedRatio;
 public:
     TextWidget(const std::string &name)
         : AbstractWidget(name), dirty(false) {}

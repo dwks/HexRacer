@@ -5,6 +5,7 @@
 #include "WidgetRenderer.h"
 
 #include "render/FontManager.h"
+#include "sdl/Projector.h"
 
 #include "SDL.h"
 #include "SDL_ttf.h"
@@ -24,6 +25,7 @@ TextWidget::TextWidget(const std::string &name, OpenGL::Color color,
     this->align = align;
     
     dirty = true;
+    lastRenderedRatio = 0.0;
     preRender();
 }
 
@@ -69,8 +71,10 @@ void TextWidget::preRender() {
     
 	widthFactor = double(w) / (double) stringTexture.getOriginalWidth();
     heightFactor = double(h) / (double) stringTexture.getOriginalHeight();
-
-	double aspectRatio = (double) stringTexture.getOriginalHeight() / (double) stringTexture.getOriginalWidth();
+    
+	double aspectRatio = (double) stringTexture.getOriginalHeight()
+        / (double) stringTexture.getOriginalWidth();
+    aspectRatio *= SDL::Projector::getInstance()->getAspectRatio();
     
     if (getLayout() == NULL) {
         setLayout(new NormalTextLayout(align, aspectRatio));
@@ -82,12 +86,17 @@ void TextWidget::preRender() {
         if(normal) normal->setAspectRatio(aspectRatio);
         getLayout()->update();
     }
-
     
     dirty = false;
 }
 
 void TextWidget::render() {
+    double ratioNow = SDL::Projector::getInstance()->getAspectRatio();
+    if(lastRenderedRatio != ratioNow) {
+        lastRenderedRatio = ratioNow;
+        dirty = true;
+    }
+    
     if(dirty) {
         preRender();
     }

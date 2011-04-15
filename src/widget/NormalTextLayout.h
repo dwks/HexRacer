@@ -30,6 +30,7 @@ public:
         : align(align), aspectRatio(aspectRatio) {}
     
     void setAspectRatio(double ratio) { aspectRatio = ratio; }
+    double getAspectRatio() const { return aspectRatio; }
     
     virtual void update();
     virtual void update(const WidgetRect &newBounds);

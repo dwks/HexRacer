@@ -113,7 +113,7 @@ void GUIConstruction::constructMain() {
     
     setShortcut(getWidget("main/host"), SDLK_h);
     setShortcut(getWidget("main/join"), SDLK_j);
-    setShortcut(getWidget("main/single"), SDLK_s);
+    setShortcut(getWidget("main/single"), SDLK_p);
     
     setShortcut(getWidget("main/settings"), SDLK_e);
     setShortcut(getWidget("main/about"), SDLK_a);

@@ -12,6 +12,8 @@ class ImageWidget : public AbstractWidget {
 private:
     std::string filename;
     unsigned texture;
+    double properRatio;
+    double lastRenderedRatio;
 public:
     /**
         @param filename Can be empty if there is no image to display yet.

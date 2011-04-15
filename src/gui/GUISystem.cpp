@@ -67,8 +67,8 @@ void GUISystem::construct() {
     METHOD_OBSERVER(&GUISystem::switchToScreenHandler);
 }
 
-void GUISystem::render() {
-    Widget::WidgetRenderer renderer(screenSize);
+void GUISystem::render(bool inMenu) {
+    Widget::WidgetRenderer renderer(screenSize, inMenu);
     
     renderer.begin();
     

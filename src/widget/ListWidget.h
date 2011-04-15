@@ -9,7 +9,9 @@ namespace Project {
 namespace Widget {
 
 class ListEventProxy;
+class ListItemEventProxy;
 class ListScrollbarEventProxy;
+class ListWidgetBoxProxy;
 
 /** A listbox widget which displays a view into a (possibly quite long)
     scrolling list of other widgets.
@@ -17,7 +19,9 @@ class ListScrollbarEventProxy;
 class ListWidget : public CompositeWidget {
 private:
     friend class ListEventProxy;
+    friend class ListItemEventProxy;
     friend class ListScrollbarEventProxy;
+    friend class ListWidgetBoxProxy;
 private:
     BoxWidget *box;
     ScrollbarWidget *verticalBar, *horizontalBar;
@@ -49,6 +53,7 @@ protected:
     BoxWidget *getBox() const { return box; }
     ScrollbarWidget *getVerticalBar() const { return verticalBar; }
     ScrollbarWidget *getHorizontalBar() const { return horizontalBar; }
+    WidgetRect getViewArea() const { return viewArea; }
 };
 
 }  // namespace Widget

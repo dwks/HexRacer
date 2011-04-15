@@ -3,6 +3,7 @@
 
 #include "opengl/OpenGL.h"
 #include "render/WidgetTextureList.h"
+#include "sdl/Projector.h"
 
 #include "log/Logger.h"
 
@@ -38,17 +39,18 @@ void BoxWidget::render() {
     // first draw the corners
     
     double ratio = dimensions.getY() / dimensions.getX();
+    ratio /= SDL::Projector::getInstance()->getAspectRatio();
     
     WidgetPoint cornerSize;
     if(ratio > 1.0) {
         cornerSize = WidgetPoint(
-            dimensions.getX() * 0.3,
-            dimensions.getY() * 0.3 / ratio);
+            dimensions.getX() * 0.35,
+            dimensions.getY() * 0.35 / ratio);
     }
     else {
         cornerSize = WidgetPoint(
-            dimensions.getX() * 0.3 * ratio,
-            dimensions.getY() * 0.3);
+            dimensions.getX() * 0.35 * ratio,
+            dimensions.getY() * 0.35);
     }
     
     if(cornerSize.getX() > 0.05) {

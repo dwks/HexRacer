@@ -1,9 +1,11 @@
 #include "ImageWidget.h"
 #include "NormalTextLayout.h"
+#include "SmoothTransitionLayout.h"
 
 #include "WidgetRenderer.h"
 
 #include "opengl/TextureLoading.h"
+#include "sdl/Projector.h"
 
 #include "log/Logger.h"
 
@@ -17,6 +19,9 @@ ImageWidget::ImageWidget(const std::string &name, const std::string &filename,
     updateLayout(rect);
     
     if(!filename.empty()) setFilename(filename);
+    
+    properRatio = 0.0;
+    lastRenderedRatio = 1.0;
 }
 
 void ImageWidget::setFilename(const std::string &newFilename) {
@@ -30,13 +35,37 @@ void ImageWidget::setFilename(const std::string &newFilename) {
 
     LOG(WIDGET, "Loading \"" << filename << "\", ID is " << texture);
     
-    dynamic_cast<NormalTextLayout *>(getLayout().get())->setAspectRatio((double)h/(double)w);
+    properRatio = static_cast<double>(h) / w;
+    LOG(WIDGET, "properRatio = " << h << "/" << w << " = " << properRatio);
+    lastRenderedRatio = -1.0;
+    dynamic_cast<NormalTextLayout *>(getLayout().get())->setAspectRatio(properRatio);
     updateLayout();
 }
 
 void ImageWidget::render() {
     if(filename.empty()) {
         return;
+    }
+    
+    double ratioNow = SDL::Projector::getInstance()->getAspectRatio();
+    if(lastRenderedRatio != ratioNow) {
+        NormalTextLayout *normal;
+        SmoothTransitionLayout *smooth
+            = dynamic_cast<SmoothTransitionLayout *>(getLayout().get());
+        if(smooth) {
+            normal = dynamic_cast<NormalTextLayout *>(smooth->getNormalLayout().get());
+        }
+        else {
+            normal = dynamic_cast<NormalTextLayout *>(getLayout().get());
+        }
+        
+        if(normal) {
+            LOG(GUI, "Setting aspect ratio to " << properRatio << "*" << ratioNow);
+            normal->setAspectRatio(properRatio * ratioNow);
+            updateLayout();
+        }
+        
+        lastRenderedRatio = ratioNow;
     }
     
     WidgetPoint corner = getBoundingRect().getCorner();

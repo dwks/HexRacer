@@ -8,6 +8,8 @@
 
 #include "FocusManager.h"
 
+#include "log/Logger.h"
+
 namespace Project {
 namespace Widget {
 
@@ -56,6 +58,8 @@ void ListEventProxy::visit(MouseButtonEvent *event) {
     child[0] = widget->getBox();
     child[1] = widget->getHorizontalBar();
     child[2] = widget->getVerticalBar();
+    
+    //LOG(WIDGET, "List button click at " << event->getWhere());
     
     for(std::size_t x = 0; x < sizeof child / sizeof *child; x ++) {
         if(!child[x]) continue;

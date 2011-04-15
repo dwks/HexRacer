@@ -104,7 +104,7 @@ void GameLoop::render() {
 
 	}
 
-    gui->render();
+    gui->render(false);
 }
 
 void GameLoop::postRender() {

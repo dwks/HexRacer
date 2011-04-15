@@ -4,6 +4,7 @@
 #include "ListEventProxy.h"
 #include "ListScrollbarEventProxy.h"
 #include "ListItemEventProxy.h"
+#include "ListWidgetBoxProxy.h"
 
 #include "math/Values.h"
 
@@ -11,6 +12,7 @@
 
 #include "opengl/OpenGL.h"
 #include "widget/WidgetRenderer.h"
+#include "sdl/Projector.h"
 
 namespace Project {
 namespace Widget {
@@ -67,12 +69,19 @@ ListWidget::ListWidget(const std::string &name, bool vertical, bool horizontal,
     
     box = new BoxWidget("list-box", "corners/in/normal");
     box->setLayout(new AbsoluteLayout(boxBounds));
+    box->addEventProxy(new ListWidgetBoxProxy(this));
     
     viewArea = boxBounds;
-    viewArea.getCorner().addX(viewArea.getWidth() * 0.1);
-    viewArea.getCorner().addY(viewArea.getHeight() * 0.15);
-    viewArea.getDimensions().addX(-viewArea.getWidth() * 0.1 * 2);
-    viewArea.getDimensions().addY(-viewArea.getHeight() * 0.15 * 2);
+    //double addW = viewArea.getWidth() * 0.05;
+    //double addH = viewArea.getHeight() * 0.15;
+    //double size = Math::maximum(viewArea.getWidth(), viewArea.getHeight());
+    double addW = 0.03;
+    double addH = 0.04;
+    
+    viewArea.getCorner().addX(addW);
+    viewArea.getCorner().addY(addH);
+    viewArea.getDimensions().addX(-addW * 2);
+    viewArea.getDimensions().addY(-addH * 2);
     
     if(verticalBar) {
         verticalBar->setEverything(
