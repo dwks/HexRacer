@@ -363,8 +363,7 @@ void ServerMain::sendWorldToPlayers() {
             client, location, direction);
         if(settings) {
             player->setPlayerName(settings->getName());
-            player->setTeamID(
-                static_cast<OpenGL::Color::ColorPreset>(settings->getColor()));
+            player->setTeamID(settings->getColor());
         }
         
         player->setPathTracker(new Map::PathTracker(
