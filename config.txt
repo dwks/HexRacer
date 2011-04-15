@@ -186,6 +186,11 @@ hud.bonusmessages.minentryheight = 12
 hud.bonusmessages.maxentryheight = 40
 hud.bonusmessages.appearduration = 4000
 
+hud.raceclock.enable = 1
+hud.raceclock.drawheight = 0.05
+hud.raceclock.drawwidth = 400
+hud.raceclock.verticalpadding = 0.05
+
 ########
 ### Camera settings
 camera.step = 0.1

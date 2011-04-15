@@ -810,6 +810,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\hud\RaceClock.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\event\RaceFinished.cpp"
 				>
 			</File>
@@ -2053,6 +2057,10 @@
 			</File>
 			<File
 				RelativePath=".\src\misc\ProgressTracker.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\hud\RaceClock.h"
 				>
 			</File>
 			<File

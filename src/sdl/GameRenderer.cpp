@@ -8,6 +8,8 @@
 #include "opengl/MathWrapper.h"
 #include "math/Geometry.h"
 #include "math/BoundingBox3D.h"
+#include "timing/AccelControl.h"
+#include "world/TimeElapsed.h"
 
 #include "map/MapOptions.h"
 
@@ -85,6 +87,7 @@ void GameRenderer::construct(OpenGL::Camera *camera)
 	placingList = boost::shared_ptr<HUD::PlacingList>(new HUD::PlacingList());
 	playerPlacingText = boost::shared_ptr<HUD::PlayerPlacingText>(new HUD::PlayerPlacingText());
 	bonusMessages = boost::shared_ptr<HUD::BonusMessages>(new HUD::BonusMessages());
+	raceClock = boost::shared_ptr<HUD::RaceClock>(new HUD::RaceClock());
     
     renderer->setCubeMap(map->getCubeMap());
     
@@ -347,6 +350,28 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 		bonusMessages->setWorldManager(worldManager);
 		bonusMessages->setPlayerID(player->getID());
 		bonusMessages->render();
+    }
+
+	//-Race Clock ----------------------------------------------------------------------------
+    if (GET_SETTING("hud.raceclock.enable", true)) {
+
+        int draw_height = viewHeight*GET_SETTING("hud.raceclock.drawheight", 0.5);
+		int draw_width = GET_SETTING("hud.raceclock.drawwidth", 400);
+
+		hudRenderer->setupViewport(
+			HUD::HUDRenderer::ALIGN_MIN,
+			HUD::HUDRenderer::ALIGN_MAX,
+			draw_width,
+			draw_height,
+			50,
+			viewHeight*GET_SETTING("hud.raceclock.verticalpadding", 0.1));
+	
+		raceClock->setWidth(draw_width);
+		raceClock->setHeight(draw_height);
+		raceClock->setSeconds((World::TimeElapsed::getInstance().getGameTime()
+			-Timing::AccelControl::getInstance()->getPauseSkip())/1000);
+		raceClock->render();
+
     }
 
 	
