@@ -1,5 +1,6 @@
 #include "WorldSetup.h"
 #include "object/Player.h"
+#include "map/Teams.h"
 
 namespace Project {
 namespace World {
@@ -11,7 +12,7 @@ void WorldSetup::addPlayerSettings(int id) {
     playerSettings[id].setID(id);
     
     playerSettings[id].setName(Object::Player::getDefaultPlayerName(id));
-    playerSettings[id].setColor((id / 2) % 16);
+	playerSettings[id].setColor((id / 2) % Map::Teams::MAX_TEAMS);
 }
 
 void WorldSetup::addClientSettings(int id) {

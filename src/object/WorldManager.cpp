@@ -5,6 +5,8 @@
 
 #include "physics/Converter.h"
 #include "map/PathTracker.h"
+#include "bonus/GlobalBonusManager.h"
+#include "settings/SettingsManager.h"
 
 namespace Project {
 namespace Object {
@@ -50,6 +52,10 @@ void WorldManager::initForClient(int id, const Math::Point &location, const Math
     player->setPlayerName("The Lone Ranger");
     player->setTeamID(0);
     addPlayer(player);
+	/*
+	if (!Bonus::GlobalBonusManager::getInstance())
+		new Bonus::GlobalBonusManager();
+	*/
 }
 
 }  // namespace Object

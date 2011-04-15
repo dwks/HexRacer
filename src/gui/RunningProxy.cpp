@@ -12,6 +12,8 @@
 #include "log/Logger.h"
 #include "misc/StreamAsString.h"
 
+#include "settings/SettingsManager.h"
+
 #include "SDL_keysym.h"
 
 namespace Project {
@@ -20,15 +22,22 @@ namespace GUI {
 void RunningProxy::playerProgressHandler(Event::PlayerProgressEvent *event) {
     Widget::TextWidget *lapCount
         = dynamic_cast<Widget::TextWidget *>(running->getChild("lapcount"));
-    
-	if (event->getLapCount()+1 < event->getTotalLaps()) {
-		lapCount->setText(Misc::StreamAsString()
-			<< "Lap " << (event->getLapCount()+1)
-			<< '/' << (event->getTotalLaps())
-			);
+
+	if (GET_SETTING("internal.practicemode", false)) {
+		lapCount->setText(Misc::StreamAsString() << "Lap " << (event->getLapCount()+1));
 	}
-	else
-		lapCount->setText("Final Lap");
+	else {
+    
+		if (event->getLapCount()+1 < event->getTotalLaps()) {
+			lapCount->setText(Misc::StreamAsString()
+				<< "Lap " << (event->getLapCount()+1)
+				<< '/' << (event->getTotalLaps())
+				);
+		}
+		else
+			lapCount->setText("Final Lap");
+
+	}
 }
 
 RunningProxy::RunningProxy(Widget::WidgetBase *running) : running(running) {

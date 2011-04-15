@@ -50,7 +50,7 @@ void AIManager::createAIs(int startAt, int count) {
         Object::Player *player = new Object::Player(ai, location, direction);
         if(settings) {
             player->setPlayerName(settings->getName());
-            player->setTeamID(settings->getID());
+			player->setTeamID(settings->getColor());
         }
         
         player->setPathTracker(new Map::PathTracker(*pathManager));

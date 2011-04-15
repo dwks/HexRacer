@@ -78,7 +78,7 @@ namespace HUD {
 			even_row = !even_row;
 		}
 
-		
+		glEnable(GL_TEXTURE_2D);
 		
 	}
 
