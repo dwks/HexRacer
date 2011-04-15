@@ -95,7 +95,7 @@ void GUIConstruction::constructMain() {
     
     static const int LOGO_DISPLAY = 500;
     smoothButtonUntil("main/logo", LOGO_DISPLAY, 800,
-        Widget::WidgetRect(0.0, 0.05, 1.0, 0.5));
+        Widget::WidgetRect(0.15, 0.04, 0.7, 0.5));
     
     smoothButtonUntil("main/host", LOGO_DISPLAY + 0, 500,
         Widget::WidgetRect(0.03, 0.65, 0.42, 0.08));

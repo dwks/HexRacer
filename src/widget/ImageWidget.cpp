@@ -22,11 +22,15 @@ ImageWidget::ImageWidget(const std::string &name, const std::string &filename,
     
     properRatio = 0.0;
     lastRenderedRatio = 1.0;
+    
+    //LOG(GUI, "Creating ImageWidget \"" << filename << "\"");
 }
 
 void ImageWidget::setFilename(const std::string &newFilename) {
+    if(newFilename == "") return;
+    
     this->filename = newFilename;
-
+    
 	int w;
 	int h;
     
@@ -36,9 +40,11 @@ void ImageWidget::setFilename(const std::string &newFilename) {
     LOG(WIDGET, "Loading \"" << filename << "\", ID is " << texture);
     
     properRatio = static_cast<double>(h) / w;
-    LOG(WIDGET, "properRatio = " << h << "/" << w << " = " << properRatio);
+    //LOG(WIDGET, "properRatio = " << h << "/" << w << " = " << properRatio);
     lastRenderedRatio = -1.0;
-    dynamic_cast<NormalTextLayout *>(getLayout().get())->setAspectRatio(properRatio);
+    
+    double ratioNow = SDL::Projector::getInstance()->getAspectRatio();
+    dynamic_cast<NormalTextLayout *>(getLayout().get())->setAspectRatio(properRatio * ratioNow);
     updateLayout();
 }
 
@@ -59,8 +65,8 @@ void ImageWidget::render() {
             normal = dynamic_cast<NormalTextLayout *>(getLayout().get());
         }
         
-        if(normal) {
-            LOG(GUI, "Setting aspect ratio to " << properRatio << "*" << ratioNow);
+        if(properRatio && normal) {
+            //LOG(GUI, "Setting aspect ratio to " << properRatio << "*" << ratioNow);
             normal->setAspectRatio(properRatio * ratioNow);
             updateLayout();
         }
