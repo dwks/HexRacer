@@ -6,6 +6,7 @@
 #include "event/EventSystem.h"
 
 #include "map/MapSettings.h"
+#include "settings/SettingsManager.h"
 
 #include "log/Logger.h"
 
@@ -25,7 +26,7 @@ void SinglePlayerProxy::visit(Widget::WidgetActivateEvent *event) {
         std::string map = Map::MapSettings::getInstance()->getMapFile();
         if(map != "") {
             LOG(GUI, "Using map \"" << map << "\"");
-            
+
             Map::MapSettings::getInstance()->setGameType("singleplayer");
             EMIT_EVENT(new Event::SwitchToScreen("loading"));
         }

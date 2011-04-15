@@ -69,7 +69,8 @@ void PathingUpdater::update() {
                         << player->getPathTracker()->getNumLaps());
 
 				if (!player->getPathTracker()->getFinished()
-					&& player->getPathTracker()->getNumLaps() >= raceManager->getNumLapsToWin()) {
+					&& player->getPathTracker()->getNumLaps() >= raceManager->getNumLapsToWin()
+					&& !GET_SETTING("internal.practicemode", false) ) {
                     
                     player->getPathTracker()->setFinished(true);
                     

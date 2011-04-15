@@ -7,6 +7,9 @@
 #include "event/QuitEvent.h"
 #include "event/EventSystem.h"
 
+#include "settings/SettingsManager.h"
+#include "config.h"
+
 #include "log/Logger.h"
 
 namespace Project {

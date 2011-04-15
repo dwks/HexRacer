@@ -4,6 +4,8 @@
 #include "event/EventSystem.h"
 #include "event/RaceFinished.h"
 
+#include "settings/SettingsManager.h"
+
 #include "misc/Sleeper.h"
 #include "log/Logger.h"
 
@@ -15,6 +17,8 @@ void BasicWorld::constructBeforeConnect() {
         new Physics::PhysicsWorld());
     suspension = boost::shared_ptr<Physics::Suspension>(
         new Physics::Suspension());
+
+	//Settings::SettingsManager::getInstance()->load(CONFIG_FILE);
 }
 
 void BasicWorld::constructDuringConnect(Object::World *world,
@@ -24,6 +28,8 @@ void BasicWorld::constructDuringConnect(Object::World *world,
         new Object::WorldManager(world, playerList));
     playerManager = boost::shared_ptr<PlayerManager>(
         new PlayerManager(id, worldManager.get()));
+
+	Settings::SettingsManager::getInstance()->set("internal.practicemode", "0");
 }
 
 void BasicWorld::constructSkippingConnect() {
@@ -31,6 +37,8 @@ void BasicWorld::constructSkippingConnect() {
         new Object::WorldManager());
     playerManager = boost::shared_ptr<PlayerManager>(
         new PlayerManager(0, worldManager.get()));
+
+	Settings::SettingsManager::getInstance()->set("internal.practicemode", "1");
 }
 
 void BasicWorld::constructAfterConnect(Map::HRMap *map) {
