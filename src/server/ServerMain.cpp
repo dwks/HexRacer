@@ -315,7 +315,7 @@ void ServerMain::initMap() {
     
     basicWorld = boost::shared_ptr<World::BasicWorld>(new World::BasicWorld());
     basicWorld->constructBeforeConnect();
-    basicWorld->constructSkippingConnect();
+    basicWorld->constructServerSkippingConnect();
 
 	paintManager = boost::shared_ptr<Paint::PaintManager>(
         new Paint::PaintManager(false));

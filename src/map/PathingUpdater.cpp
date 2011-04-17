@@ -67,6 +67,7 @@ void PathingUpdater::update() {
                     LOG(WORLD, "Player: " << player->getID()
                         << " has finished lap "
                         << player->getPathTracker()->getNumLaps());
+                    LOG(WORLD, "internal? " << GET_SETTING("internal.practicemode", false));
 
 				if (!player->getPathTracker()->getFinished()
 					&& player->getPathTracker()->getNumLaps() >= raceManager->getNumLapsToWin()

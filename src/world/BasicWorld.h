@@ -36,6 +36,7 @@ public:
     void constructDuringConnect(Object::World *world,
         Object::PlayerList *playerList, int id);
     void constructSkippingConnect();
+    void constructServerSkippingConnect();
     void constructAfterConnect(Map::HRMap *map);
     
     void doPhysics();

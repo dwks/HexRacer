@@ -29,6 +29,7 @@ void BasicWorld::constructDuringConnect(Object::World *world,
     playerManager = boost::shared_ptr<PlayerManager>(
         new PlayerManager(id, worldManager.get()));
 
+    // client in networked mode (not practice mode)
 	Settings::SettingsManager::getInstance()->set("internal.practicemode", "0");
 }
 
@@ -37,8 +38,19 @@ void BasicWorld::constructSkippingConnect() {
         new Object::WorldManager());
     playerManager = boost::shared_ptr<PlayerManager>(
         new PlayerManager(0, worldManager.get()));
-
+    
+    // client in practice mode
 	Settings::SettingsManager::getInstance()->set("internal.practicemode", "1");
+}
+
+void BasicWorld::constructServerSkippingConnect() {
+    worldManager = boost::shared_ptr<Object::WorldManager>(
+        new Object::WorldManager());
+    playerManager = boost::shared_ptr<PlayerManager>(
+        new PlayerManager(0, worldManager.get()));
+
+    // server is never in practice mode
+    Settings::SettingsManager::getInstance()->set("internal.practicemode", "0");
 }
 
 void BasicWorld::constructAfterConnect(Map::HRMap *map) {

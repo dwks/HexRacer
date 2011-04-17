@@ -87,7 +87,8 @@ bool RaceManager::getRaceFinished(Object::WorldManager* world) const {
 		finished = finished && (player->getRaceFinishIgnore() || player->getPathTracker()->getFinished());
         
         if(f && !finished) {
-            std::cout << "not finished due to player " << player->getID() << "\n";
+            std::cout << "not finished due to player " << player->getID() << ": "
+                << player->getPathTracker()->getLapProgress() << "\n";
         }
 	}
 
