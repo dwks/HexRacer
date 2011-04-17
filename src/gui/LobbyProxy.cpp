@@ -94,6 +94,17 @@ void LobbyProxy::handleReplaceWorldSetup(Event::ReplaceWorldSetup *event) {
             playerList->addChild(item);
         }
     }
+    
+    // set team counts
+    for(int i = 0; i < Map::Teams::MAX_TEAMS; i++) {
+        Widget::TextWidget *widget = dynamic_cast<Widget::TextWidget *>(
+            lobby->getChild(Misc::StreamAsString() << "team-" << i << "-total"));
+        
+        LOG(GUI, "Players on team " << i << ": " << worldSetup->getPlayersOnTeam(i));
+        
+        widget->setText(Misc::StreamAsString()
+            << worldSetup->getPlayersOnTeam(i));
+    }
 }
 
 LobbyProxy::LobbyProxy(Widget::WidgetBase *lobby) : lobby(lobby) {
@@ -144,6 +155,25 @@ void LobbyProxy::visit(Widget::WidgetActivateEvent *event) {
         }
 #endif
     }
+    else if(name.substr(0, 5) == "team-") {
+        LOG(GUI, "Choosing " << name);
+        
+        std::istringstream sstream(name.substr(5));
+        int col;
+        sstream >> col;
+        
+        int id = worldSetup->getClientID();
+        World::WorldSetup::PlayerSettings *settings
+            = worldSetup->getPlayerSettings(id);
+        if(settings) {
+            settings->setColor(col);
+            
+            EMIT_EVENT(new Event::SetupPlayerSettings(*settings));
+        }
+        else {
+            LOG2(GUI, WARNING, "Can't set colour");
+        }
+    }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");
     }
@@ -187,7 +217,7 @@ void LobbyProxy::visit(Widget::WidgetSelectedEvent *event) {
     if(name == "playerlist") {
         // NYI
     }
-    else if(name == "colourlist") {
+    /*else if(name == "colourlist") {
         LOG(GUI, "Choosing colour " << select);
         
         std::istringstream sstream(event->getSelected()->getName());
@@ -205,7 +235,7 @@ void LobbyProxy::visit(Widget::WidgetSelectedEvent *event) {
         else {
             LOG2(GUI, WARNING, "Can't set colour");
         }
-    }
+    }*/
     else {
         LOG2(GUI, WARNING, "No action for modifying \"" << name << "\"");
     }

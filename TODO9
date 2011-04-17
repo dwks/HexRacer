@@ -1,5 +1,5 @@
 - redesign team selection screen (lobby)
-- add client timer
+- fix client timer to use game clock
 - sounds for GUI, ...
 
 - message after you hit "ready"?
@@ -7,7 +7,7 @@
 - chat box not cleared, ready button not reset
 - countdown: 3,2,1, start!
 - select joystick button at lobby
-- aspect ratio, controls button from pause menu
+- controls button from pause menu
 
 - make text not overlap on finish screen
 
@@ -15,4 +15,8 @@
 
 - option: enable/disable bonus
 - option: paint mode (normal, permanent, overwrite)
+
+- fix aspect ratio of logo
+- fix "Server:" message (displays current IP on other clients)
+- auto-scroll chat textbox
 

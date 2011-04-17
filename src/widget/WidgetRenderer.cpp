@@ -10,6 +10,7 @@
 #include "ImageWidget.h"
 #include "ProgressBarWidget.h"
 #include "CheckWidget.h"
+#include "ColourButtonWidget.h"
 
 #include "SmoothTransitionLayout.h"
 
@@ -118,6 +119,10 @@ void WidgetRenderer::visit(ProgressBarWidget *widget) {
 }
 
 void WidgetRenderer::visit(CheckWidget *widget) {
+    widget->render(*this);
+}
+
+void WidgetRenderer::visit(ColourButtonWidget *widget) {
     widget->render(*this);
 }
 

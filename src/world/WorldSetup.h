@@ -130,6 +130,8 @@ public:
     
     void setClientID(int id) { clientID = id; }
     
+    int getPlayersOnTeam(int team) const;
+    
     void getAllPlayerIDs(std::vector<int> &list);
 };
 

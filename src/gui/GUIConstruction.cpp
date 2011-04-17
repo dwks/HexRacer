@@ -9,6 +9,7 @@
 #include "widget/EditWidget.h"
 #include "widget/CheckWidget.h"
 #include "widget/ListWidget.h"
+#include "widget/ColourButtonWidget.h"
 
 #include "widget/CentreUponChangeLayout.h"
 #include "widget/SmoothTransitionLayout.h"
@@ -285,40 +286,56 @@ void GUIConstruction::constructLobby() {
         Misc::StreamAsString() << "Server: " << ip, 0,
         Widget::WidgetRect(0.05, 0.02, 0.9, 0.07)));
     
-    lobby->addChild(new Widget::TextWidget("player-label",
-        "Player", 0,
-        Widget::WidgetRect(0.05, 0.1, 0.43, 0.06)));
-    lobby->addChild(new Widget::EditWidget("playername",
-        Misc::StreamAsString() << "Anonymous",
-        Widget::WidgetRect(0.05, 0.18, 0.43, 0.07)));
-    
-    Widget::ListWidget *colourList = new Widget::ListWidget("colourlist",
-        true, false,
-        Widget::WidgetRect(0.05, 0.26, 0.45, 0.2));
-    lobby->addChild(colourList);
+    lobby->addChild(new Widget::TextWidget("all-teams-label",
+        "Teams (choose one)", 0,
+        Widget::WidgetRect(0.52, 0.1, 0.45, 0.1)));
     
 	for (int i = 0; i < Map::Teams::MAX_TEAMS; i++) {
-		addListItem(colourList, Misc::StreamAsString() << i, Map::Teams::teamName(i), Map::Teams::teamColor(i));
+        const double COLOUR_WIDTH = 0.45 / Map::Teams::MAX_TEAMS;
+        const double COLOUR_HEIGHT = 0.08;
+        double x = 0.52 + COLOUR_WIDTH*i;
+        
+        Widget::WidgetBase *button = new Widget::ColourButtonWidget(
+            Misc::StreamAsString() << "team-" << i,
+            Map::Teams::teamColor(i), "",
+            Widget::WidgetRect(x, 0.20, COLOUR_WIDTH, COLOUR_HEIGHT));
+        lobby->addChild(button);
+        
+        Widget::ScrollbarWidget *scroll = new Widget::ScrollbarWidget(
+            Misc::StreamAsString() << "team-" << i << "-ais", true,
+            Widget::WidgetRect(x, 0.20 + COLOUR_HEIGHT, COLOUR_WIDTH, 0.17));
+        scroll->setEverything(0.0, 1.0, 1.0);
+        lobby->addChild(scroll);
+        
+        Widget::WidgetRect totalRect = scroll->getSlider()->getBoundingRect();
+        totalRect.getCorner() += Widget::WidgetPoint(0.005, 0.005);
+        totalRect.getDimensions() -= Widget::WidgetPoint(2*0.005, 2*0.005);
+        
+        Widget::TextWidget *total = new Widget::TextWidget(
+            Misc::StreamAsString() << "team-" << i << "-total",
+            "0", 0, totalRect);
+        lobby->addChild(total);
 	}
-	/*
-    addListItem(colourList, "0", "red", OpenGL::Color::RED);
-    addListItem(colourList, "1", "green", OpenGL::Color::GREEN);
-    addListItem(colourList, "2", "blue", OpenGL::Color::BLUE);
-    addListItem(colourList, "3", "yellow", OpenGL::Color::YELLOW);
-    addListItem(colourList, "4", "purple", OpenGL::Color::PURPLE);
-    addListItem(colourList, "5", "pink", OpenGL::Color::PINK);
-    addListItem(colourList, "6", "teal", OpenGL::Color::TEAL);
-    addListItem(colourList, "7", "indigo", OpenGL::Color::INDIGO);
-	*/
+    
+    lobby->addChild(new Widget::TextWidget("all-players-label",
+        "Players", 0,
+        Widget::WidgetRect(0.05, 0.1, 0.43, 0.06)));
     
     lobby->addChild(new Widget::ListWidget("playerlist", true, false,
-        Widget::WidgetRect(0.52, 0.1, 0.43, 0.36)));
+        Widget::WidgetRect(0.05, 0.2, 0.43, 0.26)));
+    
+    lobby->addChild(new Widget::TextWidget("player-label",
+        "Name:", 0,
+        Widget::WidgetRect(0.052, 0.46, 0.1, 0.06)));
+    lobby->addChild(new Widget::EditWidget("playername",
+        Misc::StreamAsString() << "Anonymous",
+        Widget::WidgetRect(0.17, 0.46, 0.25, 0.06)));
     
     lobby->addChild(new Widget::ListWidget("chatlist", true, false,
         Widget::WidgetRect(0.05, 0.55, 0.9, 0.25)));
     lobby->addChild(new Widget::TextWidget("chat-label",
         "Chat:", Widget::NormalTextLayout::ALIGN_RIGHT,
-        Widget::WidgetRect(0.05, 0.8, 0.1, 0.06)));
+        Widget::WidgetRect(0.052, 0.8, 0.1, 0.06)));
     lobby->addChild(new Widget::EditWidget("chat", "",
         Widget::WidgetRect(0.17, 0.8, 0.7, 0.06)));
     
@@ -334,7 +351,10 @@ void GUIConstruction::constructLobby() {
     getWidget("lobby/playername")->addEventProxy(proxy);
     getWidget("lobby/playerlist")->addEventProxy(proxy);
     
-    getWidget("lobby/colourlist")->addEventProxy(proxy);
+    for (int i = 0; i < Map::Teams::MAX_TEAMS; i++) {
+        getWidget(Misc::StreamAsString() << "lobby/team-" << i)
+            ->addEventProxy(proxy);
+    }
     
     getWidget("lobby/chatlist")->addEventProxy(proxy);
     getWidget("lobby/chat")->addEventProxy(proxy);

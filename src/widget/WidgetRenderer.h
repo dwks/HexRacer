@@ -28,6 +28,7 @@ public:
     virtual void visit(ImageWidget *widget);
 	virtual void visit(ProgressBarWidget *widget);
     virtual void visit(CheckWidget *widget);
+    virtual void visit(ColourButtonWidget *widget);
 public:
     static void glVertex(const WidgetPoint &point);
 };

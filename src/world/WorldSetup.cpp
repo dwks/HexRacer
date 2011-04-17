@@ -57,6 +57,20 @@ bool WorldSetup::everyoneFullyLoaded() const {
     return true;
 }
 
+int WorldSetup::getPlayersOnTeam(int team) const {
+    int count = 0;
+    
+    for(PlayerSettingsList::const_iterator i = playerSettings.begin();
+        i != playerSettings.end(); ++ i) {
+        
+        if((*i).second.getColor() == team) {
+            count ++;
+        }
+    }
+    
+    return count;
+}
+
 void WorldSetup::getAllPlayerIDs(std::vector<int> &list) {
     list.clear();
     
