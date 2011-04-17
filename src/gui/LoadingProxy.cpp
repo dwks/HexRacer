@@ -37,6 +37,12 @@ void LoadingProxy::initialize(Event::SwitchToScreen *event) {
         }
     }
     
+    Widget::TextWidget *text = dynamic_cast<Widget::TextWidget *>(
+        loading->getChild("loading"));
+    if(text) {
+        text->setText("Loading ...");
+    }
+    
     lastRepaint = NULL;
 }
 

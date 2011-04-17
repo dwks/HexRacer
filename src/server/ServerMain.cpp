@@ -160,8 +160,27 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         Event::SetupClientSettings *setupClientSettings
             = dynamic_cast<Event::SetupClientSettings *>(event);
         
+        int id = setupClientSettings->getClientSettings().getID();
+        World::WorldSetup::ClientSettings *old
+            = World::WorldSetup::getInstance()->getClientSettings(id);
+        World::WorldSetup::ClientSettings now
+            = setupClientSettings->getClientSettings();
+        
+        bool wasReady = false;
+        if(old && old->isReadyToStart()) wasReady = true;
+        
         World::WorldSetup::getInstance()->replaceClientSettings(
             setupClientSettings->getClientSettings());
+        
+        if(wasReady != now.isReadyToStart()) {
+            std::string name = World::WorldSetup::getInstance()
+                ->getPlayerSettings(id)->getName();
+            
+            EMIT_EVENT(new Event::SetupChat(-1, "", Misc::StreamAsString()
+                << name << (now.isReadyToStart() ? " is " : " is NOT ")
+                << "ready to start!"));
+        }
+        
         break;
     }
     case Event::EventType::GENERAL_WORLD_SETUP: {

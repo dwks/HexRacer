@@ -7,6 +7,8 @@
 #include "settings/SettingsManager.h"
 #include "config.h"
 
+#include "misc/Sleeper.h"
+
 namespace Project {
 namespace Map {
 
@@ -29,6 +31,8 @@ RaceManager::RaceManager(HRMap *_map)
 	}
 
 	killPlaneY += MAP_KILL_PLANE_Y_GAP;
+    
+    whenToFinish = 0;
 
 }
 
@@ -87,8 +91,15 @@ bool RaceManager::getRaceFinished(Object::WorldManager* world) const {
         
 		finished = finished && (player->getRaceFinishIgnore() || player->getPathTracker()->getFinished());
 	}
-
-	return finished;
+    
+    if(finished && whenToFinish == 0) {
+        whenToFinish = Misc::Sleeper::getTimeMilliseconds() + 3000;
+    }
+    if(finished && Misc::Sleeper::getTimeMilliseconds() >= whenToFinish) {
+        return true;
+    }
+    
+	return false;
 
 }
 

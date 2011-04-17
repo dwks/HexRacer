@@ -34,8 +34,12 @@ void RunningProxy::playerProgressHandler(Event::PlayerProgressEvent *event) {
 				<< '/' << (event->getTotalLaps())
 				);
 		}
-		else
+		else if(event->getLapCount()+1 == event->getTotalLaps()) {
 			lapCount->setText("Final Lap");
+        }
+        else {
+            lapCount->setText("Finished!");
+        }
 
 	}
 }

@@ -16,6 +16,7 @@
 
 #include "map/MapSettings.h"
 #include "map/Teams.h"
+#include "object/Player.h"
 
 #include "settings/SettingsManager.h"
 #include "misc/StreamAsString.h"
@@ -34,12 +35,23 @@ void LobbyProxy::handleSetupChat(Event::SetupChat *event) {
     std::string name = event->getName();
     std::string message = event->getMessage();
     
-    Widget::TextWidget *item = new Widget::TextWidget(
-        Misc::StreamAsString() << "chat" << ++chatCount,
-        Misc::StreamAsString() << name << ": " << message,
-        Widget::NormalTextLayout::ALIGN_LEFT,
-        Widget::WidgetRect(0.0, 0.0, 0.8, 0.03),
-		Map::Teams::teamColor(worldSetup->getPlayerSettings(id)->getColor()));
+    Widget::TextWidget *item;
+    
+    if(event->getName() == "") {
+        item = new Widget::TextWidget(
+            Misc::StreamAsString() << "chat" << ++chatCount,
+            message,
+            Widget::NormalTextLayout::ALIGN_LEFT,
+            Widget::WidgetRect(0.0, 0.0, 0.8, 0.03));
+    }
+    else {
+        item = new Widget::TextWidget(
+            Misc::StreamAsString() << "chat" << ++chatCount,
+            Misc::StreamAsString() << name << ": " << message,
+            Widget::NormalTextLayout::ALIGN_LEFT,
+            Widget::WidgetRect(0.0, 0.0, 0.8, 0.03),
+            Map::Teams::teamColor(worldSetup->getPlayerSettings(id)->getColor()));
+    }
     
     Widget::ListWidget *chat = dynamic_cast<Widget::ListWidget *>(
         this->lobby->getChild("chatlist"));
@@ -108,12 +120,23 @@ void LobbyProxy::handleReplaceWorldSetup(Event::ReplaceWorldSetup *event) {
     }
 }
 
+void LobbyProxy::handleSwitchToScreen(Event::SwitchToScreen *event) {
+    if(event->getScreen() == "lobby") {
+        Widget::ButtonWidget *start =
+            dynamic_cast<Widget::ButtonWidget *>(lobby->getChild("start"));
+        if(start) {
+            start->getText()->setText("Ready to start!");
+        }
+    }
+}
+
 LobbyProxy::LobbyProxy(Widget::WidgetBase *lobby) : lobby(lobby) {
     worldSetup = World::WorldSetup::getInstance();
     
     METHOD_OBSERVER(&LobbyProxy::handleSetupChat);
     METHOD_OBSERVER(&LobbyProxy::handleSetupPlayerSettings);
     METHOD_OBSERVER(&LobbyProxy::handleReplaceWorldSetup);
+    METHOD_OBSERVER(&LobbyProxy::handleSwitchToScreen);
 }
 
 void LobbyProxy::visit(Widget::WidgetActivateEvent *event) {
@@ -189,7 +212,14 @@ void LobbyProxy::visit(Widget::WidgetModifiedEvent *event) {
         World::WorldSetup::PlayerSettings *settings
             = worldSetup->getPlayerSettings(id);
         if(settings) {
-            settings->setName(data);
+            if(data.length() == 0) {
+                settings->setName(Object::Player::getDefaultPlayerName(id));
+                event->getWidget()->setData(settings->getName());
+                event->getWidget()->saveOldText();
+            }
+            else {
+                settings->setName(data);
+            }
             
             EMIT_EVENT(new Event::SetupPlayerSettings(*settings));
         }

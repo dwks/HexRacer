@@ -16,6 +16,7 @@ private:
 	double killPlaneY;
 	int numLaps;
 	std::vector<Object::Player*> playerRankings;
+    mutable unsigned long whenToFinish;
 public:
     RaceManager(HRMap *_map);
     

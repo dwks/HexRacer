@@ -8,6 +8,7 @@
 #include "event/SetupChat.h"
 #include "event/ReplaceWorldSetup.h"
 #include "event/SetupPlayerSettings.h"
+#include "event/SwitchToScreen.h"
 
 #include "world/WorldSetup.h"
 
@@ -19,6 +20,7 @@ protected:
     void handleSetupChat(Event::SetupChat *event);
     void handleSetupPlayerSettings(Event::SetupPlayerSettings *event);
     void handleReplaceWorldSetup(Event::ReplaceWorldSetup *event);
+    void handleSwitchToScreen(Event::SwitchToScreen *event);
 private:
     Widget::WidgetBase *lobby;
     World::WorldSetup *worldSetup;
