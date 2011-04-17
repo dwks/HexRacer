@@ -28,90 +28,121 @@ void FinishedProxy::handleRaceFinished(Event::RaceFinished *event) {
     
     Widget::WidgetRect scoreArea(0.1, 0.45, 0.8, 0.4);
     Widget::WidgetRect teamArea(0.1, 0.05, 0.8, 0.35);
-	double height = teamArea.getHeight() / 6.0;
+    double scoreHeight = scoreArea.getHeight() / 11.0;
+	double teamHeight = teamArea.getHeight() / 6.0;
     
     Map::RaceResults results = event->getResults();
-    for(int r =-1; r < results.getRanks() && r < 10; r ++) {
-
+    for(int r = 0; r <= results.getRanks() && r <= 10; r ++) {
 
         Widget::WidgetRect textRect(
             scoreArea.getCorner().getX(),
-            scoreArea.getCorner().getY() + height * r,
-            scoreArea.getWidth(),
-            height);
+            scoreArea.getCorner().getY() + scoreHeight * r,
+            scoreArea.getWidth() / 3.0 - 0.03,
+            scoreHeight);
+        Widget::WidgetRect textRect1 = textRect;
+        Widget::WidgetRect textRect2 = textRect;
+        Widget::WidgetRect textRect3 = textRect;
+        
+        textRect2.getCorner().addX(scoreArea.getWidth() / 3.0);
+        textRect3.getCorner().addX(scoreArea.getWidth() / 3.0 * 2);
 
-		if (r == -1) {
+		if (r == 0) {
 
 			ranks->addChild(
 				new Widget::TextWidget("playerColTitle",
 					"Player",
-					Widget::NormalTextLayout::ALIGN_LEFT,
-					textRect));
+					Widget::NormalTextLayout::ALIGN_HCENTRE,
+					textRect1));
 			ranks->addChild(
 				new Widget::TextWidget("timeColTitle",
-					"Time/Bonus",
+					"Time - Bonus",
 					Widget::NormalTextLayout::ALIGN_HCENTRE,
-					textRect));
+					textRect2));
 			ranks->addChild(
 				new Widget::TextWidget("bonusColTitle",
 					"Final",
-					Widget::NormalTextLayout::ALIGN_RIGHT,
-					textRect));
+					Widget::NormalTextLayout::ALIGN_HCENTRE,
+					textRect3));
 
 		}
 		else {
 
-			int p = results.getPlayerByRank(r);
+			int p = results.getPlayerByRank(r-1);
 			int score = results.getPlayerPoints(p);
 			int bonus = results.getPlayerBonus(p);
 	        
 			Object::Player *player = playerManager->getPlayer(p);
 	        
 			ranks->addChild(
-				new Widget::TextWidget(Misc::StreamAsString() << "rank" << r,
+				new Widget::TextWidget(Misc::StreamAsString() << "rank" << r-1,
 					player->getPlayerName(),
 					Widget::NormalTextLayout::ALIGN_LEFT,
-					textRect,
+					textRect1,
 					Map::Teams::teamColor(player->getTeamID())));
 			ranks->addChild(
-				new Widget::TextWidget(Misc::StreamAsString() << "time" << r,
-					Misc::StreamAsString() << ((score+bonus) / 1000.0) << '/' << (bonus / 1000.0) << " secs",
+				new Widget::TextWidget(Misc::StreamAsString() << "time" << r-1,
+					Misc::StreamAsString() << formatTime((score+bonus) / 1000.0)
+                        << " - " << formatTime(bonus / 1000.0) << " secs",
 					Widget::NormalTextLayout::ALIGN_HCENTRE,
-					textRect));
+					textRect2));
 			ranks->addChild(
-				new Widget::TextWidget(Misc::StreamAsString() << "final" << r,
-					Misc::StreamAsString() << '-' << (score / 1000.0) << " secs",
+				new Widget::TextWidget(Misc::StreamAsString() << "final" << r-1,
+					Misc::StreamAsString() << "= " << formatTime(score / 1000.0) << " secs",
 					Widget::NormalTextLayout::ALIGN_RIGHT,
-					textRect));
+					textRect3));
 
 		}
 
     }
     
-    for(int r = 0; r < results.getTeams() && r < 5; r ++) {
-        int team = results.getTeamByRank(r);
-        int score = results.getTeamPoints(team);
-        
+    for(int r = 0; r <= results.getTeams() && r <= 5; r ++) {
         Widget::WidgetRect textRect(
             teamArea.getCorner().getX(),
-            teamArea.getCorner().getY() + height * r,
-            teamArea.getWidth(),
-            height);
+            teamArea.getCorner().getY() + teamHeight * r,
+            teamArea.getWidth() / 2.0 - 0.03,
+            teamHeight);
+        Widget::WidgetRect textRect1 = textRect;
+        Widget::WidgetRect textRect2 = textRect;
         
-        ranks->addChild(
-            new Widget::TextWidget(Misc::StreamAsString() << "rank" << r,
-                Misc::StreamAsString() << "Team " << Map::Teams::teamName(team),
-                Widget::NormalTextLayout::ALIGN_LEFT,
-                textRect,
-                Map::Teams::teamColor(team)));
-        ranks->addChild(
-            new Widget::TextWidget(Misc::StreamAsString() << "team" << r,
-                Misc::StreamAsString() << (score / 1000.0) << " secs",
-                Widget::NormalTextLayout::ALIGN_RIGHT,
-                textRect));
+        textRect2.getCorner().addX(scoreArea.getWidth() / 2.0);
+        
+        if(r == 0) {
+            ranks->addChild(
+                new Widget::TextWidget("teamNamesTitle",
+                    "Best Teams",
+                    Widget::NormalTextLayout::ALIGN_LEFT,
+                    textRect1));
+            ranks->addChild(
+                new Widget::TextWidget("teamScoresTitle",
+                    "Average Score",
+                    Widget::NormalTextLayout::ALIGN_RIGHT,
+                    textRect2));
+        }
+        else {
+            int team = results.getTeamByRank(r-1);
+            int score = results.getTeamPoints(team);
+            
+            ranks->addChild(
+                new Widget::TextWidget(Misc::StreamAsString() << "rank" << r-1,
+                    Misc::StreamAsString() << "Team " << Map::Teams::teamName(team),
+                    Widget::NormalTextLayout::ALIGN_LEFT,
+                    textRect1,
+                    Map::Teams::teamColor(team)));
+            ranks->addChild(
+                new Widget::TextWidget(Misc::StreamAsString() << "team" << r-1,
+                    Misc::StreamAsString() << formatTime(score / 1000.0) << " secs",
+                    Widget::NormalTextLayout::ALIGN_RIGHT,
+                    textRect2));
+        }
     }
     
     EMIT_EVENT(new Event::SwitchToScreen("finished"));
+}
+
+std::string FinishedProxy::formatTime(double time) {
+    char buffer[128];
+    std::sprintf(buffer, "%7.3f", time);
+    return std::string(buffer);
 }
 
 void FinishedProxy::handleBasicWorldConstructed(
@@ -132,6 +163,9 @@ void FinishedProxy::visit(Widget::WidgetActivateEvent *event) {
     
     if(name == "quit") {
         EMIT_EVENT(new Event::QuitEvent());
+    }
+    else if(name == "dismiss") {
+        EMIT_EVENT(new Event::SwitchToScreen(""));
     }
 }
 

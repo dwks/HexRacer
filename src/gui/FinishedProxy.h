@@ -20,6 +20,8 @@ protected:
 private:
     Widget::WidgetBase *finished;
     World::PlayerManager *playerManager;
+private:
+    std::string formatTime(double time);
 public:
     FinishedProxy(Widget::WidgetBase *finished);
     

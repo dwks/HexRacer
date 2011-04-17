@@ -435,6 +435,11 @@ void GUIConstruction::constructFinished() {
         = new Widget::CompositeWidget("finished");
     widgets->addChild(finished);
     
+    Widget::ImageWidget *background = new Widget::ImageWidget(
+        "background", "data/hud/finished_alpha_mask.png",
+        Widget::WidgetRect(0.0, 0.0, 1.0, 1.0));
+    finished->addChild(background);
+    
     Widget::CompositeWidget *ranks = new Widget::CompositeWidget("ranks");
     ranks->setLayout(new Widget::AbsoluteLayout(Widget::WidgetRect(
         0.0, 0.0, 1.0, 1.0)));
@@ -445,15 +450,21 @@ void GUIConstruction::constructFinished() {
         0.0, 0.0, 1.0, 1.0)));
     finished->addChild(teams);
     
-    finished->addChild(new Widget::ButtonWidget("quit", "Quit",
-        Widget::WidgetRect(0.3, 0.9, 0.4, 0.08)));
+    finished->addChild(new Widget::ButtonWidget("dismiss", "Dismiss",
+        Widget::WidgetRect(0.1, 0.92, 0.35, 0.08)));
     
-    setShortcut(getWidget("finished/quit"), SDLK_ESCAPE);
+    finished->addChild(new Widget::ButtonWidget("quit", "Quit",
+        Widget::WidgetRect(0.55, 0.92, 0.35, 0.08)));
+    
+    setShortcut(getWidget("finished/dismiss"), SDLK_ESCAPE);
+    setShortcut(getWidget("finished/dismiss"), SDLK_d);
+    
     setShortcut(getWidget("finished/quit"), SDLK_q);
     
     boost::shared_ptr<Widget::EventProxy> proxy(new FinishedProxy(finished));
     getWidget("finished")->addEventProxy(proxy);  // ensure proxy ref count >0
     getWidget("finished/quit")->addEventProxy(proxy);
+    getWidget("finished/dismiss")->addEventProxy(proxy);
 }
 
 void GUIConstruction::constructSettings() {

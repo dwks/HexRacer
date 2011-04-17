@@ -75,6 +75,7 @@ void RaceManager::updatePlayerRankings(Object::WorldManager* world) {
 	}
 
 }
+
 bool RaceManager::getRaceFinished(Object::WorldManager* world) const {
 
 	bool finished = true;
@@ -83,13 +84,8 @@ bool RaceManager::getRaceFinished(Object::WorldManager* world) const {
 		= world->getPlayerIterator();
 	while(it.hasNext()) {
 		Object::Player* player = it.next();
-        bool f = finished;
-		finished = finished && (player->getRaceFinishIgnore() || player->getPathTracker()->getFinished());
         
-        if(f && !finished) {
-            std::cout << "not finished due to player " << player->getID() << ": "
-                << player->getPathTracker()->getLapProgress() << "\n";
-        }
+		finished = finished && (player->getRaceFinishIgnore() || player->getPathTracker()->getFinished());
 	}
 
 	return finished;

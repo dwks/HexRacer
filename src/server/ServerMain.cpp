@@ -181,7 +181,7 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
             World::WorldSetup::PlayerSettings ai;
             ai.setColor(toAdd);
             ai.setID(main->clientCount ++);
-            ai.setName(Object::Player::getDefaultPlayerName(ai.getID()));
+            ai.setName(Object::Player::getDefaultPlayerName(ai.getID()) + " [AI]");
             
             worldSetup->replacePlayerSettings(ai);
             
