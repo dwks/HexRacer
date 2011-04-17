@@ -100,7 +100,8 @@ btRigidBody* PhysicsFactory::createRigidTriMesh(const std::vector<Math::Triangle
 }
 
 PhysicalPlayer *PhysicsFactory::createPhysicalPlayer(const Math::Point &origin, const Math::Point &direction) {
- return new Physics::PhysicalPlayer(origin, direction);
+    //LOG(PHYSICS, "Creating player at " << origin);
+    return new Physics::PhysicalPlayer(origin, direction);
 }
 
 }  // namespace physics

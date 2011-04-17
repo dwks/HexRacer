@@ -18,6 +18,8 @@ namespace Map {
 
 		int total_laps = player_rankings[0]->getPathTracker()->getNumLaps();
         
+        int teamPlayers[Teams::MAX_TEAMS] = {};
+        
 		playerRank.resize(player_rankings.size());
 		for (unsigned int i = 0; i < player_rankings.size(); i++) {
 
@@ -48,13 +50,16 @@ namespace Map {
 			playerPoints[player_rankings[i]->getID()] = score;
 			playerBonus[player_rankings[i]->getID()] = bonus;
 			teamPoints[player_rankings[i]->getTeamID()] += score;
+            teamPlayers[player_rankings[i]->getTeamID()] ++;
 		}
         
         std::set<int> remainingTeams;
         
-		for (int i = 0; i < Map::Teams::MAX_TEAMS; i++) {
-			if (teamPoints[i] > 0)
+		for(int i = 0; i < Map::Teams::MAX_TEAMS; i++) {
+			if(teamPlayers[i] > 0) {
 				remainingTeams.insert(i);
+                teamPoints[i] /= teamPlayers[i];
+            }
 		}
         
         while(!remainingTeams.empty()) {
