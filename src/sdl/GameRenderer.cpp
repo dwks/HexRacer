@@ -330,7 +330,7 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
     }
 
 	//-Bonus Messages ----------------------------------------------------------------------------
-    if (!GET_SETTING("hud.lapprogress.practicemode", false) && GET_SETTING("hud.bonusmessages.enable", true)) {
+    if (!GET_SETTING("hud.lapprogress.practicemode", false) && GET_SETTING("bonus.enable", true) && GET_SETTING("hud.bonusmessages.enable", true)) {
 
         int draw_height = viewHeight*GET_SETTING("hud.bonusmessages.drawheight", 0.5);
 		int draw_width = GET_SETTING("hud.bonusmessages.drawwidth", 400);

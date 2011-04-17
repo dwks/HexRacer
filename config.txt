@@ -81,6 +81,9 @@ game.paint.paintingboost     = 0.85
 game.paint.erasingboost      = 0.85
 game.paint.maxboostincrease  = 0.02
 
+game.paint.allowerase = 1
+game.paint.allowoverwrite = 0
+
 game.race.maxlaps = 1000
 game.race.laps    = 3
 
@@ -96,10 +99,12 @@ game.warp.stillvelocity                = 5.0
 ########
 ### Bonus settings
 
-bonus.paintbonus.cellcountincrement = 1000
-bonus.paintbonus.points = 1000
-bonus.erasebonus.cellcountincrement = 1000
-bonus.erasebonus.points = 2500
+bonus.enable = 1
+
+bonus.paintbonus.cellcountincrement = 500
+bonus.paintbonus.points = 500
+bonus.erasebonus.cellcountincrement = 500
+bonus.erasebonus.points = 1250
 bonus.rankbonus.maxbonus = 10000
 
 ########

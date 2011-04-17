@@ -166,9 +166,12 @@ void WeightedDriver::detectPaintAhead() {
 	double paintThresh = GET_SETTING("ai.stoppaintingthreshhold", 1.2);
 	double eraseThresh =  GET_SETTING("ai.starterasingthreshhold", 0.9);
 
+	bool allow_overwrite = GET_SETTING("game.paint.allowoverwrite", false);
+	bool allow_erase = GET_SETTING("game.paint.allowerase", true);
+
 	if (!intention.getPaint()) {
 		//Not painting: Change to painting
-		if (paintScore > eraseThresh && paintScore < paintThresh) {
+		if ((allow_overwrite || paintScore > eraseThresh) && paintScore < paintThresh) {
 			considering_change = true;
 			change_to_paint = true;
 		}
@@ -176,7 +179,7 @@ void WeightedDriver::detectPaintAhead() {
 	
 	if (!considering_change && !intention.getErase()) {
 		//Not erasing: Change to erasing
-		if (paintScore <= eraseThresh) {
+		if (allow_erase && paintScore <= eraseThresh) {
 			considering_change = true;
 			change_to_erase = true;
 		}

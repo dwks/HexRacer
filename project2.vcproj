@@ -554,6 +554,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ListWidgetBoxProxy.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\gui\LoadingProxy.cpp"
 				>
 			</File>
@@ -1805,6 +1809,10 @@
 			</File>
 			<File
 				RelativePath=".\src\widget\ListWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\ListWidgetBoxProxy.h"
 				>
 			</File>
 			<File

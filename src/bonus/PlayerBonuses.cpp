@@ -51,9 +51,11 @@ namespace Bonus {
 	}
 
 	void PlayerBonuses::newBonus(int points, const std::string& name) {
-		totalBonus += points;
-		EMIT_EVENT(new Event::BonusEvent(playerID, points, name));
-		LOG(BONUS, "Player: " << playerID << " Points: " << points << " Name: " << name);
+		if (GET_SETTING("bonus.enable", true)) {
+			totalBonus += points;
+			EMIT_EVENT(new Event::BonusEvent(playerID, points, name));
+			LOG(BONUS, "Player: " << playerID << " Points: " << points << " Name: " << name);
+		}
 	}
 
 }  // namespace Bonus
