@@ -39,13 +39,27 @@ AIManager::AIManager(Map::RaceManager *raceManager,
     METHOD_OBSERVER(&AIManager::physicsTickHandler);
 }
 
-void AIManager::createAIs(int startAt, int count) {
-    for(int ai = startAt; ai < startAt + count; ai ++) {
+int AIManager::createAIs(World::WorldSetup *worldSetup) {
+    std::vector<int> ids;
+    worldSetup->getAllPlayerIDs(ids);
+    
+    int count = 0;
+    
+    worldSetup->debugDump();
+    
+    for(std::vector<int>::size_type x = 0; x < ids.size(); x ++) {
+        int ai = ids[x];
+        if(worldSetup->getClientSettings(ai) != NULL) continue;
+        
+        count ++;
+        
+        LOG(NETWORK, "******** AI is controlling " << ai);
+        
         Math::Point location = raceManager->startingPointForPlayer(ai);
         Math::Point direction = raceManager->startingPlayerDirection();
         
         World::WorldSetup::PlayerSettings *settings
-            = World::WorldSetup::getInstance()->getPlayerSettings(ai);
+            = worldSetup->getPlayerSettings(ai);
         
         Object::Player *player = new Object::Player(ai, location, direction);
         if(settings) {
@@ -64,6 +78,8 @@ void AIManager::createAIs(int startAt, int count) {
         
         EMIT_EVENT(new Event::CreateObject(player));
     }
+    
+    return count;
 }
 
 }  // namespace AI

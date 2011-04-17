@@ -118,6 +118,8 @@ public:
     void replaceClientSettings(ClientSettings settings)
         { clientSettings[settings.getID()] = settings; }
     
+    void removePlayer(int id);
+    
     PlayerSettings *getPlayerSettings(int id);
     ClientSettings *getClientSettings(int id);
     
@@ -133,6 +135,8 @@ public:
     int getPlayersOnTeam(int team) const;
     
     void getAllPlayerIDs(std::vector<int> &list);
+    
+    void debugDump();
 };
 
 }  // namespace World

@@ -48,6 +48,7 @@ public:
         MODIFY_CAMERA,
         BASIC_WORLD_CONSTRUCTED,
 		PLAYER_BONUS,
+		GENERAL_WORLD_SETUP,
         TYPES
     };
 };

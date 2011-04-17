@@ -8,6 +8,7 @@
 #include "map/PathManager.h"
 #include "world/PlayerManager.h"
 #include "paint/PaintManager.h"
+#include "world/WorldSetup.h"
 
 #include "event/Enabler.h"
 #include "event/PhysicsTick.h"
@@ -32,7 +33,9 @@ public:
     AIManager(Map::RaceManager *raceManager, Map::PathManager *pathManager,
 		World::PlayerManager *playerManager, Paint::PaintManager* paintManager);
     
-    void createAIs(int startAt, int count);
+    /** Returns number of AIs created.
+    */
+    int createAIs(World::WorldSetup *worldSetup);
 };
 
 }  // namespace AI

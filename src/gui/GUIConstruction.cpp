@@ -354,6 +354,18 @@ void GUIConstruction::constructLobby() {
     for (int i = 0; i < Map::Teams::MAX_TEAMS; i++) {
         getWidget(Misc::StreamAsString() << "lobby/team-" << i)
             ->addEventProxy(proxy);
+        
+        Widget::ScrollbarWidget *scroll
+            = dynamic_cast<Widget::ScrollbarWidget *>(
+                getWidget(Misc::StreamAsString()
+                    << "lobby/team-" << i << "-ais"));
+        
+        LobbyProxy *lobby = dynamic_cast<LobbyProxy *>(proxy.get());
+        
+        scroll->getLess()->addEventProxy(
+            new LobbyProxy::ScrollbarProxy(lobby, scroll));
+        scroll->getMore()->addEventProxy(
+            new LobbyProxy::ScrollbarProxy(lobby, scroll));
     }
     
     getWidget("lobby/chatlist")->addEventProxy(proxy);

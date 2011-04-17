@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "RaceManager.h"
 #include "log/Logger.h"
 #include "misc/StdVectorFunctions.h"
@@ -81,7 +83,12 @@ bool RaceManager::getRaceFinished(Object::WorldManager* world) const {
 		= world->getPlayerIterator();
 	while(it.hasNext()) {
 		Object::Player* player = it.next();
+        bool f = finished;
 		finished = finished && (player->getRaceFinishIgnore() || player->getPathTracker()->getFinished());
+        
+        if(f && !finished) {
+            std::cout << "not finished due to player " << player->getID() << "\n";
+        }
 	}
 
 	return finished;

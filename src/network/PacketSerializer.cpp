@@ -28,6 +28,7 @@
 #include "event/ReplaceWorldSetup.h"
 #include "event/RaceFinished.h"
 #include "event/BonusEvent.h"
+#include "event/GeneralWorldSetupEvent.h"
 
 #include "object/Player.h"
 #include "world/PlayerIntention.h"
@@ -76,6 +77,7 @@ std::string PacketSerializer::packetToString(Packet *packet) {
     out.register_type<Event::ReplaceWorldSetup>();
     out.register_type<Event::RaceFinished>();
 	out.register_type<Event::BonusEvent>();
+    out.register_type<Event::GeneralWorldSetupEvent>();
     
     out.register_type<Object::Player>();
     out.register_type<World::PlayerIntention>();
@@ -126,6 +128,7 @@ Packet *PacketSerializer::stringToPacket(const std::string &string) {
     in.register_type<Event::ReplaceWorldSetup>();
     in.register_type<Event::RaceFinished>();
 	in.register_type<Event::BonusEvent>();
+    in.register_type<Event::GeneralWorldSetupEvent>();
     
     in.register_type<Object::Player>();
     in.register_type<World::PlayerIntention>();

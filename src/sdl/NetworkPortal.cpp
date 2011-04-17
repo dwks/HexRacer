@@ -18,6 +18,7 @@
 #include "event/EntireWorld.h"
 #include "event/SetupChat.h"
 #include "event/SetupPlayerSettings.h"
+#include "event/GeneralWorldSetupEvent.h"
 
 #include "world/WorldSetup.h"
 
@@ -53,6 +54,7 @@ void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
     case Event::EventType::WARP_ONTO_TRACK:
     case Event::EventType::PAUSE_GAME:
     case Event::EventType::SETUP_CLIENT_SETTINGS:
+    case Event::EventType::GENERAL_WORLD_SETUP:
     {
         send(event);
         break;

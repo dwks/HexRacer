@@ -6,6 +6,12 @@
 #include "ButtonWidget.h"
 
 namespace Project {
+namespace GUI {
+class GUIConstruction;
+}
+}
+
+namespace Project {
 namespace Widget {
 
 class ScrollbarLayout;
@@ -19,6 +25,7 @@ private:
     friend class ScrollbarEventProxy;
     friend class ScrollbarSliderEventProxy;
     friend class ListWidget;  // just for getLess(), getMore()
+    friend class GUI::GUIConstruction;
 private:
     bool vertical;
     ButtonWidget *less, *more;

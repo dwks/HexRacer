@@ -25,6 +25,7 @@
 #include "event/SetupClientSettings.h"
 #include "event/ReplaceWorldSetup.h"
 #include "event/GameStageChanged.h"
+#include "event/GeneralWorldSetupEvent.h"
 
 #include "event/EventSystem.h"
 
@@ -163,6 +164,61 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
             setupClientSettings->getClientSettings());
         break;
     }
+    case Event::EventType::GENERAL_WORLD_SETUP: {
+        Event::GeneralWorldSetupEvent *general
+            = dynamic_cast<Event::GeneralWorldSetupEvent *>(event);
+        World::WorldSetup *worldSetup = World::WorldSetup::getInstance();
+        if(general->getData().substr(0, 7) == "add-ai ") {
+            std::istringstream stream(general->getData().substr(7));
+            int toAdd;
+            stream >> toAdd;
+            
+            int colour = worldSetup->getPlayerSettings(general->getClient())
+                ->getColor();
+            
+            LOG(NETWORK, "Creating another AI on team " << toAdd);
+            
+            World::WorldSetup::PlayerSettings ai;
+            ai.setColor(toAdd);
+            ai.setID(main->clientCount ++);
+            ai.setName(Object::Player::getDefaultPlayerName(ai.getID()));
+            
+            worldSetup->replacePlayerSettings(ai);
+            
+            EMIT_EVENT(new Event::ReplaceWorldSetup(worldSetup));
+        }
+        else if(general->getData().substr(0, 10) == "remove-ai ") {
+            std::istringstream stream(general->getData().substr(10));
+            int removeFrom;
+            stream >> removeFrom;
+            
+            int colour = worldSetup->getPlayerSettings(general->getClient())
+                ->getColor();
+            
+            LOG(NETWORK, "Trying to remove an AI from team " << removeFrom);
+            
+            std::vector<int> ids;
+            worldSetup->getAllPlayerIDs(ids);
+            
+            for(std::vector<int>::size_type x = 0; x < ids.size(); x ++) {
+                // don't remove other clients
+                if(worldSetup->getClientSettings(ids[x]) != NULL) continue;
+                
+                if(worldSetup->getPlayerSettings(ids[x])->getColor() == removeFrom) {
+                    LOG(NETWORK, "Removing " << ids[x]);
+                    worldSetup->removePlayer(ids[x]);
+                    break;
+                }
+            }
+            
+            EMIT_EVENT(new Event::ReplaceWorldSetup(worldSetup));
+        }
+        else {
+            LOG2(NETWORK, WARNING,
+                "Unknown GeneralWorldSetup request " << general->getData());
+        }
+        break;
+    }
     default:
         LOG2(NETWORK, WARNING,
             "Don't know how to handle events of type " << event->getType());
@@ -283,9 +339,8 @@ void ServerMain::initAI() {
             basicWorld->getPlayerManager(),
 			paintManager.get()));
     
-    int aiCount = GET_SETTING("server.aicount", 0);
-    aiManager->createAIs(0, aiCount);
-    clientCount += aiCount;
+    //int aiCount = GET_SETTING("server.aicount", 0);
+    clientCount += aiManager->createAIs(World::WorldSetup::getInstance());
 }
 
 void ServerMain::run() {

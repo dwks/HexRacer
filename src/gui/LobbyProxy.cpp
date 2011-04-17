@@ -12,6 +12,7 @@
 #include "event/SwitchToScreen.h"
 #include "event/SetupPlayerSettings.h"
 #include "event/SetupClientSettings.h"
+#include "event/GeneralWorldSetupEvent.h"
 
 #include "map/MapSettings.h"
 #include "map/Teams.h"
@@ -100,7 +101,7 @@ void LobbyProxy::handleReplaceWorldSetup(Event::ReplaceWorldSetup *event) {
         Widget::TextWidget *widget = dynamic_cast<Widget::TextWidget *>(
             lobby->getChild(Misc::StreamAsString() << "team-" << i << "-total"));
         
-        LOG(GUI, "Players on team " << i << ": " << worldSetup->getPlayersOnTeam(i));
+        //LOG(GUI, "Players on team " << i << ": " << worldSetup->getPlayersOnTeam(i));
         
         widget->setText(Misc::StreamAsString()
             << worldSetup->getPlayersOnTeam(i));
@@ -217,27 +218,36 @@ void LobbyProxy::visit(Widget::WidgetSelectedEvent *event) {
     if(name == "playerlist") {
         // NYI
     }
-    /*else if(name == "colourlist") {
-        LOG(GUI, "Choosing colour " << select);
-        
-        std::istringstream sstream(event->getSelected()->getName());
-        int col;
-        sstream >> col;
-        
-        int id = worldSetup->getClientID();
-        World::WorldSetup::PlayerSettings *settings
-            = worldSetup->getPlayerSettings(id);
-        if(settings) {
-            settings->setColor(col);
-            
-            EMIT_EVENT(new Event::SetupPlayerSettings(*settings));
-        }
-        else {
-            LOG2(GUI, WARNING, "Can't set colour");
-        }
-    }*/
     else {
         LOG2(GUI, WARNING, "No action for modifying \"" << name << "\"");
+    }
+}
+
+void LobbyProxy::handleScrollbar(Widget::WidgetBase *scrollbar,
+    Widget::WidgetActivateEvent *event) {
+    
+    std::string name = event->getWidget()->getName();
+    if(name == "scrollbar-more") {
+        int id = worldSetup->getClientID();
+        
+        // team-
+        std::istringstream stream(scrollbar->getName().substr(5));
+        int removeFrom;
+        stream >> removeFrom;
+        
+        EMIT_EVENT(new Event::GeneralWorldSetupEvent(id,
+            Misc::StreamAsString() << "remove-ai " << removeFrom));
+    }
+    else if(name == "scrollbar-less") {
+        int id = worldSetup->getClientID();
+        
+        // team-
+        std::istringstream stream(scrollbar->getName().substr(5));
+        int addTo;
+        stream >> addTo;
+        
+        EMIT_EVENT(new Event::GeneralWorldSetupEvent(id,
+            Misc::StreamAsString() << "add-ai " << addTo));
     }
 }
 
