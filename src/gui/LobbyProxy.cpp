@@ -127,6 +127,11 @@ void LobbyProxy::handleSwitchToScreen(Event::SwitchToScreen *event) {
         if(start) {
             start->getText()->setText("Ready to start!");
         }
+        
+        // clear chat box
+        Widget::ListWidget *chat = dynamic_cast<Widget::ListWidget *>(
+            this->lobby->getChild("chatlist"));
+        chat->removeAllChildren();
     }
 }
 

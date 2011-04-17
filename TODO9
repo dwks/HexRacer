@@ -1,15 +1,9 @@
-- redesign team selection screen (lobby)
 - fix client timer to use game clock
 - sounds for GUI, ...
 
-- message after you hit "ready"?
-- finished! message after last lap
-- chat box not cleared, ready button not reset
 - countdown: 3,2,1, start!
 - select joystick button at lobby
 - controls button from pause menu
-
-- make text not overlap on finish screen
 
 - joystick menus?
 
@@ -19,4 +13,6 @@
 - fix aspect ratio of logo
 - fix "Server:" message (displays current IP on other clients)
 - auto-scroll chat textbox
+- actually drop the connection when you click "Disconnect"
+  (fix chat messages appearing multiple times)
 

@@ -154,6 +154,10 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         
         World::WorldSetup::getInstance()->replacePlayerSettings(
             setupPlayerSettings->getPlayerSettings());
+        
+        EMIT_EVENT(new Event::ReplaceWorldSetup(
+            World::WorldSetup::getInstance()));
+        
         break;
     }
     case Event::EventType::SETUP_CLIENT_SETTINGS: {
@@ -180,6 +184,9 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
                 << name << (now.isReadyToStart() ? " is " : " is NOT ")
                 << "ready to start!"));
         }
+        
+        /*EMIT_EVENT(new Event::ReplaceWorldSetup(
+            World::WorldSetup::getInstance()));*/
         
         break;
     }
@@ -398,6 +405,9 @@ void ServerMain::run() {
                 }
             }
             else if(World::WorldSetup::getInstance()->everyoneReadyToStart()) {
+                EMIT_EVENT(new Event::SetupChat(-1, "", Misc::StreamAsString()
+                    << "Starting game, please wait..."));
+                
                 startGame();
             }
         }
