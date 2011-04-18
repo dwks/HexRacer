@@ -6,6 +6,7 @@
 
 #include "event/PhysicsCollision.h"
 #include "event/PlayerProgressEvent.h"
+#include "event/GameStageChanged.h"
 #include "event/Enabler.h"
 #include "sound/EngineSound.h"
 #include "sound/CollisionSound.h"
@@ -26,6 +27,7 @@ class SoundSystem : public Event::Enabler {
 protected:
     void physicsCollisionHandler(Event::PhysicsCollision *event);
     void playerProgressHandler(Event::PlayerProgressEvent *event);
+    void gameStateChangedHandler(Event::GameStageChanged *event);
     
     //Sources
     ALuint musicSource;
