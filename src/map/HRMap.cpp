@@ -553,6 +553,10 @@ namespace Map {
 		finishPlane.translate(origin);
 	}
 
+	void HRMap::translateAll(Point translation) {
+		mapObjects.translateAll(translation);
+		finishPlane.translate(translation);
+	}
 	void HRMap::loadHeightMap(std::ifstream& stream, Math::HexHeightMap& height_map, Misc::ProgressTracker* progress_tracker) {
 
 		int num_hexes;

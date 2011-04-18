@@ -340,7 +340,7 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
     if (!GET_SETTING("internal.practicemode", false) && GET_SETTING("bonus.enable", true) && GET_SETTING("hud.bonusmessages.enable", true)) {
 
         int draw_height = viewHeight*GET_SETTING("hud.bonusmessages.drawheight", 0.5);
-		int draw_width = GET_SETTING("hud.bonusmessages.drawwidth", 400);
+		int draw_width = viewWidth*GET_SETTING("hud.bonusmessages.drawwidth", 0.5);
 		int entry_height = Math::maximum(static_cast<int>(viewHeight*GET_SETTING("hud.bonusmessages.entryheight", 0.5)),
 			static_cast<int>(GET_SETTING("hud.bonusmessages.minentryheight", 20)));
 		entry_height = Math::minimum(entry_height, GET_SETTING("hud.bonusmessages.maxentryheight", 20));

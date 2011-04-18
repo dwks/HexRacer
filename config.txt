@@ -185,7 +185,7 @@ hud.playerplacingtext.drawheight = 0.2
 
 hud.bonusmessages.enable = 1
 hud.bonusmessages.drawheight = 0.5
-hud.bonusmessages.drawwidth = 400
+hud.bonusmessages.drawwidth = 0.5
 hud.bonusmessages.entryheight = 0.025
 hud.bonusmessages.minentryheight = 12
 hud.bonusmessages.maxentryheight = 40

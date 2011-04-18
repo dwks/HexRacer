@@ -111,6 +111,7 @@ public:
 	static bool meshIsTrack(MeshType type);
 	
 	void scaleAll(double scale, Math::Point origin = Math::Point());
+	void translateAll(Math::Point translation);
 
 
 private:

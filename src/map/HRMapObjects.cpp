@@ -155,6 +155,24 @@ namespace Map {
 
 	}
 
+	void HRMapObjects::translateAll(Math::Point translation) {
+
+		for (unsigned int i = 0; i < lights.size(); i++) {
+			lights[i]->translate(translation);
+		}
+		for (unsigned int i = 0; i < pathNodes.size(); i++) {
+			pathNodes[i]->translate(translation);
+		}
+		for (unsigned int i = 0; i < startPoints.size(); i++) {
+			startPoints[i]->translate(translation);
+		}
+		for (unsigned int i = 0; i < meshInstances.size(); i++) {
+			Math::SimpleTransform transform = meshInstances[i]->getTransformation();
+			transform.translate(translation);
+			meshInstances[i]->setTransformation(transform);
+		}
+
+	}
 	bool HRMapObjects::parseStream(const std::string& keyword, std::ifstream& stream,
 		const std::string& load_directory, const std::string& version) {
 

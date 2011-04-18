@@ -10,6 +10,7 @@
 #include "map/MeshInstance.h"
 #include "misc/DirectoryFunctions.h"
 #include "ScaleAllDialog.h"
+#include "TranslateAllDialog.h"
 using namespace Misc;
 using namespace Map;
 #include <vector>
@@ -202,6 +203,7 @@ HRMEMainWindow::HRMEMainWindow(QWidget *parent, Qt::WFlags flags)
 	mapMenu->addAction("&Load Prop Mesh", this, SLOT(loadPropMesh()));
 	mapMenu->addAction("&Remove Prop Mesh", mapEditor, SLOT(removePropMesh()));
 	mapMenu->addSeparator();
+	mapMenu->addAction("&Translate All Map Objects", this, SLOT(translateAll()));
 	mapMenu->addAction("&Scale All Map Objects", this, SLOT(scaleAll()));
 
 	menuBar->addMenu(fileMenu);
@@ -720,4 +722,11 @@ void HRMEMainWindow::scaleAll() {
 	int ret = dialog.exec();
 	if (ret)
 		mapEditor->scaleAll(dialog.getScale(), dialog.getOrigin());
+}
+
+void HRMEMainWindow::translateAll() {
+	TranslateAllDialog dialog(this);
+	int ret = dialog.exec();
+	if (ret)
+		mapEditor->translateAll(dialog.getTranslation());
 }

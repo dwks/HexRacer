@@ -131,6 +131,7 @@ private slots:
 	void selectEditMode(QAction* action);
 	void save2DMapImage();
 	void scaleAll();
+	void translateAll();
 
 	void setSelectedObject(MapObject* selected_object);
 	void choosePropertyColor(int color_index);
