@@ -45,7 +45,7 @@ namespace HUD {
 
 	void RaceClock::addTimeOffset(unsigned long offset) {
 		timeOffset += offset;
-		LOG(GLOBAL, "paused offset: " << offset);
+		//LOG(GLOBAL, "paused offset: " << offset);
 	}
 
 }  // namespace HUD

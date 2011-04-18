@@ -82,6 +82,8 @@ WidgetRect CountdownLayout::getBoundingRect() const {
         
         lastChangedLayout = NULL;
         
+        normalLayout->update(normalLayout->getBoundingRect());
+        
         return normalLayout->getBoundingRect();
     }
 }

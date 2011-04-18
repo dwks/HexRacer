@@ -1,8 +1,5 @@
-- fix client timer to use game clock
 - sounds for GUI, ...
 
-- countdown: 3,2,1, start!
-- select joystick button at lobby
 - controls button from pause menu
 
 - joystick menus?
@@ -13,6 +10,4 @@
 - fix aspect ratio of logo
 - fix "Server:" message (displays current IP on other clients)
 - auto-scroll chat textbox
-- actually drop the connection when you click "Disconnect"
-  (fix chat messages appearing multiple times)
 

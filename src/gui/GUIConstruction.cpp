@@ -403,10 +403,30 @@ void GUIConstruction::constructLoading() {
         = new Widget::CompositeWidget("loading");
     widgets->addChild(loading);
     
+    /*loading->addChild(new Widget::ImageWidget("help",
+        "data/menu/controllerlayout.png",
+        Widget::WidgetRect(0.0, 0.5, 1.0, 0.5)));
+    
     loading->addChild(new Widget::ImageWidget("thumbnail", "",
-        Widget::WidgetRect(0.1, 0.1, 0.8, 0.5)));
+        Widget::WidgetRect(0.4, 0.05, 0.55, 0.45)));
     loading->addChild(new Widget::TextWidget("loading", "Loading ...", 0,
-        Widget::WidgetRect(0.1, 0.65, 0.8, 0.3)));
+        Widget::WidgetRect(0.05, 0.05, 0.3, 0.5)));*/
+    
+    /*loading->addChild(new Widget::ImageWidget("help1",
+        "data/menu/controllerlayout1.png",
+        Widget::WidgetRect(0.0, 0.05, 3.0, 0.45)));
+    loading->addChild(new Widget::ImageWidget("help2",
+        "data/menu/controllerlayout2.png",
+        Widget::WidgetRect(0.7, 0.05, 3.0, 0.45)));*/
+    
+    loading->addChild(new Widget::ImageWidget("thumbnail", "",
+        Widget::WidgetRect(0.3, 0.02, 0.4, 0.48)));
+    loading->addChild(new Widget::TextWidget("loading", "Loading ...", 0,
+        Widget::WidgetRect(0.1, 0.91, 0.8, 0.08)));
+    
+    loading->addChild(new Widget::ImageWidget("help",
+        "data/menu/controllerlayout.png",
+        Widget::WidgetRect(0.0, 0.50, 1.0, 0.40)));
     
     boost::shared_ptr<Widget::EventProxy> proxy(
         new LoadingProxy(loading, getWidget("host")));

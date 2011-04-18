@@ -65,12 +65,12 @@ void ClientManager::sendPacketOnly(Network::Packet *packet, int which) {
 void ClientManager::setPingTimeout(int client, unsigned long ms) {
     timeout[client] = ms;
     
-    LOG(NETWORK, "client " << client << " set to " << ms);
+    /*LOG(NETWORK, "client " << client << " set to " << ms);
     
     for(portal_list_t::size_type i = 0; i < portal_list.size(); ++ i) {
         LOG(NETWORK, "client " << i << ": " << portal_list[i]
             << " (" << gameid[i] << ")");
-    }
+    }*/
 }
 
 void ClientManager::setAllowableTimeout(unsigned long allowableTimeout) {
