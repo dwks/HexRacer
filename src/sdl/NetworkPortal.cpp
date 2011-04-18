@@ -11,6 +11,7 @@
 #include "network/PacketSerializer.h"
 #include "network/EventPacket.h"
 #include "network/HandshakePacket.h"
+#include "network/PingPacket.h"
 
 #include "event/EventSystem.h"
 #include "event/PacketReceived.h"
@@ -34,6 +35,10 @@ void NetworkPortal::handleSetCheckingNetwork(
     this->checking = event->getChecking();
 }
 
+void NetworkPortal::handleDoDisconnect(Event::DoDisconnect *event) {
+    disconnectFrom();
+}
+
 void NetworkPortal::PacketSender::observe(Event::SendPacket *packet) {
     if(portal->getPortal() == NULL) return;
     
@@ -55,6 +60,7 @@ void NetworkPortal::EventPropagator::observe(Event::EventBase *event) {
     case Event::EventType::PAUSE_GAME:
     case Event::EventType::SETUP_CLIENT_SETTINGS:
     case Event::EventType::GENERAL_WORLD_SETUP:
+    case Event::EventType::DO_DISCONNECT:
     {
         send(event);
         break;
@@ -107,9 +113,12 @@ NetworkPortal::NetworkPortal() {
     id = -1;
     checking = true;
     
+    lastPing = 0;
+    
     ADD_OBSERVER(new PacketSender(this));
     ADD_OBSERVER(new EventPropagator(this));
     METHOD_OBSERVER(&NetworkPortal::handleSetCheckingNetwork);
+    METHOD_OBSERVER(&NetworkPortal::handleDoDisconnect);
 }
 
 NetworkPortal::~NetworkPortal() {
@@ -209,6 +218,17 @@ void NetworkPortal::waitForWorld(Object::World *&world,
 void NetworkPortal::checkNetwork() {
     if(!portal) return;
     
+    unsigned long now = Misc::Sleeper::getTimeMilliseconds();
+    if(now >= lastPing + 1000) {
+        //LOG(NETWORK, "client sending ping");
+        
+        Network::Packet *packet = new Network::PingPacket();
+        portal->sendPacket(packet);
+        delete packet;
+        
+        lastPing = now;
+    }
+    
     while(checking) {
         Network::Packet *packet = portal->nextPacket();
         if(!packet) break;
@@ -218,6 +238,14 @@ void NetworkPortal::checkNetwork() {
         if(dynamic_cast<Network::EventPacket *>(packet)) {
             EMIT_EVENT(dynamic_cast<Network::EventPacket *>(packet)
                 ->getEvent());
+        }
+        else if(dynamic_cast<Network::PingPacket *>(packet)) {
+            unsigned long sent = dynamic_cast<Network::PingPacket *>(packet)
+                ->getMilliseconds();
+            unsigned long now = Misc::Sleeper::getTimeMilliseconds();
+            long offset = -long(now - sent);
+            History::PingTimeMeasurer::getInstance()->setClockOffset(offset);
+            LOG(NETWORK, "ClockOffset set to " << offset);
         }
         
         EMIT_EVENT(new Event::PacketReceived(packet));

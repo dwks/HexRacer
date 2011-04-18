@@ -34,6 +34,10 @@ public:
     */
     bool isOpen();
     
+    /** Forces this portal to close.
+    */
+    void forceClose();
+    
     /** Returns the next packet waiting to be read from this socket, or NULL
         if there is no packet currently available.
     */

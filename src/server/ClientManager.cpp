@@ -1,7 +1,14 @@
 #include "ClientManager.h"
 
+#include "misc/Sleeper.h"
+#include "log/Logger.h"
+
 namespace Project {
 namespace Server {
+
+ClientManager::ClientManager() {
+    allowableTimeout = 0;
+}
 
 ClientManager::~ClientManager() {
     for(portal_list_t::iterator i = portal_list.begin();
@@ -11,21 +18,33 @@ ClientManager::~ClientManager() {
     }
 }
 
-void ClientManager::addClient(Connection::Socket *socket) {
-    portal_list.push_back(new Network::SinglePortal(socket));
+void ClientManager::addClient(Connection::Socket *socket, int id) {
+    while(int(portal_list.size()) <= id) portal_list.push_back(NULL);
+    portal_list[id] = new Network::SinglePortal(socket);
+    
+    unsigned long now = Misc::Sleeper::getTimeMilliseconds();
+    
+    while(int(timeout.size()) <= id) timeout.push_back(0);
+    timeout[id] = now;
+}
+
+void ClientManager::forceDisconnect(int which) {
+    portal_list[which]->forceClose();
 }
 
 void ClientManager::sendPacket(Network::Packet *packet) {
     for(portal_list_t::iterator i = portal_list.begin();
         i != portal_list.end(); ++ i) {
         
-        (*i)->sendPacket(packet);
+        if(*i) {
+            (*i)->sendPacket(packet);
+        }
     }
 }
 
 void ClientManager::sendPacketExcept(Network::Packet *packet, int exception) {
     for(portal_list_t::size_type i = 0; i < portal_list.size(); ++ i) {
-        if(int(i) != exception) {
+        if(int(i) != exception && portal_list[i]) {
             portal_list[i]->sendPacket(packet);
         }
     }
@@ -35,16 +54,47 @@ void ClientManager::sendPacketOnly(Network::Packet *packet, int which) {
     portal_list[which]->sendPacket(packet);
 }
 
+void ClientManager::setPingTimeout(int client, unsigned long ms) {
+    timeout[client] = ms;
+    
+    LOG(NETWORK, "client " << client << " set to " << ms);
+    
+    for(portal_list_t::size_type i = 0; i < portal_list.size(); ++ i) {
+        LOG(NETWORK, "client " << i << ": " << portal_list[i]);
+    }
+}
+
+void ClientManager::setAllowableTimeout(unsigned long allowableTimeout) {
+    this->allowableTimeout = allowableTimeout;
+}
+
 int ClientManager::nextDisconnectedClient() {
+    unsigned long now = Misc::Sleeper::getTimeMilliseconds();
+    
     int x = 0;
     for(portal_list_t::iterator i = portal_list.begin();
         i != portal_list.end(); ++ i) {
         
         Network::SinglePortal *portal = *i;
         
+        if(!portal) {
+            x ++;
+            continue;
+        }
+        
         if(!portal->isOpen()) {
-            portal_list.erase(i);
+            *i = NULL;
+            //portal_list.erase(i);
+            //timeout.erase(timeout.begin() + x);
             delete portal;
+            return x;
+        }
+        
+        if(now >= timeout[x] + allowableTimeout) {
+            *i = NULL;
+            delete portal;
+            //portal_list.erase(i);
+            //timeout.erase(timeout.begin() + x);
             return x;
         }
         
@@ -57,6 +107,8 @@ int ClientManager::nextDisconnectedClient() {
 Network::Packet *ClientManager::nextPacket(int *whichSocket) {
     for(portal_list_t::iterator i = portal_list.begin();
         i != portal_list.end(); ++ i) {
+        
+        if(!*i) continue;
         
         Network::Packet *packet = (*i)->nextPacket();
         if(packet) {

@@ -257,7 +257,7 @@ network.interpolation.enable  = 1
 
 ########
 ### AI and server settings
-server.aicount     = 4
+server.aicount     = 3
 
 ai.resettimer = 5000
 ai.pathlookaheadfactor = 0.75

@@ -16,14 +16,24 @@ class ClientManager {
 private:
     typedef std::vector<Network::SinglePortal *> portal_list_t;
     portal_list_t portal_list;
+    
+    typedef std::vector<unsigned long> timeout_t;
+    timeout_t timeout;
+    
+    unsigned long allowableTimeout;
 public:
+    ClientManager();
     ~ClientManager();
     
-    void addClient(Connection::Socket *socket);
+    void addClient(Connection::Socket *socket, int id);
+    void forceDisconnect(int which);
     
     void sendPacket(Network::Packet *packet);
     void sendPacketExcept(Network::Packet *packet, int exception);
     void sendPacketOnly(Network::Packet *packet, int which);
+    
+    void setPingTimeout(int client, unsigned long ms);
+    void setAllowableTimeout(unsigned long allowableTimeout);
     
     int nextDisconnectedClient();
     Network::Packet *nextPacket(int *whichSocket = NULL);

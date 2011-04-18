@@ -42,6 +42,7 @@ private:
         
         virtual void visit(Network::HandshakePacket &packet);
         virtual void visit(Network::EventPacket &packet);
+        virtual void visit(Network::PingPacket &packet);
     };
     
     class ServerObserver : public Event::MultiObserver {

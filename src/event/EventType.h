@@ -49,6 +49,7 @@ public:
         BASIC_WORLD_CONSTRUCTED,
 		PLAYER_BONUS,
 		GENERAL_WORLD_SETUP,
+		DO_DISCONNECT,
         TYPES
     };
 };

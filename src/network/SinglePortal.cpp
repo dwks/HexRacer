@@ -25,6 +25,10 @@ bool SinglePortal::isOpen() {
     return socket->isOpen();
 }
 
+void SinglePortal::forceClose() {
+    socket->close();
+}
+
 Packet *SinglePortal::nextPacket() {
     // first grab a string with StringSerializer, then convert to a packet
     std::string data;

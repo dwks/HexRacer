@@ -13,6 +13,7 @@
 #include "event/SetupPlayerSettings.h"
 #include "event/SetupClientSettings.h"
 #include "event/GeneralWorldSetupEvent.h"
+#include "event/DoDisconnect.h"
 
 #include "map/MapSettings.h"
 #include "map/Teams.h"
@@ -148,6 +149,7 @@ void LobbyProxy::visit(Widget::WidgetActivateEvent *event) {
     std::string name = event->getWidget()->getName();
     
     if(name == "cancel") {
+        EMIT_EVENT(new Event::DoDisconnect());
         EMIT_EVENT(new Event::SwitchToScreen("-main"));
     }
     else if(name == "start") {
@@ -220,6 +222,9 @@ void LobbyProxy::visit(Widget::WidgetActivateEvent *event) {
         else {
             LOG2(GUI, WARNING, "Can't randomize player name");
         }
+    }
+    else if(name == "settings") {
+        EMIT_EVENT(new Event::SwitchToScreen("settings"));
     }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");

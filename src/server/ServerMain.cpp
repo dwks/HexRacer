@@ -10,6 +10,7 @@
 #include "network/PacketSerializer.h"
 #include "network/HandshakePacket.h"
 #include "network/EventPacket.h"
+#include "network/PingPacket.h"
 
 #include "event/QuitEvent.h"
 #include "event/ChangeOfIntention.h"
@@ -63,6 +64,16 @@ void ServerMain::ServerVisitor::visit(Network::HandshakePacket &packet) {
 void ServerMain::ServerVisitor::visit(Network::EventPacket &packet) {
     // bootstrap into event subsystem
     EMIT_EVENT(packet.getEvent());
+}
+
+void ServerMain::ServerVisitor::visit(Network::PingPacket &packet) {
+    unsigned long now = Misc::Sleeper::getTimeMilliseconds();
+    
+    packet.setMilliseconds(now);
+    
+    main->networkPortal->getClientManager()->setPingTimeout(
+        main->whichSocket, now);
+    main->networkPortal->getClientManager()->sendPacket(&packet);
 }
 
 void ServerMain::ServerObserver::observe(Event::EventBase *event) {
@@ -245,6 +256,12 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
         }
         break;
     }
+    case Event::EventType::DO_DISCONNECT: {
+        //World::WorldSetup::getInstance()->removePlayer(main->whichSocket);
+        main->networkPortal->getClientManager()->forceDisconnect(
+            main->whichSocket);
+        break;
+    }
     default:
         LOG2(NETWORK, WARNING,
             "Don't know how to handle events of type " << event->getType());
@@ -324,6 +341,8 @@ void ServerMain::startGame() {
     initAI();
     loadingStarted = true;
     
+    networkPortal->getClientManager()->setAllowableTimeout(30000);
+    
     EMIT_EVENT(new Event::GameStageChanged(
         Project::World::WorldSetup::START_LOADING));
     
@@ -373,6 +392,9 @@ void ServerMain::initAI() {
 void ServerMain::run() {
     initBasics();
     //startGame();  // !!! hack
+    
+    // three-second timeout before the game starts
+    networkPortal->getClientManager()->setAllowableTimeout(3000);
     
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
     quit = false;
@@ -463,10 +485,10 @@ void ServerMain::sendWorldToPlayers() {
     
     int aiCount = GET_SETTING("server.aicount", 0);
     
-    for(int client = aiCount; client < aiCount + clients->getSocketCount();
-        client ++) {
+    for(int client = 0; client < clients->getSocketCount(); client ++) {
+        if(!clients->socketExists(client)) continue;
         
-        if(!clients->socketExists(client - aiCount)) continue;
+        LOG(WORLD, "Creating player " << client);
         
         Math::Point location = basicWorld->getRaceManager()
             ->startingPointForPlayer(client);
@@ -517,7 +539,7 @@ void ServerMain::handleNewConnections() {
 
 		LOG2(NETWORK, CONNECT, "Handshake packet sent");
         
-        clients->addClient(socket);
+        clients->addClient(socket, client);
         
         World::WorldSetup::getInstance()->addClientSettings(client);
         World::WorldSetup::getInstance()->addPlayerSettings(client);
@@ -540,6 +562,8 @@ void ServerMain::handleDisconnections() {
     while((disconnected = clients->nextDisconnectedClient()) >= 0) {
         LOG2(NETWORK, CONNECT,
             "Client " << disconnected << " has disconnected");
+        
+        World::WorldSetup::getInstance()->removePlayer(disconnected);
     }
 }
 

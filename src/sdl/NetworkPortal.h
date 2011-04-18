@@ -9,6 +9,7 @@
 #include "event/MultiObserver.h"
 #include "event/Enabler.h"
 #include "event/SetCheckingNetwork.h"
+#include "event/DoDisconnect.h"
 
 #include "object/World.h"
 #include "object/PlayerList.h"
@@ -19,6 +20,7 @@ namespace SDL {
 class NetworkPortal : public Event::Enabler {
 protected:
     void handleSetCheckingNetwork(Event::SetCheckingNetwork *event);
+    void handleDoDisconnect(Event::DoDisconnect *event);
 private:
     Network::SinglePortal *portal;
     int id;
@@ -44,6 +46,8 @@ private:
     private:
         void send(Event::EventBase *event);
     };
+private:
+    unsigned long lastPing;
 public:
     NetworkPortal();
     ~NetworkPortal();
