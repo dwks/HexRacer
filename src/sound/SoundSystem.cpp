@@ -36,6 +36,20 @@ void SoundSystem::playerProgressHandler(Event::PlayerProgressEvent *event){
         ALHelpers::playFromSource(fxSources[0]);
     }
 }
+void SoundSystem::gameStateChangedHandler(Event::GameStageChanged *event){
+    switch(event->getStage()){
+        case World::WorldSetup::COUNT_1:
+        case World::WorldSetup::COUNT_2:
+        case World::WorldSetup::COUNT_3:
+            ALHelpers::playFromSource(fxSources[2]);
+            break;
+        case World::WorldSetup::RUNNING_GAME:
+            ALHelpers::playFromSource(fxSources[3]);
+            break;
+        default:
+            break;
+    }
+}
 bool SoundSystem::initialize(){
     systemType=0;
     
@@ -62,6 +76,7 @@ bool SoundSystem::initialize(Object::WorldManager *worldManager, World::PlayerMa
     
     METHOD_OBSERVER(&SoundSystem::physicsCollisionHandler);
     METHOD_OBSERVER(&SoundSystem::playerProgressHandler);
+    METHOD_OBSERVER(&SoundSystem::gameStateChangedHandler);
     
     return true;
 }
@@ -87,10 +102,12 @@ void SoundSystem::setupGameSoundFX()
     
     //Load all the generic soundfx
     string file[] = {"data/sound/soundfx/lapFinish.wav",
-        "data/sound/soundfx/raceFinish.wav"
+        "data/sound/soundfx/raceFinish.wav",
+        "data/sound/soundfx/beep.wav",
+        "data/sound/soundfx/start.wav"
     };
     
-    for(int i=0;i<2;i++){
+    for(int i=0;i<4;i++){
         ALHelpers::loadFileToBuffer(fxBuffers[i],file[i]);
         
         //bind a sound source to the buffer data
