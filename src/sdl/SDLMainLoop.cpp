@@ -8,6 +8,7 @@
 #include "GameLoop.h"
 
 #include "event/EventSystem.h"
+#include "event/DoDisconnect.h"
 
 #include "settings/SettingsManager.h"
 
@@ -18,6 +19,7 @@ namespace SDL {
 
 void SDLMainLoop::quitHandler(Event::QuitEvent *event) {
     if(!currentlyUsingMenuLoop()) {
+        EMIT_EVENT(new Event::DoDisconnect());
         useMenuLoop();
     }
     else {

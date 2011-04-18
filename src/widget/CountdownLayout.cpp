@@ -87,6 +87,8 @@ WidgetRect CountdownLayout::getBoundingRect() const {
 }
 
 void CountdownLayout::setCountdown(std::string data) {
+    ignoreChange = false;
+    
     if(actualData == "") {
         actualData = widget->getData();
     }

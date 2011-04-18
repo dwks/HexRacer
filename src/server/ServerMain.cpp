@@ -434,6 +434,12 @@ void ServerMain::run() {
             updateClients(8);
         }
         
+        if(gameStarted || countdownStart != (unsigned long)-1) {
+            if(!networkPortal->getClientManager()->getClientsStillConnected()) {
+                quit = true;
+            }
+        }
+        
         if(gameStarted) {
             paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
             
@@ -495,10 +501,21 @@ void ServerMain::run() {
         
         accelControl->clearPauseSkip();
     }
+    
+    LOG(GLOBAL, "All players left, server is exiting");
 }
 
 void ServerMain::sendWorldToPlayers() {
     {
+        LOG(WORLD, "List of players:");
+        Object::WorldManager::PlayerIteratorType it
+            = basicWorld->getWorldManager()->getPlayerIterator();
+        while(it.hasNext()) {
+            Object::Player *player = it.next();
+            LOG(WORLD, "    " << player->getID()
+                << " " << player->getPlayerName());
+        }
+        
         Event::EntireWorld *entireWorld = new Event::EntireWorld(
             getWorldManager()->getWorld(),
             getWorldManager()->getPlayerList(),
@@ -509,26 +526,26 @@ void ServerMain::sendWorldToPlayers() {
         delete packet;
     }
     
-    int aiCount = GET_SETTING("server.aicount", 0);
+    //int aiCount = GET_SETTING("server.aicount", 0);
     
-    for(int client = aiCount; client < aiCount + clients->getSocketCount();
-        client ++) {
-        
+    for(int client = 0; client < clients->getSocketCount(); client ++) {
         if(!clients->socketExists(client)) continue;
         
-        LOG(WORLD, "Creating player " << client);
+        int id = clients->getGameID(client);
+        
+        LOG(WORLD, "Creating player " << id);
         
         Math::Point location = basicWorld->getRaceManager()
-            ->startingPointForPlayer(client);
+            ->startingPointForPlayer(id);
         Math::Point direction = basicWorld->getRaceManager()
             ->startingPlayerDirection();
         
         World::WorldSetup::PlayerSettings *settings
             = World::WorldSetup::getInstance()->getPlayerSettings(
-                client);
+                id);
         
         Object::Player *player = new Object::Player(
-            client, location, direction);
+            id, location, direction);
         if(settings) {
             player->setPlayerName(settings->getName());
             player->setTeamID(settings->getColor());

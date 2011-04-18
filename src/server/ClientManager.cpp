@@ -26,9 +26,13 @@ void ClientManager::addClient(Connection::Socket *socket, int id) {
     timeout.push_back(now);
     
     gameid.push_back(id);
+    
+    LOG(NETWORK, "Registering new connection for client " << id);
 }
 
 int ClientManager::getGameID(int which) {
+    LOG(NETWORK, "***** Game ID of " << which << " is " << gameid[which]);
+    
     return gameid[which];
 }
 
@@ -64,7 +68,8 @@ void ClientManager::setPingTimeout(int client, unsigned long ms) {
     LOG(NETWORK, "client " << client << " set to " << ms);
     
     for(portal_list_t::size_type i = 0; i < portal_list.size(); ++ i) {
-        LOG(NETWORK, "client " << i << ": " << portal_list[i]);
+        LOG(NETWORK, "client " << i << ": " << portal_list[i]
+            << " (" << gameid[i] << ")");
     }
 }
 
@@ -134,6 +139,18 @@ bool ClientManager::socketExists(int which) const {
 
 int ClientManager::getSocketCount() const {
     return static_cast<int>(portal_list.size());
+}
+
+int ClientManager::getClientsStillConnected() const {
+    int count = 0;
+    
+    for(portal_list_t::const_iterator i = portal_list.begin();
+        i != portal_list.end(); ++ i) {
+        
+        if(*i != NULL) count ++;
+    }
+    
+    return count;
 }
 
 }  // namespace Server

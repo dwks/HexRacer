@@ -44,6 +44,8 @@ public:
     
     bool socketExists(int which) const;
     int getSocketCount() const;
+    
+    int getClientsStillConnected() const;
 };
 
 }  // namespace Server
