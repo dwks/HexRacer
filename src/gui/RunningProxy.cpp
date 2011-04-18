@@ -4,6 +4,7 @@
 #include "widget/KeyEvent.h"
 #include "widget/WidgetActivateEvent.h"
 #include "widget/TextWidget.h"
+#include "widget/CountdownLayout.h"
 
 #include "event/PauseGame.h"
 
@@ -18,6 +19,43 @@
 
 namespace Project {
 namespace GUI {
+
+void RunningProxy::handleSwitchToScreen(Event::SwitchToScreen *event) {
+    if(event->getScreen() != "running") return;
+    
+    Widget::TextWidget *lapcount
+        = dynamic_cast<Widget::TextWidget *>(running->getChild("lapcount"));
+    
+    Widget::CountdownLayout *transition
+        = dynamic_cast<Widget::CountdownLayout *>(lapcount->getLayout().get());
+    
+    transition->setIgnoreChange();
+}
+
+void RunningProxy::handleGameStageChanged(Event::GameStageChanged *event) {
+    Widget::TextWidget *lapcount
+        = dynamic_cast<Widget::TextWidget *>(running->getChild("lapcount"));
+    
+    Widget::CountdownLayout *transition
+        = dynamic_cast<Widget::CountdownLayout *>(lapcount->getLayout().get());
+    
+    switch(event->getStage()) {
+    case World::WorldSetup::COUNT_3:
+        transition->setCountdown("   3   ");
+        break;
+    case World::WorldSetup::COUNT_2:
+        transition->setCountdown("   2   ");
+        break;
+    case World::WorldSetup::COUNT_1:
+        transition->setCountdown("   1   ");
+        break;
+    case World::WorldSetup::RUNNING_GAME:
+        transition->setCountdown("  GO!  ");
+        break;
+    default:
+        break;
+    }
+}
 
 void RunningProxy::playerProgressHandler(Event::PlayerProgressEvent *event) {
     Widget::TextWidget *lapCount
@@ -45,6 +83,8 @@ void RunningProxy::playerProgressHandler(Event::PlayerProgressEvent *event) {
 }
 
 RunningProxy::RunningProxy(Widget::WidgetBase *running) : running(running) {
+    METHOD_OBSERVER(&RunningProxy::handleSwitchToScreen);
+    METHOD_OBSERVER(&RunningProxy::handleGameStageChanged);
     METHOD_OBSERVER(&RunningProxy::playerProgressHandler);
 }
 

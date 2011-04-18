@@ -14,6 +14,7 @@
 #include "widget/CentreUponChangeLayout.h"
 #include "widget/SmoothTransitionLayout.h"
 #include "widget/AbsoluteLayout.h"
+#include "widget/CountdownLayout.h"
 
 #include "MapList.h"
 
@@ -395,13 +396,23 @@ void GUIConstruction::constructRunning() {
         = new Widget::CompositeWidget("running");
     widgets->addChild(running);
     
-    Widget::WidgetBase *lapcount = new Widget::TextWidget(
-        "lapcount", "Lap 1", 0,
+    Widget::TextWidget *lapcount = new Widget::TextWidget(
+        "lapcount", "", 0,
         Widget::WidgetRect(0.0, 0.0, 0.2, 0.06));
-    lapcount->setLayout(new Widget::CentreUponChangeLayout(
-        lapcount->getLayout(), 1500, 500,
+    lapcount->setLayout(new Widget::CountdownLayout(
+        lapcount, lapcount->getLayout(), 1500, 500,
         Widget::WidgetRect(0.2, 0.3, 0.6, 0.2)));
     running->addChild(lapcount);
+    
+    /*Widget::WidgetBase *countdown = new Widget::TextWidget(
+        "countdown", "", 0,
+        Widget::WidgetRect(0.25, 0.35, 0.5, 0.1));
+    countdown->setLayout(new Widget::SmoothTransitionLayout(
+        countdown->getLayout(), 0,
+        Widget::SmoothTransitionLayout::SMOOTH_START));
+    dynamic_cast<Widget::SmoothTransitionLayout *>(countdown->getLayout().get())
+        ->doTransition(0, Widget::WidgetRect(0.25, 0.35, 0.5, 0.1));
+    running->addChild(countdown);*/
     
     boost::shared_ptr<Widget::EventProxy> proxy(new RunningProxy(running));
     getWidget("running")->addEventProxy(proxy);

@@ -87,6 +87,9 @@ public:
         START_LOADING,      // server -> client
         FINISHED_LOADING,   // client -> server
         START_COUNTDOWN,    // server -> client
+        COUNT_3,            // server -> client
+        COUNT_2,            // server -> client
+        COUNT_1,            // server -> client
         RUNNING_GAME,       // both server and client
         FINISHED_GAME       // both server and client (server -> client)
     };

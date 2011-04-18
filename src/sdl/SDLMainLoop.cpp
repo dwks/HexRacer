@@ -104,7 +104,8 @@ void SDLMainLoop::gameStageChangedHandler(Event::GameStageChanged *event) {
             menuLoop->getGUI(),
             menuLoop->getGUIInput());
         menuLoop->getGUI()->popScreen();
-        menuLoop->getGUI()->pushScreen("running");
+        //menuLoop->getGUI()->pushScreen("running");
+        EMIT_EVENT(new Event::SwitchToScreen("running"));
         
         // set up camera if necessary
         gameLoop->setProjection(Point2D(

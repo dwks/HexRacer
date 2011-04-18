@@ -290,6 +290,7 @@ ServerMain::ServerMain() : clientCount(0), visitor(this) {
 void ServerMain::initBasics() {
     loadingStarted = false;
     gameStarted = false;
+    countdownStart = (unsigned long)-1;
     
     accelControl = boost::shared_ptr<Timing::AccelControl>(
         new Timing::AccelControl());
@@ -381,6 +382,10 @@ void ServerMain::run() {
         
         handleIncomingPackets();
         
+        if(!gameStarted && countdownStart != (unsigned long)-1) {
+            updateClients();
+        }
+        
         if(gameStarted) {
             paintSubsystem->doStep(Misc::Sleeper::getTimeMilliseconds());
             
@@ -395,13 +400,39 @@ void ServerMain::run() {
         }
         else {
             if(loadingStarted) {
-                if(World::WorldSetup::getInstance()->everyoneFullyLoaded()) {
-                    EMIT_EVENT(new Event::GameStageChanged(
-                        Project::World::WorldSetup::START_COUNTDOWN));
+                if(countdownStart != (unsigned long)-1) {
+                    unsigned long now = Misc::Sleeper::getTimeMilliseconds();
                     
-                    gameStarted = true;
-                    World::TimeElapsed::getInstance().setStartTime(
-                        Misc::Sleeper::getTimeMilliseconds());
+                    //LOG(WORLD, "Loading... " << now << "/" << (countdownStart));
+                    
+                    World::WorldSetup::GameStage oldStage = lastStage;
+                    
+                    if(now >= countdownStart + 4000) {
+                        lastStage = World::WorldSetup::RUNNING_GAME;
+                        
+                        gameStarted = true;
+                        World::TimeElapsed::getInstance().setStartTime(
+                            Misc::Sleeper::getTimeMilliseconds());
+                    }
+                    else if(now >= countdownStart + 3000) {
+                        lastStage = World::WorldSetup::COUNT_1;
+                    }
+                    else if(now >= countdownStart + 2000) {
+                        lastStage = World::WorldSetup::COUNT_2;
+                    }
+                    else if(now >= countdownStart + 1000) {
+                        lastStage = World::WorldSetup::COUNT_3;
+                    }
+                    
+                    if(oldStage != lastStage) {
+                        EMIT_EVENT(new Event::GameStageChanged(lastStage));
+                    }
+                }
+                else if(World::WorldSetup::getInstance()->everyoneFullyLoaded()) {
+                    lastStage = Project::World::WorldSetup::START_COUNTDOWN;
+                    EMIT_EVENT(new Event::GameStageChanged(lastStage));
+                    
+                    countdownStart = Misc::Sleeper::getTimeMilliseconds();
                 }
             }
             else if(World::WorldSetup::getInstance()->everyoneReadyToStart()) {

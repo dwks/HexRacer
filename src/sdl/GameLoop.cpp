@@ -73,8 +73,9 @@ void GameLoop::miscellaneous() {
     inputManager->doStep(SDL_GetTicks());
     
     gameWorld->doPhysics();
+    
 	gameWorld->doAI();
-        gameWorld->doSound();
+    gameWorld->doSound();
     
     viewport->doCamera(SDL_GetTicks());
 }

@@ -31,6 +31,11 @@ public:
     virtual void update();
     virtual void update(const WidgetRect &newBounds);
     
+    /** Warning: calling this function while a transition is taking place
+        may yield unexpected results.
+    */
+    void setTransitionTime(int time) { transitionTime = time; }
+    
     boost::shared_ptr<Layout> getNormalLayout() { return normalLayout; }
     
     /** Pops the profile to use from the profile stack.

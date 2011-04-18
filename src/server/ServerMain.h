@@ -59,6 +59,8 @@ private:
     int clientCount;
     int whichSocket;
     bool loadingStarted, gameStarted;
+    unsigned long countdownStart;
+    World::WorldSetup::GameStage lastStage;
     
     boost::shared_ptr<Timing::AccelControl> accelControl;
     boost::shared_ptr<World::BasicWorld> basicWorld;
