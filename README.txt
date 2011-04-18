@@ -1,8 +1,6 @@
-README for HexRacer
-===================
+=== README for HexRacer
 
-Using the game
---------------
+--- Using the game
 
 Launch the game by running "sdl". You can play a single player game or launch
 a server automatically from the "Host game" screen.
@@ -34,8 +32,7 @@ Debug controls:
 - The space bar levitates the car.
 
 
-Status of the game
-------------------
+--- Status of the game
 
 Almost all game mechanics are implemented.
 - While painting or erasing, you have a speed penalty applied.
@@ -54,8 +51,7 @@ Other new features:
 - AI improved, they actually decide when to paint and erase and speed boost.
 
 
-Compiling the game
-------------------
+--- Compiling the game
 
 Libraries used:
 - Simple DirectMedia Layer (SDL 1.2.14), with additional libraries:
@@ -74,8 +70,7 @@ compile this code; you may find them a useful starting point if you wish to
 build our game from source.
 
 
-Known bugs
-----------
+--- Known bugs
 
 On some older systems the shaders do not work correctly, or make the game too
 slow. The setting "render.quality" can be changed in config.txt, or in the

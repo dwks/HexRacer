@@ -100,7 +100,7 @@ private:
     void handleNewConnections();
     void handleDisconnections();
     void handleIncomingPackets();
-    void updateClients();
+    void updateClients(int frequency);
     unsigned long doDelay(unsigned long lastTime);
 };
 

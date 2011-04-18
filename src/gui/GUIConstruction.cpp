@@ -90,7 +90,7 @@ void GUIConstruction::constructMain() {
     
     main->addChild(new Widget::ButtonWidget("settings", "Settings",
         Widget::WidgetRect(1.01, -0.002, 0.01, 0.002)));
-    main->addChild(new Widget::ButtonWidget("about", "About",
+    main->addChild(new Widget::ButtonWidget("about", "Help",
         Widget::WidgetRect(1.01, 0.4, 0.01, 0.002)));
     main->addChild(new Widget::ButtonWidget("quit", "Quit",
         Widget::WidgetRect(1.01, 0.8, 0.01, 0.002)));
@@ -118,7 +118,7 @@ void GUIConstruction::constructMain() {
     setShortcut(getWidget("main/single"), SDLK_p);
     
     setShortcut(getWidget("main/settings"), SDLK_e);
-    setShortcut(getWidget("main/about"), SDLK_a);
+    setShortcut(getWidget("main/about"), SDLK_l);
     setShortcut(getWidget("main/quit"), SDLK_q);
     setShortcut(getWidget("main/quit"), SDLK_ESCAPE);
     
@@ -569,7 +569,16 @@ void GUIConstruction::constructAbout() {
     about->addChild(new Widget::ButtonWidget("back", "Back to main menu",
         Widget::WidgetRect(0.2, 0.9, 0.6, 0.07)));
     
+    Widget::ListWidget *text = new Widget::ListWidget("text", true, false,
+        Widget::WidgetRect(0.05, 0.05, 0.9, 0.75));
+    about->addChild(text);
+    
+    AboutProxy::loadHelpText(text);
+    
+    setShortcut(getWidget("about/back"), SDLK_ESCAPE);
+    
     boost::shared_ptr<Widget::EventProxy> proxy(new AboutProxy(about));
+    
     getWidget("about/back")->addEventProxy(proxy);
 }
 

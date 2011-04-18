@@ -383,7 +383,7 @@ void ServerMain::run() {
         handleIncomingPackets();
         
         if(!gameStarted && countdownStart != (unsigned long)-1) {
-            updateClients();
+            updateClients(8);
         }
         
         if(gameStarted) {
@@ -393,7 +393,7 @@ void ServerMain::run() {
             basicWorld->doAI();
 			basicWorld->checkRaceProgress();
             
-            updateClients();
+            updateClients(5);
             
             World::TimeElapsed::getInstance().addStartTime(
                 Timing::AccelControl::getInstance()->getPauseSkip());
@@ -554,9 +554,9 @@ void ServerMain::handleIncomingPackets() {
     }
 }
 
-void ServerMain::updateClients() {
+void ServerMain::updateClients(int frequency) {
     static int loops = 0;
-    if(++loops == 5) {
+    if(++loops == frequency) {
         loops = 0;
         
         Event::UpdateWorld *update

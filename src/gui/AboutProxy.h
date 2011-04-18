@@ -3,6 +3,7 @@
 
 #include "widget/EventProxy.h"
 #include "widget/WidgetBase.h"
+#include "widget/ListWidget.h"
 
 namespace Project {
 namespace GUI {
@@ -14,7 +15,8 @@ public:
     AboutProxy(Widget::WidgetBase *about) : about(about) {}
     
     virtual void visit(Widget::WidgetActivateEvent *event);
-
+    
+    static void loadHelpText(Widget::ListWidget *text);
 };
 
 }  // namespace GUI
