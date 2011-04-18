@@ -138,6 +138,8 @@ void LoadingProxy::visit(Widget::RepaintEvent *event) {
                     Event::StartingGame::LOADING_MAP));
                 
                 EMIT_EVENT(new Event::GameStageChanged(
+                    World::WorldSetup::START_COUNTDOWN));
+                EMIT_EVENT(new Event::GameStageChanged(
                     World::WorldSetup::RUNNING_GAME));
             }
             else if(type == "waiting") {
