@@ -19,13 +19,17 @@ ClientManager::~ClientManager() {
 }
 
 void ClientManager::addClient(Connection::Socket *socket, int id) {
-    while(int(portal_list.size()) <= id) portal_list.push_back(NULL);
-    portal_list[id] = new Network::SinglePortal(socket);
+    //while(int(portal_list.size()) <= id) portal_list.push_back(NULL);
+    portal_list.push_back(new Network::SinglePortal(socket));
     
     unsigned long now = Misc::Sleeper::getTimeMilliseconds();
+    timeout.push_back(now);
     
-    while(int(timeout.size()) <= id) timeout.push_back(0);
-    timeout[id] = now;
+    gameid.push_back(id);
+}
+
+int ClientManager::getGameID(int which) {
+    return gameid[which];
 }
 
 void ClientManager::forceDisconnect(int which) {
@@ -68,7 +72,7 @@ void ClientManager::setAllowableTimeout(unsigned long allowableTimeout) {
     this->allowableTimeout = allowableTimeout;
 }
 
-int ClientManager::nextDisconnectedClient() {
+int ClientManager::nextDisconnectedClient(int &gid) {
     unsigned long now = Misc::Sleeper::getTimeMilliseconds();
     
     int x = 0;
@@ -83,18 +87,22 @@ int ClientManager::nextDisconnectedClient() {
         }
         
         if(!portal->isOpen()) {
-            *i = NULL;
-            //portal_list.erase(i);
-            //timeout.erase(timeout.begin() + x);
+            //*i = NULL;
+            gid = gameid[x];
+            portal_list.erase(i);
+            timeout.erase(timeout.begin() + x);
+            gameid.erase(gameid.begin() + x);
             delete portal;
             return x;
         }
         
         if(now >= timeout[x] + allowableTimeout) {
-            *i = NULL;
+            //*i = NULL;
+            gid = gameid[x];
+            portal_list.erase(i);
+            timeout.erase(timeout.begin() + x);
+            gameid.erase(gameid.begin() + x);
             delete portal;
-            //portal_list.erase(i);
-            //timeout.erase(timeout.begin() + x);
             return x;
         }
         

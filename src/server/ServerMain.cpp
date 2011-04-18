@@ -558,12 +558,12 @@ void ServerMain::handleNewConnections() {
 }
 
 void ServerMain::handleDisconnections() {
-    int disconnected;
-    while((disconnected = clients->nextDisconnectedClient()) >= 0) {
+    int disconnected, gameid;
+    while((disconnected = clients->nextDisconnectedClient(gameid)) >= 0) {
         LOG2(NETWORK, CONNECT,
             "Client " << disconnected << " has disconnected");
         
-        World::WorldSetup::getInstance()->removePlayer(disconnected);
+        World::WorldSetup::getInstance()->removePlayer(gameid);
     }
 }
 

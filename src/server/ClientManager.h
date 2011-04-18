@@ -20,12 +20,16 @@ private:
     typedef std::vector<unsigned long> timeout_t;
     timeout_t timeout;
     
+    typedef std::vector<int> gameid_t;
+    gameid_t gameid;
+    
     unsigned long allowableTimeout;
 public:
     ClientManager();
     ~ClientManager();
     
     void addClient(Connection::Socket *socket, int id);
+    int getGameID(int which);
     void forceDisconnect(int which);
     
     void sendPacket(Network::Packet *packet);
@@ -35,7 +39,7 @@ public:
     void setPingTimeout(int client, unsigned long ms);
     void setAllowableTimeout(unsigned long allowableTimeout);
     
-    int nextDisconnectedClient();
+    int nextDisconnectedClient(int &gid);
     Network::Packet *nextPacket(int *whichSocket = NULL);
     
     bool socketExists(int which) const;
