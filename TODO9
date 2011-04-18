@@ -4,9 +4,6 @@
 
 - joystick menus?
 
-- option: enable/disable bonus
-- option: paint mode (normal, permanent, overwrite)
-
 - fix aspect ratio of logo
 - fix "Server:" message (displays current IP on other clients)
 - auto-scroll chat textbox

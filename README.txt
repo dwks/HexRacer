@@ -34,7 +34,7 @@ Debug controls:
 
 --- Status of the game
 
-Almost all game mechanics are implemented.
+All game mechanics are implemented.
 - While painting or erasing, you have a speed penalty applied.
 - Traveling on your team's paint gives you an appropriate speed burst.
 - You paint the same colour as your team.
@@ -49,6 +49,7 @@ Other new features:
 - We have a new car model now.
 - Some other animations added to the GUI.
 - AI improved, they actually decide when to paint and erase and speed boost.
+- Different game types (overwritable paint, etc).
 
 
 --- Compiling the game
@@ -77,9 +78,11 @@ slow. The setting "render.quality" can be changed in config.txt, or in the
 Settings menu, a lower graphics quality can be set. (The default is "very high"
 quality.)
 
-The server does not exit once a game is finished, and must be terminated
-manually. Also, disconnecting players are not handled (from the lobby);
-currently if a player disconnects the server must be restarted.
+The server should exit automatically now, but it may still be necessary to kill
+it if the client crashes (it will automatically exit after 30 seconds in this
+case). There is a client crash that only occurs when joining a game for the
+second time. If this happens, restart the game before joining other games.
 
-The list of players shown in the lobby does not update and is inaccurate for
-AI colours.
+Note: practice mode is not intended to have AIs or multiplayer. It's just for
+exploring maps.
+

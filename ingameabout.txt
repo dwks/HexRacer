@@ -1,30 +1,31 @@
 === HexRacer: What's this malarky?
 
-HexRacer is a racing game!
-Racing is when you go faster than other people because you hate them.
+HexRacer is a racing game! Racing is when you go faster than other
+people because you can.
 
-The goal of the game is to finish all the laps as fast as you can.
-In the end, the averaged time of each team is how the game decides
-which team is deserving of glory or shame.
+The goal of the game is to finish all the laps as fast as possible.
+In the end, the average times of all teammates on each team decides
+which teams are deserving of glory or shame.
 
 HexRacer is tough, but fair.
 
---- Painting: Show your true colors!
+--- Painting: Show your true colours!
 
 Painting is integral to doing well in HexRacer. Lay down your paint on
-the track, and when you or your same-colored teammates drive over it,
+the track, and when you or your same-coloured teammates drive over it,
 you'll get a speed boost! Use this boost to make your enemies weep.
 
-To add insult to injury, players of other colors will slow down slightly
+To add insult to injury, players of other colours will slow down slightly
 as they drive over your paint.
 
-If you find yourself heading towards enemy paint, don't despair!
-Erasing is here to help!
-Erasing will clear any paint over which you drive.
+If you find yourself heading towards enemy paint, don't despair. There
+is an antidote to a kaleidoscope of enemy paint: erasing. Erasing will
+clear any paint over which you drive.
+
 Ruin the honest work of your adversaries! They probably deserve it.
 
-!!! Caution!
-You incur a speed penalty while painting or erasing, so think carefully!
+!!!   Caution!
+  You incur a speed penalty while painting or erasing, so think carefully.
 
 --- Bonuses: Why get less when you can get MORE?
 
@@ -33,19 +34,21 @@ generosity to award bonus points for players that paint or erase
 sufficient amounts.
 
 As you paint or erase, you'll earn bonus time that will be subtracted
-from your final race time. It could make all the difference! Or not!
+from your final race time. It could make all the difference . . . or not.
 
- Pro-tip:
-  The bonuses for erasing are much higher than painting, but it's much harder!
+!!!   Pro-tip:
+  The bonuses for erasing are higher than painting, but it's much harder.
 
 In addition, a massive bonus is awarded for your final placing among all players.
 Remember the saying: Not first is not not worst.
 
 === About The Creators
 
-HexRacer was developed by a mere three humans.
-The Earth names of those humans are, as of the date of this writing:
+HexRacer was developed by three humans, banding together under the rallying
+cry of "Team D!". The standard Earth names of those humans are, as of the
+time of this writing:
 
 Alfred Lam
 Andrew Spittal
 David Williams-King
+

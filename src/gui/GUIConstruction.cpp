@@ -480,20 +480,20 @@ void GUIConstruction::constructPaused() {
     widgets->addChild(paused);
     
     paused->addChild(new Widget::ButtonWidget("resume", "Resume",
-        Widget::WidgetRect(0.3, 0.4 - 0.15, 0.4, 0.1)));
-    paused->addChild(new Widget::ButtonWidget("settings", "Settings",
-        Widget::WidgetRect(0.3, 0.4, 0.4, 0.1)));
+        Widget::WidgetRect(0.3, 0.4 - 0.07, 0.4, 0.1)));
+    /*paused->addChild(new Widget::ButtonWidget("settings", "Settings",
+        Widget::WidgetRect(0.3, 0.4, 0.4, 0.1)));*/
     paused->addChild(new Widget::ButtonWidget("quit", "Quit",
-        Widget::WidgetRect(0.3, 0.4 + 0.15, 0.4, 0.1)));
+        Widget::WidgetRect(0.3, 0.4 + 0.07, 0.4, 0.1)));
     
     setShortcut(getWidget("paused/resume"), SDLK_ESCAPE);
     setShortcut(getWidget("paused/resume"), SDLK_r);
-    setShortcut(getWidget("paused/settings"), SDLK_s);
+    //setShortcut(getWidget("paused/settings"), SDLK_s);
     setShortcut(getWidget("paused/quit"), SDLK_q);
     
     boost::shared_ptr<Widget::EventProxy> proxy(new PauseMenuProxy());
     getWidget("paused/resume")->addEventProxy(proxy);
-    getWidget("paused/settings")->addEventProxy(proxy);
+    //getWidget("paused/settings")->addEventProxy(proxy);
     getWidget("paused/quit")->addEventProxy(proxy);
 }
 

@@ -30,6 +30,8 @@ void RunningProxy::handleSwitchToScreen(Event::SwitchToScreen *event) {
         = dynamic_cast<Widget::CountdownLayout *>(lapcount->getLayout().get());
     
     transition->setIgnoreChange();
+    
+    actuallyStarted = false;
 }
 
 void RunningProxy::handleGameStageChanged(Event::GameStageChanged *event) {
@@ -51,6 +53,7 @@ void RunningProxy::handleGameStageChanged(Event::GameStageChanged *event) {
         break;
     case World::WorldSetup::RUNNING_GAME:
         transition->setCountdown("  GO!  ");
+        actuallyStarted = true;
         break;
     default:
         break;
@@ -86,11 +89,15 @@ RunningProxy::RunningProxy(Widget::WidgetBase *running) : running(running) {
     METHOD_OBSERVER(&RunningProxy::handleSwitchToScreen);
     METHOD_OBSERVER(&RunningProxy::handleGameStageChanged);
     METHOD_OBSERVER(&RunningProxy::playerProgressHandler);
+    
+    actuallyStarted = false;
 }
 
 void RunningProxy::visit(Widget::KeyEvent *event) {
     if(event->getKey() == SDLK_ESCAPE && event->getDown()) {
-        EMIT_EVENT(new Event::PauseGame(true));
+        if(actuallyStarted) {
+            EMIT_EVENT(new Event::PauseGame(true));
+        }
     }
 }
 

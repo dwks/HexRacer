@@ -20,6 +20,7 @@ protected:
 private:
     Widget::WidgetBase *running;
     std::string actualText;
+    bool actuallyStarted;
 public:
     RunningProxy(Widget::WidgetBase *running);
     

@@ -381,7 +381,9 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 		if (!Timing::AccelControl::getInstance()->getPaused() && clockStarted)
 			raceClock->setTotalTime(World::TimeElapsed::getInstance().getGameTime());
 
-		raceClock->addTimeOffset(Timing::AccelControl::getInstance()->getPauseSkip());
+        if(clockStarted) {
+            raceClock->addTimeOffset(Timing::AccelControl::getInstance()->getPauseSkip());
+        }
 		/*
 		raceClock->setSeconds((World::TimeElapsed::getInstance().getGameTime()
 			-Timing::AccelControl::getInstance()->getPauseSkip())/1000);
