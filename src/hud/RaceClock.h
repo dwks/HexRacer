@@ -13,11 +13,16 @@ private:
 	int height;
 	Render::TextureObjectChain entry;
 	Render::StringTexture timeTexture;
+	void setSeconds(unsigned int seconds);
+	unsigned long totalTime;
+	unsigned long timeOffset;
+	unsigned int raceSeconds;
 public:
 	RaceClock();
 	void setWidth(int _width) { width = _width; }
 	void setHeight(int _height) { height = _height; }
-	void setSeconds(unsigned int seconds);
+	void setTotalTime(unsigned long time) { totalTime = time; }
+	void addTimeOffset(unsigned long offset);
 	void render();
 };
 

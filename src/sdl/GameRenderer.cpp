@@ -22,6 +22,8 @@
 #include "log/Logger.h"
 #include "config.h"
 
+#include "event/EventSystem.h"
+
 namespace Project {
 namespace SDL {
 
@@ -40,6 +42,9 @@ GameRenderer::~GameRenderer() {
 
 void GameRenderer::construct(OpenGL::Camera *camera)
 {
+
+	METHOD_OBSERVER(&GameRenderer::handleGameStageChanged);
+
     //Instantiate the rendering objects
     meshLoader = boost::shared_ptr<Mesh::MeshLoader>(
         new Mesh::MeshLoader());
@@ -99,6 +104,8 @@ void GameRenderer::construct(OpenGL::Camera *camera)
 
 	shadowProperties = NULL;
 	shadowCamera = NULL;
+
+	clockStarted = false;
 
 	if (renderer->getRenderSettings()->getBloomEnabled())
 		initBloom();
@@ -313,7 +320,7 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
     }
 
 	//-Player Placing Text ----------------------------------------------------------------------------
-    if (!GET_SETTING("hud.lapprogress.practicemode", false) && GET_SETTING("hud.playerplacingtext.enable", true)) {
+    if (!GET_SETTING("internal.practicemode", false) && GET_SETTING("hud.playerplacingtext.enable", true)) {
 
         int draw_height = viewHeight*GET_SETTING("hud.playerplacingtext.drawheight", 0.2);
 
@@ -330,7 +337,7 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
     }
 
 	//-Bonus Messages ----------------------------------------------------------------------------
-    if (!GET_SETTING("hud.lapprogress.practicemode", false) && GET_SETTING("bonus.enable", true) && GET_SETTING("hud.bonusmessages.enable", true)) {
+    if (!GET_SETTING("internal.practicemode", false) && GET_SETTING("bonus.enable", true) && GET_SETTING("hud.bonusmessages.enable", true)) {
 
         int draw_height = viewHeight*GET_SETTING("hud.bonusmessages.drawheight", 0.5);
 		int draw_width = GET_SETTING("hud.bonusmessages.drawwidth", 400);
@@ -370,8 +377,15 @@ void GameRenderer::renderHUD(Object::WorldManager *worldManager, Object::Player 
 	
 		raceClock->setWidth(draw_width);
 		raceClock->setHeight(draw_height);
+
+		if (!Timing::AccelControl::getInstance()->getPaused() && clockStarted)
+			raceClock->setTotalTime(World::TimeElapsed::getInstance().getGameTime());
+
+		raceClock->addTimeOffset(Timing::AccelControl::getInstance()->getPauseSkip());
+		/*
 		raceClock->setSeconds((World::TimeElapsed::getInstance().getGameTime()
 			-Timing::AccelControl::getInstance()->getPauseSkip())/1000);
+		*/
 		raceClock->render();
 
     }
@@ -1038,5 +1052,15 @@ void GameRenderer::clearShadowMap() {
 	delete shadowCamera;
 	delete shadowProperties;
 }
+
+void GameRenderer::handleGameStageChanged(Event::GameStageChanged* event) {
+	if (event->getStage() == World::WorldSetup::RUNNING_GAME) {
+		if (!clockStarted) {
+			raceClock->addTimeOffset(World::TimeElapsed::getInstance().getGameTime());
+			clockStarted = true;
+		}
+	}
+}
+
 }  // namespace SDL
 }  // namespace Project

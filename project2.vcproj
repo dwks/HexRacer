@@ -314,6 +314,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ColourButtonWidget.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\CompositeEventProxy.cpp"
 				>
 			</File>
@@ -327,6 +331,10 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\Converter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\CountdownLayout.cpp"
 				>
 			</File>
 			<File
@@ -1564,6 +1572,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\widget\ColourButtonWidget.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\widget\CompositeEventProxy.h"
 				>
 			</File>
@@ -1581,6 +1593,10 @@
 			</File>
 			<File
 				RelativePath=".\src\physics\Converter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\widget\CountdownLayout.h"
 				>
 			</File>
 			<File
