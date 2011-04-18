@@ -3,6 +3,7 @@
 
 #include "event/EventSystem.h"
 #include "event/ChangeOfIntention.h"
+#include "event/CreateObject.h"
 
 #include "log/Logger.h"
 
@@ -36,6 +37,18 @@ void ServerNetworkPortal::EventPropagator::observe(Event::EventBase *event) {
         break;
     }
     case Event::EventType::CREATE_OBJECT:
+    {
+        Event::CreateObject *createObject
+            = dynamic_cast<Event::CreateObject *>(event);
+        
+        if(!createObject->getPropagate()) return;
+        
+        Network::Packet *packet = new Network::EventPacket(event);
+        portal->getClientManager()->sendPacket(packet);
+        delete packet;
+        
+        break;
+    }
     case Event::EventType::SETUP_CHAT:
     case Event::EventType::SETUP_PLAYER_SETTINGS:
     case Event::EventType::GAME_STAGE_CHANGED:

@@ -79,8 +79,7 @@ private:
 	Math::Point angularVelocity;
 
 public:
-    PhysicalPlayer() : rigidBody(NULL), onGround(false), speedBoost(1.0),
-        traction(1.0), sliding(false) {}
+    PhysicalPlayer();
     PhysicalPlayer(const Math::Point &position, const Math::Point &direction);
     virtual ~PhysicalPlayer();
     

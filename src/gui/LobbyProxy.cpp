@@ -203,6 +203,24 @@ void LobbyProxy::visit(Widget::WidgetActivateEvent *event) {
             LOG2(GUI, WARNING, "Can't set colour");
         }
     }
+    else if(name == "randomname") {
+        int id = worldSetup->getClientID();
+        World::WorldSetup::PlayerSettings *settings
+            = worldSetup->getPlayerSettings(id);
+        if(settings) {
+            Widget::EditWidget *text = dynamic_cast<Widget::EditWidget *>(
+                lobby->getChild("playername"));
+            
+            settings->setName(Object::Player::getDefaultPlayerName(id));
+            text->setData(settings->getName());
+            text->saveOldText();
+            
+            EMIT_EVENT(new Event::SetupPlayerSettings(*settings));
+        }
+        else {
+            LOG2(GUI, WARNING, "Can't randomize player name");
+        }
+    }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");
     }

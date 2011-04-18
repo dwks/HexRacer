@@ -53,7 +53,7 @@ int AIManager::createAIs(World::WorldSetup *worldSetup) {
         
         count ++;
         
-        LOG(NETWORK, "******** AI is controlling " << ai);
+        //LOG(NETWORK, "******** AI is controlling " << ai);
         
         Math::Point location = raceManager->startingPointForPlayer(ai);
         Math::Point direction = raceManager->startingPlayerDirection();
@@ -76,7 +76,7 @@ int AIManager::createAIs(World::WorldSetup *worldSetup) {
             = boost::shared_ptr<Driver>(new_driver);
         driverList.push_back(driver);
         
-        EMIT_EVENT(new Event::CreateObject(player));
+        EMIT_EVENT(new Event::CreateObject(player, false));
     }
     
     return count;

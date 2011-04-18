@@ -288,8 +288,15 @@ void GUIConstruction::constructLobby() {
         Widget::WidgetRect(0.05, 0.02, 0.9, 0.07)));
     
     lobby->addChild(new Widget::TextWidget("all-teams-label",
-        "Teams (choose one)", 0,
-        Widget::WidgetRect(0.52, 0.1, 0.45, 0.1)));
+        "Teams", 0,
+        Widget::WidgetRect(0.52, 0.13, 0.45, 0.06)));
+    
+    lobby->addChild(new Widget::TextWidget("teams-instructions-1",
+        "Click a colour to join that team.", 0,
+        Widget::WidgetRect(0.52, 0.46, 0.45, 0.04)));
+    lobby->addChild(new Widget::TextWidget("teams-instructions-2",
+        "Use the arrows to add/remove AIs.", 0,
+        Widget::WidgetRect(0.52, 0.50, 0.45, 0.04)));
     
 	for (int i = 0; i < Map::Teams::MAX_TEAMS; i++) {
         const double COLOUR_WIDTH = 0.45 / Map::Teams::MAX_TEAMS;
@@ -320,7 +327,7 @@ void GUIConstruction::constructLobby() {
     
     lobby->addChild(new Widget::TextWidget("all-players-label",
         "Players", 0,
-        Widget::WidgetRect(0.05, 0.1, 0.43, 0.06)));
+        Widget::WidgetRect(0.05, 0.13, 0.43, 0.06)));
     
     lobby->addChild(new Widget::ListWidget("playerlist", true, false,
         Widget::WidgetRect(0.05, 0.2, 0.43, 0.26)));
@@ -330,7 +337,10 @@ void GUIConstruction::constructLobby() {
         Widget::WidgetRect(0.052, 0.46, 0.1, 0.06)));
     lobby->addChild(new Widget::EditWidget("playername",
         Misc::StreamAsString() << "Anonymous",
-        Widget::WidgetRect(0.17, 0.46, 0.25, 0.06)));
+        Widget::WidgetRect(0.17, 0.46, 0.22, 0.06)));
+    lobby->addChild(new Widget::ButtonWidget("randomname",
+        "rand",
+        Widget::WidgetRect(0.39, 0.46, 0.1, 0.06)));
     
     lobby->addChild(new Widget::ListWidget("chatlist", true, false,
         Widget::WidgetRect(0.05, 0.55, 0.9, 0.25)));
@@ -368,6 +378,8 @@ void GUIConstruction::constructLobby() {
         scroll->getMore()->addEventProxy(
             new LobbyProxy::ScrollbarProxy(lobby, scroll));
     }
+    
+    getWidget("lobby/randomname")->addEventProxy(proxy);
     
     getWidget("lobby/chatlist")->addEventProxy(proxy);
     getWidget("lobby/chat")->addEventProxy(proxy);

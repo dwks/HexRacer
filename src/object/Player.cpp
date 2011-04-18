@@ -166,7 +166,10 @@ std::string Player::getDefaultPlayerName(int id) {
 		"Gazette",
 		"Cold In Here",
 		"Speaking?",
-		"Backwards=better"
+		"Backwards=better",
+		"Slalom Slam",
+		"In For A Penny",
+		"Always Nonsense"
 	};
     std::size_t size = sizeof(nameList) / sizeof(*nameList);
     

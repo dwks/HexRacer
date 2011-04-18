@@ -14,6 +14,12 @@
 namespace Project {
 namespace Physics {
 
+PhysicalPlayer::PhysicalPlayer() : rigidBody(NULL), onGround(false),
+    speedBoost(1.0), traction(1.0), sliding(false) {
+    
+    //LOG(PHYSICS, "PhysicalPlayer at origin");
+}
+
 PhysicalPlayer::PhysicalPlayer(const Math::Point &position, const Math::Point &direction) {
     onGround = false;
     speedBoost = 1.0;
@@ -27,6 +33,8 @@ PhysicalPlayer::PhysicalPlayer(const Math::Point &position, const Math::Point &d
 
 	constructRigidBody(transformation);
     //constructRigidBody(position);
+    
+    //LOG(PHYSICS, "PhysicalPlayer at " << position);
 }
 
 PhysicalPlayer::~PhysicalPlayer() {

@@ -199,8 +199,8 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
             int toAdd;
             stream >> toAdd;
             
-            int colour = worldSetup->getPlayerSettings(general->getClient())
-                ->getColor();
+            /*int colour = worldSetup->getPlayerSettings(general->getClient())
+                ->getColor();*/
             
             LOG(NETWORK, "Creating another AI on team " << toAdd);
             
@@ -218,8 +218,8 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
             int removeFrom;
             stream >> removeFrom;
             
-            int colour = worldSetup->getPlayerSettings(general->getClient())
-                ->getColor();
+            /*int colour = worldSetup->getPlayerSettings(general->getClient())
+                ->getColor();*/
             
             LOG(NETWORK, "Trying to remove an AI from team " << removeFrom);
             

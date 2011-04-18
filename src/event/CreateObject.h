@@ -20,10 +20,13 @@ private:
     }
 private:
     Object::ObjectBase *object;
+    bool propagate;
 public:
-    CreateObject() : object(NULL) {}
-    CreateObject(Object::ObjectBase *object) : object(object) {}
+    CreateObject() : object(NULL), propagate(false) {}
+    CreateObject(Object::ObjectBase *object, bool propagate = true)
+        : object(object), propagate(propagate) {}
     
+    bool getPropagate() const { return propagate; }
     Object::ObjectBase *getObject() { return object; }
     
     virtual EventType::type_t getType() const
