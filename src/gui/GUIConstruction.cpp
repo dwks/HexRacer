@@ -192,10 +192,10 @@ void GUIConstruction::constructHost() {
         "Paint erasing", GET_SETTING("game.paint.allowerase", 1),
         Widget::WidgetRect(0.5, 0.50-0.02, 0.35, 0.08)));
     host->addChild(new Widget::CheckWidget("overwrite",
-        "Paint overwrite", GET_SETTING("game.paint.allowoverwrite", "0"),
+        "Paint overwrite", GET_SETTING("game.paint.allowoverwrite", 0),
         Widget::WidgetRect(0.5, 0.60-0.03, 0.35, 0.08)));
-    host->addChild(new Widget::CheckWidget("erasing",
-        "Bonuses enabled", GET_SETTING("bonus.enable", "1"),
+    host->addChild(new Widget::CheckWidget("bonus",
+        "Bonuses enabled", GET_SETTING("bonus.enable", 1),
         Widget::WidgetRect(0.5, 0.70-0.04, 0.35, 0.08)));
     
     host->addChild(new Widget::TextWidget("error", "", 0,
@@ -218,6 +218,10 @@ void GUIConstruction::constructHost() {
     getWidget("host/lapcount")->addEventProxy(proxy);
     
     getWidget("host/hostport")->addEventProxy(proxy);
+    
+    getWidget("host/erasing")->addEventProxy(proxy);
+    getWidget("host/overwrite")->addEventProxy(proxy);
+    getWidget("host/bonus")->addEventProxy(proxy);
     
     getWidget("host/cancel")->addEventProxy(proxy);
     getWidget("host/host")->addEventProxy(proxy);
