@@ -141,7 +141,32 @@ std::string Player::getDefaultPlayerName(int id) {
 		"Fresh Prance",
 		"Carabeener",
 		"Three Sheets",
-		"Speak-N-Spell"
+		"Speak-N-Spell",
+		"Dog Tired",
+		"Current",
+		"Neumonious",
+		"Shinty",
+		"Oliver the Rat",
+		"Illustrated",
+		"Prongs",
+		"Sand Witch",
+		"Chromium",
+		"Sixth Sense",
+		"Watching You",
+		"Twinkly",
+		"West Wind",
+		"Dust Devil",
+		"Oft-Wanted",
+		"Square Peg",
+		"Lightstorm",
+		"Delicious Punch",
+		"New-Age Turtle",
+		"Bumblebee",
+		"Walolahoe",
+		"Gazette",
+		"Cold In Here",
+		"Speaking?",
+		"Backwards=better"
 	};
     std::size_t size = sizeof(nameList) / sizeof(*nameList);
     
