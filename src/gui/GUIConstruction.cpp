@@ -298,7 +298,7 @@ void GUIConstruction::constructLobby() {
     
     std::string ip = boost::asio::ip::host_name();
     lobby->addChild(new Widget::TextWidget("ipaddress",
-        Misc::StreamAsString() << "Local IP: " << ip, 0,
+        Misc::StreamAsString() << "Local System: " << ip, 0,
         Widget::WidgetRect(0.05, 0.02, 0.9, 0.07)));
     
     lobby->addChild(new Widget::TextWidget("all-teams-label",
