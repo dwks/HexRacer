@@ -226,6 +226,11 @@ void LobbyProxy::visit(Widget::WidgetActivateEvent *event) {
     else if(name == "settings") {
         EMIT_EVENT(new Event::SwitchToScreen("settings"));
     }
+    else if(name == "equalize") {
+        int id = worldSetup->getClientID();
+        
+        EMIT_EVENT(new Event::GeneralWorldSetupEvent(id, "equalize"));
+    }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");
     }

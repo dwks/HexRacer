@@ -250,6 +250,32 @@ void ServerMain::ServerObserver::observe(Event::EventBase *event) {
             
             EMIT_EVENT(new Event::ReplaceWorldSetup(worldSetup));
         }
+        else if(general->getData() == "equalize") {
+            int max = 0;
+            for(int team = 0; team < Map::Teams::MAX_TEAMS; team ++) {
+                int players = worldSetup->getPlayersOnTeam(team);
+                if(players > max) max = players;
+            }
+            
+            for(int team = 0; team < Map::Teams::MAX_TEAMS; team ++) {
+                int players = worldSetup->getPlayersOnTeam(team);
+                if(players == 0) continue;
+                
+                for(int p = players; p < max; p ++) {
+                    LOG(NETWORK, "Equalize: creating another AI on team " << team);
+                    
+                    World::WorldSetup::PlayerSettings ai;
+                    ai.setColor(team);
+                    ai.setID(main->clientCount ++);
+                    ai.setName(Object::Player::getDefaultPlayerName(
+                        ai.getID()) + " [AI]");
+                    
+                    worldSetup->replacePlayerSettings(ai);
+                }
+            }
+            
+            EMIT_EVENT(new Event::ReplaceWorldSetup(worldSetup));
+        }
         else {
             LOG2(NETWORK, WARNING,
                 "Unknown GeneralWorldSetup request " << general->getData());
