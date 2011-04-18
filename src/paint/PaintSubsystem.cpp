@@ -128,7 +128,7 @@ void PaintSubsystem::calculateBoostSpeeds() {
 void PaintSubsystem::playerPaint(Object::Player* player) {
 
 	std::vector<Math::HexHeightMap::LayeredHexIndex> changed_indices;
-	paintManager->colorCellsInRadius(player->getPosition(), PAINTING_RADIUS, player->getTeamID(), false, &changed_indices);
+	paintManager->colorCellsInRadius(player->getPosition(), PAINTING_RADIUS, player->getTeamID(), GET_SETTING("game.paint.allowoverwrite", false), &changed_indices);
 	if (Bonus::GlobalBonusManager::getInstance())
 		Bonus::GlobalBonusManager::getInstance()->getPlayerBonuses(player->getID()).playerPaint(static_cast<int>(changed_indices.size()));
 
@@ -136,10 +136,14 @@ void PaintSubsystem::playerPaint(Object::Player* player) {
 
 void PaintSubsystem::playerErase(Object::Player* player) {
 
-	std::vector<Math::HexHeightMap::LayeredHexIndex> changed_indices;
-	paintManager->colorCellsInRadius(player->getPosition(), PAINTING_RADIUS, -1, false, &changed_indices);
-	if (Bonus::GlobalBonusManager::getInstance())
-		Bonus::GlobalBonusManager::getInstance()->getPlayerBonuses(player->getID()).playerErase(static_cast<int>(changed_indices.size()));
+	if (GET_SETTING("game.paint.allowerase", true)) {
+
+		std::vector<Math::HexHeightMap::LayeredHexIndex> changed_indices;
+		paintManager->colorCellsInRadius(player->getPosition(), PAINTING_RADIUS, -1, false, &changed_indices);
+		if (Bonus::GlobalBonusManager::getInstance())
+			Bonus::GlobalBonusManager::getInstance()->getPlayerBonuses(player->getID()).playerErase(static_cast<int>(changed_indices.size()));
+
+	}
 
 }
 
