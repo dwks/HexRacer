@@ -120,6 +120,8 @@ void SoundSystem::setupGameSoundFX()
         alSourcefv(fxSources[i], AL_POSITION, sourcePosition);
         alSourcefv(fxSources[i], AL_VELOCITY, sourceVelocity);
     }
+    alSourcef(fxSources[3], AL_GAIN, 0.4);
+    alSourcef(fxSources[3], AL_GAIN, 0.2);
 }
 
 void SoundSystem::setupCollisions() {
