@@ -87,7 +87,7 @@ int ClientManager::nextDisconnectedClient(int &gid) {
         }
         
         if(!portal->isOpen()) {
-            //*i = NULL;
+            *i = NULL;
             gid = gameid[x];
             portal_list.erase(i);
             timeout.erase(timeout.begin() + x);
@@ -97,7 +97,7 @@ int ClientManager::nextDisconnectedClient(int &gid) {
         }
         
         if(now >= timeout[x] + allowableTimeout) {
-            //*i = NULL;
+            *i = NULL;
             gid = gameid[x];
             portal_list.erase(i);
             timeout.erase(timeout.begin() + x);

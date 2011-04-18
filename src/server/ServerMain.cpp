@@ -485,7 +485,9 @@ void ServerMain::sendWorldToPlayers() {
     
     int aiCount = GET_SETTING("server.aicount", 0);
     
-    for(int client = 0; client < clients->getSocketCount(); client ++) {
+    for(int client = aiCount; client < aiCount + clients->getSocketCount();
+        client ++) {
+        
         if(!clients->socketExists(client)) continue;
         
         LOG(WORLD, "Creating player " << client);
@@ -561,9 +563,21 @@ void ServerMain::handleDisconnections() {
     int disconnected, gameid;
     while((disconnected = clients->nextDisconnectedClient(gameid)) >= 0) {
         LOG2(NETWORK, CONNECT,
-            "Client " << disconnected << " has disconnected");
+            "Client " << disconnected << " has disconnected "
+            "(game ID " << gameid << ")");
         
-        World::WorldSetup::getInstance()->removePlayer(gameid);
+        if(countdownStart == (unsigned long)-1 && !gameStarted) {
+            std::string name = World::WorldSetup::getInstance()
+                ->getPlayerSettings(gameid)->getName();
+            
+            EMIT_EVENT(new Event::SetupChat(-1, "", Misc::StreamAsString()
+                << name << " has disconnected"));
+            
+            World::WorldSetup::getInstance()->removePlayer(gameid);
+            
+            EMIT_EVENT(new Event::ReplaceWorldSetup(
+                World::WorldSetup::getInstance()));
+        }
     }
 }
 
