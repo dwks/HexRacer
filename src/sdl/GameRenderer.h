@@ -34,12 +34,16 @@
 #include "opengl/Camera.h"
 #include "opengl/OpenGL.h"
 
+#include "event/Enabler.h"
+#include "event/GameStageChanged.h"
+
 namespace Project {
 namespace SDL {
 
 #define GAME_RENDERER_SHADOW_MIN_NEAR_PLANE 0.1
 
-class GameRenderer {
+class GameRenderer
+	: public Event::Enabler {
 private:
 
 	GLuint bloomFBO;
@@ -54,6 +58,8 @@ private:
 
 	int hBlurShaderIndex;
 	int vBlurShaderIndex;
+
+	bool clockStarted;
 
 	GLuint shadowFBO;
 	GLuint shadowColorTexture;
@@ -116,6 +122,8 @@ private:
 	void updateShadowCamera(const Math::Point& light_position, OpenGL::Camera* camera);
 	void renderToShadowMap(Render::RenderableObject& renderable);
 	void clearShadowMap();
+
+	void handleGameStageChanged(Event::GameStageChanged* event);
 
 };
 

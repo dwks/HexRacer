@@ -1339,6 +1339,11 @@ void MapEditorWidget::scaleAll(double scale, Point origin) {
 	mapObjectsChanged(MapObject::MESH_INSTANCE);
 	updateGL();
 }
+void MapEditorWidget::translateAll(Point translation) {
+	map->translateAll(translation);
+	mapObjectsChanged(MapObject::MESH_INSTANCE);
+	updateGL();
+}
 void MapEditorWidget::showOptionsDialog() {
 	MapOptionsDialog::showOptionsDialog(map->getMapOptions(), this);
 }

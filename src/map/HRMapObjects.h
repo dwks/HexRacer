@@ -61,6 +61,7 @@ public:
 	void clearMeshInstances();
 
 	void scaleAll(double scale, Math::Point origin = Math::Point());
+	void translateAll(Math::Point translation);
 
 	bool parseStream(const std::string& keyword, std::ifstream& stream,
 		const std::string& load_directory, const std::string& version);

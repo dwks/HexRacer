@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <cctype>
 
 #include "AboutProxy.h"
 
@@ -26,7 +27,7 @@ void AboutProxy::visit(Widget::WidgetActivateEvent *event) {
 }
 
 void AboutProxy::loadHelpText(Widget::ListWidget *text) {
-    std::ifstream stream("README.txt");
+    std::ifstream stream("ingameabout.txt");
     
     int count = 0;
     std::string line;
@@ -41,7 +42,7 @@ void AboutProxy::loadHelpText(Widget::ListWidget *text) {
                 Misc::StreamAsString() << "line" << (++count),
                 line.substr(4),
                 Widget::NormalTextLayout::ALIGN_LEFT,
-                Widget::WidgetRect(0.0, 0.0, 0.8, 0.08),
+                Widget::WidgetRect(0.0, 0.0, 0.8, 0.06),
                 OpenGL::Color(0.0f, 0.8f, 1.0f)));
         }
         else if(line.substr(0, 4) == "--- ") {
@@ -49,8 +50,16 @@ void AboutProxy::loadHelpText(Widget::ListWidget *text) {
                 Misc::StreamAsString() << "line" << (++count),
                 line.substr(4),
                 Widget::NormalTextLayout::ALIGN_LEFT,
-                Widget::WidgetRect(0.0, 0.0, 0.9, 0.05),
+                Widget::WidgetRect(0.0, 0.0, 0.9, 0.04),
                 OpenGL::Color(0.0f, 0.6f, 0.8f)));
+        }
+		else if(line.substr(0, 4) == "!!! ") {
+            text->addChild(new Widget::TextWidget(
+                Misc::StreamAsString() << "line" << (++count),
+                line.substr(4),
+                Widget::NormalTextLayout::ALIGN_LEFT,
+                Widget::WidgetRect(0.0, 0.0, 0.9, 0.03),
+				OpenGL::Color::RED));
         }
         else {
             text->addChild(new Widget::TextWidget(

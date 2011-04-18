@@ -161,6 +161,7 @@ public slots:
 	void setLightHasAttenuation(bool has);
 	void setMeshInstanceType(int type);
 	void scaleAll(double scale, Point origin);
+	void translateAll(Point translation);
 
 	void clearPaint();
 
