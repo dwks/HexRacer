@@ -164,32 +164,42 @@ void GUIConstruction::constructHost() {
     Widget::CompositeWidget *host = new Widget::CompositeWidget("host");
     widgets->addChild(host);
     
+    host->addChild(new Widget::TextWidget("hostport-label", "Host port:",
+        Widget::NormalTextLayout::ALIGN_RIGHT,
+        Widget::WidgetRect(0.1, 0.20, 0.35, 0.08)));
+    host->addChild(new Widget::EditWidget("hostport",
+        GET_SETTING("network.serverport", "1820"),
+        Widget::WidgetRect(0.5, 0.20, 0.35, 0.08)));
+    
     host->addChild(new Widget::ButtonWidget("map",
-        "Choose map", Widget::WidgetRect(0.1, 0.1, 0.4, 0.08)));
+        "Choose map", Widget::WidgetRect(0.1, 0.10, 0.4, 0.08)));
     
     host->addChild(new Widget::TextWidget("aicount-label", "Number of AIs:",
         Widget::NormalTextLayout::ALIGN_RIGHT,
-        Widget::WidgetRect(0.1, 0.20, 0.35, 0.08)));
+        Widget::WidgetRect(0.1, 0.30, 0.35, 0.08)));
     host->addChild(new Widget::EditWidget("aicount",
         GET_SETTING("server.aicount", "0"),
-        Widget::WidgetRect(0.5, 0.20, 0.35, 0.08)));
+        Widget::WidgetRect(0.5, 0.30, 0.35, 0.08)));
     
     host->addChild(new Widget::TextWidget("lapcount-label", "Number of laps:",
         Widget::NormalTextLayout::ALIGN_RIGHT,
-        Widget::WidgetRect(0.1, 0.30, 0.35, 0.08)));
+        Widget::WidgetRect(0.1, 0.40-0.01, 0.35, 0.08)));
     host->addChild(new Widget::EditWidget("lapcount",
         GET_SETTING("game.race.laps", "3"),
-        Widget::WidgetRect(0.5, 0.30, 0.35, 0.08)));
+        Widget::WidgetRect(0.5, 0.40-0.01, 0.35, 0.08)));
     
-    host->addChild(new Widget::TextWidget("hostport-label", "Host port:",
-        Widget::NormalTextLayout::ALIGN_RIGHT,
-        Widget::WidgetRect(0.1, 0.60, 0.35, 0.08)));
-    host->addChild(new Widget::EditWidget("hostport",
-        GET_SETTING("network.serverport", "1820"),
-        Widget::WidgetRect(0.5, 0.60, 0.35, 0.08)));
+    host->addChild(new Widget::CheckWidget("erasing",
+        "Paint erasing", GET_SETTING("game.paint.allowerase", 1),
+        Widget::WidgetRect(0.5, 0.50-0.02, 0.35, 0.08)));
+    host->addChild(new Widget::CheckWidget("overwrite",
+        "Paint overwrite", GET_SETTING("game.paint.allowoverwrite", "0"),
+        Widget::WidgetRect(0.5, 0.60-0.03, 0.35, 0.08)));
+    host->addChild(new Widget::CheckWidget("erasing",
+        "Bonuses enabled", GET_SETTING("bonus.enable", "1"),
+        Widget::WidgetRect(0.5, 0.70-0.04, 0.35, 0.08)));
     
     host->addChild(new Widget::TextWidget("error", "", 0,
-        Widget::WidgetRect(0.1, 0.7, 0.8, 0.08)));
+        Widget::WidgetRect(0.1, 0.75, 0.8, 0.08)));
     
     host->addChild(new Widget::ButtonWidget("cancel",
         "Cancel", Widget::WidgetRect(0.1, 0.85, 0.35, 0.08)));
@@ -284,7 +294,7 @@ void GUIConstruction::constructLobby() {
     
     std::string ip = boost::asio::ip::host_name();
     lobby->addChild(new Widget::TextWidget("ipaddress",
-        Misc::StreamAsString() << "Server: " << ip, 0,
+        Misc::StreamAsString() << "Local IP: " << ip, 0,
         Widget::WidgetRect(0.05, 0.02, 0.9, 0.07)));
     
     lobby->addChild(new Widget::TextWidget("all-teams-label",

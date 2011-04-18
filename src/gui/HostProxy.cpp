@@ -36,6 +36,21 @@ void HostProxy::visit(Widget::WidgetActivateEvent *event) {
             LOG2(GUI, WARNING, "No map selected!");
         }
     }
+    else if(name == "erasing") {
+        Settings::SettingsManager::getInstance()->set(
+            "game.paint.allowerase",
+            Misc::StreamAsString() << (event->getDown() ? "1" : "0"));
+    }
+    else if(name == "overwrite") {
+        Settings::SettingsManager::getInstance()->set(
+            "game.paint.allowoverwrite",
+            Misc::StreamAsString() << (event->getDown() ? "1" : "0"));
+    }
+    else if(name == "bonus") {
+        Settings::SettingsManager::getInstance()->set(
+            "bonus.enable",
+            Misc::StreamAsString() << (event->getDown() ? "1" : "0"));
+    }
     else {
         LOG2(GUI, WARNING, "No action for clicking on \"" << name << "\"");
     }

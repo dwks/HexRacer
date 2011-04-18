@@ -422,6 +422,8 @@ void ServerMain::run() {
     // three-second timeout before the game starts
     networkPortal->getClientManager()->setAllowableTimeout(3000);
     
+    bool hadMultiplePlayers = false;
+    
     unsigned long lastTime = Misc::Sleeper::getTimeMilliseconds();
     quit = false;
     while(!quit) {
@@ -434,10 +436,11 @@ void ServerMain::run() {
             updateClients(8);
         }
         
-        if(gameStarted || countdownStart != (unsigned long)-1) {
-            if(!networkPortal->getClientManager()->getClientsStillConnected()) {
-                quit = true;
-            }
+        if(networkPortal->getClientManager()->getClientsStillConnected()) {
+            hadMultiplePlayers = true;
+        }
+        else if(hadMultiplePlayers) {
+            quit = true;
         }
         
         if(gameStarted) {
@@ -568,7 +571,11 @@ void ServerMain::handleNewConnections() {
 
         Network::PacketSerializer packetSerializer;
         Network::Packet *packet = new Network::HandshakePacket(
-            client, GET_SETTING("map", "data/testtrack.hrm"),
+            client,
+            GET_SETTING("map", "data/testtrack.hrm"),
+            GET_SETTING("game.paint.allowerase", 1),
+            GET_SETTING("game.paint.allowoverwrite", 0),
+            GET_SETTING("bonus.enable", 1),
             Misc::Sleeper::getTimeMilliseconds());
 
 		LOG2(NETWORK, CONNECT, "Serializing handshake packet");

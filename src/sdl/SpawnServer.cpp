@@ -14,6 +14,9 @@ void SpawnServer::spawn() {
     args << " network.serverport=" << GET_SETTING("network.serverport", "1820");
     args << " server.aicount=" << GET_SETTING("server.aicount", "0");
     args << " game.race.laps=" << GET_SETTING("game.race.laps", "3");
+    args << " game.paint.allowerase=" << GET_SETTING("game.paint.allowerase", "1");
+    args << " game.paint.allowoverwrite=" << GET_SETTING("game.paint.allowoverwrite", "0");
+    args << " bonus.enable=" << GET_SETTING("bonus.enable", "1");
     
     Misc::StreamAsString command;
 #ifdef WIN32
