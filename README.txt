@@ -2,11 +2,11 @@
 
 --- Using the game
 
-Launch the game by running "sdl". You can play a single player game or launch
-a server automatically from the "Host game" screen.
+Launch the game by running "hrclient.exe". You can launch a server
+automatically from the "Host game" screen.
 
-Note: sdl.exe and server.exe are Windows executables,
-      sdl and server are Linux ones.
+Note: hrclient.exe and server.exe are Windows executables,
+      hrclient and server are Linux ones.
 
 Keyboard controls:
 - Drive the car with the arrow keys.

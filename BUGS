@@ -1,9 +1,0 @@
-Textures are loaded in the server:
-
-==31367==    by 0x5F2CE7: Project::OpenGL::TextureLoading::loadTexture2D(std::string, int, int, int, int, bool) (TextureLoading.cpp:13)
-==31367==    by 0x5DB797: Project::Render::TexturePack::TexturePack(std::string, std::string, std::string, std::string) (TexturePack.cpp:12)
-==31367==    by 0x5B1A3B: Project::Mesh::MeshLoader::objLoadMeshes(std::string, bool, std::vector<Project::Mesh::SubMesh*, std::allocator<Project::Mesh::SubMesh*> >&, std::vector<Project::Mesh::MeshVertex*, std::allocator<Project::Mesh::MeshVertex*> >&) (MeshLoader.cpp:168)
-==31367==    by 0x5B24A5: Project::Mesh::MeshLoader::loadOBJ(std::string, std::string, bool) (MeshLoader.cpp:37)
-==31367==    by 0x59DA13: Project::Map::HRMap::loadMapMesh(Project::Map::HRMap::MeshType, std::string) (HRMap.cpp:316)
-==31367==    by 0x5A0F5A: Project::Map::HRMap::loadMapFile(std::string, Project::Misc::ProgressTracker*) (HRMap.cpp:168)
-
