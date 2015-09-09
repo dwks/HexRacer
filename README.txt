@@ -1,3 +1,14 @@
+NOTE: github just has the source repository, game assets were kept in a
+separate repo. To run the game, the data assets are required. At this time,
+you may download a package with the game assets for all platforms here:
+http://elfery.net/projects/hexracer.html
+
+That page also has screenshots and videos of the gameplay.
+
+    -- David Williams-King
+
+
+
 === README for HexRacer
 
 --- Using the game
